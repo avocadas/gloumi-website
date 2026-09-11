@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens.
+ *
+ * The neutrals are the warm creams from the brief; the accent is the app's
+ * own terracotta (#8F3D26 – prices, likes, "confirmed" in the app) so that the
+ * site and the app read as one product. The four tab colours (plum, mauve,
+ * sage, terracotta) come from the app's TAB_ACCENTS and are used only where
+ * the site imitates the app – the phone mockup and the category rings.
+ */
+@theme inline {
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: var(--font-cormorant), "Cormorant Garamond", Georgia, "Times New Roman", serif;
+
+  --color-cream-50: #fcfaf7;
+  --color-cream-100: #f9f6f0;
+  --color-cream-200: #f7f2ec;
+  --color-cream-300: #f2ebe2;
+
+  --color-sand-100: #f4ece6;
+  --color-sand-200: #efe6dd;
+  --color-sand-300: #e6d8cb;
+  --color-sand-400: #d8c6b6;
+  --color-sand-500: #c4ad99;
+
+  --color-espresso-950: #1f1715;
+  --color-espresso-900: #2d2320;
+  --color-espresso-800: #3e322e;
+  --color-espresso-700: #4f423d;
+  --color-espresso-600: #5e5049;
+  --color-espresso-500: #6b5d57;
+  --color-espresso-400: #776a63;
+
+  --color-terracotta-50: #faf1ec;
+  --color-terracotta-100: #f3e1d8;
+  --color-terracotta-200: #e8c6b6;
+  --color-terracotta-300: #d9a48c;
+  --color-terracotta-400: #c27c5d;
+  --color-terracotta-500: #a85a3b;
+  --color-terracotta-600: #8f3d26;
+  --color-terracotta-700: #73301e;
+  --color-terracotta-800: #5a2517;
+
+  --color-plum-500: #7a3350;
+  --color-plum-700: #55223a;
+  --color-plum-900: #3a2531;
+  --color-mauve-500: #574463;
+  --color-mauve-100: #ece6f0;
+  --color-sage-500: #4c6552;
+  --color-sage-100: #e4ebe5;
+  --color-rose-500: #e2578c;
+  --color-rose-100: #fbe4ec;
+
+  --shadow-soft: 0 24px 60px -28px rgb(45 35 32 / 0.28);
+  --shadow-card: 0 1px 2px rgb(45 35 32 / 0.04), 0 14px 36px -18px rgb(45 35 32 / 0.18);
+  --shadow-phone: 0 50px 100px -30px rgb(45 35 32 / 0.45), 0 0 0 1px rgb(45 35 32 / 0.06);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-float: float 8s ease-in-out infinite;
+  --animate-fade-up: fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-12px);
+    }
+  }
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-cream-100 font-sans text-espresso-900;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: rgb(143 61 38 / 0.18);
+  }
+
+  :focus-visible {
+    outline: 2px solid #8f3d26;
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Horizontal chip rows inside the phone mockup. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
