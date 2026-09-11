@@ -1,0 +1,4 @@
+# One line ending in the repository regardless of the OS that committed.
+* text=auto eol=lf
+*.png binary
+*.ico binary
