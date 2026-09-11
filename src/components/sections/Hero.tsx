@@ -51,12 +51,12 @@ export function Hero() {
 
           {/*
             Floating proof cards – decorative echoes of what the app shows.
-            Only from lg up: below that the column is too narrow and the cards
+            Only from xl up: below that the column is too narrow and the cards
             would sit on top of the phone's content instead of its bezel.
           */}
           <div
             aria-hidden="true"
-            className="absolute -left-1 top-[13%] hidden animate-float rounded-2xl bg-white/90 p-2.5 pr-4 shadow-card ring-1 ring-espresso-900/5 backdrop-blur [animation-delay:1.2s] lg:block"
+            className="absolute -left-1 top-[13%] hidden animate-float rounded-2xl bg-white/90 p-2.5 pr-4 shadow-card ring-1 ring-espresso-900/5 backdrop-blur [animation-delay:1.2s] xl:block"
           >
             <div className="flex items-center gap-2.5">
               <span className="flex h-9 w-9 items-center justify-center rounded-full bg-terracotta-50 text-terracotta-600">
@@ -70,7 +70,7 @@ export function Hero() {
           </div>
           <div
             aria-hidden="true"
-            className="absolute -right-1 bottom-[10%] hidden animate-float rounded-2xl bg-white/90 p-2.5 pr-4 shadow-card ring-1 ring-espresso-900/5 backdrop-blur [animation-delay:2.6s] lg:block"
+            className="absolute -right-1 bottom-[10%] hidden animate-float rounded-2xl bg-white/90 p-2.5 pr-4 shadow-card ring-1 ring-espresso-900/5 backdrop-blur [animation-delay:2.6s] xl:block"
           >
             <div className="flex items-center gap-2.5">
               <span className="flex h-9 w-9 items-center justify-center rounded-full bg-sage-100 text-sage-500">
