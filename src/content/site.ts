@@ -16,11 +16,12 @@ export const site = {
   language: "lt",
   country: "Lietuva",
 
-  /** Registration details – fill in when the exact rekvizitai are confirmed. */
+  /** Registration details, confirmed by Ringaudas on 2026-09-12. `vatCode` stays
+   *  null until Gloumi is a VAT payer – an empty string would render as a fact. */
   company: {
-    code: null as string | null,
+    code: "308087857" as string | null,
     vatCode: null as string | null,
-    address: null as string | null,
+    address: "L. Zamenhofo g. 10-36, LT-06330, Vilnius" as string | null,
   },
 
   /** Store links. Empty until the app is live; the badges then read „Netrukus“. */
