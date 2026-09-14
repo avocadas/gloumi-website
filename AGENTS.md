@@ -1,3 +1,13 @@
+# Gloumi svetainė
+
+**Prieš pradedant skaityti `HANDOVER.md`** — jame surašyta, kas jau padaryta,
+kas išmatuota, kokie spąstai jau kainavo laiko ir ko dar neįrodyta.
+
+Taip pat `README.md`: sandara, aplinkos kintamieji ir tai, kas generuojama iš
+programėlės repozitorijos.
+
+---
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know
