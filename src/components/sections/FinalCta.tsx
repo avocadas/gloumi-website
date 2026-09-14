@@ -3,9 +3,11 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { StoreBadges } from "@/components/ui/StoreBadges";
-import { copy } from "@/content/copy";
+import { getCopy } from "@/content/copy";
+import { sectionHref, type Lang } from "@/content/lang";
 
-export function FinalCta() {
+export function FinalCta({ lang }: { lang: Lang }) {
+  const copy = getCopy(lang);
   return (
     <section aria-labelledby="cta-title" className="py-20 sm:py-28">
       <Container className="text-center">
@@ -17,8 +19,8 @@ export function FinalCta() {
             {copy.finalCta.title}
           </h2>
           <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-espresso-500 text-pretty">{copy.finalCta.lead}</p>
-          <StoreBadges className="mt-10 justify-center" />
-          <ButtonLink href="/#tapti-meistru" variant="ghost" className="mt-4">
+          <StoreBadges lang={lang} className="mt-10 justify-center" />
+          <ButtonLink href={sectionHref(lang, "join")} variant="ghost" className="mt-4">
             {copy.finalCta.masterLink}
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </ButtonLink>

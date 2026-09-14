@@ -4,8 +4,9 @@ import Link from "next/link";
 import { useId, useState, type FormEvent, type ReactNode } from "react";
 import { CircleCheck, LoaderCircle, Mail } from "lucide-react";
 import { Button, ButtonLink } from "@/components/ui/Button";
-import { categories } from "@/content/categories";
-import { copy } from "@/content/copy";
+import { getCategories } from "@/content/categories";
+import { getCopy } from "@/content/copy";
+import { legalPath, sectionHref, type Lang } from "@/content/lang";
 import { site } from "@/content/site";
 import { cn } from "@/lib/cn";
 
@@ -21,8 +22,8 @@ function Card({ children }: { children: ReactNode }) {
   return <div className="rounded-3xl bg-white p-6 text-espresso-900 shadow-soft sm:p-8">{children}</div>;
 }
 
-function Optional() {
-  return <span className="font-normal text-espresso-400"> ({copy.form.fields.optional})</span>;
+function Optional({ label }: { label: string }) {
+  return <span className="font-normal text-espresso-400"> ({label})</span>;
 }
 
 /**
@@ -31,7 +32,9 @@ function Optional() {
  * 503 and the card turns into a plain mailto – a form that silently drops
  * submissions would be worse than no form.
  */
-export function WaitlistForm() {
+export function WaitlistForm({ lang }: { lang: Lang }) {
+  const copy = getCopy(lang);
+  const categories = getCategories(lang);
   const id = useId();
   const f = copy.form;
   const [status, setStatus] = useState<Status>("idle");
@@ -94,7 +97,7 @@ export function WaitlistForm() {
           <h3 className="font-serif text-3xl font-medium">{f.successTitle}</h3>
           <p className="leading-relaxed text-espresso-500">{f.successText}</p>
           <div className="mt-2 flex flex-wrap gap-3">
-            <ButtonLink href="/#atsisiusti" size="sm">
+            <ButtonLink href={sectionHref(lang, "download")} size="sm">
               {copy.nav.cta}
             </ButtonLink>
             <Button size="sm" variant="ghost" onClick={() => setStatus("idle")}>
@@ -163,7 +166,7 @@ export function WaitlistForm() {
         <div>
           <label htmlFor={`${id}-phone`} className={labelClass}>
             {f.fields.phone}
-            <Optional />
+            <Optional label={f.fields.optional} />
           </label>
           <input
             id={`${id}-phone`}
@@ -178,7 +181,7 @@ export function WaitlistForm() {
         <div>
           <label htmlFor={`${id}-city`} className={labelClass}>
             {f.fields.city}
-            <Optional />
+            <Optional label={f.fields.optional} />
           </label>
           <input
             id={`${id}-city`}
@@ -191,7 +194,7 @@ export function WaitlistForm() {
         <div className="sm:col-span-2">
           <label htmlFor={`${id}-category`} className={labelClass}>
             {f.fields.category}
-            <Optional />
+            <Optional label={f.fields.optional} />
           </label>
           <select id={`${id}-category`} name="category" defaultValue="" className={cn(inputClass, "appearance-auto")}>
             <option value="">{f.fields.categoryPlaceholder}</option>
@@ -206,14 +209,14 @@ export function WaitlistForm() {
         <div className="sm:col-span-2">
           <label htmlFor={`${id}-link`} className={labelClass}>
             {f.fields.link}
-            <Optional />
+            <Optional label={f.fields.optional} />
           </label>
           <input id={`${id}-link`} name="link" maxLength={200} autoComplete="url" className={inputClass} />
         </div>
         <div className="sm:col-span-2">
           <label htmlFor={`${id}-message`} className={labelClass}>
             {f.fields.message}
-            <Optional />
+            <Optional label={f.fields.optional} />
           </label>
           <textarea
             id={`${id}-message`}
@@ -241,7 +244,7 @@ export function WaitlistForm() {
           />
           <label htmlFor={`${id}-consent`} className="text-sm leading-relaxed text-espresso-500">
             {f.consentStart}
-            <Link href="/privatumo-politika" className="font-medium text-terracotta-600 underline-offset-2 hover:underline">
+            <Link href={legalPath(lang, "privacy")} className="font-medium text-terracotta-600 underline-offset-2 hover:underline">
               {f.consentLink}
             </Link>
             {f.consentEnd}

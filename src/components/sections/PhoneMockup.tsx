@@ -13,11 +13,13 @@ import {
   Star,
   User,
 } from "lucide-react";
-import { categories, RING_GRADIENT } from "@/content/categories";
-import { copy } from "@/content/copy";
+import { getCategories, RING_GRADIENT } from "@/content/categories";
+import { getCopy } from "@/content/copy";
+import type { Lang } from "@/content/lang";
 import { cn } from "@/lib/cn";
 
-type ScreenId = (typeof copy.phone.tabs)[number]["id"];
+/** Written out rather than derived from the dictionary: the two languages must offer the same three screens. */
+type ScreenId = "search" | "categories" | "calendar";
 
 const ORDER: ScreenId[] = ["search", "categories", "calendar"];
 const AUTO_MS = 4800;
@@ -34,7 +36,8 @@ const TAB_IDLE = "#9B8E93";
  * the visitor hovers, focuses or picks a tab, and never cycles for people who
  * asked for reduced motion.
  */
-export function PhoneMockup() {
+export function PhoneMockup({ lang }: { lang: Lang }) {
+  const copy = getCopy(lang);
   const [active, setActive] = useState<ScreenId>("search");
   const [paused, setPaused] = useState(false);
   const [manual, setManual] = useState(false);
@@ -90,7 +93,7 @@ export function PhoneMockup() {
             className="absolute left-1/2 top-[18px] z-20 h-[24px] w-[88px] -translate-x-1/2 rounded-full bg-espresso-950"
           />
           <div className="relative h-full w-full overflow-hidden rounded-[2.3rem] bg-cream-100 text-espresso-900">
-            <StatusBar />
+            <StatusBar lang={lang} />
             <AnimatePresence mode="wait" initial={false}>
               <m.div
                 key={active}
@@ -103,12 +106,12 @@ export function PhoneMockup() {
                 transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
                 className="absolute inset-x-0 bottom-[62px] top-[46px] overflow-hidden px-4"
               >
-                {active === "search" ? <SearchScreen /> : null}
-                {active === "categories" ? <CategoriesScreen /> : null}
-                {active === "calendar" ? <CalendarScreen /> : null}
+                {active === "search" ? <SearchScreen lang={lang} /> : null}
+                {active === "categories" ? <CategoriesScreen lang={lang} /> : null}
+                {active === "calendar" ? <CalendarScreen lang={lang} /> : null}
               </m.div>
             </AnimatePresence>
-            <TabBar activeIndex={TAB_FOR_SCREEN[active]} />
+            <TabBar lang={lang} activeIndex={TAB_FOR_SCREEN[active]} />
           </div>
         </div>
       </div>
@@ -148,7 +151,8 @@ export function PhoneMockup() {
   );
 }
 
-function StatusBar() {
+function StatusBar({ lang }: { lang: Lang }) {
+  const copy = getCopy(lang);
   return (
     <div
       aria-hidden="true"
@@ -170,8 +174,8 @@ function StatusBar() {
   );
 }
 
-function SearchScreen() {
-  const s = copy.phone.search;
+function SearchScreen({ lang }: { lang: Lang }) {
+  const s = getCopy(lang).phone.search;
   return (
     <div className="flex h-full flex-col gap-3 pt-1">
       <div className="flex items-center justify-between">
@@ -254,8 +258,9 @@ function SearchScreen() {
   );
 }
 
-function CategoriesScreen() {
-  const c = copy.phone.categories;
+function CategoriesScreen({ lang }: { lang: Lang }) {
+  const c = getCopy(lang).phone.categories;
+  const categories = getCategories(lang);
   return (
     <div className="flex h-full flex-col gap-3 pt-1">
       <p className="font-serif text-[22px] font-semibold">{c.title}</p>
@@ -317,8 +322,8 @@ const TODAY = 11;
 const SELECTED = 18;
 const AVAILABLE = new Set([14, 15, 16, 17, 18, 21, 22, 23, 24, 25, 28, 29, 30]);
 
-function CalendarScreen() {
-  const c = copy.phone.calendar;
+function CalendarScreen({ lang }: { lang: Lang }) {
+  const c = getCopy(lang).phone.calendar;
   const cells: Array<number | null> = [
     ...Array.from({ length: LEADING_BLANKS }, () => null),
     ...Array.from({ length: DAYS_IN_MONTH }, (_, i) => i + 1),
@@ -405,7 +410,8 @@ function CalendarScreen() {
   );
 }
 
-function TabBar({ activeIndex }: { activeIndex: number }) {
+function TabBar({ lang, activeIndex }: { lang: Lang; activeIndex: number }) {
+  const copy = getCopy(lang);
   const icons = [Home, Search, Calendar, User];
   return (
     <div

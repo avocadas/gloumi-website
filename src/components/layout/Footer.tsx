@@ -3,10 +3,11 @@ import { Mail } from "lucide-react";
 import { BrandMark } from "@/components/brand/BrandMark";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { Container } from "@/components/ui/Container";
-import { copy } from "@/content/copy";
+import { getCopy } from "@/content/copy";
+import { homePath, legalPath, sectionHref, sectionId, type Lang } from "@/content/lang";
 import { site } from "@/content/site";
 
-type FooterLink = { readonly href: string; readonly label: string };
+type FooterLink = { href: string; label: string };
 type SocialKey = keyof typeof site.social;
 
 function SocialIcon({ name }: { name: SocialKey }) {
@@ -51,16 +52,17 @@ function Column({ title, links }: { title: string; links: readonly FooterLink[] 
   );
 }
 
-export function Footer() {
+export function Footer({ lang }: { lang: Lang }) {
+  const copy = getCopy(lang);
   const year = new Date().getFullYear();
   const socials = (Object.keys(site.social) as SocialKey[]).filter((key) => site.social[key]);
 
   return (
-    <footer id="kontaktai" className="scroll-mt-24 border-t border-espresso-900/8 bg-cream-200">
+    <footer id={sectionId(lang, "contact")} className="scroll-mt-24 border-t border-espresso-900/8 bg-cream-200">
       <Container className="py-14 sm:py-16">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.3fr] lg:gap-8">
           <div>
-            <Link href="/" className="inline-flex items-center gap-3 rounded-md text-plum-700" aria-label={copy.nav.home}>
+            <Link href={homePath(lang)} className="inline-flex items-center gap-3 rounded-md text-plum-700" aria-label={copy.nav.home}>
               <BrandMark title="" className="h-10 w-10 rounded-xl" />
               <Wordmark title="" className="h-7 w-auto" />
             </Link>
@@ -83,9 +85,18 @@ export function Footer() {
               </ul>
             ) : null}
           </div>
-          <Column title={copy.footer.clients} links={copy.footer.clientLinks} />
-          <Column title={copy.footer.masters} links={copy.footer.masterLinks} />
-          <Column title={copy.footer.legal} links={copy.footer.legalLinks} />
+          <Column
+            title={copy.footer.clients}
+            links={copy.footer.clientLinks.map((l) => ({ href: sectionHref(lang, l.key), label: l.label }))}
+          />
+          <Column
+            title={copy.footer.masters}
+            links={copy.footer.masterLinks.map((l) => ({ href: sectionHref(lang, l.key), label: l.label }))}
+          />
+          <Column
+            title={copy.footer.legal}
+            links={copy.footer.legalLinks.map((l) => ({ href: legalPath(lang, l.key), label: l.label }))}
+          />
         </div>
 
         <div className="mt-12 grid gap-8 border-t border-espresso-900/8 pt-8 md:grid-cols-[1.2fr_2fr]">

@@ -3,9 +3,11 @@ import { PhoneMockup } from "@/components/sections/PhoneMockup";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { StoreBadges } from "@/components/ui/StoreBadges";
-import { copy } from "@/content/copy";
+import { getCopy } from "@/content/copy";
+import { sectionHref, sectionId, type Lang } from "@/content/lang";
 
-export function Hero() {
+export function Hero({ lang }: { lang: Lang }) {
+  const copy = getCopy(lang);
   const h = copy.hero;
   return (
     <section id="pradzia" aria-labelledby="hero-title" className="relative isolate overflow-hidden">
@@ -27,10 +29,10 @@ export function Hero() {
           </h1>
           <p className="mt-6 max-w-lg text-lg leading-relaxed text-espresso-500 text-pretty">{h.lead}</p>
 
-          <div id="atsisiusti" className="mt-9 scroll-mt-28">
-            <StoreBadges />
+          <div id={sectionId(lang, "download")} className="mt-9 scroll-mt-28">
+            <StoreBadges lang={lang} />
             <div className="mt-4">
-              <ButtonLink href="/#meistrams" variant="outline">
+              <ButtonLink href={sectionHref(lang, "masters")} variant="outline">
                 {h.masterCta}
               </ButtonLink>
             </div>
@@ -47,7 +49,7 @@ export function Hero() {
         </div>
 
         <div className="relative mx-auto w-full max-w-[440px] animate-fade-up [animation-delay:150ms] lg:max-w-none">
-          <PhoneMockup />
+          <PhoneMockup lang={lang} />
 
           {/*
             Floating proof cards – decorative echoes of what the app shows.

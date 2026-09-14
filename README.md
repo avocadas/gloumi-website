@@ -2,7 +2,7 @@
 
 Marketing site for **Gloumi** – the beauty and wellness marketplace app for Lithuania. Clients find and book masters; masters run their calendar, deposits and payouts from the app. This repository is the public face at https://gloumi.lt.
 
-Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · Framer Motion · Lucide.
+Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · Framer Motion · Lucide. Lithuanian at the root, English under `/en`.
 
 ## Run it
 
@@ -18,7 +18,9 @@ npm run dev
 
 ```
 src/
-  app/                 routes, metadata files (icons, OG image, sitemap, robots, manifest), /api/waitlist
+  app/(lt)/            Lithuanian routes at the root, plus its root layout and share card
+  app/(en)/en/         English routes under /en, plus its root layout and share card
+  app/                 shared metadata files (icons, sitemap, robots, manifest), /api/waitlist
   components/
     brand/             Wordmark (GENERATED) + BrandMark (renders public/brand/gloumi-mark.svg)
     layout/            Header, Footer
@@ -26,8 +28,12 @@ src/
     legal/             LegalPage – one layout for the four legal documents
     ui/                Button, Container, SectionHeading, StoreBadges, Reveal, MotionProvider
   content/
+    lang.ts            the two languages, their paths, section anchors and legal slugs
     site.ts            company facts, URLs, store links, socials – the one place to fill in
-    copy.ts            every visible string (Lithuanian)
+    copy.lt.ts         every visible string, Lithuanian
+    copy.en.ts         the same shape in English; typed against copy.lt so a missing key fails the typecheck
+    copy.ts            getCopy(lang)
+    metadata.ts        canonical, hreflang alternates and OpenGraph, per page and per language
     categories.ts      the six service categories; labels are the app's own
     legal.ts           refund policy + DAC7/DSA notice, helpers
     legal-source.ts    Terms + Privacy – GENERATED from the app repository

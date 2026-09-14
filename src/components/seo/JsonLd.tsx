@@ -1,11 +1,13 @@
-import { copy } from "@/content/copy";
+import { getCopy } from "@/content/copy";
+import type { Lang } from "@/content/lang";
 import { site } from "@/content/site";
 
 /**
  * Organization + WebSite + MobileApplication as one @graph. Rendered as a
  * plain <script>: structured data is data, not code to be scheduled.
  */
-export function JsonLd() {
+export function JsonLd({ lang }: { lang: Lang }) {
+  const copy = getCopy(lang);
   const orgId = `${site.url}/#organization`;
   const sameAs = Object.values(site.social).filter((value): value is string => Boolean(value));
   const installUrl = [site.stores.appStore, site.stores.googlePlay].filter((value): value is string => Boolean(value));

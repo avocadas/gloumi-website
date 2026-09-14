@@ -2,10 +2,11 @@ import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { WORDMARK_PATHS, WORDMARK_VIEWBOX } from "@/components/brand/Wordmark";
-import { copy } from "@/content/copy";
+import { getCopy } from "@/content/copy";
+import type { Lang } from "@/content/lang";
 import { site } from "@/content/site";
 
-export const alt = copy.seo.ogAlt;
+
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -28,12 +29,13 @@ async function loadGoogleFont(family: string, weight: number): Promise<ArrayBuff
 }
 
 /**
- * The share card: the app icon and wordmark over the site's cream, the
+ * The share card, rendered once per language at build time: the app icon and wordmark over the site's cream, the
  * headline in Cormorant. Rendered once at build time. If Google Fonts is
  * unreachable during the build, the card falls back to the bundled default
  * face rather than failing the build.
  */
-export default async function OpenGraphImage() {
+export async function renderOgImage(lang: Lang) {
+  const copy = getCopy(lang);
   const [serif, sans, markSvg] = await Promise.all([
     loadGoogleFont("Cormorant+Garamond", 600),
     loadGoogleFont("DM+Sans", 500),

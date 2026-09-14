@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { categories } from "@/content/categories";
+import { CATEGORY_IDS } from "@/content/categories";
 import { site } from "@/content/site";
 
 export const runtime = "nodejs";
@@ -17,7 +17,7 @@ type Submission = {
 };
 
 const LIMITS = { name: 80, email: 120, phone: 40, city: 80, category: 40, link: 200, message: 1000, website: 200 };
-const CATEGORY_IDS = new Set<string>(["", "other", ...categories.map((c) => c.id)]);
+const ALLOWED_CATEGORIES = new Set<string>(["", "other", ...CATEGORY_IDS]);
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 /* Best-effort per-instance throttle: 5 submissions per 10 minutes per IP. */
@@ -52,7 +52,7 @@ function parse(body: unknown): { ok: true; data: Submission } | { ok: false; fie
   const fields: string[] = [];
   if (data.name.length < 2) fields.push("name");
   if (!EMAIL_RE.test(data.email)) fields.push("email");
-  if (!CATEGORY_IDS.has(data.category)) fields.push("category");
+  if (!ALLOWED_CATEGORIES.has(data.category)) fields.push("category");
   if (!data.consent) fields.push("consent");
   return fields.length ? { ok: false, fields } : { ok: true, data };
 }

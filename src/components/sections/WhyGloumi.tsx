@@ -2,13 +2,15 @@ import { BadgeCheck, CalendarCheck, Receipt, Sparkles } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { copy } from "@/content/copy";
+import { getCopy } from "@/content/copy";
+import { sectionId, type Lang } from "@/content/lang";
 
 const ICONS = [CalendarCheck, Sparkles, Receipt, BadgeCheck];
 
-export function WhyGloumi() {
+export function WhyGloumi({ lang }: { lang: Lang }) {
+  const copy = getCopy(lang);
   return (
-    <section id="kodel-gloumi" aria-labelledby="kodel-title" className="scroll-mt-24 bg-white py-20 sm:py-28">
+    <section id={sectionId(lang, "why")} aria-labelledby="kodel-title" className="scroll-mt-24 bg-white py-20 sm:py-28">
       <Container>
         <SectionHeading id="kodel-title" eyebrow={copy.why.eyebrow} title={copy.why.title} lead={copy.why.lead} />
 

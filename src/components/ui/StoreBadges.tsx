@@ -1,4 +1,5 @@
-import { copy } from "@/content/copy";
+import { getCopy } from "@/content/copy";
+import type { Lang } from "@/content/lang";
 import { site } from "@/content/site";
 import { cn } from "@/lib/cn";
 
@@ -26,6 +27,7 @@ function PlayLogo({ className }: { className?: string }) {
 
 type BadgeProps = {
   store: Store;
+  lang: Lang;
   className?: string;
 };
 
@@ -34,7 +36,8 @@ type BadgeProps = {
  * disabled "Netrukus" (coming soon) pill, so the hero never carries a dead
  * link while the app is still in review.
  */
-export function StoreBadge({ store, className }: BadgeProps) {
+export function StoreBadge({ store, lang, className }: BadgeProps) {
+  const copy = getCopy(lang);
   const href = store === "apple" ? site.stores.appStore : site.stores.googlePlay;
   const text = copy.stores[store];
   const Logo = store === "apple" ? AppleLogo : PlayLogo;
@@ -72,11 +75,11 @@ export function StoreBadge({ store, className }: BadgeProps) {
   );
 }
 
-export function StoreBadges({ className }: { className?: string }) {
+export function StoreBadges({ lang, className }: { lang: Lang; className?: string }) {
   return (
     <div className={cn("flex flex-wrap items-center gap-3", className)}>
-      <StoreBadge store="apple" />
-      <StoreBadge store="google" />
+      <StoreBadge store="apple" lang={lang} />
+      <StoreBadge store="google" lang={lang} />
     </div>
   );
 }

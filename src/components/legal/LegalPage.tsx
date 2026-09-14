@@ -1,12 +1,13 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Container } from "@/components/ui/Container";
-import { copy } from "@/content/copy";
-import { controllerLine, legalPages, slugify, type LegalSection, type LegalSlug } from "@/content/legal";
+import { getCopy } from "@/content/copy";
+import { legalPath, LEGAL_ROUTES, type Lang, type LegalKey } from "@/content/lang";
+import { controllerLine, LEGAL_TITLES, slugify, type LegalSection } from "@/content/legal";
 import { site } from "@/content/site";
 
 type Group = {
-  lang: "lt" | "en";
+  lang: Lang;
   /** Heading for a translated block; the primary Lithuanian block has none. */
   heading?: string;
   note?: string;
@@ -14,9 +15,12 @@ type Group = {
 };
 
 type Props = {
-  slug: LegalSlug;
-  title: string;
-  titleEn?: string;
+  /** Language of the page's own chrome: headings, table of contents, contact card. */
+  lang: Lang;
+  /** Which of the four documents this is. Decides the title and the "other documents" list. */
+  docKey: LegalKey;
+  /** Shown under the title when the document also exists in the other language. */
+  subtitle?: string;
   updated: string;
   version?: string;
   intro?: ReactNode;
@@ -28,10 +32,12 @@ type Props = {
  * the Lithuanian text, the sections themselves (with the English translation
  * below when there is one), and the controller/contact card.
  */
-export function LegalPage({ slug, title, titleEn, updated, version, intro, groups }: Props) {
+export function LegalPage({ lang, docKey, subtitle, updated, version, intro, groups }: Props) {
+  const copy = getCopy(lang);
+  const title = LEGAL_TITLES[lang][docKey];
   const primary = groups.find((g) => !g.heading) ?? groups[0];
-  const hasEnglish = groups.some((g) => g.lang === "en");
-  const others = legalPages.filter((page) => page.slug !== slug);
+  const hasEnglish = lang === "lt" && groups.some((g) => g.lang === "en");
+  const others = LEGAL_ROUTES.filter((route) => route.key !== docKey);
 
   return (
     <article className="py-14 sm:py-20">
@@ -41,7 +47,7 @@ export function LegalPage({ slug, title, titleEn, updated, version, intro, group
           <h1 className="mt-4 font-serif text-4xl font-medium leading-[1.05] tracking-[-0.015em] text-espresso-900 sm:text-5xl">
             {title}
           </h1>
-          {titleEn ? <p className="mt-2 text-lg text-espresso-400">{titleEn}</p> : null}
+          {subtitle ? <p className="mt-2 text-lg text-espresso-400">{subtitle}</p> : null}
           <p className="mt-4 text-sm text-espresso-500">
             {copy.legal.updated} <time dateTime={updated}>{updated}</time>
             {version ? ` · ${copy.legal.version} ${version}` : null}
@@ -108,7 +114,7 @@ export function LegalPage({ slug, title, titleEn, updated, version, intro, group
 
         <aside className="mt-14 rounded-3xl bg-white p-6 shadow-card ring-1 ring-espresso-900/5 sm:p-8">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-espresso-400">{copy.legal.controller}</p>
-          <p className="mt-2 text-espresso-900">{controllerLine()}</p>
+          <p className="mt-2 text-espresso-900">{controllerLine(lang)}</p>
           <p className="mt-4 text-sm text-espresso-500">
             {copy.legal.contactQuestion}{" "}
             <a href={`mailto:${site.email}`} className="font-medium text-terracotta-600 hover:underline">
@@ -117,10 +123,10 @@ export function LegalPage({ slug, title, titleEn, updated, version, intro, group
           </p>
           <p className="mt-6 text-xs font-semibold uppercase tracking-[0.18em] text-espresso-400">{copy.legal.otherDocs}</p>
           <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-2 text-sm">
-            {others.map((page) => (
-              <li key={page.slug}>
-                <Link href={`/${page.slug}`} className="font-medium text-terracotta-600 hover:underline">
-                  {page.title}
+            {others.map((route) => (
+              <li key={route.key}>
+                <Link href={legalPath(lang, route.key)} className="font-medium text-terracotta-600 hover:underline">
+                  {LEGAL_TITLES[lang][route.key]}
                 </Link>
               </li>
             ))}

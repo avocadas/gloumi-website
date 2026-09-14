@@ -1,18 +1,9 @@
-import { LEGAL_DOCS, LEGAL_META, type LegalLang, type LegalSection } from "./legal-source";
+import { LEGAL_DOCS, LEGAL_META, type LegalSection } from "./legal-source";
+import { LEGAL_ROUTES, type Lang, type LegalKey } from "./lang";
 import { site } from "./site";
 
-export { LEGAL_DOCS, LEGAL_META };
-export type { LegalLang, LegalSection };
-
-/** The four documents the footer links to, with their public paths. */
-export const legalPages = [
-  { slug: "taisykles", title: "Naudojimosi taisyklės", titleEn: "Terms of Service" },
-  { slug: "privatumo-politika", title: "Privatumo politika", titleEn: "Privacy Policy" },
-  { slug: "grazinimo-salygos", title: "Grąžinimo sąlygos", titleEn: "Refund Policy" },
-  { slug: "dac7", title: "DAC7 ir platformos skaidrumas", titleEn: "DAC7 and platform transparency" },
-] as const;
-
-export type LegalSlug = (typeof legalPages)[number]["slug"];
+export { LEGAL_DOCS, LEGAL_META, LEGAL_ROUTES };
+export type { LegalSection, LegalKey };
 
 /** Lithuanian-aware slug for section anchors. */
 export function slugify(input: string): string {
@@ -28,29 +19,98 @@ export function slugify(input: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
+/** Document titles in both languages, for the page heading and the footer. */
+export const LEGAL_TITLES: Record<Lang, Record<LegalKey, string>> = {
+  lt: {
+    terms: "Naudojimosi taisyklės",
+    privacy: "Privatumo politika",
+    refunds: "Grąžinimo sąlygos",
+    transparency: "DAC7 ir platformos skaidrumas",
+  },
+  en: {
+    terms: "Terms of Service",
+    privacy: "Privacy Policy",
+    refunds: "Refund Policy",
+    transparency: "DAC7 and platform transparency",
+  },
+};
+
 /** The controller line shown under every document, built from what is actually known. */
-export function controllerLine(): string {
+export function controllerLine(lang: Lang): string {
   const parts: string[] = [site.legalName];
-  if (site.company.code) parts.push(`įmonės kodas ${site.company.code}`);
+  if (site.company.code) {
+    parts.push(lang === "lt" ? `įmonės kodas ${site.company.code}` : `company number ${site.company.code}`);
+  }
   if (site.company.address) parts.push(site.company.address);
   parts.push(site.email);
   return parts.join(", ");
 }
 
-function termsSection(title: string): LegalSection {
-  const found = LEGAL_DOCS.lt.terms.find((s) => s.title === title);
-  if (!found) throw new Error(`Terms section "${title}" not found in legal-source.ts – regenerate it.`);
+/**
+ * A section of the Terms, looked up by title.
+ *
+ * The refund page reuses the deposit and subscription rules rather than
+ * restating them, so the two pages cannot start disagreeing. If the Terms are
+ * reworded in the app, this throws at build time instead of silently dropping
+ * the section.
+ */
+function termsSection(lang: Lang, title: string): LegalSection {
+  const found = LEGAL_DOCS[lang].terms.find((s) => s.title === title);
+  if (!found) {
+    throw new Error(`Terms section "${title}" (${lang}) not found in legal-source.ts – regenerate it and update this title.`);
+  }
   return found;
 }
 
+const DEPOSIT_TITLES: Record<Lang, string> = {
+  lt: "Rezervacijos ir avansas",
+  en: "Bookings and deposits",
+};
+
+const SUBSCRIPTION_TITLES: Record<Lang, string> = {
+  lt: "Meistro prenumerata (Pro)",
+  en: "Master subscription (Pro)",
+};
+
 /**
  * Refund policy. The rules on deposits and on the Pro subscription are lifted
- * from the Terms by title so the two pages cannot disagree; only the framing
- * and the mechanics of a refund are written here.
+ * from the Terms by title; only the framing and the mechanics of a refund are
+ * written here.
  */
-export function refundSections(): LegalSection[] {
-  const deposits = termsSection("Rezervacijos ir avansas");
-  const subscription = termsSection("Meistro prenumerata (Pro)");
+export function refundSections(lang: Lang): LegalSection[] {
+  const deposits = termsSection(lang, DEPOSIT_TITLES[lang]);
+  const subscription = termsSection(lang, SUBSCRIPTION_TITLES[lang]);
+
+  if (lang === "en") {
+    return [
+      {
+        title: "Who these terms apply to",
+        paragraphs: [
+          "Gloumi is a platform connecting beauty professionals with clients. The service is provided by the professional, who is responsible for it; Gloumi acts as intermediary for the booking and, where the professional has set one, collects a deposit.",
+          "These terms explain when and how money is returned. They supplement the Terms of Service and do not change them; in case of conflict the Terms of Service apply.",
+        ],
+      },
+      { title: "Deposits for an appointment", paragraphs: deposits.paragraphs, bullets: deposits.bullets },
+      {
+        title: "How and how quickly we refund",
+        bullets: [
+          "We refund to the same payment method that was used, through our payments partner Stripe.",
+          "We start the refund as soon as the cancellation meets the conditions; banks usually credit it within 5 to 10 working days.",
+          "We charge no fee for a refund.",
+          "Cash paid directly to the professional does not pass through Gloumi and cannot be refunded by us; speak to the professional.",
+        ],
+      },
+      { title: "The professional's subscription", paragraphs: subscription.paragraphs, bullets: subscription.bullets },
+      {
+        title: "Disagreements and your rights as a consumer",
+        paragraphs: [
+          `If you believe a refund was handled wrongly, write to ${site.email} and we will look into it with the professional.`,
+          "Consumers may also contact the State Consumer Rights Protection Authority of Lithuania (vvtat.lt). These terms do not limit your rights under mandatory Lithuanian and European Union law.",
+        ],
+      },
+    ];
+  }
+
   return [
     {
       title: "Kam taikomos šios sąlygos",
@@ -59,11 +119,7 @@ export function refundSections(): LegalSection[] {
         "Šios sąlygos paaiškina, kada ir kaip pinigai grąžinami. Jos papildo Naudojimosi taisykles ir jų nekeičia – nesutapimo atveju vadovaujamasi Taisyklėmis.",
       ],
     },
-    {
-      title: "Avansas ir užstatas už vizitą",
-      paragraphs: deposits.paragraphs,
-      bullets: deposits.bullets,
-    },
+    { title: "Avansas ir užstatas už vizitą", paragraphs: deposits.paragraphs, bullets: deposits.bullets },
     {
       title: "Kaip ir per kiek laiko grąžiname",
       bullets: [
@@ -73,11 +129,7 @@ export function refundSections(): LegalSection[] {
         "Tiesiogiai meistrui grynaisiais sumokėtos sumos per Gloumi negrąžinamos – dėl jų kreipkitės į meistrą.",
       ],
     },
-    {
-      title: "Meistro prenumerata",
-      paragraphs: subscription.paragraphs,
-      bullets: subscription.bullets,
-    },
+    { title: "Meistro prenumerata", paragraphs: subscription.paragraphs, bullets: subscription.bullets },
     {
       title: "Nesutarimai ir vartotojo teisės",
       paragraphs: [
@@ -92,7 +144,49 @@ export function refundSections(): LegalSection[] {
  * DAC7 and platform-transparency notice (DAC7, DSA, P2B). Informational: the
  * binding documents remain the Terms and the Privacy Policy.
  */
-export function dac7Sections(): LegalSection[] {
+export function dac7Sections(lang: Lang): LegalSection[] {
+  if (lang === "en") {
+    return [
+      {
+        title: "What Gloumi is",
+        paragraphs: [
+          `The Gloumi app and this site are operated by ${site.legalName}. Gloumi is a digital platform: it lets beauty professionals offer their services and lets clients find and book them. Gloumi does not provide beauty services itself and is not a party to the contract between a professional and a client.`,
+        ],
+      },
+      {
+        title: "DAC7: what we report to the tax authority",
+        paragraphs: [
+          "EU Council Directive 2021/514 (DAC7) requires operators of digital platforms to collect information about sellers who earn income through them and to report it to the tax authority once a year. In Lithuania that is the State Tax Inspectorate (VMI), reporting on the previous calendar year.",
+        ],
+        bullets: [
+          "We collect: the professional's name or the company's name, the form of business and the company or self-employment certificate number, the address, the VAT number where there is one, and the account details used for payouts.",
+          "We report: the consideration received through the platform by quarter, any fees or commission withheld from it, and the number of services provided.",
+          "Reporting covers sellers who meet the thresholds set in the directive; each professional receives a copy of the data reported about them.",
+          "We ask for these details when the professional account is created, because they cannot be collected retrospectively.",
+        ],
+      },
+      {
+        title: "Transparency under the Digital Services Act (DSA)",
+        paragraphs: [
+          `Gloumi is an intermediary service under EU Regulation 2022/2065 (the Digital Services Act). The single point of contact for authorities and for users is ${site.email}.`,
+        ],
+        bullets: [
+          "Illegal content – someone else's photographs, misleading reviews, abusive material – can be reported to that address, saying where the content is and why you believe it is illegal.",
+          "When we remove or restrict content we tell its author why, and how the decision can be appealed.",
+          "The order of professionals in search is determined by distance from you, how well they match the query or category, ratings and availability. Where a paid plan affects position, that is marked.",
+          "Gloumi is a small enterprise, so some DSA obligations that apply to larger platforms (transparency reports, for example) do not apply to it. That does not change our commitment to act on reports.",
+        ],
+      },
+      {
+        title: "For business users (P2B)",
+        paragraphs: [
+          "Professionals use Gloumi as business users under EU Regulation 2019/1150. The conditions under which an account may be restricted or terminated, and the main parameters determining search ranking, are set out in the Terms of Service and on this page. We give professionals advance notice of material changes to those conditions.",
+        ],
+      },
+      { title: "Contact", paragraphs: [controllerLine("en")] },
+    ];
+  }
+
   return [
     {
       title: "Kas yra Gloumi",
@@ -130,9 +224,6 @@ export function dac7Sections(): LegalSection[] {
         "Meistrai Gloumi naudojasi kaip verslo naudotojai (ES reglamentas 2019/1150). Sąlygos, kuriomis paskyra gali būti apribota ar nutraukta, ir pagrindiniai paieškos tvarkos parametrai aprašyti Naudojimosi taisyklėse ir šiame puslapyje. Apie esminius sąlygų pakeitimus meistrams pranešame iš anksto.",
       ],
     },
-    {
-      title: "Kontaktai",
-      paragraphs: [controllerLine()],
-    },
+    { title: "Kontaktai", paragraphs: [controllerLine("lt")] },
   ];
 }

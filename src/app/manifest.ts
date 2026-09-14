@@ -1,6 +1,9 @@
 import type { MetadataRoute } from "next";
-import { copy } from "@/content/copy";
+import { getCopy } from "@/content/copy";
 import { site } from "@/content/site";
+
+/** The manifest and the share card are single files, so they carry the home market's language. */
+const copy = getCopy("lt");
 
 export default function manifest(): MetadataRoute.Manifest {
   return {

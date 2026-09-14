@@ -5,12 +5,21 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, m } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Wordmark } from "@/components/brand/Wordmark";
+import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import { copy } from "@/content/copy";
+import { getCopy } from "@/content/copy";
+import { homePath, sectionHref, type Lang } from "@/content/lang";
 import { cn } from "@/lib/cn";
 
-export function Header() {
+type HeaderProps = {
+  lang: Lang;
+  /** Where this same page lives in each language, for the switcher. */
+  alternates: Record<Lang, string>;
+};
+
+export function Header({ lang, alternates }: HeaderProps) {
+  const copy = getCopy(lang);
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -42,7 +51,7 @@ export function Header() {
     >
       <Container className="flex h-16 items-center justify-between gap-4 sm:h-20">
         <Link
-          href="/"
+          href={homePath(lang)}
           className="flex shrink-0 items-center rounded-md text-plum-700"
           aria-label={copy.nav.home}
           onClick={close}
@@ -53,9 +62,9 @@ export function Header() {
         <nav aria-label={copy.nav.ariaLabel} className="hidden md:block">
           <ul className="flex items-center gap-8">
             {copy.nav.links.map((link) => (
-              <li key={link.href}>
+              <li key={link.key}>
                 <Link
-                  href={link.href}
+                  href={sectionHref(lang, link.key)}
                   className="text-sm font-medium text-espresso-700 transition-colors hover:text-espresso-900"
                 >
                   {link.label}
@@ -66,7 +75,8 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <ButtonLink href="/#atsisiusti" size="sm" className="hidden sm:inline-flex">
+          <LanguageSwitcher lang={lang} alternates={alternates} label={copy.nav.language} />
+          <ButtonLink href={sectionHref(lang, "download")} size="sm" className="hidden sm:inline-flex">
             {copy.nav.cta}
           </ButtonLink>
           <button
@@ -95,9 +105,9 @@ export function Header() {
             <Container>
               <ul className="flex flex-col py-3">
                 {copy.nav.links.map((link) => (
-                  <li key={link.href}>
+                  <li key={link.key}>
                     <Link
-                      href={link.href}
+                      href={sectionHref(lang, link.key)}
                       onClick={close}
                       className="block rounded-xl px-3 py-3 text-base font-medium text-espresso-900 hover:bg-white/70"
                     >
@@ -106,7 +116,7 @@ export function Header() {
                   </li>
                 ))}
                 <li className="px-3 pb-3 pt-2">
-                  <ButtonLink href="/#atsisiusti" onClick={close} className="w-full">
+                  <ButtonLink href={sectionHref(lang, "download")} onClick={close} className="w-full">
                     {copy.nav.cta}
                   </ButtonLink>
                 </li>

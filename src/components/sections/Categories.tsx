@@ -5,8 +5,9 @@ import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { categories, RING_GRADIENT, type Category } from "@/content/categories";
-import { copy } from "@/content/copy";
+import { getCategories, RING_GRADIENT, type Category } from "@/content/categories";
+import { getCopy } from "@/content/copy";
+import { sectionHref, sectionId, type Lang } from "@/content/lang";
 import { cn } from "@/lib/cn";
 
 /**
@@ -14,13 +15,15 @@ import { cn } from "@/lib/cn";
  * StoryRing gradient on hover and spins slowly while selected; the panel
  * below shows what that category holds.
  */
-export function CategoriesSection() {
-  const [selectedId, setSelectedId] = useState<Category["id"]>(categories[0].id);
+export function CategoriesSection({ lang }: { lang: Lang }) {
+  const copy = getCopy(lang);
+  const categories = getCategories(lang);
+  const [selectedId, setSelectedId] = useState<Category["id"]>("hair");
   const reduce = useReducedMotion();
   const current = categories.find((c) => c.id === selectedId) ?? categories[0];
 
   return (
-    <section id="kategorijos" aria-labelledby="kategorijos-title" className="scroll-mt-24 bg-cream-200 py-20 sm:py-28">
+    <section id={sectionId(lang, "categories")} aria-labelledby="kategorijos-title" className="scroll-mt-24 bg-cream-200 py-20 sm:py-28">
       <Container>
         <SectionHeading
           id="kategorijos-title"
@@ -112,7 +115,7 @@ export function CategoriesSection() {
                     {current.tagline}
                   </h3>
                 </div>
-                <ButtonLink href="/#atsisiusti" size="sm" variant="dark">
+                <ButtonLink href={sectionHref(lang, "download")} size="sm" variant="dark">
                   {copy.categories.cta}
                 </ButtonLink>
               </div>
