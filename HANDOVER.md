@@ -42,6 +42,24 @@ sesija paleista iš `Gloumi` katalogo, svetainės push'ui reikia priešdėlio
 | Sertifikatas | Vercel išrašė pats |
 | CI | žalias visiems commit'ams |
 
+**Naršyklėje išbandyta 2026-09-14 po pietų** (Chromium, 375×812 telefono
+emuliacija; kas liko nepatikrinta — 6 skyriuje):
+
+| Kas | Ką matėme |
+|---|---|
+| Titulinis per telefoną | visas puslapis nuo antraštės iki poraštės, be šoninio slinkimo (`scrollWidth` = `clientWidth` = 375) |
+| Teisiniai per telefoną | `/taisykles` – turinio kortelė, numeruoti skyriai, „English version ↓“ veda į `#en` tame pačiame puslapyje |
+| Kalbos perjungiklis | paspaustas: `/` → `/en` ir `/privatumo-politika` → `/en/privacy`; `aria-current` persikelia, `<html lang>` pasikeičia |
+| Mobilus meniu | atsidaro, `aria-label` virsta „Uždaryti meniu“, po nuorodos užsidaro, inkaras nuslenka su 96 px antraštės atsarga |
+| Meistrų forma | tuščia neišsiunčiama (naršyklės validacija, fokusas grįžta į „Vardas“); užpildyta duoda `POST /api/waitlist 200` ir žalią kortelę „Ačiū – gavome!“ |
+| Lietuviškos raidės | `Testas Ąžuolas` / `Šiauliai` pasiekia serverį nesugadinti |
+| Nuorodos | nė viena `#` nuoroda neveda į nesantį elementą – nei `/`, nei `/en`, nei `/taisykles` |
+| Dalinimosi kortelės | abi parsisiųstos ir pažiūrėtos: ženklas, antraštė, kategorijų eilutė, `gloumi.lt` |
+
+Forma siųsta per **vietinį `npm run dev`**, kur be `RESEND_API_KEY` užklausa tik
+įrašoma į terminalą. Į gyvą svetainę testinė užklausa **nesiųsta** — ji būtų
+atėjusi į `info@gloumi.lt` kaip tikra.
+
 **Adresai.** Lietuvių kalba šaknyje: `/`, `/taisykles`, `/privatumo-politika`,
 `/grazinimo-salygos`, `/dac7`. Anglų po `/en` su angliškais slug'ais:
 `/en`, `/en/terms`, `/en/privacy`, `/en/refunds`, `/en/dac7`.
@@ -120,6 +138,30 @@ failą per Node ir siųsti `--data-binary @failas`.
 **4.6. Bash komandos dydis.** Virš maždaug 10 KB komanda nesuparsinama ir
 **nieko neįrašo**. Dideliems failams naudoti Write įrankį.
 
+**4.7. Naršyklės skydelis meluoja dviem būdais.** Abu atrodo kaip svetainės
+klaidos ir nė vienas nėra.
+- **Paslėptas skydelis nepersipiešia.** Kai Claude langas ne priekyje,
+  ekrano nuotrauka po slinkimo grįžta tuščia arba su antrašte, įpiešta vidury
+  puslapio. DOM tuo metu rodo, kad turinys vietoje ir `opacity: 1`. Apėjimas,
+  kuriuo padarytos šios dienos nuotraukos: aukštas langas (375×2400) ir
+  `document.body.style.marginTop = '-4600px'` vietoj slinkimo — maketo
+  pakeitimas priverčia perpiešti.
+- **Paspaudimas pagal `ref` nepataiko.** Elemento nuoroda duoda CSS
+  koordinates, o skydelis jas skaito savo rėmelyje, tad forma tyliai
+  nepasiuntė **keturis kartus** iš eilės — nei `submit`, nei klaidos, nei
+  užklausos tinkle. Pataiko koordinatė, nuskaityta iš pačios nuotraukos
+  (nuotraukos taškas ÷ mastelis). Prieš skelbiant, kad mygtukas neveikia,
+  pakabinti `addEventListener('click')` ir pažiūrėti, ar paspaudimas išvis
+  atėjo.
+
+**4.8. Cormorant Garamond paukščiukai — ne klaida.** Dideliame šrifte `ž`, `š`,
+`č` paukščiukas atrodo atplyšęs ir pastumtas kairėn; nuotraukoje tai atrodo kaip
+sugadintas šriftas. Išmatuota pačiame `assets/fonts/CormorantGaramond-SemiBold.ttf`:
+`ž` yra vientisas glifas (gid 565), raidės kontūro centras 205, paukščiuko — 211,
+tad horizontaliai jis **centruotas**. Nestandartinis tik aukštis: paukščiuko
+viršus 731, kai didžiųjų raidžių aukštis 625, o `ė` taškas siekia 607. Tokia
+šrifto sandara. Nediagnozuoti iš nuotraukos — glifą galima pamatuoti.
+
 ---
 
 ## 5. Kas liko (tracker #20)
@@ -143,14 +185,18 @@ tai reiškia MX, SPF ir DKIM perkėlimą ranka. Atskiras darbas.
 
 ## 6. Ko NEĮRODYTA
 
-- **Mobiliojoje naršyklėje nematyta.** Visi patikrinimai daryti per HTTP
-  užklausas ir atiduodamą HTML. Puslapiai per telefoną neatidaryti.
-- **Kalbos perjungiklis nespaustas.** Žinoma, kad jis renderinamas abiem
-  kalbomis su teisingomis nuorodomis; kad paspaudus tikrai nuveda, netikrinta.
-- **Forma per naršyklę nesiųsta.** Siųsta tik per `curl` į `/api/waitlist`.
-  Pats laukų pildymas, validacija naršyklėje ir sėkmės kortelė nematyti.
-- **Kortelės socialiniuose tinkluose nematytos.** Žinoma, kad jos generuojasi ir
-  atiduodamos; kaip atrodo Facebook ar LinkedIn peržiūroje, nežiūrėta.
+- **Tikras telefonas į rankas neimtas.** Kas patikrinta — 2 skyriuje, ir tai
+  darta darbalaukio naršyklės telefono emuliacijoje. Emuliacija nerodo nei
+  Safari iOS, nei iškarpos, nei tikro piršto: 17 nuorodų ir mygtukų yra žemesni
+  nei 32 px (poraštės nuorodos 18 px, kalbos perjungiklis 24 px). Visos jos —
+  tekstinės eilutės, ne pagrindiniai mygtukai, bet tai spręsti reikia matant.
+- **Gyva forma nepaspausta.** Siųsta per `curl` ir per naršyklę vietiniame
+  serveryje; per `gloumi.lt` naršyklėje **ne**, nes tai būtų tikras laiškas.
+  Kas neįrodyta gyvai: kad Vercel'io aplinkos kintamieji tebeveikia ir kad
+  `Resend` priima šiandien.
+- **Kortelės socialiniuose tinkluose nematytos.** Abu PNG parsisiųsti ir
+  pažiūrėti; kaip juos apkerpa Facebook, LinkedIn ar Messenger peržiūra,
+  nežiūrėta.
 - **Rekvizitai netikrinti registre.** Kodas 308087857 ir adresas sutampa su
   programėlės `legal.js`, ir Ringaudas juos patvirtino žodžiu. Registro įrašas
   nežiūrėtas.
