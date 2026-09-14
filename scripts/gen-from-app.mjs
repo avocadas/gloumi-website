@@ -121,7 +121,13 @@ if (!fs.existsSync(iconSvg)) {
 }
 
 const markTarget = path.join(SITE, 'public', 'brand', 'gloumi-mark.svg');
-const incoming = fs.readFileSync(iconSvg);
+/*
+ * Line endings are normalised to LF before writing and before comparing. The
+ * app's copy is CRLF on Windows while .gitattributes keeps this one LF, so a
+ * raw byte comparison announced "the mark changed" on every single run. A
+ * check that cries wolf is a check people stop reading.
+ */
+const incoming = Buffer.from(fs.readFileSync(iconSvg, 'utf8').replace(/\r\n/g, '\n'), 'utf8');
 const markChanged = !fs.existsSync(markTarget) || !incoming.equals(fs.readFileSync(markTarget));
 fs.mkdirSync(path.dirname(markTarget), { recursive: true });
 fs.writeFileSync(markTarget, incoming);
