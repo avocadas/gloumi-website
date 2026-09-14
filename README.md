@@ -20,7 +20,7 @@ npm run dev
 src/
   app/                 routes, metadata files (icons, OG image, sitemap, robots, manifest), /api/waitlist
   components/
-    brand/             Wordmark + BrandMark – GENERATED from the app repository (see below)
+    brand/             Wordmark (GENERATED) + BrandMark (renders public/brand/gloumi-mark.svg)
     layout/            Header, Footer
     sections/          Hero, PhoneMockup, Categories, WhyGloumi, ForMasters, WaitlistForm, FinalCta
     legal/             LegalPage – one layout for the four legal documents
@@ -44,10 +44,12 @@ Three things must never drift from the mobile app, so they are copied by script,
 | Site file | App source |
 |---|---|
 | `src/components/brand/Wordmark.tsx` | `gloumi-app/src/theme/wordmarkPath.js` |
-| `src/components/brand/BrandMark.tsx`, `public/brand/gloumi-mark.svg` | `gloumi-app/assets/Gloumi-icon-light-default.svg` |
+| `public/brand/gloumi-mark.svg` | the icon `gloumi-app/app.json` declares as `expo.icon`, as SVG |
 | `src/content/legal-source.ts` | `gloumi-app/src/constants/legal.js` (v1.1, 2026-09-02) |
 
-After changing any of those in the app repository run `npm run gen:app` (pass the path to `gloumi-app/src` as an argument if the app repository is not a sibling directory), and `npm run icons` if the mark changed.
+The mark is read from `app.json` rather than by filename, because the app renamed it once already. Everything that draws the icon reads that one SVG: the footer through `BrandMark`, the OpenGraph card, and the favicons.
+
+After changing any of those in the app repository run `npm run gen:app` (pass the path to `gloumi-app/src` as an argument if the app repository is not a sibling directory). It says so when the mark changed; then run `npm run icons` to rebuild the favicons from it.
 
 ## Environment
 
