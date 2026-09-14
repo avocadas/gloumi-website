@@ -88,7 +88,7 @@ async function deliver(data: Submission): Promise<Channel[]> {
 
   if (resendKey) {
     const to = process.env.WAITLIST_TO_EMAIL?.trim() || site.email;
-    const from = process.env.WAITLIST_FROM_EMAIL?.trim() || `Gloumi <no-reply@${new URL(site.url).hostname}>`;
+    const from = process.env.WAITLIST_FROM_EMAIL?.trim() || `Gloumi <no-reply@${site.sendingDomain}>`;
     const text = [
       `Nauja meistro užklausa (${receivedAt})`,
       "",

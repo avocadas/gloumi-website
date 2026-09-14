@@ -37,6 +37,16 @@ export const site = {
     tiktok: null as string | null,
   },
 
+  /**
+   * The domain Resend actually sends from.
+   *
+   * NOT gloumi.lt. The DKIM key sits at `resend._domainkey.mail.gloumi.lt` and
+   * the return path at `send.mail.gloumi.lt`, so only the `mail` subdomain is
+   * verified. A From address on the bare domain is rejected by Resend, and any
+   * mail that did leave would fail DKIM and land in spam.
+   */
+  sendingDomain: "mail.gloumi.lt",
+
   /** The app's deep-link scheme (app.json → expo.scheme). */
   appScheme: "gloumi",
 } as const;
