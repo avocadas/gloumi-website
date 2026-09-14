@@ -295,7 +295,6 @@ export const en: typeof lt = {
     updated: "Last updated",
     version: "version",
     toc: "Contents",
-    english: "English version",
     englishNote:
       "The English text is a translation of the Lithuanian original; in case of conflict the Lithuanian version prevails.",
     controller: "Data controller and platform operator",

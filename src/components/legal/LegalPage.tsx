@@ -6,16 +6,8 @@ import { legalPath, LEGAL_ROUTES, type Lang, type LegalKey } from "@/content/lan
 import { controllerLine, LEGAL_TITLES, slugify, type LegalSection } from "@/content/legal";
 import { site } from "@/content/site";
 
-type Group = {
-  lang: Lang;
-  /** Heading for a translated block; the primary Lithuanian block has none. */
-  heading?: string;
-  note?: string;
-  sections: LegalSection[];
-};
-
 type Props = {
-  /** Language of the page's own chrome: headings, table of contents, contact card. */
+  /** Language of the page: its chrome and its text, which are never different. */
   lang: Lang;
   /** Which of the four documents this is. Decides the title and the "other documents" list. */
   docKey: LegalKey;
@@ -24,19 +16,19 @@ type Props = {
   updated: string;
   version?: string;
   intro?: ReactNode;
-  groups: Group[];
+  /** Shown above the first section, e.g. which language prevails in a dispute. */
+  note?: string;
+  sections: LegalSection[];
 };
 
 /**
- * One layout for every legal document: title block, table of contents for
- * the Lithuanian text, the sections themselves (with the English translation
- * below when there is one), and the controller/contact card.
+ * One layout for every legal document: title block, table of contents, the
+ * sections themselves and the controller/contact card. One language per page —
+ * the other one is a switcher click away, at the matching path.
  */
-export function LegalPage({ lang, docKey, subtitle, updated, version, intro, groups }: Props) {
+export function LegalPage({ lang, docKey, subtitle, updated, version, intro, note, sections }: Props) {
   const copy = getCopy(lang);
   const title = LEGAL_TITLES[lang][docKey];
-  const primary = groups.find((g) => !g.heading) ?? groups[0];
-  const hasEnglish = lang === "lt" && groups.some((g) => g.lang === "en");
   const others = LEGAL_ROUTES.filter((route) => route.key !== docKey);
 
   return (
@@ -52,13 +44,6 @@ export function LegalPage({ lang, docKey, subtitle, updated, version, intro, gro
             {copy.legal.updated} <time dateTime={updated}>{updated}</time>
             {version ? ` · ${copy.legal.version} ${version}` : null}
           </p>
-          {hasEnglish ? (
-            <p className="mt-3 text-sm">
-              <a href="#en" className="font-medium text-terracotta-600 hover:underline">
-                {copy.legal.english} ↓
-              </a>
-            </p>
-          ) : null}
         </header>
 
         {intro ? (
@@ -68,10 +53,10 @@ export function LegalPage({ lang, docKey, subtitle, updated, version, intro, gro
         <nav aria-label={copy.legal.toc} className="mt-10 rounded-3xl bg-white p-6 shadow-card ring-1 ring-espresso-900/5">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-espresso-400">{copy.legal.toc}</p>
           <ol className="mt-3 grid gap-2 sm:grid-cols-2">
-            {primary.sections.map((section, index) => (
+            {sections.map((section, index) => (
               <li key={section.title}>
                 <a
-                  href={`#${primary.lang}-${slugify(section.title)}`}
+                  href={`#${lang}-${slugify(section.title)}`}
                   className="text-sm text-espresso-700 hover:text-terracotta-600"
                 >
                   <span className="mr-2 font-serif text-espresso-400">{index + 1}.</span>
@@ -82,35 +67,29 @@ export function LegalPage({ lang, docKey, subtitle, updated, version, intro, gro
           </ol>
         </nav>
 
-        {groups.map((group) => {
-          const SectionTitle = group.heading ? "h3" : "h2";
-          return (
-            <section key={group.lang} id={group.lang} lang={group.lang} className="mt-12 scroll-mt-28">
-              {group.heading ? <h2 className="font-serif text-3xl font-medium text-espresso-900">{group.heading}</h2> : null}
-              {group.note ? <p className="mt-2 text-sm text-espresso-500">{group.note}</p> : null}
-              {group.sections.map((section, index) => (
-                <section key={section.title} id={`${group.lang}-${slugify(section.title)}`} className="mt-10 scroll-mt-28">
-                  <SectionTitle className="font-serif text-2xl font-medium text-espresso-900">
-                    <span className="mr-2 text-espresso-400">{index + 1}.</span>
-                    {section.title}
-                  </SectionTitle>
-                  {section.paragraphs?.map((paragraph) => (
-                    <p key={paragraph} className="mt-3 leading-relaxed text-espresso-700">
-                      {paragraph}
-                    </p>
-                  ))}
-                  {section.bullets?.length ? (
-                    <ul className="mt-3 list-disc space-y-1.5 pl-5 leading-relaxed text-espresso-700 marker:text-terracotta-400">
-                      {section.bullets.map((bullet) => (
-                        <li key={bullet}>{bullet}</li>
-                      ))}
-                    </ul>
-                  ) : null}
-                </section>
+        <div className="mt-12">
+          {note ? <p className="text-sm text-espresso-500">{note}</p> : null}
+          {sections.map((section, index) => (
+            <section key={section.title} id={`${lang}-${slugify(section.title)}`} className="mt-10 scroll-mt-28">
+              <h2 className="font-serif text-2xl font-medium text-espresso-900">
+                <span className="mr-2 text-espresso-400">{index + 1}.</span>
+                {section.title}
+              </h2>
+              {section.paragraphs?.map((paragraph) => (
+                <p key={paragraph} className="mt-3 leading-relaxed text-espresso-700">
+                  {paragraph}
+                </p>
               ))}
+              {section.bullets?.length ? (
+                <ul className="mt-3 list-disc space-y-1.5 pl-5 leading-relaxed text-espresso-700 marker:text-terracotta-400">
+                  {section.bullets.map((bullet) => (
+                    <li key={bullet}>{bullet}</li>
+                  ))}
+                </ul>
+              ) : null}
             </section>
-          );
-        })}
+          ))}
+        </div>
 
         <aside className="mt-14 rounded-3xl bg-white p-6 shadow-card ring-1 ring-espresso-900/5 sm:p-8">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-espresso-400">{copy.legal.controller}</p>

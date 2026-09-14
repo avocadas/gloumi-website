@@ -298,7 +298,6 @@ export const lt = {
     updated: "Atnaujinta",
     version: "versija",
     toc: "Turinys",
-    english: "English version",
     englishNote:
       "The English text is a translation of the Lithuanian original; in case of conflict the Lithuanian version prevails.",
     controller: "Duomenų valdytojas ir platformos operatorius",

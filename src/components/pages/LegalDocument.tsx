@@ -6,10 +6,12 @@ import { dac7Sections, LEGAL_DOCS, LEGAL_META, LEGAL_TITLES, refundSections } fr
 /**
  * Assembles one of the four legal documents for one language.
  *
- * Terms and Privacy come from the app's legal.js and exist in both languages
- * already; on the Lithuanian page the English translation is appended below,
- * because App Store Connect and Apple's reviewers read it there. The refund and
- * transparency pages are written for this site and carry one language each.
+ * One page carries one language: the Lithuanian path shows the Lithuanian text,
+ * `/en` shows the English one, and the switcher in the header moves between them
+ * without leaving the document. The Lithuanian page used to append the English
+ * translation below its own text, behind an "English version ↓" link; that made
+ * the page twice as long and left its table of contents describing only the top
+ * half of it.
  */
 export function LegalDocument({ lang, docKey }: { lang: Lang; docKey: LegalKey }) {
   const copy = getCopy(lang);
@@ -24,14 +26,9 @@ export function LegalDocument({ lang, docKey }: { lang: Lang; docKey: LegalKey }
         subtitle={LEGAL_TITLES[other][docKey]}
         updated={LEGAL_META.lastUpdated}
         version={LEGAL_META.version}
-        groups={
-          lang === "lt"
-            ? [
-                { lang: "lt", sections: LEGAL_DOCS.lt[doc] },
-                { lang: "en", heading: LEGAL_TITLES.en[docKey], note: copy.legal.englishNote, sections: LEGAL_DOCS.en[doc] },
-              ]
-            : [{ lang: "en", note: copy.legal.englishNote, sections: LEGAL_DOCS.en[doc] }]
-        }
+        /* The precedence note belongs on the translation, not on the original. */
+        note={lang === "en" ? copy.legal.englishNote : undefined}
+        sections={LEGAL_DOCS[lang][doc]}
       />
     );
   }
@@ -45,7 +42,7 @@ export function LegalDocument({ lang, docKey }: { lang: Lang; docKey: LegalKey }
       subtitle={LEGAL_TITLES[other][docKey]}
       updated={LEGAL_META.lastUpdated}
       intro={docKey === "transparency" ? copy.legal.disclaimer : undefined}
-      groups={[{ lang, sections }]}
+      sections={sections}
     />
   );
 }
