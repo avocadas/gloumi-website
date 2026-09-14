@@ -33,6 +33,6 @@
   },
   "description": "Marketing site for Gloumi, the beauty and wellness marketplace app for Lithuania.",
   "engines": {
-    "node": ">=20.9"
+    "node": "24.x"
   }
 }
