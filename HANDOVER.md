@@ -64,8 +64,17 @@ atėjusi į `info@gloumi.lt` kaip tikra.
 `/grazinimo-salygos`, `/dac7`. Anglų po `/en` su angliškais slug'ais:
 `/en`, `/en/terms`, `/en/privacy`, `/en/refunds`, `/en/dac7`.
 
-**Lietuviškų adresų NEKEISTI.** `https://gloumi.lt/privatumo-politika` yra tas
-adresas, kurį duosime App Store Connect.
+**Nė vieno iš dešimties adresų NEKEISTI**, o lietuviškų — labiausiai: juos
+naudoja pati programėlė ir žmonės, ir jie jau paskelbti.
+
+**App Store Connect gaus ANGLIŠKĄ adresą**, `https://gloumi.lt/en/privacy`.
+Anksčiau čia buvo parašyta priešingai, ir tai buvo prielaida, o ne patikrinta:
+App Privacy laukas yra vienas kiekvienai parduotuvės kalbai, o **lietuvių
+kalbos App Store metaduomenyse nėra**. Apple „App Store localizations" sąraše
+(patikrinta 2026-09-14) nėra nei lietuvių, nei latvių, nei estų; Lietuvai
+nurodyta English (U.K.). Perjungti kalbos tame lange neįmanoma, nes nėra į ką.
+Lietuviškas puslapis dėl to niekur nedingsta — į jį veda perjungiklis iš
+angliškojo, `hreflang` ir pati programėlė.
 
 **DNS.** Zona lieka domenai.lt. Pakeisti tik du įrašai:
 `gloumi.lt. A 216.150.1.1` ir `www CNAME 16ca6a30bb5ac109.vercel-dns-016.com.`
@@ -168,7 +177,8 @@ viršus 731, kai didžiųjų raidžių aukštis 625, o `ė` taškas siekia 607. 
 
 <https://github.com/avocadas/Gloumi/issues/20>, priskirta avocadas.
 
-- [ ] `https://gloumi.lt/privatumo-politika` į App Store Connect
+- [ ] `https://gloumi.lt/en/privacy` į App Store Connect (App Privacy →
+      Privacy Policy); platesnis sąrašas — tracker'io #28
 - [ ] App Store ir Google Play nuorodos (`NEXT_PUBLIC_APP_STORE_URL`,
       `NEXT_PUBLIC_PLAY_STORE_URL` Vercel'e; kol tuščios, ženkleliai rodo
       „Netrukus" ir niekur neveda)
