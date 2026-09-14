@@ -10,44 +10,33 @@ import { site } from "@/content/site";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-/* Satori reads ttf/otf/woff only; this UA makes Google Fonts answer with one TTF. */
-const LEGACY_UA =
-  "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; de-at) AppleWebKit/533.21.1 (KHTML, like Gecko) Version/5.0.5 Safari/533.21.1";
-
-async function loadGoogleFont(family: string, weight: number): Promise<ArrayBuffer | null> {
-  try {
-    const css = await fetch(`https://fonts.googleapis.com/css2?family=${family}:wght@${weight}`, {
-      headers: { "User-Agent": LEGACY_UA },
-    }).then((res) => (res.ok ? res.text() : ""));
-    const url = css.match(/url\((https:[^)]+\.ttf)\)/)?.[1];
-    if (!url) return null;
-    const res = await fetch(url);
-    return res.ok ? await res.arrayBuffer() : null;
-  } catch {
-    return null;
-  }
-}
-
-/**
- * The share card, rendered once per language at build time: the app icon and wordmark over the site's cream, the
- * headline in Cormorant. Rendered once at build time. If Google Fonts is
- * unreachable during the build, the card falls back to the bundled default
- * face rather than failing the build.
+/*
+ * The two faces are read from disk, not fetched.
+ *
+ * They used to come from Google Fonts during the build, which made the build
+ * non-deterministic: on 2026-09-14 a deployment failed while prerendering the
+ * English card with "Cannot read properties of undefined (reading 'split')",
+ * because one of the two requests came back empty and the layout was left
+ * asking for a font that had not loaded. The same commit had built cleanly
+ * minutes before. Reading from disk removes the network from the build.
+ *
+ * Read once at module scope, as the Next.js documentation shows, so the two
+ * cards do not read the files twice.
  */
+const FONT_DIR = join(process.cwd(), "assets", "fonts");
+const serif = await readFile(join(FONT_DIR, "CormorantGaramond-SemiBold.ttf"));
+const sans = await readFile(join(FONT_DIR, "DMSans-Medium.ttf"));
+
 export async function renderOgImage(lang: Lang) {
   const copy = getCopy(lang);
-  const [serif, sans, markSvg] = await Promise.all([
-    loadGoogleFont("Cormorant+Garamond", 600),
-    loadGoogleFont("DM+Sans", 500),
-    readFile(join(process.cwd(), "public", "brand", "gloumi-mark.svg"), "utf8"),
-  ]);
+  const markSvg = await readFile(join(process.cwd(), "public", "brand", "gloumi-mark.svg"), "utf8");
   const markSrc = `data:image/svg+xml;base64,${Buffer.from(markSvg).toString("base64")}`;
   const fonts = [
-    ...(serif ? [{ name: "Cormorant", data: serif, style: "normal" as const, weight: 600 as const }] : []),
-    ...(sans ? [{ name: "DM Sans", data: sans, style: "normal" as const, weight: 500 as const }] : []),
+    { name: "Cormorant", data: serif, style: "normal" as const, weight: 600 as const },
+    { name: "DM Sans", data: sans, style: "normal" as const, weight: 500 as const },
   ];
-  const serifFamily = serif ? "Cormorant" : undefined;
-  const sansFamily = sans ? "DM Sans" : undefined;
+  const serifFamily = "Cormorant";
+  const sansFamily = "DM Sans";
 
   return new ImageResponse(
     (
@@ -131,6 +120,6 @@ export async function renderOgImage(lang: Lang) {
         </div>
       </div>
     ),
-    { ...size, fonts: fonts.length ? fonts : undefined }
+    { ...size, fonts }
   );
 }
