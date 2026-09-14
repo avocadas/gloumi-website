@@ -11,8 +11,6 @@ type Props = {
   lang: Lang;
   /** Which of the four documents this is. Decides the title and the "other documents" list. */
   docKey: LegalKey;
-  /** Shown under the title when the document also exists in the other language. */
-  subtitle?: string;
   updated: string;
   version?: string;
   intro?: ReactNode;
@@ -26,7 +24,7 @@ type Props = {
  * sections themselves and the controller/contact card. One language per page —
  * the other one is a switcher click away, at the matching path.
  */
-export function LegalPage({ lang, docKey, subtitle, updated, version, intro, note, sections }: Props) {
+export function LegalPage({ lang, docKey, updated, version, intro, note, sections }: Props) {
   const copy = getCopy(lang);
   const title = LEGAL_TITLES[lang][docKey];
   const others = LEGAL_ROUTES.filter((route) => route.key !== docKey);
@@ -39,7 +37,6 @@ export function LegalPage({ lang, docKey, subtitle, updated, version, intro, not
           <h1 className="mt-4 font-serif text-4xl font-medium leading-[1.05] tracking-[-0.015em] text-espresso-900 sm:text-5xl">
             {title}
           </h1>
-          {subtitle ? <p className="mt-2 text-lg text-espresso-400">{subtitle}</p> : null}
           <p className="mt-4 text-sm text-espresso-500">
             {copy.legal.updated} <time dateTime={updated}>{updated}</time>
             {version ? ` · ${copy.legal.version} ${version}` : null}
