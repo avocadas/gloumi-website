@@ -35,14 +35,29 @@ const circleMask = (size) =>
       `</svg>`
   );
 
+/**
+ * Cutting the circle at the final size gives a stepped edge: at 16 px the mask
+ * is a 16 px circle, and a pixel is either in or out. So the cut happens at 8x
+ * and the result is scaled down, which turns that staircase into a smooth
+ * anti-aliased edge. Costs nothing – the largest intermediate here is 384 px.
+ */
+const SUPERSAMPLE = 8;
+
 async function png(size, { circle = false } = {}) {
-  const square = await sharp(svg, { density: 384 }).resize(size, size, { fit: 'cover' }).png().toBuffer();
-  if (!circle) return sharp(square).png({ compressionLevel: 9 }).toBuffer();
+  if (!circle) {
+    return sharp(svg, { density: 384 })
+      .resize(size, size, { fit: 'cover' })
+      .png({ compressionLevel: 9 })
+      .toBuffer();
+  }
+  const big = size * SUPERSAMPLE;
+  const square = await sharp(svg, { density: 384 }).resize(big, big, { fit: 'cover' }).png().toBuffer();
   /* `dest-in` keeps the icon only where the mask is opaque, so the outside becomes transparent. */
-  return sharp(square)
-    .composite([{ input: circleMask(size), blend: 'dest-in' }])
-    .png({ compressionLevel: 9 })
+  const masked = await sharp(square)
+    .composite([{ input: circleMask(big), blend: 'dest-in' }])
+    .png()
     .toBuffer();
+  return sharp(masked).resize(size, size, { kernel: 'lanczos3' }).png({ compressionLevel: 9 }).toBuffer();
 }
 
 /** ICO container around PNG frames – valid since Windows Vista, read by every browser. */
