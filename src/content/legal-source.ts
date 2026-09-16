@@ -159,13 +159,14 @@ export const LEGAL_DOCS: Record<LegalLang, { terms: LegalSection[]; privacy: Leg
           "Stripe – mokėjimų vykdymas, išmokos meistrams ir meistro tapatybės patikra (KYC).",
           "Expo – push pranešimų pristatymas į įrenginį.",
           "Apple / Google – prisijungimas per Apple ar Google paskyrą ir prenumeratų apdorojimas.",
+          "Sentry – klaidų ataskaitų surinkimas, kad galėtume pataisyti programėlės gedimus. Duomenys saugomi ES.",
           "Meistrui, pas kurį registruojatės, matomas Jūsų vardas, nuotrauka, kontaktai ir vizitų istorija."
         ]
       },
       {
         "title": "Meistro privatūs užrašai",
         "paragraphs": [
-          "Meistras gali kurti privačias pastabas apie klientą (pvz., dažų formules ar alergijas). Šios pastabos matomos tik jas sukūrusiam meistrui. Meistras atsako už tai, kad pastabose nebūtų perteklinių ar jautrių duomenų be Jūsų sutikimo."
+          "Meistras gali kurti privačias pastabas apie klientą (pvz., dažų formules ar pageidavimus). Šios pastabos matomos tik jas sukūrusiam meistrui. Programėlė neprašo sveikatos duomenų ir neturi jiems skirto lauko. Meistras atsako už tai, kad pastabose nebūtų perteklinių ar jautrių duomenų, įskaitant sveikatos, be Jūsų sutikimo."
         ]
       },
       {
@@ -344,13 +345,14 @@ export const LEGAL_DOCS: Record<LegalLang, { terms: LegalSection[]; privacy: Leg
           "Stripe – payment processing, payouts to masters and master identity verification (KYC).",
           "Expo – delivery of push notifications to your device.",
           "Apple / Google – signing in with an Apple or Google account, and subscription processing.",
+          "Sentry – collection of error reports so we can fix app failures. Data is stored in the EU.",
           "The master you book with can see your name, photo, contact details and visit history."
         ]
       },
       {
         "title": "A master’s private notes",
         "paragraphs": [
-          "A master can write private notes about a client (for example colour formulas or allergies). These notes are visible only to the master who wrote them. The master is responsible for not keeping excessive or sensitive data in them without your consent."
+          "A master can write private notes about a client (for example colour formulas or preferences). These notes are visible only to the master who wrote them. The app does not ask for health data and has no field for it. The master is responsible for not keeping excessive or sensitive data in these notes, health data included, without your consent."
         ]
       },
       {
