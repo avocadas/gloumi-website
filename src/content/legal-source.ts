@@ -128,7 +128,7 @@ export const LEGAL_DOCS: Record<LegalLang, { terms: LegalSection[]; privacy: Leg
           "Renkame tik tuos duomenis, kurie reikalingi programėlės veikimui:"
         ],
         "bullets": [
-          "Paskyros duomenys: vardas, naudotojo vardas, el. paštas, telefono numeris (neprivalomas), profilio nuotrauka.",
+          "Paskyros duomenys: vardas, naudotojo vardas, el. paštas, telefono numeris (neprivalomas), gimimo data, profilio nuotrauka.",
           "Meistro duomenys: paslaugų sąrašas, kainos, darbo laikas, miestas, portfolio nuotraukos.",
           "Rezervacijų duomenys: pasirinkta paslauga, data, laikas, statusas, avanso informacija.",
           "Turinys: „Stories“, įrašai, atsiliepimai, susirašinėjimo žinutės.",
@@ -145,7 +145,8 @@ export const LEGAL_DOCS: Record<LegalLang, { terms: LegalSection[]; privacy: Leg
           "Sutarties vykdymas – paskyros administravimas, rezervacijos, mokėjimai.",
           "Sutikimas – vietos nustatymas, pranešimai, rinkodaros žinutės. Sutikimą galite bet kada atšaukti.",
           "Teisėtas interesas – saugumas, sukčiavimo prevencija, paslaugos tobulinimas.",
-          "Teisinė prievolė – apskaitos ir mokestiniai reikalavimai."
+          "Teisinė prievolė – apskaitos ir mokestiniai reikalavimai.",
+          "Gimimo data tvarkoma tik amžiaus ribai patikrinti (žr. „Vaikų privatumas“). Kitiems naudotojams ji nematoma."
         ]
       },
       {
@@ -204,7 +205,33 @@ export const LEGAL_DOCS: Record<LegalLang, { terms: LegalSection[]; privacy: Leg
       {
         "title": "Vaikų privatumas",
         "paragraphs": [
-          "Gloumi neskirta jaunesniems nei 16 metų asmenims. Sužinoję, kad tokio amžiaus asmens duomenys buvo surinkti, juos nedelsdami ištrinsime."
+          "Gloumi neskirta jaunesniems nei 14 metų asmenims. 14 metų yra Lietuvoje nustatyta riba, nuo kurios vaikas gali pats duoti sutikimą dėl informacinės visuomenės paslaugų (BDAR 8 str. 1 d.). Registruojantis prašome nurodyti gimimo datą ir jaunesnių paskyrų nekuriame. Sužinoję, kad tokio amžiaus asmens duomenys vis dėlto buvo surinkti, juos nedelsdami ištrinsime."
+        ]
+      },
+      {
+        "title": "Slapukai ir vietinė saugykla",
+        "paragraphs": [
+          "Gloumi yra programėlė, o ne svetainė, todėl įprastų naršyklės slapukų ji nenaudoja. Tačiau dalis duomenų saugoma pačiame įrenginyje, ir apie tai turite žinoti tiek pat."
+        ],
+        "bullets": [
+          "Prisijungimo sesija: saugoma įrenginio saugykloje (iOS Keychain, Android Keystore), šifruota operacinės sistemos priemonėmis. Reikalinga tam, kad nereikėtų prisijungti iš naujo kaskart atidarius programėlę.",
+          "Turinio talpykla: paskutinis srautas, „Stories\" ir paveikslėliai laikomi įrenginyje, kad programėlė atsidarytų greitai ir veiktų prastame ryšyje. Atsijungus ji išvaloma.",
+          "Nustatymai: kalba, temos pasirinkimas ir panašūs pasirinkimai.",
+          "Nė vienas iš šių įrašų nėra naudojamas sekimui ar reklamai, ir jie nėra perduodami tretiesiems asmenims. Ištrynus programėlę, ištrinami ir jie."
+        ]
+      },
+      {
+        "title": "Atšaukimas ir pinigų grąžinimas",
+        "paragraphs": [
+          "Konkrečias atšaukimo sąlygas nustato pats meistras ir jos rodomos prie jo anketos. Žemiau – bendra tvarka, galiojanti, kai meistras nenurodo kitaip."
+        ],
+        "bullets": [
+          "Atšaukus likus daugiau nei 24 val. iki vizito, sumokėtas avansas grąžinamas visas.",
+          "Atšaukus vėliau nei prieš 24 val. arba neatvykus, avansas negrąžinamas – jis dengia meistro rezervuotą ir nebeparduodamą laiką.",
+          "Meistrui atšaukus vizitą, avansas grąžinamas visas, nepriklausomai nuo laiko.",
+          "Pinigai grąžinami tuo pačiu būdu, kuriuo buvo sumokėti. Grąžinimą inicijuojame nedelsdami; kiek užtruks lėšos jūsų sąskaitoje, priklauso nuo banko ar kortelės išdavėjo.",
+          "Likusią sumos dalį už paslaugą mokate salone – ji per programėlę nenuskaitoma ir jos grąžinimo klausimai sprendžiami su meistru.",
+          "Gloumi neteikia grožio paslaugų ir nesprendžia ginčų dėl jų kokybės; mūsų atsakomybė apsiriboja per programėlę atliktu mokėjimu."
         ]
       }
     ]
@@ -314,7 +341,7 @@ export const LEGAL_DOCS: Record<LegalLang, { terms: LegalSection[]; privacy: Leg
           "We only collect the data needed for the app to work:"
         ],
         "bullets": [
-          "Account data: name, username, email address, phone number (optional), profile photo.",
+          "Account data: name, username, email address, phone number (optional), date of birth, profile photo.",
           "Master data: service list, prices, working hours, city, portfolio photos.",
           "Booking data: the chosen service, date, time, status and deposit information.",
           "Content: Stories, posts, reviews and chat messages.",
@@ -331,7 +358,8 @@ export const LEGAL_DOCS: Record<LegalLang, { terms: LegalSection[]; privacy: Leg
           "Performance of a contract – account administration, bookings, payments.",
           "Consent – location, notifications, marketing messages. You can withdraw consent at any time.",
           "Legitimate interest – security, fraud prevention, improving the service.",
-          "Legal obligation – accounting and tax requirements."
+          "Legal obligation – accounting and tax requirements.",
+          "Date of birth is processed only to check the age limit (see 'Children's privacy'). Other users cannot see it."
         ]
       },
       {
@@ -390,7 +418,33 @@ export const LEGAL_DOCS: Record<LegalLang, { terms: LegalSection[]; privacy: Leg
       {
         "title": "Children's privacy",
         "paragraphs": [
-          "Gloumi is not intended for people under 16. If we learn that data of a person of that age has been collected, we will delete it without delay."
+          "Gloumi is not intended for people under 14. Fourteen is the age Lithuania has set for a child to consent to information society services on their own (GDPR Art. 8(1)). We ask for a date of birth at sign-up and do not create accounts for anyone younger. If we learn that data of a person of that age has been collected anyway, we will delete it without delay."
+        ]
+      },
+      {
+        "title": "Cookies and local storage",
+        "paragraphs": [
+          "Gloumi is an app rather than a website, so it uses no ordinary browser cookies. Some data is still kept on the device itself, and you should know about it just the same."
+        ],
+        "bullets": [
+          "Sign-in session: kept in the device keystore (iOS Keychain, Android Keystore) and encrypted by the operating system. It exists so you do not have to sign in every time you open the app.",
+          "Content cache: the most recent feed, Stories and images are kept on the device so the app opens quickly and works on a poor connection. It is cleared when you sign out.",
+          "Preferences: language, theme choice and similar settings.",
+          "None of this is used for tracking or advertising, and none of it is shared with third parties. Deleting the app deletes it too."
+        ]
+      },
+      {
+        "title": "Cancellation and refunds",
+        "paragraphs": [
+          "The exact cancellation terms are set by each master and shown on their profile. Below is the general rule that applies when a master states nothing else."
+        ],
+        "bullets": [
+          "Cancel more than 24 hours before the appointment and the deposit is refunded in full.",
+          "Cancel later than that, or do not turn up, and the deposit is not refunded - it covers the time the master reserved and can no longer sell.",
+          "If the master cancels, the deposit is refunded in full regardless of timing.",
+          "Refunds go back the way the payment came. We start the refund without delay; how long it takes to reach your account is up to your bank or card issuer.",
+          "The remaining balance for the service is paid at the salon. It is never charged through the app, and questions about it are settled with the master.",
+          "Gloumi does not provide beauty services and does not arbitrate disputes about their quality; our responsibility is limited to the payment made through the app."
         ]
       }
     ]
