@@ -72,6 +72,26 @@ const SUBSCRIPTION_TITLES: Record<Lang, string> = {
   en: "Master subscription (Pro)",
 };
 
+const WITHDRAWAL_TITLES: Record<Lang, string> = {
+  lt: "Teisė atsisakyti sutarties",
+  en: "Right of withdrawal",
+};
+
+const RANKING_TITLES: Record<Lang, string> = {
+  lt: "Kaip rikiuojami rezultatai",
+  en: "Ranking of results",
+};
+
+const ILLEGAL_CONTENT_TITLES: Record<Lang, string> = {
+  lt: "Neteisėto turinio pranešimas ir sprendimų apskundimas",
+  en: "Reporting illegal content and appealing our decisions",
+};
+
+const P2B_TITLES: Record<Lang, string> = {
+  lt: "Meistrams: sąlygų keitimas, ribojimas ir skundai",
+  en: "For masters: changes, restrictions and complaints",
+};
+
 /**
  * Refund policy. The rules on deposits and on the Pro subscription are lifted
  * from the Terms by title; only the framing and the mechanics of a refund are
@@ -80,6 +100,7 @@ const SUBSCRIPTION_TITLES: Record<Lang, string> = {
 export function refundSections(lang: Lang): LegalSection[] {
   const deposits = termsSection(lang, DEPOSIT_TITLES[lang]);
   const subscription = termsSection(lang, SUBSCRIPTION_TITLES[lang]);
+  const withdrawal = termsSection(lang, WITHDRAWAL_TITLES[lang]);
 
   if (lang === "en") {
     return [
@@ -91,12 +112,14 @@ export function refundSections(lang: Lang): LegalSection[] {
         ],
       },
       { title: "Deposits for an appointment", paragraphs: deposits.paragraphs, bullets: deposits.bullets },
+      { title: withdrawal.title, paragraphs: withdrawal.paragraphs, bullets: withdrawal.bullets },
       {
         title: "How and how quickly we refund",
         bullets: [
-          "We refund to the same payment method that was used, through our payments partner Stripe.",
+          "A deposit is refunded to the payment method it was paid with, through our payments partner Stripe.",
           "We start the refund as soon as the cancellation meets the conditions; banks usually credit it within 5 to 10 working days.",
           "We charge no fee for a refund.",
+          "A Pro subscription is not bought from us: it is bought in the App Store or on Google Play, so Apple or Google refund it under their own rules. See the next section.",
           "Cash paid directly to the professional does not pass through Gloumi and cannot be refunded by us; speak to the professional.",
         ],
       },
@@ -120,12 +143,14 @@ export function refundSections(lang: Lang): LegalSection[] {
       ],
     },
     { title: "Avansas ir užstatas už vizitą", paragraphs: deposits.paragraphs, bullets: deposits.bullets },
+    { title: withdrawal.title, paragraphs: withdrawal.paragraphs, bullets: withdrawal.bullets },
     {
       title: "Kaip ir per kiek laiko grąžiname",
       bullets: [
-        "Grąžiname į tą pačią mokėjimo priemonę, kuria buvo sumokėta, per mokėjimų partnerį Stripe.",
+        "Avansą grąžiname į tą pačią mokėjimo priemonę, kuria buvo sumokėta, per mokėjimų partnerį Stripe.",
         "Grąžinimą inicijuojame, kai atšaukimas atitinka sąlygas; bankas sumą paprastai įskaito per 5–10 darbo dienų.",
         "Už grąžinimą papildomų mokesčių netaikome.",
+        "Pro prenumerata perkama ne iš mūsų, o App Store arba Google Play, tad pinigus už ją grąžina Apple arba Google pagal savo taisykles. Žr. kitą skyrių.",
         "Tiesiogiai meistrui grynaisiais sumokėtos sumos per Gloumi negrąžinamos – dėl jų kreipkitės į meistrą.",
       ],
     },
@@ -145,6 +170,17 @@ export function refundSections(lang: Lang): LegalSection[] {
  * binding documents remain the Terms and the Privacy Policy.
  */
 export function dac7Sections(lang: Lang): LegalSection[] {
+  /*
+   * Ranking, notice-and-action and the P2B section are lifted from the Terms
+   * rather than restated. Restating them once put a wrong ranking on this page:
+   * it claimed search is ordered by distance from the reader, while the app
+   * ranks search by the filters the reader picks and personalises only the
+   * feed. P2B requires the parameters to be accurate, so there is one source.
+   */
+  const ranking = termsSection(lang, RANKING_TITLES[lang]);
+  const illegalContent = termsSection(lang, ILLEGAL_CONTENT_TITLES[lang]);
+  const p2b = termsSection(lang, P2B_TITLES[lang]);
+
   if (lang === "en") {
     return [
       {
@@ -171,18 +207,18 @@ export function dac7Sections(lang: Lang): LegalSection[] {
           `Gloumi is an intermediary service under EU Regulation 2022/2065 (the Digital Services Act). The single point of contact for authorities and for users is ${site.email}.`,
         ],
         bullets: [
-          "Illegal content – someone else's photographs, misleading reviews, abusive material – can be reported to that address, saying where the content is and why you believe it is illegal.",
-          "When we remove or restrict content we tell its author why, and how the decision can be appealed.",
-          "The order of professionals in search is determined by distance from you, how well they match the query or category, ratings and availability. Where a paid plan affects position, that is marked.",
           "Gloumi is a small enterprise, so some DSA obligations that apply to larger platforms (transparency reports, for example) do not apply to it. That does not change our commitment to act on reports.",
         ],
       },
+      { title: illegalContent.title, paragraphs: illegalContent.paragraphs, bullets: illegalContent.bullets },
+      { title: ranking.title, paragraphs: ranking.paragraphs, bullets: ranking.bullets },
       {
         title: "For business users (P2B)",
         paragraphs: [
-          "Professionals use Gloumi as business users under EU Regulation 2019/1150. The conditions under which an account may be restricted or terminated, and the main parameters determining search ranking, are set out in the Terms of Service and on this page. We give professionals advance notice of material changes to those conditions.",
+          "Professionals use Gloumi as business users under EU Regulation 2019/1150. What that means in practice is set out in the Terms of Service and repeated below, so that this page and the Terms cannot drift apart.",
         ],
       },
+      { title: p2b.title, paragraphs: p2b.paragraphs, bullets: p2b.bullets },
       { title: "Contact", paragraphs: [controllerLine("en")] },
     ];
   }
@@ -212,18 +248,18 @@ export function dac7Sections(lang: Lang): LegalSection[] {
         `Gloumi yra tarpininkavimo paslauga pagal ES reglamentą 2022/2065 (Skaitmeninių paslaugų aktas). Vieno kontaktinio punkto funkciją valstybės institucijoms ir naudotojams atlieka el. paštas ${site.email}.`,
       ],
       bullets: [
-        "Apie neteisėtą turinį – svetimas nuotraukas, klaidinančius atsiliepimus, įžeidžiantį turinį – galima pranešti tuo pačiu adresu, nurodant, kur turinys yra ir kodėl, Jūsų nuomone, jis neteisėtas.",
-        "Pašalinę ar apriboję turinį, jo autoriui nurodome priežastį ir kaip sprendimą apskųsti.",
-        "Meistrų tvarką paieškoje lemia atstumas iki Jūsų, atitikimas užklausai ar kategorijai, įvertinimai ir laisvi laikai. Jei meistro pozicija priklauso nuo mokamo plano, tai pažymima.",
         "Gloumi yra maža įmonė, todėl kai kurios didesnėms platformoms taikomos DSA pareigos (pavyzdžiui, skaidrumo ataskaitos) jai netaikomos. Tai nekeičia įsipareigojimo reaguoti į pranešimus.",
       ],
     },
+    { title: illegalContent.title, paragraphs: illegalContent.paragraphs, bullets: illegalContent.bullets },
+    { title: ranking.title, paragraphs: ranking.paragraphs, bullets: ranking.bullets },
     {
       title: "Verslo naudotojams (P2B)",
       paragraphs: [
-        "Meistrai Gloumi naudojasi kaip verslo naudotojai (ES reglamentas 2019/1150). Sąlygos, kuriomis paskyra gali būti apribota ar nutraukta, ir pagrindiniai paieškos tvarkos parametrai aprašyti Naudojimosi taisyklėse ir šiame puslapyje. Apie esminius sąlygų pakeitimus meistrams pranešame iš anksto.",
+        "Meistrai Gloumi naudojasi kaip verslo naudotojai (ES reglamentas 2019/1150). Ką tai reiškia praktiškai, surašyta Naudojimosi taisyklėse ir pakartota žemiau, kad šis puslapis ir Taisyklės negalėtų prasilenkti.",
       ],
     },
+    { title: p2b.title, paragraphs: p2b.paragraphs, bullets: p2b.bullets },
     { title: "Kontaktai", paragraphs: [controllerLine("lt")] },
   ];
 }
