@@ -68,8 +68,8 @@ const DEPOSIT_TITLES: Record<Lang, string> = {
 };
 
 const SUBSCRIPTION_TITLES: Record<Lang, string> = {
-  lt: "Meistro prenumerata (Pro)",
-  en: "Master subscription (Pro)",
+  lt: "Meistro prenumerata (Pro ir VIP Studio)",
+  en: "Master subscription (Pro and VIP Studio)",
 };
 
 const WITHDRAWAL_TITLES: Record<Lang, string> = {
@@ -93,7 +93,7 @@ const P2B_TITLES: Record<Lang, string> = {
 };
 
 /**
- * Refund policy. The rules on deposits and on the Pro subscription are lifted
+ * Refund policy. The rules on deposits and on the master subscription are lifted
  * from the Terms by title; only the framing and the mechanics of a refund are
  * written here.
  */
@@ -119,7 +119,7 @@ export function refundSections(lang: Lang): LegalSection[] {
           "A deposit is refunded to the payment method it was paid with, through our payments partner Stripe.",
           "We start the refund as soon as the cancellation meets the conditions; banks usually credit it within 5 to 10 working days.",
           "We charge no fee for a refund.",
-          "A Pro subscription is not bought from us: it is bought in the App Store or on Google Play, so Apple or Google refund it under their own rules. See the next section.",
+          "A master subscription (Pro or VIP Studio) is not bought from us: it is bought in the App Store or on Google Play, so Apple or Google refund it under their own rules. See the next section.",
           "Cash paid directly to the professional does not pass through Gloumi and cannot be refunded by us; speak to the professional.",
         ],
       },
@@ -150,7 +150,7 @@ export function refundSections(lang: Lang): LegalSection[] {
         "Avansą grąžiname į tą pačią mokėjimo priemonę, kuria buvo sumokėta, per mokėjimų partnerį Stripe.",
         "Grąžinimą inicijuojame, kai atšaukimas atitinka sąlygas; bankas sumą paprastai įskaito per 5–10 darbo dienų.",
         "Už grąžinimą papildomų mokesčių netaikome.",
-        "Pro prenumerata perkama ne iš mūsų, o App Store arba Google Play, tad pinigus už ją grąžina Apple arba Google pagal savo taisykles. Žr. kitą skyrių.",
+        "Meistro prenumerata (Pro ar VIP Studio) perkama ne iš mūsų, o App Store arba Google Play, tad pinigus už ją grąžina Apple arba Google pagal savo taisykles. Žr. kitą skyrių.",
         "Tiesiogiai meistrui grynaisiais sumokėtos sumos per Gloumi negrąžinamos – dėl jų kreipkitės į meistrą.",
       ],
     },
