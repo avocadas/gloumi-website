@@ -23,6 +23,10 @@ jokiu!!!".
 - Rusų kalbos versijos, lokalės ar vertimo nebus: svetainė yra lietuvių ir anglų.
 - Jei neaišku, ar kas nors patenka po šia taisykle, laikoma, kad patenka, ir
   pirma klausiama developerio.
+- Taisyklė skirta tik tam, ką rašome MES. Ką rašo vartotojai (žinutės, įrašai,
+  atsiliepimai, vardai, taip pat tai, ką rodo admin portalas), yra jų: to
+  niekas nefiltruoja ir nekeičia. Developeris 2026-09-27: „useriai gali daryti
+  ka nori, cia is musu puses viskas".
 
 Šios repozitorijos niekas netikrina automatiškai. Tikrina pats agentas:
 prieš siųsdamas ar commit'indamas, jis perskaito, ką parašė. Išsamiau –
