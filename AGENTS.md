@@ -6,6 +6,28 @@ kas išmatuota, kokie spąstai jau kainavo laiko ir ko dar neįrodyta.
 Taip pat `README.md`: sandara, aplinkos kintamieji ir tai, kas generuojama iš
 programėlės repozitorijos.
 
+## Jokios rusų kalbos
+
+**Niekas, ką parašo agentas, negali būti rusiškai: nei raidė, nei žodis, nei
+joks kitas dalykas.** Developerio nurodymas 2026-09-27, pažodžiui: „appse ir
+chate, website, insta ir visur, negali buti rusisku raidziu, zodziu ar dalyku -
+jokiu!!!".
+
+- Galioja svetainės tekstams (`copy.lt.ts`, `copy.en.ts`, teisės puslapiams),
+  metaduomenims ir alt tekstams, tekstui paveikslėliuose, Instagram įrašams,
+  komitų žinutėms ir pokalbiui su developeriu, įskaitant trumpas būsenos
+  eilutes tarp įrankių kvietimų.
+- Draudžiama visa kirilica, ne vien rusiškos raidės. Jei raidę reikia aptarti,
+  ji rašoma kodu (`U+0435`), o ne pačia raide.
+- Rusiškas žodis, parašytas lotyniškomis raidėmis, vis tiek yra rusiškas.
+- Rusų kalbos versijos, lokalės ar vertimo nebus: svetainė yra lietuvių ir anglų.
+- Jei neaišku, ar kas nors patenka po šia taisykle, laikoma, kad patenka, ir
+  pirma klausiama developerio.
+
+Šios repozitorijos niekas netikrina automatiškai. Tikrina pats agentas:
+prieš siųsdamas ar commit'indamas, jis perskaito, ką parašė. Išsamiau –
+Gloumi repozitorijos `AGENTS.md`, X straipsnis.
+
 ---
 
 <!-- BEGIN:nextjs-agent-rules -->
