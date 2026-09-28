@@ -28,9 +28,11 @@ jokiu!!!".
   niekas nefiltruoja ir nekeičia. Developeris 2026-09-27: „useriai gali daryti
   ka nori, cia is musu puses viskas".
 
-Šios repozitorijos niekas netikrina automatiškai. Tikrina pats agentas:
-prieš siųsdamas ar commit'indamas, jis perskaito, ką parašė. Išsamiau –
-Gloumi repozitorijos `AGENTS.md`, X straipsnis.
+Nuo issue #83 (2026-09-28) `scripts/check-cyrillic.mjs` (`npm run check`)
+automatiškai tikrina kiekvieną sekamą failą – bet tik raidžių lygiu. Rusišką
+žodį, parašytą lotyniškomis raidėmis, ar kitą turinį (garsą, vaizdą) vis tiek
+tikrina pats agentas: prieš siųsdamas ar commit'indamas, jis perskaito, ką
+parašė. Išsamiau – Gloumi repozitorijos `AGENTS.md`, X straipsnis.
 
 ---
 
