@@ -5,6 +5,29 @@ savo dieną.
 
 ---
 
+# 2026-09-28 — Kirilicos sargas: `scripts/check-cyrillic.mjs`, sujungtas su `npm run check`
+
+Gloumi repo issue #83 dalis (žr. jos `HANDOVER.md`). Šio repo `AGENTS.md`
+iki šiol sakė, kad nieko čia automatiškai netikrinama — tik agentas
+perskaito, ką parašė. Dabar `npm run check` (`lint && typecheck &&
+check:contrast && check:cyrillic`) atmeta bet kokią kirilicos raidę bet
+kuriame sekamame faile, ta pati logika kaip programėlės
+`tools/checkCyrillic.js`: `git ls-files`, binarinis/tekstinis atskyrimas
+pagal turinį (nulinis baitas), ne pletinį.
+
+Parašyta anglų kalba, sekant vienintelio esamo `scripts/` scenarijaus
+(`check-contrast.mjs`) konvenciją — ne perkeliant programėlės repo
+lietuvišką komentarų taisyklę čia, kur ji anksčiau netaikyta.
+
+Sweep'as prieš pridedant rado **nulį** kirilicos raidžių šiame repo.
+
+Pastumta į `main` su developerio patvirtinimu (`GLOUMI_RELEASE=1`) —
+commit `d9bd3ed`. Šis repo neturi `prod`/`main` eigos (žr. įrašą žemiau,
+1 skyrių): `main` yra tiesioginis Vercel deploy, tad kiekvienas push į ją
+yra release.
+
+---
+
 # 2026-09-14 — Svetainė gyva ties gloumi.lt, dvikalbė, forma siunčia laiškus
 
 **Viskas žemiau išmatuota 2026-09-14, ne perrašyta iš atminties.** Kur
