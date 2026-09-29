@@ -5,6 +5,113 @@ savo dieną.
 
 ---
 
+# 2026-09-28 — Teisiniai tekstai nuo v1.4 iki v1.10, ir puslapiai, kurie nustojo perpasakoti
+
+Per dvi savaites teisiniai dokumentai pajudėjo septynis kartus, ir svetainė
+kaskart buvo pergeneruota. Žemiau — ne kas pasikeitė tekste (tai matyti
+commit'uose), o tai, kas paaiškėjo apie **šią** repozitoriją ir kas kitą kartą
+sutaupys laiko.
+
+## 1. Kas dabar gyva
+
+`gloumi.lt` atiduoda **v1.10 (2026-09-28)**: Taisyklės 21 skyrius, privatumo
+politika 17, grąžinimo sąlygos 6, skaidrumo puslapis 8. Visų keturių dokumentų
+turinys atitinka skyrius vienas prie vieno, negyvų inkarų nėra — tikrinta
+sugeneruotame HTML'e, ne šaltinyje.
+
+Programėlės pusėje `prod`, `ringaudas-prod`, `ieva-prod` ir `karolis-prod` —
+visos ties v1.10. Svetainė kurį laiką ėjo **priekyje** `prod` (generuota iš
+juostos, kuri dar nebuvo įlieta); nuo 2026-09-28 jos sutampa.
+
+## 2. Du puslapiai nustojo perpasakoti programėlę ir pradėjo ją cituoti
+
+`/dac7` ir `/grazinimo-salygos` rašyti šiai svetainei, bet jie aprašinėjo tą
+patį, ką Taisyklės. Perpasakojimas nuklydo per kelias dienas:
+
+- skaidrumo puslapis sakė, kad paiešką lemia „atstumas iki Jūsų", o funkcija,
+  kuri iš tikrųjų rikiuoja, to nedaro — paiešką lemia naudotojo filtrai ir ji
+  **nėra** personalizuojama, o personalizuojamas srautas. P2B 5 straipsnis kaip
+  tik reikalauja tikslių rikiavimo parametrų;
+- grąžinimo puslapis sakė, kad pinigai grąžinami „per Stripe", taškas — o
+  kitas to paties puslapio skyrius yra Pro prenumerata, kurią perka ir grąžina
+  Apple arba Google.
+
+Dabar rikiavimas, DSA pranešimai, P2B skyrius ir teisė atsisakyti sutarties
+**traukiami iš Taisyklių pagal pavadinimą** (`src/content/legal.ts`,
+`termsSection`). Ranka liko tik tai, ko Taisyklėse nėra: kas yra Gloumi, ką
+DAC7 praneša VMI, kontaktinis punktas, mažos įmonės išimtis ir grąžinimo
+mechanika.
+
+**Tai pasitvirtino realiu pakeitimu.** Kai programėlė perrašė rikiavimo skyrių
+pagal gyvą `get_personalized_feed`, naujoji formulė (21 dienos langas, keturi
+įrašai iš vieno meistro, ženkliuko 15 %) pateko į `/dac7` **be jokio rankinio
+taisymo**. Mokamos pozicijos atskleidimas, kurio reikalauja P2B, atsirado ten
+savaime.
+
+**Spąstai:** `termsSection` ieško skyriaus **paraidžiui pagal pavadinimą** ir
+**meta klaidą**, jei jo neranda. Tai tyčia — pervadinus skyrių programėlėje,
+krenta `npm run build`, o ne tyliai atiduodamas tuščias teisinis dokumentas.
+Programėlės `legal.js` antraštėje apie tai yra įspėjimas (`548d6b2`).
+
+## 3. App Store Connect gauna ANGLIŠKĄ adresą
+
+`https://gloumi.lt/en/privacy`, ne lietuvišką — ir tai ne pasirinkimas.
+App Privacy laukas yra vienas kiekvienai parduotuvės kalbai, o **lietuvių
+kalbos App Store metaduomenyse nėra**: Apple „App Store localizations" sąraše
+nėra nei lietuvių, nei latvių, nei estų, o Lietuvai nurodyta English (U.K.).
+Kalbos tame lange perjungti neįmanoma, nes nėra į ką.
+
+Laukas gyvena **App Privacy** skiltyje (ne „App Information"), ir jį galima
+pildyti dar neišleistai programėlei. Duomenų deklaracija skelbiama **iš karto**
+(„Update your responses, then click Publish"), o URL laukas — su kita versija.
+
+## 4. Deploy'as: kaip jo laukti ir kaip NElaukti
+
+Tempas nepastovus: 2026-09-16 deployment'as atsirado per **30 sekundžių**,
+2026-09-18 — per **30 ir 15 minučių**, vėliau vėl per 3–4. Nedaryti išvados,
+kad integracija atjungta, jei įrašo dar nėra — taip nutiko 09-18 ir buvo
+atidaryta kortelė ant klaidingos prielaidos (#40, perrašyta į `LV 1`).
+
+Būseną klausti GitHub'o, ne spėlioti iš puslapio:
+
+```bash
+gh api repos/avocadas/gloumi-website/deployments --jq '.[0] | "\(.created_at) \(.sha)"'
+```
+
+**Turinio NETIKRINTI ciklu su `curl`.** 2026-09-18 laukimas kas 10 sekundžių
+užsitraukė `403` su `X-Vercel-Mitigated: challenge` — Vercel botų apsauga
+suveikė prieš patį tikrintoją, ir tai atrodė kaip svetainės gedimas. Tikra
+naršyklė tuo pačiu metu puslapį atidarė normaliai. Tikrinti naršykle arba
+pavieniais užklausimais.
+
+## 5. Generavimas iš svetimos juostos
+
+`scripts/gen-from-app.mjs` priima kelią (`process.argv[2]`), tad tekstą galima
+paimti iš juostos, kurios nėra vietiniame medyje, nieko nemerginant:
+
+```bash
+git -C ../Gloumi worktree add --detach /tmp/wt origin/<juosta>
+npm run gen:app -- /tmp/wt/gloumi-app/src
+git -C ../Gloumi worktree remove --force /tmp/wt
+```
+
+Taip 2026-09-25 buvo paimta lytis iš `ieva-prod`, kai jos dar nebuvo nei
+`prod`, nei kitose juostose. **Patikra po to:** kai ta juosta pasiekia `prod`,
+`npm run gen:app` iš įprasto šaltinio privalo duoti **nulinį diff'ą** — jei ne,
+tekstas paimtas ne iš ten.
+
+## 6. Ko NEĮRODYTA
+
+- Teisininko peržiūros nebuvo. `legal.js` antraštė tebesako, kad tai
+  struktūrizuotas juodraštis; tracker'io #20 punktas atviras.
+- Anketos App Store Connect'e **nemačiau** — jos pildymas remiasi developerio
+  žodžiu. Čia nėra nei API rakto, nei prisijungusios naršyklės.
+- Rikiavimo formulė perrašyta pagal gyvą funkciją programėlės pusėje; ar
+  svetainės tekstas ją atkartoja **teisingai**, tikrinta tik lyginant eilutes,
+  ne matuojant pačią funkciją.
+
+---
+
 # 2026-09-28 — Kirilicos sargas: `scripts/check-cyrillic.mjs`, sujungtas su `npm run check`
 
 Gloumi repo issue #83 dalis (žr. jos `HANDOVER.md`). Šio repo `AGENTS.md`
