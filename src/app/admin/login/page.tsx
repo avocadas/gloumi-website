@@ -115,8 +115,18 @@ function LoginForm() {
       return;
     }
 
+    /*
+     * `issuer` privalomas, nors tipas jį rodo kaip neprivalomą. Be jo GoTrue
+     * ima Site URL domeną, o projekto Site URL yra `gloumi://` — programėlės
+     * nuorodų schema be domeno. Išmatuota 2026-09-30: `POST /factors` → 500
+     * „Issuer must be set", keturis kartus iš eilės, ir forma rodė tik „Error
+     * generating QR Code". Site URL keisti negalima, nuo jo priklauso
+     * programėlės nuorodos. Autentifikatoriuje ši eilutė rodoma kaip įrašo
+     * pavadinimas.
+     */
     const { data: enrolled, error: enrollError } = await supabase.auth.mfa.enroll({
       factorType: "totp",
+      issuer: "Gloumi",
       friendlyName: `Gloumi admin ${new Date().toISOString().slice(0, 16)}`,
     });
     if (enrollError || !enrolled) {
