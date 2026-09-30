@@ -36,10 +36,22 @@ export function buildMetadata(lang: Lang, page: Page, extra?: Metadata): Metadat
   };
 }
 
+/*
+ * Google Search Console verification, read from the environment rather than
+ * written here. The code arrives from Google after the site is already live,
+ * and a value in the source would mean a commit and a deploy for a string that
+ * is neither secret nor ours. Unset is the normal state: Next omits the tag
+ * entirely, which is what an unverified site should serve.
+ *
+ * `NEXT_PUBLIC_` because the tag is rendered into the public HTML anyway.
+ */
+const googleSiteVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim() || undefined;
+
 /** The document-wide defaults, set on each root layout. */
 export function rootMetadata(lang: Lang): Metadata {
   const copy = getCopy(lang);
   return {
+    ...(googleSiteVerification ? { verification: { google: googleSiteVerification } } : {}),
     metadataBase: new URL(site.url),
     title: { default: copy.seo.title, template: copy.seo.titleTemplate },
     description: copy.seo.description,
