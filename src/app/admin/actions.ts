@@ -32,7 +32,9 @@ async function requireAdmin() {
     throw new Error(
       check.reason === "mfa-required"
         ? "Reikalingas antras veiksnys."
-        : "Neturite teisės atlikti šio veiksmo.",
+        : check.reason === "expired"
+          ? "Sesija baigėsi — prisijunkite iš naujo."
+          : "Neturite teisės atlikti šio veiksmo.",
     );
   }
   return check;

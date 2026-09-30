@@ -3,8 +3,33 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
 export type AdminCheck =
-  | { ok: true; userId: string; email: string | null }
-  | { ok: false; reason: 'anonymous' | 'not-admin' | 'mfa-required' };
+  | { ok: true; userId: string; username: string | null }
+  | { ok: false; reason: 'anonymous' | 'not-admin' | 'mfa-required' | 'expired' };
+
+/*
+ * Kiek laiko sesija galioja nuo kodo įvedimo (#105, developeris 2026-09-30).
+ * Free plane Supabase sesiją atnaujina be pabaigos, tad be šios ribos kartą
+ * įvestas kodas atidarytų skydelį tame įrenginyje visam laikui.
+ */
+const MAX_SESSION_SECONDS = 12 * 60 * 60;
+
+/*
+ * Paskutinio TOTP patvirtinimo laikas iš sesijos AMR. Jei Supabase kada
+ * grąžintų AMR be laikų (eilučių masyvą), rezultatas 0, ir sesija laikoma
+ * pasibaigusia: nežinomas laikas nėra laikas, kuriuo galima pasitikėti.
+ */
+function lastTotpAt(methods: unknown): number {
+  if (!Array.isArray(methods)) return 0;
+  let latest = 0;
+  for (const entry of methods) {
+    if (!entry || typeof entry !== 'object') continue;
+    const { method, timestamp } = entry as { method?: unknown; timestamp?: unknown };
+    if ((method === 'totp' || method === 'mfa/totp') && typeof timestamp === 'number') {
+      latest = Math.max(latest, timestamp);
+    }
+  }
+  return latest;
+}
 
 /**
  * Ar šitas prašymas ateina iš administratoriaus, ir ar jo sesija pakankamai
@@ -48,7 +73,7 @@ export async function checkAdmin(): Promise<AdminCheck> {
   // `auth.users` įrašas be programėlės profilio (#105).
   const { data: row, error } = await admin
     .from('admin_ids')
-    .select('user_id')
+    .select('user_id, username')
     .eq('user_id', user.id)
     .maybeSingle();
 
@@ -57,5 +82,12 @@ export async function checkAdmin(): Promise<AdminCheck> {
   const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
   if (aal?.currentLevel !== 'aal2') return { ok: false, reason: 'mfa-required' };
 
-  return { ok: true, userId: user.id, email: user.email ?? null };
+  const totpAt = lastTotpAt(aal.currentAuthenticationMethods);
+  if (!totpAt || Date.now() / 1000 - totpAt > MAX_SESSION_SECONDS) {
+    return { ok: false, reason: 'expired' };
+  }
+
+  // Vardas, ne el. paštas: nuo 20260930210151 adresas atsitiktinis ir yra
+  // viena iš apsaugos dalių. Parodytas skydelyje jis atsidurtų ekrane ir HTML.
+  return { ok: true, userId: user.id, username: row.username ?? null };
 }

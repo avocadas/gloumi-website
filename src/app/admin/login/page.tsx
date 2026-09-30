@@ -3,7 +3,7 @@
 import { Suspense, useState } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { createBrowserClient } from "@supabase/ssr";
+import { finishAdminLogin, startAdminLogin } from "./actions";
 
 /**
  * Admin sign-in: password, then the second factor — enrolling it here if the
@@ -21,11 +21,14 @@ import { createBrowserClient } from "@supabase/ssr";
  * Shipping an MFA feature to a beauty-booking app for three accounts would be
  * a native release and a support surface for no one.
  *
- * WHY THE BROWSER SIGNS IN AND NOT A SERVER ACTION
- * ------------------------------------------------
- * The session has to end up in cookies the middleware can read and refresh.
- * `createBrowserClient` writes exactly those, and the password never touches
- * this app's server at all.
+ * WHY THIS FORM NO LONGER TALKS TO SUPABASE
+ * -----------------------------------------
+ * Until 20260930210151 the browser signed in by itself. That left the
+ * password open to guessing from anywhere, because Supabase Auth accepts it
+ * directly with the public anon key, and the admin address pattern was in
+ * this public repository. Now an admin's address is random and known only to
+ * the server, which counts and locks every attempt: see `./actions.ts`. This
+ * form only collects the name, the password and the code.
  *
  * WHY THREE STEPS RATHER THAN ONE FORM
  * ------------------------------------
@@ -33,38 +36,32 @@ import { createBrowserClient } from "@supabase/ssr";
  * only exists after the password step, and enrolment can only happen once
  * there is a session to attach the factor to. They cannot be submitted
  * together; pretending otherwise would be a form that fails on first use.
+ * The password is kept in this component's memory between the steps and
+ * sent again with the code, so the password-only session never has to reach
+ * the browser.
  *
  * WHY A NAME AND NOT AN E-MAIL
  * ----------------------------
  * Since 20260930165140 an admin is not an app account (#105): it has no
- * profile, and it signs in as `admin.ieva`, not with anybody's e-mail.
- * Supabase Auth only signs in by e-mail or phone, so an address still sits
- * underneath — but it is a function of the name, `admin.ieva@gloumi.lt`,
- * and this form adds the domain itself.
- *
- * The app's `username-sign-in` (#99) resolves names on a server because there
- * a public @name must not hand out a user's private e-mail. Nothing here is
- * private: the address says nothing the name does not, so the browser can do
- * it, and the session still lands in the cookies the middleware reads.
- *
- * The pattern is the same one `handle_new_user` uses to decide that such an
- * account gets no profile. If they ever disagree, an admin either cannot sign
- * in here or turns up as a user in the app.
+ * profile, and it signs in as `admin.ieva`. Since 20260930210151 the address
+ * underneath is random and nobody types it, not even the admin.
  */
 type Step = "password" | "enroll" | "code";
 
-const ADMIN_USERNAME = /^admin\.[a-z0-9._]+$/;
-const ADMIN_EMAIL_DOMAIN = "gloumi.lt";
+const ADMIN_USERNAME = /^admin\.[a-z0-9._]{2,24}$/;
+
+// Tik portalo vidaus kelias. Be šios patikros `?next=https://kitas.lt`
+// nukreiptų žmogų į svetimą svetainę tą akimirką, kai jis ką tik prisijungė
+// ir labiausiai pasitiki tuo, ką mato.
+function safeNext(raw: string | null): string {
+  if (!raw || !raw.startsWith("/admin") || raw.startsWith("//")) return "/admin";
+  return raw;
+}
 
 function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
-  const next = params.get("next") || "/admin";
-
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  );
+  const next = safeNext(params.get("next"));
 
   const [step, setStep] = useState<Step>("password");
   const [username, setUsername] = useState("");
@@ -76,98 +73,66 @@ function LoginForm() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const startOver = () => {
+    setStep("password");
+    setPassword("");
+    setCode("");
+    setFactorId(null);
+    setQr(null);
+    setSecret(null);
+    setError(null);
+  };
+
   const submitPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    setBusy(true);
     setError(null);
 
     // Slaptažodžių tvarkyklė gali įrašyti visą adresą — tada domeną nuimame, o
-    // ne atmetame žmogų, kuris įvedė teisingą dalyką.
+    // ne atmetame žmogų, kuris įvedė teisingą dalyką. Serveris tą patį daro
+    // dar kartą; čia tik tam, kad aiški klaida nereikalautų kelionės iki jo.
     const name = username.trim().toLowerCase().replace(/@gloumi\.lt$/, "");
     if (!ADMIN_USERNAME.test(name)) {
-      setBusy(false);
       setError("Įveskite administratoriaus vardą, pvz. admin.ieva.");
       return;
     }
 
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email: `${name}@${ADMIN_EMAIL_DOMAIN}`,
-      password,
-    });
-    if (signInError) {
-      setBusy(false);
-      setError(signInError.message);
-      return;
-    }
-
-    const { data: factors } = await supabase.auth.mfa.listFactors();
-    /*
-     * `listFactors()` grąžina TIK patvirtintus. Nebaigtas įsijungimas (žmogus
-     * nuskenavo kodą ir uždarė langą) lieka `unverified` ir čia nesimato, o
-     * antras `enroll` su tuo pačiu vardu nulūžtų. Todėl vardas kaskart
-     * naujas — nebaigti veiksniai nieko nekainuoja ir nieko neatrakina.
-     */
-    const totp = factors?.totp?.[0];
-    if (totp) {
-      setFactorId(totp.id);
-      setStep("code");
-      setBusy(false);
-      return;
-    }
-
-    /*
-     * `issuer` privalomas, nors tipas jį rodo kaip neprivalomą. Be jo GoTrue
-     * ima Site URL domeną, o projekto Site URL yra `gloumi://` — programėlės
-     * nuorodų schema be domeno. Išmatuota 2026-09-30: `POST /factors` → 500
-     * „Issuer must be set", keturis kartus iš eilės, ir forma rodė tik „Error
-     * generating QR Code". Site URL keisti negalima, nuo jo priklauso
-     * programėlės nuorodos. Autentifikatoriuje ši eilutė rodoma kaip įrašo
-     * pavadinimas.
-     */
-    const { data: enrolled, error: enrollError } = await supabase.auth.mfa.enroll({
-      factorType: "totp",
-      issuer: "Gloumi",
-      friendlyName: `Gloumi admin ${new Date().toISOString().slice(0, 16)}`,
-    });
-    if (enrollError || !enrolled) {
-      setBusy(false);
-      setError(enrollError?.message ?? "Nepavyko pradėti antro veiksnio įjungimo.");
-      return;
-    }
-
-    setFactorId(enrolled.id);
-    setQr(enrolled.totp.qr_code);
-    setSecret(enrolled.totp.secret);
-    setStep("enroll");
+    setBusy(true);
+    const result = await startAdminLogin(name, password);
     setBusy(false);
+
+    if (!result.ok) {
+      setError(result.error);
+      return;
+    }
+
+    setUsername(name);
+    if (result.next === "code") {
+      setFactorId(null);
+      setStep("code");
+      return;
+    }
+    setFactorId(result.factorId);
+    setQr(result.qr);
+    setSecret(result.secret);
+    setStep("enroll");
   };
 
   const submitCode = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!factorId) return;
-    setBusy(true);
     setError(null);
+    setBusy(true);
 
-    const { data: challenge, error: challengeError } = await supabase.auth.mfa.challenge({
-      factorId,
-    });
-    if (challengeError || !challenge) {
+    const result = await finishAdminLogin(username, password, code, factorId);
+    if (!result.ok) {
       setBusy(false);
-      setError(challengeError?.message ?? "Nepavyko pradėti patvirtinimo.");
+      setCode("");
+      setError(result.error);
       return;
     }
 
-    const { error: verifyError } = await supabase.auth.mfa.verify({
-      factorId,
-      challengeId: challenge.id,
-      code,
-    });
-    if (verifyError) {
-      setBusy(false);
-      setError(verifyError.message);
-      return;
-    }
-
+    // `busy` lieka įjungtas: perėjimas į skydelį užtrunka, o antras paspaudimas
+    // tuo metu būtų dar vienas bandymas su jau panaudotu kodu.
+    setPassword("");
     router.replace(next);
     router.refresh();
   };
@@ -179,17 +144,26 @@ function LoginForm() {
         required
         inputMode="numeric"
         autoComplete="one-time-code"
+        maxLength={6}
         placeholder="000000"
         value={code}
-        onChange={(e) => setCode(e.target.value)}
+        onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
         className="w-full rounded-xl border border-sand-300 bg-cream-50 px-4 py-3 text-center text-lg tracking-[0.4em]"
       />
       <button
         type="submit"
-        disabled={busy}
+        disabled={busy || code.length !== 6}
         className="w-full rounded-full bg-espresso-900 px-4 py-3 text-sm font-semibold text-cream-50 disabled:opacity-50"
       >
         Patvirtinti
+      </button>
+      <button
+        type="button"
+        onClick={startOver}
+        disabled={busy}
+        className="w-full text-center text-xs font-semibold text-espresso-500 disabled:opacity-50"
+      >
+        Pradėti iš naujo
       </button>
     </form>
   );

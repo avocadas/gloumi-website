@@ -39,7 +39,9 @@ export default async function AdminPage({
 }) {
   const check = await checkAdmin();
   if (!check.ok) {
-    if (check.reason === "mfa-required") return <MfaNotice />;
+    if (check.reason === "mfa-required" || check.reason === "expired") {
+      return <MfaNotice reason={check.reason} />;
+    }
     notFound();
   }
 
@@ -114,7 +116,7 @@ export default async function AdminPage({
         </p>
         <h1 className="mt-1 font-serif text-3xl text-espresso-900">Moderavimas</h1>
         <p className="mt-2 text-sm text-espresso-500">
-          Prisijungęs: {check.email ?? check.userId}
+          Prisijungęs: {check.username ?? check.userId}
         </p>
       </header>
 

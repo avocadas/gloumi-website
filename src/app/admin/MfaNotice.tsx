@@ -18,14 +18,23 @@
  * second device. The answer is the same in every such case, which is why the
  * page has one button and no explanation of factors.
  */
-export function MfaNotice() {
+/*
+ * `expired` — sesija senesnė nei 12 val. nuo kodo įvedimo (`admin-guard.ts`).
+ * Atsakymas tas pats, tik žodžiai kiti: žmogus kodą įvedė, ir sakyti, kad
+ * seansas „patvirtintas tik slaptažodžiu", būtų netiesa.
+ */
+export function MfaNotice({ reason }: { reason: "mfa-required" | "expired" }) {
+  const expired = reason === "expired";
   return (
     <main className="mx-auto flex w-full max-w-lg flex-1 flex-col justify-center px-4 py-16">
       <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta-500">Gloumi</p>
-      <h1 className="mt-1 font-serif text-3xl text-espresso-900">Reikalingas antras veiksnys</h1>
+      <h1 className="mt-1 font-serif text-3xl text-espresso-900">
+        {expired ? "Sesija baigėsi" : "Reikalingas antras veiksnys"}
+      </h1>
       <p className="mt-4 text-sm leading-relaxed text-espresso-600">
-        Jūsų paskyra yra administratorių sąraše, bet šis seansas patvirtintas tik slaptažodžiu.
-        Administravimo skydelis atsidaro tik patvirtinus kodu iš autentifikatoriaus.
+        {expired
+          ? "Administravimo skydelis po prisijungimo atviras 12 valandų. Prisijunkite iš naujo slaptažodžiu ir kodu iš autentifikatoriaus."
+          : "Jūsų paskyra yra administratorių sąraše, bet šis seansas patvirtintas tik slaptažodžiu. Administravimo skydelis atsidaro tik patvirtinus kodu iš autentifikatoriaus."}
       </p>
       <a
         href="/admin/login"
