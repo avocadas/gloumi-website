@@ -44,10 +44,12 @@ export async function checkAdmin(): Promise<AdminCheck> {
   if (!user) return { ok: false, reason: 'anonymous' };
 
   const admin = createSupabaseAdminClient();
+  // `user_id`, ne `profile_id`: nuo 20260930165140 administratorius yra
+  // `auth.users` įrašas be programėlės profilio (#105).
   const { data: row, error } = await admin
     .from('admin_ids')
-    .select('profile_id')
-    .eq('profile_id', user.id)
+    .select('user_id')
+    .eq('user_id', user.id)
     .maybeSingle();
 
   if (error || !row) return { ok: false, reason: 'not-admin' };

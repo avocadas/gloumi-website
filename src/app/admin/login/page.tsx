@@ -33,8 +33,28 @@ import { createBrowserClient } from "@supabase/ssr";
  * only exists after the password step, and enrolment can only happen once
  * there is a session to attach the factor to. They cannot be submitted
  * together; pretending otherwise would be a form that fails on first use.
+ *
+ * WHY A NAME AND NOT AN E-MAIL
+ * ----------------------------
+ * Since 20260930165140 an admin is not an app account (#105): it has no
+ * profile, and it signs in as `admin.ieva`, not with anybody's e-mail.
+ * Supabase Auth only signs in by e-mail or phone, so an address still sits
+ * underneath — but it is a function of the name, `admin.ieva@gloumi.lt`,
+ * and this form adds the domain itself.
+ *
+ * The app's `username-sign-in` (#99) resolves names on a server because there
+ * a public @name must not hand out a user's private e-mail. Nothing here is
+ * private: the address says nothing the name does not, so the browser can do
+ * it, and the session still lands in the cookies the middleware reads.
+ *
+ * The pattern is the same one `handle_new_user` uses to decide that such an
+ * account gets no profile. If they ever disagree, an admin either cannot sign
+ * in here or turns up as a user in the app.
  */
 type Step = "password" | "enroll" | "code";
+
+const ADMIN_USERNAME = /^admin\.[a-z0-9._]+$/;
+const ADMIN_EMAIL_DOMAIN = "gloumi.lt";
 
 function LoginForm() {
   const router = useRouter();
@@ -47,7 +67,7 @@ function LoginForm() {
   );
 
   const [step, setStep] = useState<Step>("password");
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
   const [factorId, setFactorId] = useState<string | null>(null);
@@ -61,7 +81,19 @@ function LoginForm() {
     setBusy(true);
     setError(null);
 
-    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+    // Slaptažodžių tvarkyklė gali įrašyti visą adresą — tada domeną nuimame, o
+    // ne atmetame žmogų, kuris įvedė teisingą dalyką.
+    const name = username.trim().toLowerCase().replace(/@gloumi\.lt$/, "");
+    if (!ADMIN_USERNAME.test(name)) {
+      setBusy(false);
+      setError("Įveskite administratoriaus vardą, pvz. admin.ieva.");
+      return;
+    }
+
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: `${name}@${ADMIN_EMAIL_DOMAIN}`,
+      password,
+    });
     if (signInError) {
       setBusy(false);
       setError(signInError.message);
@@ -166,12 +198,14 @@ function LoginForm() {
       {step === "password" ? (
         <form onSubmit={submitPassword} className="mt-6 space-y-3">
           <input
-            type="email"
+            type="text"
             required
             autoComplete="username"
-            placeholder="El. paštas"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            autoCapitalize="none"
+            spellCheck={false}
+            placeholder="Administratorius (admin.vardas)"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             className="w-full rounded-xl border border-sand-300 bg-cream-50 px-4 py-3 text-sm"
           />
           <input
