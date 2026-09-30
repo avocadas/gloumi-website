@@ -3,6 +3,7 @@ import { checkAdmin } from "@/lib/admin-guard";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { ReportCard, type ReportView } from "./ReportCard";
 import { MfaNotice } from "./MfaNotice";
+import { signOutAdmin } from "./sign-out";
 
 /**
  * Moderation queue.
@@ -110,14 +111,25 @@ export default async function AdminPage({
 
   return (
     <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6">
-      <header className="mb-8">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta-500">
-          Gloumi
-        </p>
-        <h1 className="mt-1 font-serif text-3xl text-espresso-900">Moderavimas</h1>
-        <p className="mt-2 text-sm text-espresso-500">
-          Prisijungęs: {check.username ?? check.userId}
-        </p>
+      <header className="mb-8 flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta-500">
+            Gloumi
+          </p>
+          <h1 className="mt-1 font-serif text-3xl text-espresso-900">Moderavimas</h1>
+          <p className="mt-2 text-sm text-espresso-500">
+            Prisijungęs: {check.username ?? check.userId}
+          </p>
+        </div>
+        {/* Forma, ne `onClick`: atsijungti galima ir be JavaScript. */}
+        <form action={signOutAdmin}>
+          <button
+            type="submit"
+            className="rounded-full border border-sand-300 px-4 py-2 text-sm font-semibold text-espresso-600 hover:bg-sand-100"
+          >
+            Atsijungti
+          </button>
+        </form>
       </header>
 
       <nav className="mb-6 flex gap-2">

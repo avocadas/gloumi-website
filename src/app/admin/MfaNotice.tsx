@@ -1,3 +1,5 @@
+import { signOutAdmin } from "./sign-out";
+
 /**
  * Shown to a real admin whose session has not been raised to `aal2`.
  *
@@ -42,6 +44,13 @@ export function MfaNotice({ reason }: { reason: "mfa-required" | "expired" }) {
       >
         Prisijungti iš naujo
       </a>
+      {/* Čia žmogus lieka su pasenusia ar vien slaptažodžio sesija — būtent
+          tokią ir turi būti galima užbaigti, o ne tik perrašyti nauja. */}
+      <form action={signOutAdmin} className="mt-3 text-center">
+        <button type="submit" className="text-sm font-semibold text-espresso-600 underline">
+          Atsijungti
+        </button>
+      </form>
     </main>
   );
 }
