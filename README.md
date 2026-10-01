@@ -59,14 +59,17 @@ After changing any of those in the app repository run `npm run gen:app` (pass th
 
 ## Environment
 
-All optional; the site builds and runs with none of them.
+The public pages build and run with none of them. The admin portal does not: without the three Supabase variables every `/admin` request fails in the middleware with `500 MIDDLEWARE_INVOCATION_FAILED`, which is what gloumi.lt answered until they were set on 2026-09-30. The rest of the site is unaffected, because the middleware matches `/admin` only.
 
 | Variable | Purpose |
 |---|---|
 | `NEXT_PUBLIC_SITE_URL` | Canonical origin for metadata, sitemap and robots. Defaults to `https://gloumi.lt`. |
 | `NEXT_PUBLIC_APP_STORE_URL`, `NEXT_PUBLIC_PLAY_STORE_URL` | Store links. While empty the badges read „Netrukus“ and are not links. |
+| `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` | Search Console meta tag. Unset on purpose: the domain is verified by a DNS TXT record. |
 | `WAITLIST_WEBHOOK_URL` | Master inquiries are POSTed here as JSON (Slack, Zapier, Make, a Supabase Edge Function…). |
 | `RESEND_API_KEY`, `WAITLIST_TO_EMAIL`, `WAITLIST_FROM_EMAIL` | …or e-mailed through Resend. |
+| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Admin portal (`/admin`). Public: the same project URL and `sb_publishable_…` key as the app's `gloumi-app/src/config/supabase.js`. Both are inlined into the client bundle at build time, so after changing one, redeploy without the build cache. |
+| `SUPABASE_SERVICE_ROLE_KEY` | Admin portal, server only (`src/lib/supabase/admin.ts`). A real secret that bypasses RLS: never `NEXT_PUBLIC_`, never in git; in Vercel, Production only and Sensitive. |
 
 With neither channel configured, `/api/waitlist` answers `503 not_configured` in production and the form turns into a plain mailto – nothing is silently dropped. In development it logs the submission and answers OK.
 
@@ -81,4 +84,4 @@ With neither channel configured, `/api/waitlist` answers `503 not_configured` in
 
 ## Deploy
 
-Push to `main` and import the repository in Vercel with the default Next.js settings, adding the environment variables above. `next/font` and the OpenGraph image fetch Google Fonts at build time, so the build needs network access – Vercel and GitHub Actions both have it. CI (`.github/workflows/ci.yml`) runs lint, typecheck, the contrast check and a build on every push and pull request.
+Push to `main` and Vercel builds and deploys it (project `gloumi-website`, team `gloumi1`, default Next.js settings, the environment variables above). Three more settings live in the Vercel project rather than in this repository: the function region is `fra1` (Frankfurt), next to the Supabase project in `eu-central-1`, since every admin page makes several database calls and from Vercel's default `iad1` each would cross the Atlantic; Node is 24.x, which `engines.node` pins as well; and the firewall rule „Admin login rate limit“ on `/admin/login`. The build log still says it runs in `iad1`: that is the build machine, not where the functions run. `next/font` fetches Google Fonts at build time, so the build needs network access – Vercel and GitHub Actions both have it. The share card does not fetch anything: it reads its fonts from `assets/fonts/`. CI (`.github/workflows/ci.yml`) runs lint, typecheck, the contrast check and a build on every push and pull request.

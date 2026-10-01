@@ -5,6 +5,81 @@ savo dieną.
 
 ---
 
+# 2026-10-01 — Kas gyvena Vercel'yje, o ne šioje repozitorijoje
+
+Portalas iki 2026-09-30 atsakinėjo `500 MIDDLEWARE_INVOCATION_FAILED`
+(išmatuota 09-29 00:19Z; vykdymo klaidose ta pati klaida kartojosi iki 09-30
+11:16Z), nes Vercel projekte nebuvo jo trijų Supabase kintamųjų. README
+„Environment“ lentelė jų neminėjo, juos žinojo tik `.env.example`, o „Deploy“
+skyrius liepė įrašyti būtent tos lentelės kintamuosius. Dabar jie lentelėje.
+Žemiau surašyta visa, ko `git` nemato.
+
+## 1. Projekto nustatymai (Vercel → `gloumi-website`, komanda `gloumi1`)
+
+- **Funkcijų regionas `fra1`** nuo 2026-09-29 (`update_project`,
+  `serverlessFunctionRegion`), nes Supabase yra `eu-central-1`. Patikrinti:
+  `get_deployment` → `regions: ["fra1"]` arba funkcijos atsakymo
+  `X-Vercel-Id` (`arn1::fra1::…`). Build'o žurnalas vis tiek rašo „Running
+  build in … iad1“, bet tai build'o mašina, ne funkcijos.
+- **Node 24.x** nustatytas ir projekte, ir `engines.node` (`7e59406`, išdiegtas
+  `READY` 09-29). `9241a5d` build'o žurnale perspėjimo apie atvirą Node
+  intervalą nebėra, tad 2026-09-14 skyriaus 6 punktas „Node prisegimas
+  neišbandytas“ atsakytas.
+- **Ugniasienė:** taisyklė „Admin login rate limit“, žr. žemiau esantį portalo
+  skyrių. MCP jos nemato.
+
+## 2. Aplinkos kintamieji
+
+| Kintamasis | Aplinka | Tipas | Būklė 2026-10-01 |
+|---|---|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | Production | Encrypted | įrašytas 09-29 |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Production | Encrypted | įrašytas 09-30, `sb_publishable_…` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Production | Sensitive | įrašytas 09-30; ar tai `sb_secret_`, ar senasis `service_role`, per API neperskaitoma (Gloumi #142) |
+| `RESEND_API_KEY` | Production | Sensitive | **tebėra 2026-09-14 raktas**; naujas `vercel-gloumi-website-send` (`sending_access`, tik `mail.gloumi.lt`) laukia įklijavimo (Gloumi #67) |
+| `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_APP_STORE_URL`, `NEXT_PUBLIC_PLAY_STORE_URL`, `WAITLIST_WEBHOOK_URL`, `WAITLIST_TO_EMAIL` | Production, Preview | Sensitive | nuo projekto sukūrimo 09-14; parduotuvių nuorodos įrašomos, kai programėlė bus parduotuvėse |
+
+`WAITLIST_FROM_EMAIL` nėra tyčia (2026-09-14 skyriaus 2 dalis).
+`NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` irgi nėra, nes Search Console patvirtintas
+DNS TXT įrašu. Sensitive reikšmės vėliau neperskaitomos niekam, tik keičiamos.
+Pakeitus bet kurį kintamąjį, reikia naujo deploy'aus, o pakeitus `NEXT_PUBLIC_*`,
+deploy'aus be build kešo.
+
+## 3. Vercel MCP
+
+- Nuo 2026-10-01 atiduoda build'o žurnalus (`list_deployment_events`) ir
+  vykdymo klaidas (`get_runtime_errors`). 09-29 abu grąžino `403 … re-authenticate
+  to this scope`.
+- Platūs žurnalų langai (`get_runtime_logs` per 7 d. ar 24 val. su
+  `statusCode`) baigiasi `timed out`. Siaurinti iki `deploymentId`.
+- Ugniasienės nemato (`404 Seawall Config not found`).
+
+## 4. Deploy'o tempas
+
+Gloumi #40 uždarytas 2026-09-29 su matavimais: eilė 1–2 s, build'as 14–26 s, o
+09-18 vėlavimas buvo vienkartinis, platformos pusėje. 10-01 `9241a5d`: eilėje
+1 s, build'as 10 s, nuo sukūrimo iki `READY` 20 s.
+
+## 5. Build'o perspėjimai, kurie liko (`9241a5d`)
+
+- `The "middleware" file convention is deprecated. Please use "proxy"
+  instead.` Next 16 tai rodo kiekviename build'e. Perkėlimas
+  (`npx @next/codemod@canary middleware-to-proxy .`) yra portalo kodo
+  pakeitimas, ir jis keičia vykdymo aplinką: `proxy` visada veikia Node.js
+  aplinkoje, o `runtime` parinkties ten nėra
+  (`node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/proxy.md:255`).
+  Dabar prisijungimo vartai veikia kraštiniame tinkle (`X-Vercel-Id` be
+  regiono). Daryti atskiru, atskirai patikrintu pakeitimu.
+- `npm warn install-scripts … unrs-resolver@1.12.2 (postinstall)`: npm dar
+  neleido šio paketo diegimo skripto. Build'as praeina.
+
+## 6. Ko NEĮRODYTA
+
+- Kad naujas Resend raktas veikia: jis dar neįklijuotas.
+- Ugniasienės taisyklės būklė čia perrašyta iš portalo skyriaus, ne
+  išmatuota: MCP jos nemato.
+
+---
+
 # 2026-10-01 — Administravimo portalas: kaip sudėtas, kur sustota ir ką testuoti toliau (#105, #129)
 
 Šio skyriaus iki šiol nebuvo: portalas gimė 2026-09-21, o jo apsauga (#105) ir
