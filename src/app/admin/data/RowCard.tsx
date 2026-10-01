@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useState, useTransition } from "react";
-import { ChevronDown, Clock, ImageOff, Pencil, Trash2, UserRound } from "lucide-react";
+import { ChevronDown, ChevronRight, Clock, ImageOff, Pencil, Trash2, UserRound } from "lucide-react";
 import type { CatalogKind, DataRow, SignedMedia } from "@/lib/admin-data";
 import { editText, removeRow } from "../actions";
 import { useConfirm } from "../ConfirmDialog";
@@ -232,6 +232,21 @@ export function RowCard({
             <Trash2 size={16} strokeWidth={STROKE} aria-hidden />
             Ištrinti
           </button>
+        </footer>
+      ) : null}
+
+      {/* Paskyros eilutės čia netrinamos — tik visa paskyra, jos puslapyje. Be
+          aiškaus mygtuko kortelė atrodė kaip aklavietė: į tą puslapį vedė tik
+          mažas ženkliukas viršuje (developeris 2026-10-02, ieškodamas, kaip
+          ištrinti testinę paskyrą). */}
+      {kind === "account" && ownerLinks.length > 0 ? (
+        <footer className="mt-4 flex flex-col gap-3 border-t border-app-hairline pt-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-[13px] text-app-muted">Užblokuoti ir ištrinti galima paskyros puslapyje.</p>
+          <a href={`/admin/users/${row[ownerLinks[0]] as string}`} className={btn}>
+            <UserRound size={16} strokeWidth={STROKE} aria-hidden />
+            Atidaryti paskyrą
+            <ChevronRight size={16} strokeWidth={STROKE} aria-hidden />
+          </a>
         </footer>
       ) : null}
     </article>
