@@ -5,6 +5,238 @@ savo dieną.
 
 ---
 
+# 2026-10-01 — Administravimo portalas: kaip sudėtas, kur sustota ir ką testuoti toliau (#105, #129)
+
+Šio skyriaus iki šiol nebuvo: portalas gimė 2026-09-21, o jo apsauga (#105) ir
+duomenų naršyklė (#129) padarytos 09-30–10-01. Skyrius skirtas sesijai, kuri
+tęs **#129**. Pirmas jos darbas — kartu su developeriu patikrinti punktus 2–6,
+sutvarkyti, kas neveiks, ir tik tada juos pažymėti.
+
+**Pirmiausia perskaityti:** šio repo `AGENTS.md` (jokios rusų kalbos), Gloumi
+`AGENTS.md` V (migracijos), VII.14 (tracker'is keičiamas tik developeriui
+sutikus), VIII (paslaptys) ir Gloumi `.claude/LESSONS.md` 4.8. Duomenų bazė ir
+Edge funkcija gyvena **Gloumi** repozitorijoje, ne čia.
+
+## 1. Kas dabar gyva (išmatuota 2026-10-01 ~02:30 UTC)
+
+- **Svetainė:** `main` = `d0596f4`, Vercel production
+  `dpl_5gAvqMFFmKoqKd7CDLzdYXmLJhWJ` (`READY`, `gloumi.lt`). Puslapiai:
+  `/admin/login`, `/admin` (Skundai), `/admin/data` (Duomenys),
+  `/admin/users/[id]` (paskyra).
+- **Gloumi `ringaudas-prod`:** `d9c49f5` (migracija
+  `20261001012855_admin_data_browser`, pritaikyta per MCP 01:28 UTC) ir
+  `012e718` (Edge `admin-media-urls`, versija 2). Į `prod` dar **neįlieta** —
+  pateks su kitu `ringaudas-prod` → `prod` sujungimu (Gloumi VI.1.3). Bazė ir
+  funkcija gyvos jau dabar: pritaikytos tiesiai, ne per šaką.
+- **Administratoriai:** `admin_ids` lygiai trys — `admin.ieva`,
+  `admin.karolis`, `admin.ringaudas`. Patvirtintą TOTP turi `admin.ieva` ir
+  `admin.ringaudas`; `admin.karolis` dar nė karto neprisijungė (0 faktorių,
+  nė vieno `ok` bandymo). Užrakintų nėra.
+- **#129:** 1 (atsijungimas) ir 7 (senųjų funkcijų pašalinimas) pažymėti;
+  **2–6 laukia developerio patikros** — jis pažadėjo patikrinti pats.
+
+## 2. Kaip portalas sudėtas
+
+**Prisijungimas** (`src/app/admin/login/actions.ts`, #105) vyksta serverio
+veiksmuose: vardas (`admin.ieva`) → `admin_login_begin` → GoTrue su paslėptu
+adresu → TOTP (įsijungimas arba kodas) → `admin_login_finish` → sesija į
+slapukus. Slaptažodžio sesija naršyklės nepasiekia. Užraktas: 5 klaidos per
+15 min užrakina paskyrą valandai, nesvarbu iš kokio IP; vienas IP po 20 klaidų
+stabdomas 15 min. Atrakinti anksčiau: `select admin_unlock('admin.ieva')`.
+Dar viena riba — Vercel ugniasienės taisyklė „Admin login rate limit“
+(`/admin/login`, 10 užklausų per 60 s iš vieno IP → 429 penkiolikai minučių).
+
+**Sargas** `src/lib/admin-guard.ts` `checkAdmin()`: prisijungęs? →
+`admin_ids` (servisiniu raktu) → `aal2` → ne daugiau 12 val. nuo kodo
+įvedimo. Ne administratorius gauna 404, administratorius su pasenusia ar vien
+slaptažodžio sesija — `MfaNotice`. `src/middleware.ts`
+(`matcher: /admin/:path*`) atnaujina sesijos slapukus ir neprisijungusį siunčia
+į `/admin/login?next=`.
+
+**Veiksmai** `src/app/admin/actions.ts`: kiekvienas pirmiausia vėl kviečia
+`requireAdmin()`, nes serverio veiksmas yra viešas HTTP taškas. Tada — VIENAS
+RPC, kuris ir pakeičia, ir įrašo į `admin_audit_logs` toje pačioje
+transakcijoje:
+
+| veiksmas | RPC |
+|---|---|
+| `moderate` | `admin_moderate` |
+| `removeRow` | `admin_remove` |
+| `editText` | `admin_edit_text` |
+| `deleteAccount` | `admin_delete_account` → `purge_accounts` |
+| `setSuspended` | GoTrue `ban_duration` + `log_admin_action` — vienintelė dviejų žingsnių vieta |
+
+**Duomenys:** `src/lib/admin-data.ts` (`server-only`) — `loadCatalog`,
+`searchTable`, `mediaIdsOf`, `signMedia`. **Vaizdas:** `AdminHeader.tsx`,
+`format.ts` (bendras serveriui ir klientui), `data/page.tsx`,
+`data/RowCard.tsx`, `users/[id]/page.tsx`, `users/[id]/AccountActions.tsx`;
+skundų eilė — `page.tsx` ir `ReportCard.tsx` (kortelėje nuoroda į autoriaus
+paskyrą).
+
+**Gloumi pusė:** migracijos `20260930165140` (administratorius nebe
+programėlės paskyra), `20260930210151` (užraktas), `20260930211143` (žurnalo
+etiketė), `20261001005823` (`is_admin` atstatymas), `20261001012855`
+(naršyklė); funkcija `supabase/functions/admin-media-urls/index.ts`; prieigos
+aprašas `supabase/ACCESS.md`; pritaikymų istorija `supabase/migrations/PENDING.md`.
+
+## 3. Katalogas: ką galima su kuria lentele
+
+Viską sako viena funkcija, `admin_catalog()` (51 lentelė):
+
+- **`content`** — ieškoti, trinti, taisyti kataloge išvardytus tekstus;
+- **`account`** (`profiles`, `master_profiles`) — ieškoti ir taisyti tekstus;
+  paskyra trinama tik visa, paskyros puslapyje;
+- **`view`** (pinigai, teisiniai įrašai, žurnalas) — tik peržiūra. Developerio
+  sprendimas: sąskaitas saugoti liepia įstatymas, o mokėjimų įrašai susieti su
+  Stripe.
+
+Lentelės, kurios kataloge nėra, portale nematomos; sistemos lentelių
+(`admin_ids`, `app_config`, `push_tokens`, `media_trash`…) ten nėra tyčia.
+Atsiliepimų ir žinučių tekstų taisyti negalima, tik ištrinti: pataisytas
+atsiliepimas vis tiek rodomas kaip žmogaus žodžiai. Paslėpti stulpeliai
+(`master_profiles.iban`, `tax_id`, `stripe_account_id`, `geog`,
+`gift_cards.code`, `subscriptions.latest_payload`) išimami pačiame RPC ir
+naršyklės nepasiekia net HTML'e.
+
+**Pakeisti katalogą** — nauja migracija su
+`create or replace function public.admin_catalog()`. Prieš rašant perskaityti
+GYVĄ apibrėžimą (`pg_get_functiondef`), ne seną migraciją (LESSONS 4.8).
+Įrodymų bloką nukopijuoti iš `20261001012855`: jis tikrina, ar kiekviena
+katalogo lentelė ir stulpelis egzistuoja, tad rašybos klaida sustabdo
+migraciją, o ne portalą.
+
+## 4. Spąstai, į kuriuos jau įlipta
+
+- **Viešas `pub-…r2.dev` nuo 2026-09-01 visam kam atsako 401.** Nuotraukas
+  portalas rodo tik per `admin-media-urls`: funkcija perduoda kvietėjo
+  `apikey` ir `Authorization` ir klausia `admin_require(_admin_id)`, o
+  pasirašo tik tada, kai bazė atsako „`service_role` ir administratorius“.
+  `verify_jwt = false`, nes projekto raktai naujo tipo (`sb_publishable_…`),
+  tad ir serverio raktas greičiausiai ne JWT.
+- **`is_admin` regresija 09-30.** `20260930165140` perkūrė `is_admin` iš
+  pirminės migracijos, ir ~8 val. nebuvo nei `aal2` sąlygos, nei uždarymo
+  klientams. Grąžinta `20261001005823`. Prieš bet kurį `create or replace` —
+  gyvas `pg_get_functiondef`, `has_function_privilege` ir
+  `git log -S 'function public.<f>' -- supabase/migrations`.
+- **Paskyra trinama iškart, ne naktį:** `cancel_account_deletion()`
+  besąlygiškas, tad pažymėtą paskyrą naudotojas atstatytų pats. Su paskyra
+  dingsta ir jos pateikti skundai, lojalumo taškai, rekomendacijos ir
+  prenumeratos įrašai; vizitai, sąskaitos ir dovanų kortelės lieka be nuorodos
+  (`set null`).
+- **Nuotraukos trynimas kaskada:** `posts.media_id`, `messages.media_id` ir
+  `post_media.media_id` — `on delete cascade`, tad ištrynus pagrindinę įrašo
+  nuotrauką dingsta įrašas. Įspėjimai `data/page.tsx` `CASCADE_NOTE` išmatuoti
+  iš gyvų FK 10-01; pasikeitus ryšiams, juos atnaujinti. Failas iš R2 dingsta
+  tik naktį (`media_trash` → `media-purge`, 05:10 UTC).
+- **Laiko juosta:** `format.ts` rašo `timeZone: "Europe/Vilnius"`. Be jos
+  serveris (UTC) ir naršyklė piešia skirtingą tekstą, ir React meta
+  hidratacijos klaidą.
+- **Administratorių adresai paslėpti** (`admin.<vardas>.<24 hex>@gloumi.lt`)
+  ir yra apsaugos dalis: jų neišvesti nei pokalbyje, nei žurnale, nei
+  puslapyje. Tikrinti tik šablonu (`~`), grąžinant taip/ne. Paskyros puslapis
+  administratoriaus adreso nerodo.
+- **`/admin/login` niekada netestuoti serija iš agento:** Bash eina iš
+  developerio IP, ir Vercel taisyklė 15 min užblokuotų jį patį. Svetainės
+  irgi netikrinti `curl` ciklu (žr. 2026-09-28 §4).
+- **Vercel MCP ugniasienės nemato** (`404 Seawall Config not found`) —
+  taisyklę tikrinti tik skydelio nuotrauka.
+- **`NEXT_PUBLIC_*`** įrašomi į kliento paketą build'o metu: pakeitus
+  kintamąjį, Redeploy BE „Use existing Build Cache“.
+- **„Error generating QR Code“** buvo GoTrue `Issuer must be set` —
+  `issuer: "Gloumi"` (`ae47d57`).
+- **Next 16:** `params` ir `searchParams` yra `Promise`;
+  `revalidatePath("/admin", "layout")` atnaujina visus portalo puslapius;
+  dokumentacija `node_modules/next/dist/docs/`.
+- **Migracija per MCP:** `apply_migration` versija = taikymo laikas. Failą
+  pervadinti ta versija (`md5(statements[1])` sutampa su failu be paskutinio
+  `\n`), commit'inti ir push'inti IŠ KARTO — kitaip kitų juostų `db push`
+  sustoja, — ir įrašyti į `PENDING.md`. Pirma repetuoti `begin … rollback` per
+  `npx supabase db query --linked -f <failas>`. Pastebėta: `now()` vienoje
+  transakcijoje sustingęs; tame pačiame sakinyje poklausiai mato senąją būseną;
+  SQL `and` netrumpina.
+- **Commit'ai:** čia `Co-Authored-By` įprastas, Gloumi repozitorijoje
+  draudžiamas (VI.3). Push į šio repo `main` = production deploy;
+  `GLOUMI_RELEASE=1 git push origin main` tik developeriui leidus (Gloumi push
+  sargas blokuoja `main`, kai sesija paleista iš Gloumi).
+- **Bendras aplankas:** šiame checkout'e dirba ir sesija „gloumi.lt“ (#136).
+  Commit'inti tik savo kelius (`git commit -- <keliai>`), o prieš
+  `npm run build` ar `next dev` jai parašyti — abu naudoja tą patį `.next`.
+
+## 5. Kaip testuoti (agentas prisijungti negali)
+
+Slaptažodis ir TOTP — developerio: jų neprašyti ir niekur nevesti. Developeris
+spaudžia, agentas skaito, kas įvyko:
+
+- **Vercel žurnalas:** MCP `get_runtime_logs`, `projectId`
+  `prj_eNlK3C55AC453gRgiIqnkgZHO4R0`, `teamId` `team_LYPor0FJYsFjmWbJ9qQX5GZb`.
+- **Funkcijos žurnalas:** Supabase MCP `query_logs`:
+
+  ```sql
+  select timestamp, event_message from logs
+   where source = 'function_logs' and event_message like '%gate_refused%'
+   order by timestamp desc limit 20
+  ```
+
+  `gate_refused: <priežastis>` pasako, kodėl nuotrauka nepasirašyta.
+  `select *` grąžino „Backend error“, su įvardytais stulpeliais veikė.
+- **Žurnalas bazėje:**
+
+  ```sql
+  select created_at, admin_label, action, target_type, target_id
+    from admin_audit_logs order by created_at desc limit 20
+  ```
+
+  `details` NEspausdinti visos: ten ištrintos eilutės, t. y. asmens duomenys.
+
+Ką tikrinti kiekvienam #129 punktui:
+
+| # | developeris daro | turi įvykti |
+|---|---|---|
+| 2 | Duomenys → Įrašai, paieška | eilutės ir nuotraukos; vietoj nuotraukos „Peržiūra nepasiekiama“ → funkcijos žurnalas |
+| 3 | ištrina testinį komentarą | eilutės nebėra; žurnale `remove` su ta eilute |
+| 4 | kortelėje paspaudžia „paskyra“ | skaičiai pagal lenteles, nuorodos filtruoja pagal naudotoją |
+| 5 | Užblokuoti / Atblokuoti; trinti tik nereikalingą testinę paskyrą | `auth.users.banned_until`; žurnale `suspend_user` / `unsuspend_user`; po trynimo — `delete_account` ir eilutė `deleted_account_media` |
+| 6 | pataiso testinio įrašo aprašymą | tekstas pasikeitė; žurnale `edit_text` su `before` ir `after` |
+
+Pažymėti punktus ir siūlyti uždaryti #129 — tik developeriui sutikus (Gloumi
+VII.14). Neprisijungus saugu patikrinti tik vieną dalyką, viena užklausa:
+`curl -s -o /dev/null -w '%{http_code} %{redirect_url}' https://gloumi.lt/admin/data`
+→ `307` į prisijungimą.
+
+## 6. Ko NEĮRODYTA
+
+- Prisijungus `/admin/data` ir `/admin/users/[id]` dar niekas neatidarė.
+- `admin-media-urls` sėkmės kelias (svetainės raktas → `service_role`).
+  Išmatuoti tik atsisakymai: viešas raktas → `permission denied for function
+  admin_require`, netikras Bearer → JWT klaida.
+- R2 failo dingimas po nuotraukos `admin_remove` — naktinis `media-purge` po
+  to gyvai nestebėtas.
+- Apple atšaukimas `purge_accounts` viduje — repeticijos paskyros
+  `apple_refresh_tokens` neturėjo.
+- `admin.karolis` neprisijungęs: kol jis neįsijungs TOTP, kas žino jo
+  slaptažodį, gali įsijungti savo.
+
+## 7. Kas liko už #129
+
+- Po prisijungimo `?next=` išlaiko tik kelią: `/admin/data?table=posts` →
+  `/admin/data` (middleware užklausą palieka prisijungimo adrese).
+- `middleware.ts` → `proxy.ts` (Next 16 perspėjimas).
+- Supabase Pro → nutekėjusių slaptažodžių apsauga; Vercel Spend Management
+  perspėjimas.
+- Gloumi `ringaudas-prod` → `prod` su `d9c49f5` ir `012e718` (VI.1.3, prieš
+  tai negyvo kodo valymas).
+
+## 8. Komandos
+
+```bash
+git fetch --all && git status --short
+gh issue view 129 --repo avocadas/Gloumi
+gh api repos/avocadas/gloumi-website/deployments --jq '.[0] | "\(.created_at) \(.sha)"'
+npm run check && npm run build
+```
+
+---
+
 # 2026-09-28 — Teisiniai tekstai nuo v1.4 iki v1.10, ir puslapiai, kurie nustojo perpasakoti
 
 Per dvi savaites teisiniai dokumentai pajudėjo septynis kartus, ir svetainė
