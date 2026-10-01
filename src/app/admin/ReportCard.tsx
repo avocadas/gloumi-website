@@ -120,7 +120,11 @@ export function ReportCard({ report }: { report: ReportView }) {
         {report.preview !== null ? (
           <p className="mt-1.5 whitespace-pre-wrap break-words text-sm text-app-ink">{report.preview}</p>
         ) : (
-          <p className="mt-1.5 text-sm italic text-app-muted">Turinio nebėra — jis jau ištrintas.</p>
+          <p className="mt-1.5 text-sm italic text-app-muted">
+            {report.targetType === "message"
+              ? "Žinutės turinys čia nerodomas."
+              : "Turinio nebėra — jis jau ištrintas."}
+          </p>
         )}
       </div>
 
@@ -154,7 +158,7 @@ export function ReportCard({ report }: { report: ReportView }) {
         </p>
       ) : null}
 
-      {!done ? (
+      {!done && report.status === "open" ? (
         <footer className="mt-5 flex flex-col gap-2 border-t border-app-hairline pt-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap gap-2">
             <button

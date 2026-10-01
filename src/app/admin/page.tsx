@@ -76,8 +76,10 @@ export default async function AdminPage({
   const reporterIds = [...new Set(rows.map((r) => r.reporter_id).filter(Boolean))];
   const postIds = rows.filter((r) => r.target_type === "post").map((r) => r.target_id);
   const commentIds = rows.filter((r) => r.target_type === "comment").map((r) => r.target_id);
+  const storyIds = rows.filter((r) => r.target_type === "story").map((r) => r.target_id);
+  const profileIds = rows.filter((r) => r.target_type === "profile").map((r) => r.target_id);
 
-  const [{ data: reporters }, { data: posts }, { data: comments }] = await Promise.all([
+  const [{ data: reporters }, { data: posts }, { data: comments }, { data: stories }, { data: targetProfiles }] = await Promise.all([
     reporterIds.length
       ? db.from("profiles").select("id, display_name, username").in("id", reporterIds)
       : Promise.resolve({ data: [] as { id: string; display_name: string | null; username: string | null }[] }),
@@ -87,15 +89,25 @@ export default async function AdminPage({
     commentIds.length
       ? db.from("post_comments").select("id, body, author_id").in("id", commentIds)
       : Promise.resolve({ data: [] as { id: string; body: string | null; author_id: string }[] }),
+    storyIds.length
+      ? db.from("stories").select("id, caption, author_id").in("id", storyIds)
+      : Promise.resolve({ data: [] as { id: string; caption: string | null; author_id: string }[] }),
+    profileIds.length
+      ? db.from("profiles").select("id, display_name, username").in("id", profileIds)
+      : Promise.resolve({ data: [] as { id: string; display_name: string | null; username: string | null }[] }),
   ]);
 
   const reporterById = new Map((reporters ?? []).map((p) => [p.id, p]));
   const postById = new Map((posts ?? []).map((p) => [p.id, p]));
   const commentById = new Map((comments ?? []).map((c) => [c.id, c]));
+  const storyById = new Map((stories ?? []).map((s) => [s.id, s]));
+  const targetProfileById = new Map((targetProfiles ?? []).map((p) => [p.id, p]));
 
   const views: ReportView[] = rows.map((r) => {
     const post = postById.get(r.target_id);
     const comment = commentById.get(r.target_id);
+    const story = r.target_type === "story" ? storyById.get(r.target_id) : undefined;
+    const targetProfile = r.target_type === "profile" ? targetProfileById.get(r.target_id) : undefined;
     const reporter = reporterById.get(r.reporter_id);
     return {
       id: r.id,
@@ -112,8 +124,11 @@ export default async function AdminPage({
       preview:
         post ? [post.service_title, post.description].filter(Boolean).join(" · ") || null
         : comment ? comment.body
+        // A story with no caption still exists; never let "" read as "gone".
+        : story ? story.caption || "(Story be aprašymo)"
+        : targetProfile ? targetProfile.display_name || targetProfile.username || "(Profilis be vardo)"
         : null,
-      authorId: post?.master_id ?? comment?.author_id ?? null,
+      authorId: post?.master_id ?? comment?.author_id ?? story?.author_id ?? targetProfile?.id ?? null,
     };
   });
 
