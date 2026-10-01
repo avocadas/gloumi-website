@@ -40,6 +40,7 @@ export function AccountActions({
             title: "Atblokuoti paskyrą?",
             body: ["Žmogus vėl galės prisijungti."],
             confirmLabel: "Atblokuoti",
+            reason: true,
           }
         : {
             title: "Užblokuoti paskyrą?",
@@ -49,12 +50,13 @@ export function AccountActions({
             ],
             confirmLabel: "Užblokuoti",
             danger: true,
+            reason: true,
           },
     );
     if (!answer) return;
     setError(null);
     startTransition(async () => {
-      const res = await setSuspended(userId, !banned);
+      const res = await setSuspended(userId, !banned, answer.reason);
       if (!res.ok) setError(res.error);
     });
   };

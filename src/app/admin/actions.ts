@@ -26,6 +26,9 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 type ActionResult = { ok: true } | { ok: false; error: string };
 
+const reasonOrNull = (reason: unknown) =>
+  typeof reason === "string" && reason.trim() ? reason.trim() : null;
+
 async function requireAdmin() {
   const check = await checkAdmin();
   if (!check.ok) {
@@ -78,9 +81,17 @@ export async function moderate(
  * infinity, because GoTrue takes a duration string. Lifting it is
  * `ban_duration: "none"`, which is why unsuspending is the same call.
  */
-export async function setSuspended(userId: string, suspended: boolean): Promise<ActionResult> {
+/*
+ * Priežastis — kaip trynimo (#129, developeris 2026-10-02: „reikia ir
+ * blokavimui notes"). `log_admin_action` ilgio neriboja, o trynimo RPC
+ * atmeta ilgesnę nei 500 ženklų, tad ta pati riba tikrinama čia — PRIEŠ
+ * blokuojant, kitaip žmogus liktų užblokuotas be įrašo žurnale.
+ */
+export async function setSuspended(userId: string, suspended: boolean, reason?: string): Promise<ActionResult> {
   try {
     const admin = await requireAdmin();
+    const why = reasonOrNull(reason);
+    if (why && why.length > 500) return { ok: false, error: "Priežastis per ilga — daugiausia 500 ženklų." };
     const db = createSupabaseAdminClient();
 
     const { error } = await db.auth.admin.updateUserById(userId, {
@@ -100,7 +111,7 @@ export async function setSuspended(userId: string, suspended: boolean): Promise<
       _action: suspended ? "suspend_user" : "unsuspend_user",
       _target_type: "profile",
       _target_id: userId,
-      _details: null,
+      _details: why ? { reason: why } : null,
     });
     if (logError) {
       return {
@@ -133,9 +144,6 @@ const dbError = (message: string) => DB_ERRORS[message] ?? message;
 
 const isKey = (value: unknown): value is Record<string, unknown> =>
   !!value && typeof value === "object" && !Array.isArray(value);
-
-const reasonOrNull = (reason: unknown) =>
-  typeof reason === "string" && reason.trim() ? reason.trim() : null;
 
 /** Ištrina vieną turinio eilutę; ištrinta eilutė lieka žurnale. */
 export async function removeRow(

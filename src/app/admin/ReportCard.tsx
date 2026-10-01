@@ -72,15 +72,21 @@ export function ReportCard({ report }: { report: ReportView }) {
   const [done, setDone] = useState<string | null>(null);
   const [dialog, ask] = useConfirm();
 
+  // `reason` — tai, ką žmogus įrašė patvirtinimo lange (jei jame buvo laukas).
   const run = async (
-    fn: () => Promise<{ ok: true } | { ok: false; error: string }>,
+    fn: (reason: string) => Promise<{ ok: true } | { ok: false; error: string }>,
     doneText: string,
     confirm?: ConfirmOptions,
   ) => {
-    if (confirm && !(await ask(confirm))) return;
+    let reason = "";
+    if (confirm) {
+      const answer = await ask(confirm);
+      if (!answer) return;
+      reason = answer.reason;
+    }
     setError(null);
     startTransition(async () => {
-      const res = await fn();
+      const res = await fn(reason);
       if (res.ok) setDone(doneText);
       else setError(res.error);
     });
@@ -199,7 +205,7 @@ export function ReportCard({ report }: { report: ReportView }) {
                 type="button"
                 disabled={pending}
                 onClick={() =>
-                  run(() => setSuspended(report.authorId!, true), "Autorius užblokuotas", {
+                  run((reason) => setSuspended(report.authorId!, true, reason), "Autorius užblokuotas", {
                     title: "Užblokuoti autorių?",
                     body: [
                       "Žmogus nebegalės prisijungti, o esami seansai nustos galioti.",
@@ -207,6 +213,7 @@ export function ReportCard({ report }: { report: ReportView }) {
                     ],
                     confirmLabel: "Užblokuoti",
                     danger: true,
+                    reason: true,
                   })
                 }
                 className={btnDanger}
