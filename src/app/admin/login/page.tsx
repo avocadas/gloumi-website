@@ -3,6 +3,8 @@
 import { Suspense, useState } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
+import { ArrowRight, CircleAlert, Lock, UserRound } from "lucide-react";
+import { AuthShell, Brand, STROKE, btn, btnQuiet, input } from "../ui";
 import { finishAdminLogin, startAdminLogin } from "./actions";
 
 /**
@@ -138,85 +140,127 @@ function LoginForm() {
   };
 
   const codeForm = (
-    <form onSubmit={submitCode} className="mt-6 space-y-3">
-      <input
-        type="text"
-        required
-        inputMode="numeric"
-        autoComplete="one-time-code"
-        maxLength={6}
-        placeholder="000000"
-        value={code}
-        onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-        className="w-full rounded-xl border border-sand-300 bg-cream-50 px-4 py-3 text-center text-lg tracking-[0.4em]"
-      />
-      <button
-        type="submit"
-        disabled={busy || code.length !== 6}
-        className="w-full rounded-full bg-espresso-900 px-4 py-3 text-sm font-semibold text-cream-50 disabled:opacity-50"
-      >
+    <form onSubmit={submitCode} className="mt-5 space-y-3">
+      <label className="block">
+        <span className="text-[13px] font-semibold text-app-ink">Šešių skaitmenų kodas</span>
+        <input
+          type="text"
+          required
+          inputMode="numeric"
+          autoComplete="one-time-code"
+          autoFocus
+          maxLength={6}
+          placeholder="000000"
+          value={code}
+          onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+          className={`${input} mt-2 h-14 text-center font-semibold text-xl tabular-nums tracking-[0.4em]`}
+        />
+      </label>
+      <button type="submit" disabled={busy || code.length !== 6} className={`${btn} h-12 w-full`}>
         Patvirtinti
+        <ArrowRight size={16} strokeWidth={STROKE} aria-hidden />
       </button>
-      <button
-        type="button"
-        onClick={startOver}
-        disabled={busy}
-        className="w-full text-center text-xs font-semibold text-espresso-500 disabled:opacity-50"
-      >
+      <button type="button" onClick={startOver} disabled={busy} className={`${btnQuiet} w-full`}>
         Pradėti iš naujo
       </button>
     </form>
   );
 
+  // Du žingsniai, ne trys: įsijungimas ir kodas žmogui yra tas pats „antras veiksnys".
+  const stepIndex = step === "password" ? 0 : 1;
+
   return (
-    <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center px-4 py-16">
-      <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta-500">Gloumi</p>
-      <h1 className="mt-1 font-serif text-3xl text-espresso-900">Administravimas</h1>
+    <AuthShell footnote="Tik Gloumi komandai. Po kelių nesėkmingų bandymų paskyra laikinai užrakinama.">
+      <Brand />
+      <h1 className="mt-6 font-app-serif text-[26px] leading-tight text-app-ink">
+        {step === "password" ? "Prisijungimas" : step === "enroll" ? "Antras veiksnys" : "Kodas"}
+      </h1>
+
+      <ol className="mt-4 flex items-center gap-2 text-xs font-semibold" aria-label="Prisijungimo žingsniai">
+        {["Slaptažodis", "Kodas"].map((label, i) => (
+          <li key={label} className="flex items-center gap-2" aria-current={i === stepIndex ? "step" : undefined}>
+            {i > 0 ? <span aria-hidden className="h-px w-6 bg-app-border" /> : null}
+            <span
+              className={`flex h-6 w-6 items-center justify-center rounded-full text-[11px] tabular-nums ${
+                i < stepIndex
+                  ? "bg-app-ok-bg text-app-ok"
+                  : i === stepIndex
+                    ? "border-[1.5px] border-app-accent text-app-accent"
+                    : "bg-app-input text-app-faint"
+              }`}
+            >
+              {i + 1}
+            </span>
+            <span className={i === stepIndex ? "text-app-ink" : "text-app-faint"}>{label}</span>
+          </li>
+        ))}
+      </ol>
 
       {error ? (
-        <p role="alert" className="mt-4 text-sm font-semibold text-terracotta-500">
+        <p
+          role="alert"
+          className="mt-5 flex items-start gap-2 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text"
+        >
+          <CircleAlert size={18} strokeWidth={STROKE} aria-hidden className="mt-px shrink-0" />
           {error}
         </p>
       ) : null}
 
       {step === "password" ? (
-        <form onSubmit={submitPassword} className="mt-6 space-y-3">
-          <input
-            type="text"
-            required
-            autoComplete="username"
-            autoCapitalize="none"
-            spellCheck={false}
-            placeholder="Administratorius (admin.vardas)"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="w-full rounded-xl border border-sand-300 bg-cream-50 px-4 py-3 text-sm"
-          />
-          <input
-            type="password"
-            required
-            autoComplete="current-password"
-            placeholder="Slaptažodis"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-xl border border-sand-300 bg-cream-50 px-4 py-3 text-sm"
-          />
-          <button
-            type="submit"
-            disabled={busy}
-            className="w-full rounded-full bg-espresso-900 px-4 py-3 text-sm font-semibold text-cream-50 disabled:opacity-50"
-          >
+        <form onSubmit={submitPassword} className="mt-5 space-y-4">
+          <label className="block">
+            <span className="text-[13px] font-semibold text-app-ink">Administratorius</span>
+            <span className="relative mt-2 block">
+              <UserRound
+                size={18}
+                strokeWidth={STROKE}
+                aria-hidden
+                className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-app-faint"
+              />
+              <input
+                type="text"
+                required
+                autoComplete="username"
+                autoCapitalize="none"
+                spellCheck={false}
+                placeholder="admin.vardas"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className={`${input} pl-11`}
+              />
+            </span>
+          </label>
+          <label className="block">
+            <span className="text-[13px] font-semibold text-app-ink">Slaptažodis</span>
+            <span className="relative mt-2 block">
+              <Lock
+                size={18}
+                strokeWidth={STROKE}
+                aria-hidden
+                className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-app-faint"
+              />
+              <input
+                type="password"
+                required
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={`${input} pl-11`}
+              />
+            </span>
+          </label>
+          <button type="submit" disabled={busy} className={`${btn} h-12 w-full`}>
             Toliau
+            <ArrowRight size={16} strokeWidth={STROKE} aria-hidden />
           </button>
         </form>
       ) : null}
 
       {step === "enroll" ? (
-        <div className="mt-6">
-          <p className="text-sm leading-relaxed text-espresso-600">
-            Ši paskyra dar neturi antro veiksnio. Nuskenuokite kodą
-            autentifikatoriumi (Google Authenticator, 1Password, Bitwarden) ir įveskite
-            šešiaženklį skaičių.
+        <div className="mt-5">
+          <p className="text-sm leading-relaxed text-app-body">
+            Ši paskyra dar neturi antro veiksnio. Nuskenuokite kodą autentifikatoriumi (Google Authenticator,
+            1Password, Bitwarden) ir įveskite šešiaženklį skaičių.
           </p>
           {qr ? (
             <Image
@@ -225,12 +269,12 @@ function LoginForm() {
               width={200}
               height={200}
               unoptimized
-              className="mx-auto mt-4 h-50 w-50 rounded-xl border border-sand-300 bg-white p-2"
+              className="mx-auto mt-5 h-50 w-50 rounded-[18px] bg-white p-2 ring-1 ring-app-border"
             />
           ) : null}
           {secret ? (
-            <p className="mt-3 break-all text-center text-xs text-espresso-500">
-              Jei skeneris neveikia, įveskite ranka: <code>{secret}</code>
+            <p className="mt-3 text-center text-xs break-all text-app-muted">
+              Jei skeneris neveikia, įveskite ranka: <code className="text-app-ink">{secret}</code>
             </p>
           ) : null}
           {codeForm}
@@ -238,12 +282,12 @@ function LoginForm() {
       ) : null}
 
       {step === "code" ? (
-        <div className="mt-6">
-          <p className="text-sm text-espresso-600">Įveskite kodą iš autentifikatoriaus.</p>
+        <div className="mt-5">
+          <p className="text-sm text-app-body">Įveskite kodą iš autentifikatoriaus programėlės.</p>
           {codeForm}
         </div>
       ) : null}
-    </main>
+    </AuthShell>
   );
 }
 

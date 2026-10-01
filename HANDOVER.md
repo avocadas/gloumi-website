@@ -67,11 +67,33 @@ transakcijoje:
 | `setSuspended` | GoTrue `ban_duration` + `log_admin_action` — vienintelė dviejų žingsnių vieta |
 
 **Duomenys:** `src/lib/admin-data.ts` (`server-only`) — `loadCatalog`,
-`searchTable`, `mediaIdsOf`, `signMedia`. **Vaizdas:** `AdminHeader.tsx`,
-`format.ts` (bendras serveriui ir klientui), `data/page.tsx`,
-`data/RowCard.tsx`, `users/[id]/page.tsx`, `users/[id]/AccountActions.tsx`;
-skundų eilė — `page.tsx` ir `ReportCard.tsx` (kortelėje nuoroda į autoriaus
-paskyrą).
+`searchTable`, `mediaIdsOf`, `signMedia`. Puslapiai (`page.tsx`) nuo
+2026-10-01 tik gauna duomenis, o išdėsto atskiri komponentai, kuriuos galima
+nupiešti ir su netikrais duomenimis (žr. „Išvaizda“ žemiau):
+
+| puslapis | išdėstymas |
+|---|---|
+| `admin/page.tsx` (skundai) | `ReportQueue.tsx` → `ReportCard.tsx` |
+| `data/page.tsx` | `data/CatalogIndex.tsx` (pradžia), `data/TableResults.tsx` → `data/RowCard.tsx` |
+| `users/[id]/page.tsx` | `users/[id]/UserOverview.tsx` → `AccountActions.tsx`, `CopyButton.tsx` |
+| visi | `AdminShell.tsx` (buvo `AdminHeader.tsx`), `ui.tsx`, `ConfirmDialog.tsx`, `format.ts` |
+
+**Išvaizda (2026-10-01, #129):** portalas kalba programėlės dizainu, ne
+rinkodaros puslapio: Figtree + Source Serif 4 (`fonts.ts` `adminFontVariables`),
+`--color-app-*` žetonai `globals.css` (perrašyti iš `gloumi-app/src/theme/theme.js`
+su tais pačiais vardais komentaruose — pasikeitus programėlei, keisti ir čia).
+Pastelinis antgalvis su skrituliais kiekvienam skyriui (skundai rožinė,
+duomenys levandinė, paskyra mėtinė), balta skirtukų kapsulė (telefone
+apačioje), kortelės su šešėliu, mygtukai balti su juodu apvadu (#130 — juodo
+užpildo nėra). Trynimas ir blokavimas klausia viename `<dialog>` lange
+(`useConfirm`), ne `window.confirm` + `window.prompt`. Žymų rašalas tamsesnis
+už programėlės žetonus, nes 10 px raidės ten davė 4,25–4,41 kontrasto
+(`ui.tsx`). **Pamatyti neprisijungus:** laikinas `src/app/admin-preview/`
+(savas `layout.tsx` kaip `admin/layout.tsx` + `page.tsx`, kuris su netikrais
+duomenimis piešia `AdminShell` ir aukščiau išvardytus komponentus) — už
+`middleware` ribų, tad be `.env.local`; `.claude/launch.json` „gloumi-website“
+(3100). PRIEŠ commit'ą katalogą ištrinti ir dar `.next/dev/types`, kitaip
+`npm run check` krenta dėl pasenusių maršrutų tipų.
 
 **Gloumi pusė:** migracijos `20260930165140` (administratorius nebe
 programėlės paskyra), `20260930210151` (užraktas), `20260930211143` (žurnalo

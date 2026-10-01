@@ -1,4 +1,6 @@
+import { ArrowRight } from "lucide-react";
 import { signOutAdmin } from "./sign-out";
+import { AuthShell, Brand, STROKE, btn, btnQuiet } from "./ui";
 
 /**
  * Shown to a real admin whose session has not been raised to `aal2`.
@@ -28,29 +30,27 @@ import { signOutAdmin } from "./sign-out";
 export function MfaNotice({ reason }: { reason: "mfa-required" | "expired" }) {
   const expired = reason === "expired";
   return (
-    <main className="mx-auto flex w-full max-w-lg flex-1 flex-col justify-center px-4 py-16">
-      <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta-500">Gloumi</p>
-      <h1 className="mt-1 font-serif text-3xl text-espresso-900">
+    <AuthShell>
+      <Brand />
+      <h1 className="mt-6 font-app-serif text-[26px] leading-tight text-app-ink">
         {expired ? "Sesija baigėsi" : "Reikalingas antras veiksnys"}
       </h1>
-      <p className="mt-4 text-sm leading-relaxed text-espresso-600">
+      <p className="mt-3 text-sm leading-relaxed text-app-body">
         {expired
           ? "Administravimo skydelis po prisijungimo atviras 12 valandų. Prisijunkite iš naujo slaptažodžiu ir kodu iš autentifikatoriaus."
           : "Jūsų paskyra yra administratorių sąraše, bet šis seansas patvirtintas tik slaptažodžiu. Administravimo skydelis atsidaro tik patvirtinus kodu iš autentifikatoriaus."}
       </p>
-      <a
-        href="/admin/login"
-        className="mt-6 inline-block rounded-full bg-espresso-900 px-5 py-3 text-center text-sm font-semibold text-cream-50"
-      >
+      <a href="/admin/login" className={`${btn} mt-6 h-12 w-full`}>
         Prisijungti iš naujo
+        <ArrowRight size={16} strokeWidth={STROKE} aria-hidden />
       </a>
       {/* Čia žmogus lieka su pasenusia ar vien slaptažodžio sesija — būtent
           tokią ir turi būti galima užbaigti, o ne tik perrašyti nauja. */}
-      <form action={signOutAdmin} className="mt-3 text-center">
-        <button type="submit" className="text-sm font-semibold text-espresso-600 underline">
+      <form action={signOutAdmin} className="mt-2">
+        <button type="submit" className={`${btnQuiet} w-full`}>
           Atsijungti
         </button>
       </form>
-    </main>
+    </AuthShell>
   );
 }

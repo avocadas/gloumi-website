@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { Ban, CircleCheck, Trash2, UserRound, X } from "lucide-react";
 import { moderate, setSuspended } from "./actions";
+import { useConfirm, type ConfirmOptions } from "./ConfirmDialog";
+import { formatWhen } from "./format";
+import { STROKE, Tag, btn, btnDanger, btnQuiet, card, eyebrow } from "./ui";
 
 export type ReportView = {
   id: string;
@@ -12,6 +16,7 @@ export type ReportView = {
   createdAt: string;
   status: string;
   reporterName: string | null;
+  reporterId: string | null;
   preview: string | null;
   authorId: string | null;
 };
@@ -22,6 +27,20 @@ const TARGET_LABEL: Record<string, string> = {
   story: "Story",
   message: "Žinutė",
   profile: "Profilis",
+};
+
+const TARGET_TONE: Record<string, "rose" | "lavender" | "mint"> = {
+  post: "rose",
+  comment: "rose",
+  story: "rose",
+  message: "lavender",
+  profile: "mint",
+};
+
+const STATUS_TAG: Record<string, { label: string; tone: "warn" | "ok" | "neutral" }> = {
+  open: { label: "Atviras", tone: "warn" },
+  reviewed: { label: "Peržiūrėtas", tone: "ok" },
+  dismissed: { label: "Atmestas", tone: "neutral" },
 };
 
 /**
@@ -41,116 +60,164 @@ const TARGET_LABEL: Record<string, string> = {
  * the content was already gone, the operator has to know that the button did
  * nothing. Hiding that would leave them believing they cleaned something up.
  */
+/*
+ * Kortelės sandara visada ta pati: kas ir kada → kodėl pranešta → koks
+ * turinys → kieno jis → veiksmai. Veiksmai padalyti į dvi grupes: kairėje
+ * tie, kurie tik uždaro skundą, dešinėje — tie, kurie ką nors ištrina ar
+ * užblokuoja, kad greitai skaitant ranka nenukryptų ne į tą pusę.
+ */
 export function ReportCard({ report }: { report: ReportView }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [done, setDone] = useState(false);
+  const [done, setDone] = useState<string | null>(null);
+  const [dialog, ask] = useConfirm();
 
-  const run = (fn: () => Promise<{ ok: true } | { ok: false; error: string }>, confirmText?: string) => {
-    if (confirmText && !window.confirm(confirmText)) return;
+  const run = async (
+    fn: () => Promise<{ ok: true } | { ok: false; error: string }>,
+    doneText: string,
+    confirm?: ConfirmOptions,
+  ) => {
+    if (confirm && !(await ask(confirm))) return;
     setError(null);
     startTransition(async () => {
       const res = await fn();
-      if (res.ok) setDone(true);
+      if (res.ok) setDone(doneText);
       else setError(res.error);
     });
   };
 
   const canDelete = report.targetType === "post" || report.targetType === "comment";
   const deleteAction = report.targetType === "post" ? "delete_post" : "delete_comment";
+  const status = STATUS_TAG[report.status];
 
   return (
-    <article
-      className={`rounded-2xl border border-sand-300 bg-cream-50 p-5 ${done ? "opacity-50" : ""}`}
-    >
-      <div className="flex flex-wrap items-center gap-2 text-xs text-espresso-500">
-        <span className="rounded bg-sand-200 px-2 py-1 font-bold uppercase tracking-wide text-espresso-700">
-          {TARGET_LABEL[report.targetType] ?? report.targetType}
-        </span>
-        <span>{new Date(report.createdAt).toLocaleString("lt-LT")}</span>
-        {report.reporterName ? <span>· pranešė {report.reporterName}</span> : null}
+    <article className={`${card} p-5 transition-opacity sm:p-6 ${done ? "opacity-60" : ""}`}>
+      {dialog}
+      <header className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <Tag tone={TARGET_TONE[report.targetType] ?? "neutral"}>
+            {TARGET_LABEL[report.targetType] ?? report.targetType}
+          </Tag>
+          {status ? <Tag tone={status.tone}>{status.label}</Tag> : null}
+          {done ? <Tag tone="dark">{done}</Tag> : null}
+        </div>
+        <time dateTime={report.createdAt} className="text-xs tabular-nums text-app-muted">
+          {formatWhen(report.createdAt)}
+        </time>
+      </header>
+
+      <h3 className="mt-3 text-[15px] font-bold text-app-ink">{report.reason || "Priežastis nenurodyta"}</h3>
+      {report.details ? <p className="mt-1 text-sm leading-relaxed text-app-body">{report.details}</p> : null}
+
+      <div className="mt-4 rounded-[14px] bg-app-sheet p-4">
+        <p className={`${eyebrow} text-app-muted`}>Turinys</p>
+        {report.preview !== null ? (
+          <p className="mt-1.5 whitespace-pre-wrap break-words text-sm text-app-ink">{report.preview}</p>
+        ) : (
+          <p className="mt-1.5 text-sm italic text-app-muted">Turinio nebėra — jis jau ištrintas.</p>
+        )}
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-app-muted">
+        {report.reporterName || report.reporterId ? (
+          <span>
+            Pranešė{" "}
+            {report.reporterId ? (
+              <a href={`/admin/users/${report.reporterId}`} className="font-semibold text-app-ink hover:underline">
+                {report.reporterName ?? "naudotojas"}
+              </a>
+            ) : (
+              <span className="font-semibold text-app-ink">{report.reporterName}</span>
+            )}
+          </span>
+        ) : null}
         {report.authorId ? (
           <a
             href={`/admin/users/${report.authorId}`}
-            className="font-semibold text-terracotta-600 hover:underline"
+            className="inline-flex items-center gap-1 font-semibold text-app-ink hover:underline"
           >
-            · autoriaus paskyra
+            <UserRound size={13} strokeWidth={STROKE} aria-hidden />
+            Autoriaus paskyra
           </a>
         ) : null}
       </div>
 
-      {report.reason ? (
-        <p className="mt-3 text-sm font-semibold text-espresso-900">{report.reason}</p>
-      ) : null}
-      {report.details ? (
-        <p className="mt-1 text-sm text-espresso-600">{report.details}</p>
-      ) : null}
-
-      <p className="mt-3 rounded-xl bg-cream-200 p-3 text-sm text-espresso-700">
-        {report.preview ?? "Turinio nebėra — jis jau ištrintas."}
-      </p>
-
       {error ? (
-        <p role="alert" className="mt-3 text-sm font-semibold text-terracotta-500">
+        <p role="alert" className="mt-4 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
           {error}
         </p>
       ) : null}
 
-      {done ? (
-        <p className="mt-3 text-sm font-semibold text-espresso-600">Atlikta.</p>
-      ) : (
-        <div className="mt-4 flex flex-wrap gap-2">
-          {canDelete && report.preview !== null ? (
+      {!done ? (
+        <footer className="mt-5 flex flex-col gap-2 border-t border-app-hairline pt-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap gap-2">
             <button
               type="button"
               disabled={pending}
-              onClick={() =>
-                run(
-                  () => moderate(deleteAction, report.targetId),
-                  "Ištrinti šį turinį? Jis bus pašalintas visiems, ir atšaukti negalima.",
-                )
-              }
-              className="rounded-full bg-espresso-900 px-4 py-2 text-sm font-semibold text-cream-50 disabled:opacity-50"
+              onClick={() => run(() => moderate("review_report", report.id), "Peržiūrėta")}
+              className={btn}
             >
-              Ištrinti turinį
+              <CircleCheck size={16} strokeWidth={STROKE} aria-hidden />
+              Peržiūrėta
             </button>
-          ) : null}
-
-          <button
-            type="button"
-            disabled={pending}
-            onClick={() => run(() => moderate("review_report", report.id))}
-            className="rounded-full border border-sand-400 px-4 py-2 text-sm font-semibold text-espresso-700 disabled:opacity-50"
-          >
-            Pažymėti peržiūrėtu
-          </button>
-
-          <button
-            type="button"
-            disabled={pending}
-            onClick={() => run(() => moderate("dismiss_report", report.id))}
-            className="rounded-full border border-sand-400 px-4 py-2 text-sm font-semibold text-espresso-700 disabled:opacity-50"
-          >
-            Atmesti pranešimą
-          </button>
-
-          {report.authorId ? (
             <button
               type="button"
               disabled={pending}
-              onClick={() =>
-                run(
-                  () => setSuspended(report.authorId!, true),
-                  "Sustabdyti šią paskyrą? Žmogus nebegalės prisijungti, o esami seansai nustos galioti.",
-                )
-              }
-              className="rounded-full border border-terracotta-400 px-4 py-2 text-sm font-semibold text-terracotta-500 disabled:opacity-50"
+              onClick={() => run(() => moderate("dismiss_report", report.id), "Atmesta")}
+              className={btnQuiet}
             >
-              Sustabdyti autorių
+              <X size={16} strokeWidth={STROKE} aria-hidden />
+              Atmesti skundą
             </button>
-          ) : null}
-        </div>
-      )}
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {canDelete && report.preview !== null ? (
+              <button
+                type="button"
+                disabled={pending}
+                onClick={() =>
+                  run(() => moderate(deleteAction, report.targetId), "Turinys ištrintas", {
+                    title: report.targetType === "post" ? "Ištrinti įrašą?" : "Ištrinti komentarą?",
+                    body: [
+                      "Jis bus pašalintas visiems, ir atšaukti negalima.",
+                      "Veiksmas įrašomas į administratorių žurnalą.",
+                    ],
+                    confirmLabel: "Ištrinti",
+                    danger: true,
+                  })
+                }
+                className={btnDanger}
+              >
+                <Trash2 size={16} strokeWidth={STROKE} aria-hidden />
+                Ištrinti turinį
+              </button>
+            ) : null}
+
+            {report.authorId ? (
+              <button
+                type="button"
+                disabled={pending}
+                onClick={() =>
+                  run(() => setSuspended(report.authorId!, true), "Autorius užblokuotas", {
+                    title: "Užblokuoti autorių?",
+                    body: [
+                      "Žmogus nebegalės prisijungti, o esami seansai nustos galioti.",
+                      "Atblokuoti galima jo paskyros puslapyje.",
+                    ],
+                    confirmLabel: "Užblokuoti",
+                    danger: true,
+                  })
+                }
+                className={btnDanger}
+              >
+                <Ban size={16} strokeWidth={STROKE} aria-hidden />
+                Užblokuoti autorių
+              </button>
+            ) : null}
+          </div>
+        </footer>
+      ) : null}
     </article>
   );
 }

@@ -1,9 +1,12 @@
 "use client";
 
 import { Fragment, useState, useTransition } from "react";
+import { ChevronDown, Clock, ImageOff, Pencil, Trash2, UserRound } from "lucide-react";
 import type { CatalogKind, DataRow, SignedMedia } from "@/lib/admin-data";
 import { editText, removeRow } from "../actions";
-import { formatValue, UUID_PATTERN } from "../format";
+import { useConfirm } from "../ConfirmDialog";
+import { UUID_PATTERN, columnLabel, formatValue, formatWhen, ownerLabel } from "../format";
+import { STROKE, Tag, btn, btnDanger, btnQuiet, card, eyebrow, input } from "../ui";
 
 type Props = {
   table: string;
@@ -18,16 +21,14 @@ type Props = {
 };
 
 /*
- * Viena naršyklės eilutė (#129): nuotraukos, svarbiausi tekstai, visi laukai
- * ir veiksmai.
+ * Viena naršyklės eilutė (#129). Sandara visada ta pati, kad keliasdešimt
+ * kortelių iš eilės būtų skaitomos akimis, ne perskaitomos:
+ * kada ir kieno → nuotraukos ir svarbiausi tekstai → visi laukai → veiksmai.
  *
- * Kodėl trynimas klausia du kartus — patvirtinimo ir priežasties: kortelių
- * sąrašas skaitomas greitai, o būtent tokioje vietoje ir pataikoma ne ten.
- * Atšaukus priežasties langą, trynimas atšaukiamas: tai paskutinė proga
- * apsigalvoti, ne formalumas.
- *
- * Nepavykęs veiksmas rodomas, ne nutylimas: `row_not_found` reiškia, kad
- * mygtukas nieko nepadarė, ir administratorius turi tai žinoti.
+ * Trynimas klausia viename lange (`useConfirm`): ką trinsi, kas dingsta
+ * kartu ir kodėl — atšaukus langą, trynimas atšaukiamas. Nepavykęs veiksmas
+ * rodomas, ne nutylimas: `row_not_found` reiškia, kad mygtukas nieko
+ * nepadarė, ir administratorius turi tai žinoti.
  */
 export function RowCard({
   table,
@@ -44,8 +45,10 @@ export function RowCard({
   const [error, setError] = useState<string | null>(null);
   const [removed, setRemoved] = useState(false);
   const [editing, setEditing] = useState<string | null>(null);
+  const [saved, setSaved] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
   const [reason, setReason] = useState("");
+  const [dialog, ask] = useConfirm();
 
   const { row, key } = entry;
   const canRemove = kind === "content";
@@ -53,22 +56,21 @@ export function RowCard({
   const stamp = row.created_at ?? row.updated_at;
   const texts = highlightCols.filter((c) => c in row);
   const ownerLinks = owners.filter((c) => typeof row[c] === "string" && UUID_PATTERN.test(row[c] as string));
+  const fields = Object.entries(row);
 
-  const remove = () => {
-    const warning = [
-      "Ištrinti šią eilutę visam laikui?",
-      cascadeNote,
-      "Ištrinta eilutė įrašoma į administratorių žurnalą.",
-    ]
-      .filter(Boolean)
-      .join("\n\n");
-    if (!window.confirm(warning)) return;
-    const why = window.prompt("Priežastis (nebūtina, matys tik administratoriai):", "");
-    if (why === null) return;
+  const remove = async () => {
+    const answer = await ask({
+      title: "Ištrinti šią eilutę?",
+      body: [cascadeNote, "Ištrinta eilutė įrašoma į administratorių žurnalą, bet atstatyti jos negalima."],
+      confirmLabel: "Ištrinti",
+      danger: true,
+      reason: true,
+    });
+    if (!answer) return;
 
     setError(null);
     startTransition(async () => {
-      const res = await removeRow(table, key, why);
+      const res = await removeRow(table, key, answer.reason);
       if (res.ok) setRemoved(true);
       else setError(res.error);
     });
@@ -78,6 +80,7 @@ export function RowCard({
     setEditing(column);
     setDraft(typeof row[column] === "string" ? (row[column] as string) : "");
     setReason("");
+    setSaved(null);
     setError(null);
   };
 
@@ -87,149 +90,170 @@ export function RowCard({
     setError(null);
     startTransition(async () => {
       const res = await editText(table, key, column, draft, reason);
-      if (res.ok) setEditing(null);
-      else setError(res.error);
+      if (res.ok) {
+        setEditing(null);
+        setSaved(column);
+      } else setError(res.error);
     });
   };
 
   return (
-    <article className={`rounded-2xl border border-sand-300 bg-cream-50 p-5 ${removed ? "opacity-50" : ""}`}>
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-espresso-500">
-        {stamp ? <span>{formatValue(stamp)}</span> : null}
-        {ownerLinks.map((c) => (
-          <a
-            key={c}
-            href={`/admin/users/${row[c] as string}`}
-            className="font-semibold text-terracotta-600 hover:underline"
-          >
-            {c} → paskyra
-          </a>
-        ))}
-      </div>
-
-      {mediaIds.length > 0 ? (
-        <div className="mt-3 flex flex-wrap gap-3">
-          {mediaIds.map((id) => (
-            <MediaPreview key={id} signed={media[id]} />
+    <article className={`${card} p-5 transition-opacity sm:p-6 ${removed ? "opacity-60" : ""}`}>
+      {dialog}
+      <header className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {ownerLinks.map((c) => (
+            <a
+              key={c}
+              href={`/admin/users/${row[c] as string}`}
+              title="Atidaryti paskyrą"
+              className="inline-flex h-7 items-center gap-1.5 rounded-full bg-app-sheet px-2.5 text-xs font-semibold text-app-ink transition-colors hover:bg-app-input"
+            >
+              <UserRound size={13} strokeWidth={STROKE} aria-hidden />
+              {ownerLabel(c)}
+            </a>
           ))}
+          {removed ? <Tag tone="danger">Ištrinta</Tag> : null}
+        </div>
+        {stamp ? (
+          <span className="inline-flex items-center gap-1 text-xs tabular-nums text-app-muted">
+            <Clock size={13} strokeWidth={STROKE} aria-hidden />
+            {formatWhen(stamp)}
+          </span>
+        ) : null}
+      </header>
+
+      {mediaIds.length > 0 || texts.length > 0 ? (
+        <div className="mt-4 flex flex-col gap-5 sm:flex-row">
+          {mediaIds.length > 0 ? (
+            <div className="flex shrink-0 flex-wrap gap-2 sm:w-[136px]">
+              {mediaIds.map((id) => (
+                <MediaPreview key={id} signed={media[id]} />
+              ))}
+            </div>
+          ) : null}
+
+          {texts.length > 0 ? (
+            <dl className="min-w-0 flex-1 space-y-4">
+              {texts.map((c) => (
+                <div key={c}>
+                  <dt className="flex items-center justify-between gap-3">
+                    <span className={`${eyebrow} text-app-muted`} title={c}>
+                      {columnLabel(c)}
+                    </span>
+                    {canEdit && editCols.includes(c) && !removed && editing !== c ? (
+                      <button
+                        type="button"
+                        disabled={pending}
+                        onClick={() => startEdit(c)}
+                        className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold text-app-body transition-colors hover:bg-app-input disabled:opacity-40"
+                      >
+                        <Pencil size={13} strokeWidth={STROKE} aria-hidden />
+                        Taisyti
+                      </button>
+                    ) : saved === c ? (
+                      <Tag tone="ok">Išsaugota</Tag>
+                    ) : null}
+                  </dt>
+                  {editing === c ? (
+                    <dd className="mt-2 space-y-2">
+                      <textarea
+                        value={draft}
+                        onChange={(e) => setDraft(e.target.value)}
+                        maxLength={5000}
+                        rows={4}
+                        autoFocus
+                        aria-label={`Naujas tekstas: ${columnLabel(c)}`}
+                        className={`${input} h-auto resize-y py-3 leading-relaxed`}
+                      />
+                      <input
+                        value={reason}
+                        onChange={(e) => setReason(e.target.value)}
+                        maxLength={500}
+                        placeholder="Priežastis (nebūtina, matys tik administratoriai)"
+                        aria-label="Taisymo priežastis"
+                        className={input}
+                      />
+                      <div className="flex justify-end gap-2">
+                        <button type="button" disabled={pending} onClick={() => setEditing(null)} className={btnQuiet}>
+                          Atšaukti
+                        </button>
+                        <button type="button" disabled={pending} onClick={save} className={btn}>
+                          Išsaugoti
+                        </button>
+                      </div>
+                    </dd>
+                  ) : (
+                    <dd className="mt-1 max-h-48 overflow-y-auto text-sm leading-relaxed whitespace-pre-wrap break-words text-app-ink">
+                      {formatValue(row[c])}
+                    </dd>
+                  )}
+                </div>
+              ))}
+            </dl>
+          ) : null}
         </div>
       ) : null}
 
-      {texts.length > 0 ? (
-        <dl className="mt-3 space-y-3">
-          {texts.map((c) => (
-            <div key={c}>
-              <dt className="text-xs font-bold uppercase tracking-wide text-espresso-500">{c}</dt>
-              {editing === c ? (
-                <dd className="mt-1 space-y-2">
-                  <textarea
-                    value={draft}
-                    onChange={(e) => setDraft(e.target.value)}
-                    maxLength={5000}
-                    rows={4}
-                    aria-label={`Naujas ${c} tekstas`}
-                    className="w-full rounded-xl border border-sand-300 bg-white p-3 text-sm text-espresso-900"
-                  />
-                  <input
-                    value={reason}
-                    onChange={(e) => setReason(e.target.value)}
-                    maxLength={500}
-                    placeholder="Priežastis (nebūtina)"
-                    aria-label="Taisymo priežastis"
-                    className="w-full rounded-full border border-sand-300 bg-white px-4 py-2 text-sm text-espresso-900 placeholder:text-espresso-400"
-                  />
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      disabled={pending}
-                      onClick={save}
-                      className="rounded-full bg-espresso-900 px-4 py-2 text-sm font-semibold text-cream-50 disabled:opacity-50"
-                    >
-                      Išsaugoti
-                    </button>
-                    <button
-                      type="button"
-                      disabled={pending}
-                      onClick={() => setEditing(null)}
-                      className="rounded-full border border-sand-400 px-4 py-2 text-sm font-semibold text-espresso-700 disabled:opacity-50"
-                    >
-                      Atšaukti
-                    </button>
-                  </div>
-                </dd>
-              ) : (
-                <dd className="mt-1 flex items-start justify-between gap-3">
-                  <span className="max-h-48 min-w-0 flex-1 overflow-y-auto whitespace-pre-wrap break-words text-sm text-espresso-900">
-                    {formatValue(row[c])}
-                  </span>
-                  {canEdit && editCols.includes(c) && !removed ? (
-                    <button
-                      type="button"
-                      disabled={pending}
-                      onClick={() => startEdit(c)}
-                      className="shrink-0 text-sm font-semibold text-terracotta-600 hover:underline disabled:opacity-50"
-                    >
-                      Taisyti
-                    </button>
-                  ) : null}
-                </dd>
-              )}
-            </div>
-          ))}
-        </dl>
-      ) : null}
-
-      <details className="mt-3">
-        <summary className="cursor-pointer text-sm font-semibold text-espresso-600">
-          Visi laukai ({Object.keys(row).length})
+      <details className="group mt-4 rounded-[14px] bg-app-surface">
+        <summary className="flex cursor-pointer list-none items-center gap-1.5 px-4 py-2.5 text-[13px] font-semibold text-app-body [&::-webkit-details-marker]:hidden">
+          <span>Visi laukai</span>
+          <span className="tabular-nums text-app-faint">({fields.length})</span>
+          <ChevronDown
+            size={16}
+            strokeWidth={STROKE}
+            aria-hidden
+            className="ml-auto text-app-faint transition-transform group-open:rotate-180"
+          />
         </summary>
-        <dl className="mt-2 grid grid-cols-1 gap-x-4 gap-y-1 text-xs sm:grid-cols-[minmax(0,12rem)_1fr]">
-          {Object.entries(row).map(([col, value]) => (
+        <dl className="grid grid-cols-1 border-t border-app-hairline px-4 py-3 text-xs sm:grid-cols-[minmax(0,11rem)_1fr]">
+          {fields.map(([col, value]) => (
             <Fragment key={col}>
-              <dt className="font-semibold text-espresso-600">{col}</dt>
-              <dd className="min-w-0 whitespace-pre-wrap break-words text-espresso-900">{formatValue(value)}</dd>
+              <dt className="pt-2 font-mono text-[11px] text-app-faint sm:border-b sm:border-app-hairline sm:pb-2 sm:last-of-type:border-0">
+                {col}
+              </dt>
+              <dd className="min-w-0 border-b border-app-hairline pb-2 whitespace-pre-wrap break-words text-app-ink last-of-type:border-0 sm:pt-2">
+                {formatValue(value)}
+              </dd>
             </Fragment>
           ))}
         </dl>
       </details>
 
       {error ? (
-        <p role="alert" className="mt-3 text-sm font-semibold text-terracotta-500">
+        <p role="alert" className="mt-4 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
           {error}
         </p>
       ) : null}
 
-      {removed ? (
-        <p className="mt-3 text-sm font-semibold text-espresso-600">Ištrinta.</p>
-      ) : canRemove ? (
-        <div className="mt-4">
-          <button
-            type="button"
-            disabled={pending}
-            onClick={remove}
-            className="rounded-full bg-terracotta-600 px-4 py-2 text-sm font-semibold text-white hover:bg-terracotta-700 disabled:opacity-50"
-          >
+      {canRemove && !removed ? (
+        <footer className="mt-4 flex justify-end border-t border-app-hairline pt-4">
+          <button type="button" disabled={pending} onClick={remove} className={btnDanger}>
+            <Trash2 size={16} strokeWidth={STROKE} aria-hidden />
             Ištrinti
           </button>
-        </div>
+        </footer>
       ) : null}
     </article>
   );
 }
 
+/** Įrašo kadras 4:5 (`theme.js` `POST_ASPECT`) — tas pats, kurį mato programėlė. */
 function MediaPreview({ signed }: { signed: SignedMedia | undefined }) {
+  const box = "aspect-[4/5] w-[136px] rounded-[14px] bg-app-input";
   if (!signed) {
     return (
-      <span className="flex h-32 w-32 items-center justify-center rounded-xl bg-sand-200 p-2 text-center text-xs text-espresso-600">
+      <span className={`${box} flex flex-col items-center justify-center gap-1.5 p-3 text-center text-[11px] text-app-muted`}>
+        <ImageOff size={20} strokeWidth={STROKE} aria-hidden className="text-app-faint" />
         Peržiūra nepasiekiama
       </span>
     );
   }
   if (signed.contentType.startsWith("video/")) {
-    return <video src={signed.url} controls preload="metadata" className="h-48 max-w-full rounded-xl bg-sand-200" />;
+    return <video src={signed.url} controls preload="metadata" className={`${box} object-cover`} />;
   }
   if (signed.contentType.startsWith("audio/")) {
-    return <audio src={signed.url} controls preload="none" className="max-w-full" />;
+    return <audio src={signed.url} controls preload="none" className="w-full" />;
   }
   return (
     <a href={signed.url} target="_blank" rel="noopener noreferrer" title="Atidaryti visą">
@@ -240,7 +264,7 @@ function MediaPreview({ signed }: { signed: SignedMedia | undefined }) {
         loading="lazy"
         decoding="async"
         referrerPolicy="no-referrer"
-        className="h-48 w-auto max-w-full rounded-xl bg-sand-200 object-cover"
+        className={`${box} object-cover transition-opacity hover:opacity-90`}
       />
     </a>
   );

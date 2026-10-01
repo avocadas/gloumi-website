@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
 import { checkAdmin } from "@/lib/admin-guard";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { ReportCard, type ReportView } from "./ReportCard";
+import type { ReportView } from "./ReportCard";
+import { ReportQueue, STATUS_LABEL } from "./ReportQueue";
 import { MfaNotice } from "./MfaNotice";
-import { AdminHeader } from "./AdminHeader";
+import { AdminShell } from "./AdminShell";
 
 /**
  * Moderation queue.
@@ -27,12 +28,6 @@ import { AdminHeader } from "./AdminHeader";
  */
 export const dynamic = "force-dynamic";
 
-const STATUS_LABEL: Record<string, string> = {
-  open: "Atviri",
-  reviewed: "Peržiūrėti",
-  dismissed: "Atmesti",
-};
-
 export default async function AdminPage({
   searchParams,
 }: {
@@ -51,12 +46,24 @@ export default async function AdminPage({
 
   const db = createSupabaseAdminClient();
 
-  const { data: reports } = await db
-    .from("content_reports")
-    .select("id, reporter_id, target_type, target_id, reason, details, created_at, status")
-    .eq("status", wanted)
-    .order("created_at", { ascending: false })
-    .limit(100);
+  /*
+   * Kiek kiekvienoje būsenoje — `head: true` skaičiuoja, eilučių nesiunčia.
+   * Be skaičių žmogus turėtų atidaryti kiekvieną būseną, kad sužinotų, ar
+   * ten išvis kas nors yra.
+   */
+  const countOf = (s: string) =>
+    db.from("content_reports").select("id", { count: "exact", head: true }).eq("status", s);
+
+  const [{ data: reports }, ...counted] = await Promise.all([
+    db
+      .from("content_reports")
+      .select("id, reporter_id, target_type, target_id, reason, details, created_at, status")
+      .eq("status", wanted)
+      .order("created_at", { ascending: false })
+      .limit(100),
+    ...Object.keys(STATUS_LABEL).map(countOf),
+  ]);
+  const counts = Object.fromEntries(Object.keys(STATUS_LABEL).map((s, i) => [s, counted[i].count ?? null]));
 
   const rows = reports ?? [];
 
@@ -99,6 +106,7 @@ export default async function AdminPage({
       createdAt: r.created_at,
       status: r.status,
       reporterName: reporter?.display_name || reporter?.username || null,
+      reporterId: r.reporter_id ?? null,
       // NULL preview means the content is already gone — that is information,
       // not a gap, and the card says so rather than showing an empty box.
       preview:
@@ -110,42 +118,13 @@ export default async function AdminPage({
   });
 
   return (
-    <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6">
-      <AdminHeader
-        title="Moderavimas"
-        username={check.username ?? check.userId}
-        active="reports"
-      />
-
-      <nav className="mb-6 flex gap-2">
-        {Object.entries(STATUS_LABEL).map(([key, label]) => (
-          <a
-            key={key}
-            href={`/admin?status=${key}`}
-            className={
-              key === wanted
-                ? "rounded-full bg-espresso-900 px-4 py-2 text-sm font-semibold text-cream-50"
-                : "rounded-full border border-sand-300 px-4 py-2 text-sm font-semibold text-espresso-600 hover:bg-sand-100"
-            }
-          >
-            {label}
-          </a>
-        ))}
-      </nav>
-
-      {views.length === 0 ? (
-        <p className="rounded-2xl border border-sand-300 bg-cream-50 p-8 text-center text-sm text-espresso-500">
-          Šioje būsenoje pranešimų nėra.
-        </p>
-      ) : (
-        <ul className="space-y-4">
-          {views.map((v) => (
-            <li key={v.id}>
-              <ReportCard report={v} />
-            </li>
-          ))}
-        </ul>
-      )}
-    </main>
+    <AdminShell
+      section="reports"
+      title="Skundai"
+      subtitle="Ką naudotojai pranešė apie įrašus, komentarus ir paskyras."
+      username={check.username ?? check.userId}
+    >
+      <ReportQueue wanted={wanted} counts={counts} views={views} />
+    </AdminShell>
   );
 }

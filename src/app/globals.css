@@ -52,6 +52,59 @@
   --color-rose-500: #e2578c;
   --color-rose-100: #fbe4ec;
 
+  /*
+   * Administravimo portalas kalba PROGRAMĖLĖS dizainu, ne šio puslapio:
+   * reikšmės perrašytos iš `gloumi-app/src/theme/theme.js` (tie patys vardai
+   * komentaruose), kad portalą atidaręs žmogus atpažintų tą patį produktą.
+   * Pasikeitus programėlės žetonams, juos keisti ir čia. Rinkodaros puslapis
+   * šių nenaudoja.
+   */
+  --font-app-sans: var(--font-figtree), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-app-serif: var(--font-source-serif), Georgia, "Times New Roman", serif;
+
+  --color-app-surface: #faf9f8; /* NEUTRALS.surface */
+  --color-app-sheet: #f6f3f1; /* NEUTRALS.sheet — lapas po kortelėmis */
+  --color-app-border: #ded6d0; /* NEUTRALS.cardBorder */
+  --color-app-hairline: #f1ece9; /* NEUTRALS.hairline */
+  --color-app-input: #f1ece9; /* NEUTRALS.inputBg */
+  --color-app-placeholder: #b9b0ac;
+  --color-app-ink: #2a2326; /* NEUTRALS.text, ON_ACCENT */
+  --color-app-body: #5e5559;
+  --color-app-muted: #6b6168;
+  --color-app-faint: #928890;
+  --color-app-accent: #18181b; /* ACCENT_PRICE — juodas akcentas, #130 */
+  --color-app-plum: #5c2f41; /* BRAND_PLUM — aktyvus skirtukas */
+  --color-app-danger: #ef4444; /* DANGER — užpildas, ikona, apvadas */
+  --color-app-danger-text: #dc2626; /* DANGER_TEXT — smulkus tekstas */
+  --color-app-danger-bg: #fef2f2;
+  --color-app-warn: #b45309; /* WARN_TONE.ink */
+  --color-app-warn-bg: #fef3c7;
+  --color-app-ok: #4e7a5c; /* SHEET.badgeOkText */
+  --color-app-ok-bg: #e9f3ec;
+  --color-app-band: #f4f4f5; /* SHEET.bandBg — skaičių juosta */
+  --color-app-band-line: #e4e4e7;
+
+  /* TAB_FIELDS (pastelės laukui) ir TAB_ACCENTS (to paties tono rašalas tekstui). */
+  --color-app-lavender: #c6b4e6;
+  --color-app-lavender-deep: #b8a4da;
+  --color-app-lavender-ink: #7a5aa6;
+  --color-app-mint: #b3d3bf;
+  --color-app-mint-deep: #a1c3ad;
+  --color-app-mint-ink: #4e7a5c;
+  --color-app-rose: #e9b7c8;
+  --color-app-rose-deep: #dfa3b8;
+  --color-app-rose-ink: #b04a6e;
+  --color-app-neutral: #e4e4e7;
+  --color-app-neutral-deep: #d4d4d8;
+  /* SECTION_ACCENTS — sekcijų brūkšneliai: turinys, paskyra, pinigai. */
+  --color-app-content: #9a3a5c;
+  --color-app-account: #5f8a6c;
+
+  /* CARD — „Profiliai ir paieška" drobės kortelė: šešėlis vietoj rėmelio. */
+  --shadow-app-card: 0 6px 20px rgb(42 35 38 / 0.06);
+  /* TabBar kapsulė. */
+  --shadow-app-bar: 0 8px 28px rgb(42 35 38 / 0.12);
+
   --shadow-soft: 0 24px 60px -28px rgb(45 35 32 / 0.28);
   --shadow-card: 0 1px 2px rgb(45 35 32 / 0.04), 0 14px 36px -18px rgb(45 35 32 / 0.18);
   --shadow-phone: 0 50px 100px -30px rgb(45 35 32 / 0.45), 0 0 0 1px rgb(45 35 32 / 0.06);

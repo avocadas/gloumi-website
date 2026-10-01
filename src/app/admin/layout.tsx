@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "../globals.css";
-import { fontVariables } from "@/app/fonts";
+import { adminFontVariables } from "@/app/fonts";
 
 /**
  * Root layout for the admin portal.
@@ -14,6 +14,12 @@ import { fontVariables } from "@/app/fonts";
  * the only thing standing between a crawler and a login form should not be
  * obscurity — but there is no reason to help either.
  */
+/*
+ * Šriftai ir spalvos — programėlės, ne rinkodaros puslapio (`ui.tsx`): portalą
+ * naudoja komanda, kuri kasdien mato programėlę, ir tas pats produktas turi
+ * atrodyti kaip tas pats. Fokuso rėmelis — juodas akcentas, ne svetainės
+ * terakota.
+ */
 export const metadata: Metadata = {
   title: "Gloumi · Administravimas",
   robots: { index: false, follow: false, nocache: true },
@@ -22,14 +28,16 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#2D2320",
+  themeColor: "#F6F3F1",
   colorScheme: "light",
 };
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="lt" className={`${fontVariables} h-full antialiased`}>
-      <body className="flex min-h-full flex-col bg-cream-100 text-espresso-900">{children}</body>
+    <html lang="lt" className={`${adminFontVariables} h-full antialiased`}>
+      <body className="flex min-h-full flex-col bg-app-sheet font-app-sans text-app-ink [&_:focus-visible]:outline-app-accent">
+        {children}
+      </body>
     </html>
   );
 }
