@@ -53,7 +53,7 @@ const PAIRS = [
   ["terracotta-300", "espresso-900", 4.5, "dark section eyebrow"],
   ["white", "espresso-950", 4.5, "store badge label"],
   ["espresso-900", "sand-200", 4.5, "chips"],
-  ["sage-500", "white", 4.5, "availability pill in the phone mockup"],
+  ["sage-500", "white", 4.5, "trust ticks and success icons"],
   ["accent-hair", "white", 4.5, "category eyebrow – hair"],
   ["accent-nails", "white", 4.5, "category eyebrow – nails"],
   ["accent-brows", "white", 4.5, "category eyebrow – brows"],
