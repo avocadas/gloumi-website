@@ -74,20 +74,27 @@ Viskas iš svetainės aplanko. Programėlės repozitorija turi būti šalia
    krumpliaratis lieka kadre.
 6. **Kadrai** į `%TEMP%\gloumi-app-screens\shots\lt\` (`feed`, `search`,
    `profile`, `booking`.png): `adb exec-out screencap -p > <failas>`.
-   2026-09-30 Pixel_5 (1080×2340) koordinatės, prieš kiekvieną bakstelėjimą
-   tikrinti nauju kadru:
-   - **feed** – iškart po paleidimo (Gabija pirma);
+   2026-10-01 Pixel_5 (1080×2340) koordinatės (`ieva-prod` `a1d9c24`), prieš
+   kiekvieną bakstelėjimą tikrinti nauju kadru:
+   - **feed** – po paleidimo (Gabija pirma), kai matyti antraštė su meniu ir
+     „Tau / Sekami“;
    - **search** – skirtukas Paieška (418, 2215), nepaslinktas: paslinkus
      pavadinimas užlenda po laikrodžiu;
-   - **profile** – Atrasti (175, 2215), tada Gabijos vardas įraše (390, 1071);
+   - **profile** – Atrasti (175, 2215), tada Gabijos vardas įraše (390, 1068);
+     palaukti, kol žemėlapyje atsiras raudonas žymeklis;
    - **booking** – „Rezervuoti laiką“ (657, 2172), „Manikiūras su geliu“
-     (538, 1030), slinkti, kitas mėnuo, ketvirtadienis, slinkti, kad kalendorius
-     būtų viršuje, 11:00.
+     (538, 1030), „Pasirinkti datą ir laiką“ (538, 1752), penktadienis dienų
+     juostoje (290, 597), 11:00 (866, 1196). Kadras – „Data ir laikas“ langas
+     su pažymėtu laiku; „Tęsti“ nespausti.
 
    Kadrai vėluoja 4–10 s: palaukti ir fotografuoti dar kartą, o ne bakstelėti
    antrą kartą. Vertikalus braukimas prie pat dešinio krašto (x≈1062)
    nesuveikia, nes ten Android „atgal“ gestas – braukti ties x≈1000, ne per
-   kalendoriaus langelius.
+   kalendoriaus langelius. 2026-10-01 vienas iš trijų šaltų paleidimų srautą
+   parodė **be antraštės** (jos nebuvo ir `uiautomator` medyje), ir ji negrįžo
+   nei paslinkus, nei perjungus skirtuką – padėjo tik dar vienas šaltas
+   paleidimas. Kūrimo meniu (`keyevent 82`) virš atidaryto lango neatsidaro:
+   pirma uždaryti langą.
 7. **Anglų kalba:** `node scripts/app-screens/prepare.mjs --lang en`, šaltas
    paleidimas (`force-stop` + nuoroda), tie patys kadrai į `shots\en\`.
 8. **Į svetainę:** `node scripts/app-screens/to-webp.mjs` – visi aštuoni arba
