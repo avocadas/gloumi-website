@@ -69,6 +69,14 @@ export function ReportCard({ report }: { report: ReportView }) {
         </span>
         <span>{new Date(report.createdAt).toLocaleString("lt-LT")}</span>
         {report.reporterName ? <span>· pranešė {report.reporterName}</span> : null}
+        {report.authorId ? (
+          <a
+            href={`/admin/users/${report.authorId}`}
+            className="font-semibold text-terracotta-600 hover:underline"
+          >
+            · autoriaus paskyra
+          </a>
+        ) : null}
       </div>
 
       {report.reason ? (

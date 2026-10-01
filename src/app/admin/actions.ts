@@ -109,7 +109,116 @@ export async function setSuspended(userId: string, suspended: boolean): Promise<
       };
     }
 
-    revalidatePath("/admin");
+    // Visas `/admin`, ne tik skundai: būseną rodo ir paskyros puslapis (#129).
+    revalidatePath("/admin", "layout");
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
+  }
+}
+
+/*
+ * Duomenų naršyklės veiksmai (#129). Kiekvienas yra vienas RPC, kuris ir
+ * pakeičia, ir įrašo į žurnalą toje pačioje transakcijoje (`admin_remove`,
+ * `admin_edit_text`, `admin_delete_account`, 20261001012855) — tas pats
+ * principas, kaip `moderate()`. Ką galima trinti ir taisyti, sprendžia
+ * duomenų bazės katalogas, ne šis failas: čia tikrinama tik prašymo forma.
+ */
+
+const DB_ERRORS: Record<string, string> = {
+  row_not_found: "Šios eilutės nebėra — gal ją jau ištrynė kitas administratorius.",
+};
+
+const dbError = (message: string) => DB_ERRORS[message] ?? message;
+
+const isKey = (value: unknown): value is Record<string, unknown> =>
+  !!value && typeof value === "object" && !Array.isArray(value);
+
+const reasonOrNull = (reason: unknown) =>
+  typeof reason === "string" && reason.trim() ? reason.trim() : null;
+
+/** Ištrina vieną turinio eilutę; ištrinta eilutė lieka žurnale. */
+export async function removeRow(
+  table: string,
+  key: Record<string, unknown>,
+  reason: string,
+): Promise<ActionResult> {
+  try {
+    const admin = await requireAdmin();
+    if (typeof table !== "string" || !isKey(key)) {
+      return { ok: false, error: "Netinkamas prašymas." };
+    }
+    const db = createSupabaseAdminClient();
+
+    const { error } = await db.rpc("admin_remove", {
+      _admin_id: admin.userId,
+      _table: table,
+      _key: key,
+      _reason: reasonOrNull(reason),
+    });
+    if (error) return { ok: false, error: dbError(error.message) };
+
+    revalidatePath("/admin", "layout");
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
+  }
+}
+
+/** Pataiso vieną tekstą; ankstesnis tekstas lieka žurnale. */
+export async function editText(
+  table: string,
+  key: Record<string, unknown>,
+  column: string,
+  value: string,
+  reason: string,
+): Promise<ActionResult> {
+  try {
+    const admin = await requireAdmin();
+    if (typeof table !== "string" || !isKey(key) || typeof column !== "string" || typeof value !== "string") {
+      return { ok: false, error: "Netinkamas prašymas." };
+    }
+    const db = createSupabaseAdminClient();
+
+    const { error } = await db.rpc("admin_edit_text", {
+      _admin_id: admin.userId,
+      _table: table,
+      _key: key,
+      _column: column,
+      _value: value,
+      _reason: reasonOrNull(reason),
+    });
+    if (error) return { ok: false, error: dbError(error.message) };
+
+    revalidatePath("/admin", "layout");
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
+  }
+}
+
+/*
+ * Ištrina paskyrą iškart, tais pačiais žingsniais kaip naktinis valymas
+ * (`purge_accounts`). Ne „pažymėti ir laukti": pažymėtą paskyrą naudotojas
+ * atstatytų pats (`cancel_account_deletion`).
+ *
+ * Be `revalidatePath`: puslapis, iš kurio kviečiama, yra ištrintos paskyros
+ * puslapis, ir jo perpiešimas tik parodytų „naudotojo nėra" — klientas iš
+ * jo išeina pats.
+ */
+export async function deleteAccount(userId: string, reason: string): Promise<ActionResult> {
+  try {
+    const admin = await requireAdmin();
+    if (typeof userId !== "string") return { ok: false, error: "Netinkamas prašymas." };
+    const db = createSupabaseAdminClient();
+
+    const { error } = await db.rpc("admin_delete_account", {
+      _admin_id: admin.userId,
+      _user_id: userId,
+      _reason: reasonOrNull(reason),
+    });
+    if (error) return { ok: false, error: dbError(error.message) };
+
     return { ok: true };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
