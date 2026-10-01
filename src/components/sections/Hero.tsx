@@ -55,6 +55,8 @@ export function Hero({ lang }: { lang: Lang }) {
             Floating proof cards – decorative echoes of what the app shows.
             Only from xl up: below that the column is too narrow and the cards
             would sit on top of the phone's content instead of its bezel.
+            No rating or review count here: the app has no reviews yet, and a
+            number outside the phone reads as Gloumi's own score.
           */}
           <div
             aria-hidden="true"
@@ -65,8 +67,8 @@ export function Hero({ lang }: { lang: Lang }) {
                 <Star className="h-4 w-4 fill-current" />
               </span>
               <div>
-                <p className="font-serif text-xl font-semibold leading-none text-espresso-900">{h.floatingRating.value}</p>
-                <p className="mt-1 text-[11px] text-espresso-500">{h.floatingRating.label}</p>
+                <p className="text-[13px] font-semibold leading-none text-espresso-900">{h.floatingReviews.title}</p>
+                <p className="mt-1 text-[11px] text-espresso-500">{h.floatingReviews.sub}</p>
               </div>
             </div>
           </div>

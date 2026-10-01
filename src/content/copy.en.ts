@@ -62,7 +62,7 @@ export const en: typeof lt = {
     masterCta: "I'm a professional / Sign in",
     trustLabel: "Why it is worth it",
     trust: ["Free for clients", "No hidden fees", "Reviews only after a visit"],
-    floatingRating: { value: "4.9", label: "128 reviews" },
+    floatingReviews: { title: "Real reviews", sub: "Only after a visit" },
     floatingBooking: { title: "Booking confirmed", sub: "Friday, 13:00" },
   },
 

@@ -65,7 +65,7 @@ export const lt = {
     masterCta: "Esu meistras / Prisijungti",
     trustLabel: "Kodėl verta",
     trust: ["Nemokama klientams", "Be paslėptų mokesčių", "Atsiliepimai tik po vizito"],
-    floatingRating: { value: "4,9", label: "128 atsiliepimai" },
+    floatingReviews: { title: "Tikri atsiliepimai", sub: "Tik po įvykusio vizito" },
     floatingBooking: { title: "Laikas patvirtintas", sub: "Penktadienis, 13:00" },
   },
 
