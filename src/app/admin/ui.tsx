@@ -50,9 +50,10 @@ const DECOR: Record<Tone, Circle[]> = {
     { size: 320, color: "#DFA3B8", top: -180, left: -100 },
     { size: 240, color: "#C6B4E6", top: -100, right: -90 },
     // Programėlėje čia `#F4F4F5`, bet ant plataus rožinio lauko jis atrodė kaip
-    // pilka dėmė, ne skritulys. Developeris 2026-10-01 paprašė rudo „kaip
-    // Gloumi appse" — tai `BRAND_PLUM`, kuriuo nupieštas ženklo „G".
-    { size: 120, color: "#5C2F41", bottom: -56, left: "42%" },
+    // pilka dėmė, ne skritulys. Developeris 2026-10-01: rudas „kaip Gloumi
+    // appse" — terakota `#8F3D26`, kurią #130 iš programėlės išėmė per daug ir
+    // kuri ten grąžinama.
+    { size: 120, color: "#8F3D26", bottom: -56, left: "42%" },
   ],
   neutral: [
     { size: 300, color: "#D4D4D8", top: -150, right: -80 },
