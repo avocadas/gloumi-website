@@ -132,7 +132,7 @@ export function refundSections(lang: Lang): LegalSection[] {
       {
         title: "Who these terms apply to",
         paragraphs: [
-          "Gloumi is a platform connecting beauty professionals with clients. The service is provided by the professional, who is responsible for it; Gloumi acts as intermediary for the booking and, where the professional has set one, collects a deposit.",
+          "Gloumi is a platform connecting beauty professionals with clients. The service is provided by the professional, who is responsible for it; Gloumi acts as intermediary for the booking and takes the payment in the app: the full price, or only a deposit where the professional has set one and you chose to pay the rest at the salon.",
           "These terms explain when and how money is returned. They supplement the Terms of Service and do not change them; in case of conflict the Terms of Service apply.",
         ],
       },
@@ -142,7 +142,7 @@ export function refundSections(lang: Lang): LegalSection[] {
       {
         title: "How and how quickly we refund",
         bullets: [
-          "A deposit is refunded to the payment method it was paid with, through our payments partner Stripe.",
+          "Money paid in the app is refunded to the payment method it was paid with, through our payments partner Stripe.",
           "We start the refund as soon as the cancellation meets the conditions; banks usually credit it within 5 to 10 working days.",
           "We charge no fee for a refund.",
           "A master subscription (Pro or VIP Studio) is not bought from us: it is bought in the App Store or on Google Play, so Apple or Google refund it under their own rules. See the next section.",
@@ -164,7 +164,7 @@ export function refundSections(lang: Lang): LegalSection[] {
     {
       title: "Kam taikomos šios sąlygos",
       paragraphs: [
-        "Gloumi yra platforma, jungianti grožio paslaugų meistrus ir klientus. Paslaugą teikia ir už ją atsako meistras; Gloumi tarpininkauja rezervuojant ir, kai meistras taip nustato, surenka avansą arba užstatą.",
+        "Gloumi yra platforma, jungianti grožio paslaugų meistrus ir klientus. Paslaugą teikia ir už ją atsako meistras; Gloumi tarpininkauja rezervuojant ir priima mokėjimą programėlėje: visą kainą arba tik avansą, jei meistras jį nustatė, o likusią sumą pasirinkote mokėti salone.",
         "Šios sąlygos paaiškina, kada ir kaip pinigai grąžinami. Jos papildo Naudojimosi taisykles ir jų nekeičia – nesutapimo atveju vadovaujamasi Taisyklėmis.",
       ],
     },
@@ -174,7 +174,7 @@ export function refundSections(lang: Lang): LegalSection[] {
     {
       title: "Kaip ir per kiek laiko grąžiname",
       bullets: [
-        "Avansą grąžiname į tą pačią mokėjimo priemonę, kuria buvo sumokėta, per mokėjimų partnerį Stripe.",
+        "Programėlėje sumokėtus pinigus grąžiname į tą pačią mokėjimo priemonę, kuria buvo sumokėta, per mokėjimų partnerį Stripe.",
         "Grąžinimą inicijuojame, kai atšaukimas atitinka sąlygas; bankas sumą paprastai įskaito per 5–10 darbo dienų.",
         "Už grąžinimą papildomų mokesčių netaikome.",
         "Meistro prenumerata (Pro ar VIP Studio) perkama ne iš mūsų, o App Store arba Google Play, tad pinigus už ją grąžina Apple arba Google pagal savo taisykles. Žr. kitą skyrių.",

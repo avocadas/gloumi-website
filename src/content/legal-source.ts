@@ -499,14 +499,14 @@ export const LEGAL_DOCS: Record<LegalLang, { terms: LegalSection[]; privacy: Leg
       {
         "title": "Atšaukimas ir pinigų grąžinimas",
         "paragraphs": [
-          "Konkrečias atšaukimo sąlygas nustato pats meistras ir jos rodomos prie jo anketos. Žemiau – bendra tvarka, galiojanti, kai meistras nenurodo kitaip."
+          "Atšaukimo sąlygas pasirenka meistras, ir jos rodomos prieš rezervaciją. Žemiau – kaip jos taikomos; išsamiai tai aprašyta Taisyklių skyriuje „Rezervacijos ir avansas“."
         ],
         "bullets": [
-          "Atšaukus likus daugiau nei 24 val. iki vizito, sumokėtas avansas grąžinamas visas.",
-          "Atšaukus vėliau nei prieš 24 val. arba neatvykus, avansas negrąžinamas – jis dengia meistro rezervuotą ir nebeparduodamą laiką.",
-          "Meistrui atšaukus vizitą, avansas grąžinamas visas, nepriklausomai nuo laiko.",
+          "Atšaukus likus daugiau nei 24 val. iki vizito, programėlėje sumokėta suma grąžinama visa.",
+          "Atšaukus patvirtintą vizitą likus mažiau nei 24 val. arba neatvykus, avansas negrąžinamas, jei to reikalauja meistro atšaukimo sąlygos – jis dengia meistro rezervuotą ir nebeparduodamą laiką. Likusi programėlėje sumokėta suma grąžinama.",
+          "Meistrui ar Gloumi atšaukus vizitą, programėlėje sumokėta suma grąžinama visa, nepriklausomai nuo laiko.",
           "Pinigai grąžinami tuo pačiu būdu, kuriuo buvo sumokėti. Grąžinimą inicijuojame nedelsdami; kiek užtruks lėšos jūsų sąskaitoje, priklauso nuo banko ar kortelės išdavėjo.",
-          "Likusią sumos dalį už paslaugą mokate salone – ji per programėlę nenuskaitoma ir jos grąžinimo klausimai sprendžiami su meistru.",
+          "Jei pasirinkote mokėti salone, programėlėje nuskaitomas tik avansas (jei meistras jį nustatė), o likusią sumą mokate meistrui – jos grąžinimo klausimai sprendžiami su juo.",
           "Gloumi neteikia grožio paslaugų ir nesprendžia ginčų dėl jų kokybės; mūsų atsakomybė apsiriboja per programėlę atliktu mokėjimu."
         ]
       },
@@ -1299,14 +1299,14 @@ export const LEGAL_DOCS: Record<LegalLang, { terms: LegalSection[]; privacy: Leg
       {
         "title": "Cancellation and refunds",
         "paragraphs": [
-          "The exact cancellation terms are set by each master and shown on their profile. Below is the general rule that applies when a master states nothing else."
+          "Each master chooses their cancellation terms, and they are shown before you book. Below is how they apply; the Terms section “Bookings and deposits” sets this out in full."
         ],
         "bullets": [
-          "Cancel more than 24 hours before the appointment and the deposit is refunded in full.",
-          "Cancel later than that, or do not turn up, and the deposit is not refunded - it covers the time the master reserved and can no longer sell.",
-          "If the master cancels, the deposit is refunded in full regardless of timing.",
+          "Cancel more than 24 hours before the appointment and everything you paid in the app is refunded.",
+          "Cancel a confirmed appointment less than 24 hours before it, or do not turn up, and the deposit is not refunded where the master’s cancellation terms say so - it covers the time the master reserved and can no longer sell. The rest of what you paid in the app is refunded.",
+          "If the master or Gloumi cancels, everything you paid in the app is refunded, regardless of timing.",
           "Refunds go back the way the payment came. We start the refund without delay; how long it takes to reach your account is up to your bank or card issuer.",
-          "The remaining balance for the service is paid at the salon. It is never charged through the app, and questions about it are settled with the master.",
+          "If you chose to pay at the salon, the app charges only the deposit (where the master set one) and you pay the rest to the master; questions about that part are settled with the master.",
           "Gloumi does not provide beauty services and does not arbitrate disputes about their quality; our responsibility is limited to the payment made through the app."
         ]
       },
