@@ -1,8 +1,8 @@
-import { LEGAL_DOCS, LEGAL_META, type LegalSection } from "./legal-source";
+import { LEGAL_DOCS, LEGAL_META, PARTNER_META, type LegalSection } from "./legal-source";
 import { LEGAL_ROUTES, type Lang, type LegalKey } from "./lang";
 import { site } from "./site";
 
-export { LEGAL_DOCS, LEGAL_META, LEGAL_ROUTES };
+export { LEGAL_DOCS, LEGAL_META, LEGAL_ROUTES, PARTNER_META };
 export type { LegalSection, LegalKey };
 
 /** Lithuanian-aware slug for section anchors. */
@@ -24,12 +24,14 @@ export const LEGAL_TITLES: Record<Lang, Record<LegalKey, string>> = {
   lt: {
     terms: "Naudojimosi taisyklės",
     privacy: "Privatumo politika",
+    partner: "Meistrų ir salonų sąlygos",
     refunds: "Grąžinimo sąlygos",
     transparency: "DAC7 ir platformos skaidrumas",
   },
   en: {
     terms: "Terms of Service",
     privacy: "Privacy Policy",
+    partner: "Terms for Masters and Salons",
     refunds: "Refund Policy",
     transparency: "DAC7 and platform transparency",
   },
@@ -55,12 +57,23 @@ export function controllerLine(lang: Lang): string {
  * the section.
  */
 function termsSection(lang: Lang, title: string): LegalSection {
-  const found = LEGAL_DOCS[lang].terms.find((s) => s.title === title);
+  return docSection(lang, "terms", title);
+}
+
+function docSection(lang: Lang, doc: "terms" | "partner", title: string): LegalSection {
+  const found = LEGAL_DOCS[lang][doc].find((s) => s.title === title);
   if (!found) {
-    throw new Error(`Terms section "${title}" (${lang}) not found in legal-source.ts – regenerate it and update this title.`);
+    throw new Error(`Section "${title}" of "${doc}" (${lang}) not found in legal-source.ts – regenerate it and update this title.`);
   }
   return found;
 }
+
+/** Lifted whole, so a page can quote a section under its own title. */
+const quote = (section: LegalSection): LegalSection => ({
+  title: section.title,
+  paragraphs: section.paragraphs,
+  bullets: section.bullets,
+});
 
 const DEPOSIT_TITLES: Record<Lang, string> = {
   lt: "Rezervacijos ir avansas",
@@ -75,6 +88,17 @@ const SUBSCRIPTION_TITLES: Record<Lang, string> = {
 const WITHDRAWAL_TITLES: Record<Lang, string> = {
   lt: "Teisė atsisakyti sutarties",
   en: "Right of withdrawal",
+};
+
+const VISIT_NOT_HAPPENED_TITLES: Record<Lang, string> = {
+  lt: "Kai apmokėtas vizitas neįvyko",
+  en: "When a paid visit did not happen",
+};
+
+/** From the Terms for Masters and Salons, not the Terms: DAC7 binds the master, not the client. */
+const PARTNER_DAC7_TITLES: Record<Lang, string> = {
+  lt: "Mokestiniai duomenys (DAC7)",
+  en: "Tax information (DAC7)",
 };
 
 const RANKING_TITLES: Record<Lang, string> = {
@@ -93,12 +117,13 @@ const P2B_TITLES: Record<Lang, string> = {
 };
 
 /**
- * Refund policy. The rules on deposits and on the master subscription are lifted
- * from the Terms by title; only the framing and the mechanics of a refund are
- * written here.
+ * Refund policy. The rules on deposits, on a paid visit that did not happen and
+ * on the master subscription are lifted from the Terms by title; only the
+ * framing and the mechanics of a refund are written here.
  */
 export function refundSections(lang: Lang): LegalSection[] {
   const deposits = termsSection(lang, DEPOSIT_TITLES[lang]);
+  const notHappened = termsSection(lang, VISIT_NOT_HAPPENED_TITLES[lang]);
   const subscription = termsSection(lang, SUBSCRIPTION_TITLES[lang]);
   const withdrawal = termsSection(lang, WITHDRAWAL_TITLES[lang]);
 
@@ -112,6 +137,7 @@ export function refundSections(lang: Lang): LegalSection[] {
         ],
       },
       { title: "Deposits for an appointment", paragraphs: deposits.paragraphs, bullets: deposits.bullets },
+      quote(notHappened),
       { title: withdrawal.title, paragraphs: withdrawal.paragraphs, bullets: withdrawal.bullets },
       {
         title: "How and how quickly we refund",
@@ -143,6 +169,7 @@ export function refundSections(lang: Lang): LegalSection[] {
       ],
     },
     { title: "Avansas ir užstatas už vizitą", paragraphs: deposits.paragraphs, bullets: deposits.bullets },
+    quote(notHappened),
     { title: withdrawal.title, paragraphs: withdrawal.paragraphs, bullets: withdrawal.bullets },
     {
       title: "Kaip ir per kiek laiko grąžiname",
@@ -180,6 +207,15 @@ export function dac7Sections(lang: Lang): LegalSection[] {
   const ranking = termsSection(lang, RANKING_TITLES[lang]);
   const illegalContent = termsSection(lang, ILLEGAL_CONTENT_TITLES[lang]);
   const p2b = termsSection(lang, P2B_TITLES[lang]);
+  /*
+   * The DAC7 details used to be four bullets written here, and they drifted the
+   * same way: the list of what we collect lacked the date of birth and the tax
+   * number, and the English one spoke of thresholds, which avocadas/Gloumi#146
+   * (item 8, not yet checked by a lawyer) doubts apply to personal services. The
+   * Terms for Masters and Salons now carry the binding text, including what
+   * happens when a master does not provide it.
+   */
+  const partnerDac7 = docSection(lang, "partner", PARTNER_DAC7_TITLES[lang]);
 
   if (lang === "en") {
     return [
@@ -193,14 +229,10 @@ export function dac7Sections(lang: Lang): LegalSection[] {
         title: "DAC7: what we report to the tax authority",
         paragraphs: [
           "EU Council Directive 2021/514 (DAC7) requires operators of digital platforms to collect information about sellers who earn income through them and to report it to the tax authority once a year. In Lithuania that is the State Tax Inspectorate (VMI), reporting on the previous calendar year.",
-        ],
-        bullets: [
-          "We collect: the professional's name or the company's name, the form of business and the company or self-employment certificate number, the address, the VAT number where there is one, and the account details used for payouts.",
-          "We report: the consideration received through the platform by quarter, any fees or commission withheld from it, and the number of services provided.",
-          "Reporting covers sellers who meet the thresholds set in the directive; each professional receives a copy of the data reported about them.",
-          "We ask for these details when the professional account is created, because they cannot be collected retrospectively.",
+          "How this applies to professionals is set out in the Terms for Masters and Salons. Their section on tax information is repeated below word for word, so that this page and those terms cannot drift apart.",
         ],
       },
+      quote(partnerDac7),
       {
         title: "Transparency under the Digital Services Act (DSA)",
         paragraphs: [
@@ -234,14 +266,10 @@ export function dac7Sections(lang: Lang): LegalSection[] {
       title: "DAC7: ką pranešame mokesčių administratoriui",
       paragraphs: [
         "ES Tarybos direktyva 2021/514 (DAC7) įpareigoja skaitmeninių platformų operatorius rinkti ir kasmet teikti mokesčių administratoriui informaciją apie pardavėjus, kurie per platformą uždirba pajamų. Lietuvoje ši informacija teikiama Valstybinei mokesčių inspekcijai (VMI) už praėjusius kalendorinius metus.",
-      ],
-      bullets: [
-        "Renkame: meistro vardą ir pavardę arba juridinio asmens pavadinimą, veiklos formą ir įmonės ar individualios veiklos pažymos numerį, adresą, PVM mokėtojo kodą (jei yra) ir mokėjimams naudojamos sąskaitos duomenis.",
-        "Pranešame: per platformą gautą atlygį pagal ketvirčius, iš jo išskaičiuotus mokesčius ar komisinius ir įvykdytų paslaugų skaičių.",
-        "Pranešimas teikiamas apie tuos pardavėjus, kurie atitinka direktyvoje nustatytus kriterijus; meistras gauna apie jį pateiktų duomenų kopiją.",
-        "Šių duomenų prašome jau kuriant meistro paskyrą, nes atgaline data jų surinkti nebeįmanoma.",
+        "Kaip tai taikoma meistrams, nustato Meistrų ir salonų sąlygos. Jų skyrius apie mokestinius duomenis pakartotas žemiau pažodžiui, kad šis puslapis ir sąlygos negalėtų prasilenkti.",
       ],
     },
+    quote(partnerDac7),
     {
       title: "Skaidrumas pagal Skaitmeninių paslaugų aktą (DSA)",
       paragraphs: [

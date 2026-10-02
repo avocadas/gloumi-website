@@ -218,6 +218,7 @@ export const en: typeof lt = {
     legalLinks: [
       { key: "terms", label: "Terms of Service" },
       { key: "privacy", label: "Privacy Policy" },
+      { key: "partner", label: "Terms for Masters and Salons" },
       { key: "refunds", label: "Refund Policy" },
       { key: "transparency", label: "DAC7 and platform transparency" },
     ],
@@ -240,7 +241,7 @@ export const en: typeof lt = {
     controller: "Data controller and platform operator",
     contactQuestion: "Questions about your data or these terms?",
     disclaimer:
-      "This page is an informational summary. The legally binding documents are the Terms of Service and the Privacy Policy.",
+      "This page is an informational summary. The legally binding documents are the Terms of Service, the Privacy Policy and the Terms for Masters and Salons.",
     otherDocs: "Other documents",
   },
 

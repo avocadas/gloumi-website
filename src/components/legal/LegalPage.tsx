@@ -9,7 +9,7 @@ import { site } from "@/content/site";
 type Props = {
   /** Language of the page: its chrome and its text, which are never different. */
   lang: Lang;
-  /** Which of the four documents this is. Decides the title and the "other documents" list. */
+  /** Which of the five documents this is. Decides the title and the "other documents" list. */
   docKey: LegalKey;
   updated: string;
   version?: string;

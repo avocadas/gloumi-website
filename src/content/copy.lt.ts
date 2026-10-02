@@ -221,6 +221,7 @@ export const lt = {
     legalLinks: [
       { key: "terms", label: "Naudojimosi taisyklės" },
       { key: "privacy", label: "Privatumo politika" },
+      { key: "partner", label: "Meistrų ir salonų sąlygos" },
       { key: "refunds", label: "Grąžinimo sąlygos" },
       { key: "transparency", label: "DAC7 ir platformos skaidrumas" },
     ] as { key: LegalKey; label: string }[],
@@ -243,7 +244,7 @@ export const lt = {
     controller: "Duomenų valdytojas ir platformos operatorius",
     contactQuestion: "Klausimai dėl duomenų ar taisyklių?",
     disclaimer:
-      "Šis puslapis – informacinio pobūdžio santrauka. Teisiškai įpareigojantys dokumentai yra Naudojimosi taisyklės ir Privatumo politika.",
+      "Šis puslapis – informacinio pobūdžio santrauka. Teisiškai įpareigojantys dokumentai yra Naudojimosi taisyklės, Privatumo politika ir Meistrų ir salonų sąlygos.",
     otherDocs: "Kiti dokumentai",
   },
 

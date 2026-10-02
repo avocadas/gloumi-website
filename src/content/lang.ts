@@ -62,13 +62,14 @@ export const sectionHref = (lang: Lang, key: SectionKey): string =>
 export const homePath = (lang: Lang): string => (lang === DEFAULT_LANG ? "/" : `/${lang}`);
 
 /**
- * The four legal documents, with the slug each language uses.
+ * The five legal documents, with the slug each language uses.
  *
  * The Lithuanian slugs are the ones already published and must not change.
  */
 export const LEGAL_ROUTES = [
   { key: "terms", lt: "taisykles", en: "terms" },
   { key: "privacy", lt: "privatumo-politika", en: "privacy" },
+  { key: "partner", lt: "meistru-ir-salonu-salygos", en: "master-and-salon-terms" },
   { key: "refunds", lt: "grazinimo-salygos", en: "refunds" },
   { key: "transparency", lt: "dac7", en: "dac7" },
 ] as const;
