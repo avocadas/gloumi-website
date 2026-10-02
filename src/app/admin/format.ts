@@ -33,6 +33,12 @@ export function formatWhen(value: unknown): string {
       });
 }
 
+/** Suma centais → „12,50 €". Lietuviškas skyriklis, kaip programėlėje. */
+export function formatMoney(cents: unknown): string {
+  if (typeof cents !== "number" || !Number.isFinite(cents)) return "—";
+  return new Intl.NumberFormat("lt-LT", { style: "currency", currency: "EUR" }).format(cents / 100);
+}
+
 export function formatValue(value: unknown): string {
   if (value === null || value === undefined || value === "") return "—";
   if (typeof value === "boolean") return value ? "taip" : "ne";

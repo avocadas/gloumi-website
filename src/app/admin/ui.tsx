@@ -16,13 +16,14 @@ import { Wordmark } from "@/components/brand/Wordmark";
 /** `Icons.js` `ICON_STROKE` — lucide piktogramos piešiamos tuo pačiu storiu. */
 export const STROKE = 2.2;
 
-export type Tone = "lavender" | "mint" | "rose" | "neutral";
+export type Tone = "lavender" | "mint" | "rose" | "neutral" | "peach";
 
 export const FIELD_BG: Record<Tone, string> = {
   lavender: "bg-app-lavender",
   mint: "bg-app-mint",
   rose: "bg-app-rose",
   neutral: "bg-app-neutral",
+  peach: "bg-app-peach",
 };
 
 type Circle = { size: number; color: string; opacity?: number } & Pick<
@@ -56,6 +57,12 @@ const DECOR: Record<Tone, Circle[]> = {
   ],
   neutral: [
     { size: 300, color: "#D4D4D8", top: -150, right: -80 },
+    { size: 180, color: "#E9B7C8", opacity: 0.9, top: -90, left: -70 },
+    { size: 74, color: "#B3D3BF", bottom: -26, left: "30%" },
+  ],
+  // `SCAFFOLD_DECOR.Vizitai` po rudos grąžinimo (prod 90a5145).
+  peach: [
+    { size: 300, color: "#E5AF97", top: -150, right: -80 },
     { size: 180, color: "#E9B7C8", opacity: 0.9, top: -90, left: -70 },
     { size: 74, color: "#B3D3BF", bottom: -26, left: "30%" },
   ],
@@ -105,7 +112,7 @@ export const eyebrow = "text-[11px] font-bold uppercase tracking-[0.12em]";
 export const onField =
   "inline-flex h-10 items-center gap-2 rounded-full bg-white/70 px-3 text-sm font-semibold text-app-ink transition-colors hover:bg-white";
 
-type TagTone = "neutral" | "warn" | "ok" | "danger" | "lavender" | "rose" | "mint" | "dark";
+type TagTone = "neutral" | "warn" | "ok" | "danger" | "lavender" | "rose" | "mint" | "peach" | "dark";
 
 /*
  * Žymos rašalas kai kur vienu laipteliu tamsesnis už programėlės žetoną: 10 px
@@ -122,6 +129,7 @@ const TAG: Record<TagTone, string> = {
   lavender: "bg-[#EFE9F8] text-[#6B4C96]",
   rose: "bg-[#F8E7ED] text-app-content",
   mint: "bg-[#E6F1EA] text-[#3F6A4D]",
+  peach: "bg-[#FBEAE1] text-app-peach-ink",
   dark: "border border-app-accent text-app-accent",
 };
 

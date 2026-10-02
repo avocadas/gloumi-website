@@ -12,6 +12,8 @@ export type ConfirmOptions = {
   danger?: boolean;
   /** Rodyti nebūtiną priežasties lauką; ji keliauja į administratorių žurnalą. */
   reason?: boolean;
+  /** Lauko pavadinimas, jei ne „Priežastis" (pvz. ginčo sprendimui — „Pastaba"). */
+  reasonLabel?: string;
   /** Žodis, kurį reikia įrašyti, kad mygtukas įsijungtų. */
   typeToConfirm?: string;
 };
@@ -133,7 +135,8 @@ function ConfirmDialog({
         {options.reason ? (
           <label className="mt-5 block">
             <span className="text-[13px] font-semibold text-app-ink">
-              Priežastis <span className="font-normal text-app-muted">— nebūtina, matys tik administratoriai</span>
+              {options.reasonLabel ?? "Priežastis"}{" "}
+              <span className="font-normal text-app-muted">— nebūtina, matys tik administratoriai</span>
             </span>
             <textarea
               value={reason}

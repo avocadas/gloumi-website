@@ -96,6 +96,10 @@
   --color-app-rose-ink: #b04a6e;
   --color-app-neutral: #e4e4e7;
   --color-app-neutral-deep: #d4d4d8;
+  /* „Vizitai" persikas — grąžintas po #130 (prod 90a5145): vizitai ir pinigai. */
+  --color-app-peach: #efc2ab;
+  --color-app-peach-deep: #e5af97;
+  --color-app-peach-ink: #8f3d26;
   /* SECTION_ACCENTS — sekcijų brūkšneliai: turinys, paskyra, pinigai. */
   --color-app-content: #9a3a5c;
   --color-app-account: #5f8a6c;

@@ -232,3 +232,54 @@ export async function deleteAccount(userId: string, reason: string): Promise<Act
     return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
   }
 }
+
+/*
+ * Kliento pranešimo „Vizitas neįvyko?" sprendimas (#147, Gloumi
+ * `20261001233134` `admin_resolve_dispute`). Pinigai nejuda čia: RPC tik
+ * pažymi sprendimą ir įrašo jį į žurnalą toje pačioje transakcijoje, o
+ * grąžinimą ar išmoką kitą naktį įvykdo `stripe-settle`.
+ *
+ * Kortelės ginčą (`source = 'chargeback'`) sprendžia bankas — RPC jį atmeta
+ * pats, o puslapis tokiam mygtukų ir nerodo.
+ */
+const DISPUTE_ERRORS: Record<string, string> = {
+  bad_decision: "Nežinomas sprendimas.",
+  dispute_not_found: "Šio ginčo nebėra.",
+  chargeback_decided_by_bank: "Kortelės ginčą sprendžia bankas, ne portalas.",
+};
+
+const disputeError = (message: string) => {
+  const notOpen = /^dispute_not_open: (.+)$/.exec(message);
+  if (notOpen) return `Ginčas jau išspręstas (būsena: ${notOpen[1]}) — gal tai padarė kitas administratorius.`;
+  return DISPUTE_ERRORS[message] ?? message;
+};
+
+export async function resolveDispute(
+  bookingId: string,
+  decision: "refund" | "release",
+  note: string,
+): Promise<ActionResult> {
+  try {
+    const admin = await requireAdmin();
+    if (typeof bookingId !== "string" || (decision !== "refund" && decision !== "release")) {
+      return { ok: false, error: "Netinkamas prašymas." };
+    }
+    // RPC pastabą nukerpa iki 500 tyliai; čia sakome aiškiai, kaip ir kitur portale.
+    const why = reasonOrNull(note);
+    if (why && why.length > 500) return { ok: false, error: "Pastaba per ilga — daugiausia 500 ženklų." };
+    const db = createSupabaseAdminClient();
+
+    const { error } = await db.rpc("admin_resolve_dispute", {
+      _admin_id: admin.userId,
+      _booking: bookingId,
+      _decision: decision,
+      _note: why,
+    });
+    if (error) return { ok: false, error: disputeError(error.message) };
+
+    revalidatePath("/admin", "layout");
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
+  }
+}

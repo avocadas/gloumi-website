@@ -151,7 +151,21 @@ nupiešti ir su netikrais duomenimis (žr. „Išvaizda“ žemiau):
 | `admin/page.tsx` (skundai) | `ReportQueue.tsx` → `ReportCard.tsx` |
 | `data/page.tsx` | `data/CatalogIndex.tsx` (pradžia), `data/TableResults.tsx` → `data/RowCard.tsx` |
 | `users/[id]/page.tsx` | `users/[id]/UserOverview.tsx` → `AccountActions.tsx`, `CopyButton.tsx` |
+| `disputes/page.tsx` (ginčai, #147) | `disputes/DisputeQueue.tsx` → `disputes/DisputeCard.tsx` |
 | visi | `AdminShell.tsx` (buvo `AdminHeader.tsx`), `ui.tsx`, `ConfirmDialog.tsx`, `format.ts` |
+
+**Ginčai (2026-10-02, Gloumi #147, `20261001233134` 6 dalis):** išmoka
+meistrui laukia 3 d. po vizito; klientas gali pranešti „Vizitas neįvyko?“,
+bankas — atsiųsti kortelės ginčą; kol ginčas `open`, `stripe-settle` neperveda.
+Puslapis kviečia `admin_list_disputes(_status = null)` VIENĄ kartą (skaičiai ir
+filtras iš to paties, iki 200) ir `dac7_held_masters()` (tik skaito; nepavykus —
+sąrašo nėra, ne „nė vieno“). Sprendimas — `resolveDispute` (`actions.ts`) →
+`admin_resolve_dispute` (`refund` / `release`, pastaba ≤ 500, žurnale
+`resolve_dispute`); pinigus kitą naktį perkelia `stripe-settle`. Kortelės ginčui
+(`source = 'chargeback'`) mygtukų nėra; jei jis `open`, o `transferred_at` vis
+dar užpildytas, `stripe-webhook` išmokos atsiimti nepavyko — kortelė rodo
+įspėjimą. Būsenos: `open`, `refund`, `release` (ir laimėtas banko ginčas),
+`lost` (bankas — klientui), `closed`. Spalva — „Vizitai“ persikas (`peach`).
 
 **Išvaizda (2026-10-01, #129):** portalas kalba programėlės dizainu, ne
 rinkodaros puslapio: Figtree + Source Serif 4 (`fonts.ts` `adminFontVariables`),
