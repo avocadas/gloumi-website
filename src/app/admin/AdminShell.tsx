@@ -1,20 +1,22 @@
 import type { ReactNode } from "react";
-import { ChevronLeft, Database, Flag, LogOut, Scale, type LucideIcon } from "lucide-react";
+import { Bug, ChevronLeft, Database, Flag, LogOut, Scale, type LucideIcon } from "lucide-react";
 import { signOutAdmin } from "./sign-out";
 import { Bubbles, Brand, FIELD_BG, STROKE, onField, type Tone } from "./ui";
 
-type Section = "reports" | "disputes" | "data";
+type Section = "reports" | "disputes" | "data" | "errors";
 
 /*
  * Skirtukai kaip programėlės juostoje (`navigation/tabs.js`): kiekvienas turi
  * savo pastelę, ir ta pati pastelė dažo jo puslapio antgalvį — taip žmogus
  * iš spalvos žino, kur yra. Skundai — rožinė („turinys", `SECTION_FIELDS`),
- * ginčai — persikinė („Vizitai", pinigai ir vizitai), duomenys — levandinė.
+ * ginčai — persikinė („Vizitai", pinigai ir vizitai), duomenys — levandinė,
+ * klaidos — neutrali: tai ne naudotojų turinys, o programėlės būklė (#29).
  */
 const SECTIONS: { key: Section; href: string; label: string; Icon: LucideIcon; tone: Tone }[] = [
   { key: "reports", href: "/admin", label: "Skundai", Icon: Flag, tone: "rose" },
   { key: "disputes", href: "/admin/disputes", label: "Ginčai", Icon: Scale, tone: "peach" },
   { key: "data", href: "/admin/data", label: "Duomenys", Icon: Database, tone: "lavender" },
+  { key: "errors", href: "/admin/errors", label: "Klaidos", Icon: Bug, tone: "neutral" },
 ];
 
 const ACTIVE_BG: Record<Tone, string> = FIELD_BG;
