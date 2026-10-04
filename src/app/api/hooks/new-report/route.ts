@@ -15,8 +15,15 @@ import { site } from "@/content/site";
  * nuoroda į portalą (developeris 2026-10-04). Turinio, vardų ir ID nėra
  * tyčia: laiškas keliauja per pašto tiekėjus ir gyvena pašto dėžutėje, o
  * portalas saugomas antru veiksniu. Todėl iš kūno imami tik du kodai; žinomi
- * verčiami į lietuviškus pavadinimus, o nauji (pvz. #170 1 ir 3 p. priežastys)
- * rodomi tokie, kokie atėjo — tik jei tai mažosios raidės ir pabraukimai.
+ * verčiami į lietuviškus pavadinimus, o nežinomi rodomi tokie, kokie atėjo —
+ * tik jei tai mažosios raidės ir pabraukimai.
+ *
+ * Trigeris šį maršrutą kviečia ne kiekvienam pranešimui: ne dažniau kaip kas
+ * 10 min ir ne daugiau kaip 24 per parą (Gloumi `20261004152607`), nes
+ * nemokamą Resend parą dalijasi ir registracijos laiškai. Ko jis nepakvietė,
+ * vėliau nebepakviečia. Todėl laiškas sako „yra naujų pranešimų“ ir rodo tik
+ * naujausią, kuris jį sukėlė (formuluotė — db rolės, 2026-10-04). Laiško
+ * tekste skaičių nėra tyčia: ribą valdo bazė, ir čia jie pasentų.
  */
 
 /** Tie patys pavadinimai, kaip programėlėje (`translations.js` `reportReason*`). */
@@ -26,6 +33,9 @@ const REASON_LABEL: Record<string, string> = {
   inappropriate: "Netinkamas turinys",
   impersonation: "Apsimetama kitu žmogumi",
   copyright: "Autorių teisių pažeidimas",
+  illegal: "Neteisėtas turinys",
+  likeness: "Mano atvaizdas be sutikimo",
+  illegal_service: "Neteisėta paslauga",
   other: "Kita",
 };
 
@@ -70,13 +80,15 @@ export async function POST(request: Request) {
   const portal = `${site.url}/admin`;
 
   const text = [
-    "Gautas naujas pranešimas apie turinį.",
+    "Yra naujų pranešimų apie turinį.",
     "",
+    "Naujausias:",
     `Priežastis: ${reason}`,
     `Kam: ${target}`,
     "",
-    `Peržiūrėti ir nuspręsti: ${portal}`,
+    `Peržiūrėti visus ir nuspręsti: ${portal}`,
     "",
+    "Laiškas siunčiamas ne kiekvienam pranešimui, todėl kitų čia nematysite.",
     "Turinio ir vardų šiame laiške nėra tyčia – jie matomi tik portale.",
   ].join("\n");
 
@@ -95,7 +107,7 @@ export async function POST(request: Request) {
     body: JSON.stringify({
       from: `Gloumi <no-reply@${site.sendingDomain}>`,
       to: [process.env.MODERATION_ALERT_TO?.trim() || site.email],
-      subject: `Naujas pranešimas apie turinį: ${reason}`,
+      subject: "Yra naujų pranešimų apie turinį",
       text,
     }),
   });
