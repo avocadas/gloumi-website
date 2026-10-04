@@ -71,7 +71,8 @@ export function AccountActions({
       ],
       confirmLabel: "Ištrinti paskyrą",
       danger: true,
-      rule: true,
+      // Punktas nebūtinas: trinama dažniausiai paties žmogaus prašymu arba testinė paskyra (#169).
+      rule: "optional",
       reasonRequired: true,
       typeToConfirm: confirmName,
     });

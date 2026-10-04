@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { checkAdmin } from "@/lib/admin-guard";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { isModerationRule } from "./moderation-rules";
+import { MODERATED_TABLES } from "./moderated-tables";
+import { ruleFor, type ModerationRule } from "./moderation-rules";
 
 /**
  * Server actions for every destructive admin operation.
@@ -31,25 +32,35 @@ const reasonOrNull = (reason: unknown) =>
   typeof reason === "string" && reason.trim() ? reason.trim() : null;
 
 /*
- * #169: šalinant turinį ar ribojant paskyrą reikia ir priežasties, ir pažeisto
- * taisyklių punkto — Taisyklės žada juos nurodyti, o DSA 17 str. reikalauja jų
- * sprendimo pranešime. Tikrinama čia, ne tik lange: veiksmas yra viešas HTTP
- * taškas. Punktas turi būti vienas iš dabartinių dokumentų skyrių
- * (`moderation-rules.ts`), ne bet koks tekstas.
+ * #169: šalinant ar taisant turinį ir ribojant paskyrą reikia priežasties, o
+ * kai tai kitiems matomas turinys ar paskyros ribojimas — ir taisyklių punkto:
+ * Taisyklės žada juos nurodyti, o DSA 17 str. reikalauja jų sprendimo
+ * pranešime, kurį db nusiunčia autoriui. Tikrinama čia, ne tik lange: veiksmas
+ * yra viešas HTTP taškas. Punktas turi būti vienas iš dabartinių dokumentų
+ * skyrių (`moderation-rules.ts`), ne bet koks tekstas; į db jis keliauja kaip
+ * `jsonb` su abiem pavadinimais (Gloumi `20261004145806`).
  */
-function justify(reason: unknown, rule: unknown): { reason: string; rule: string } | { error: string } {
+type Justified = { reason: string; rule: ModerationRule | null };
+
+function justify(reason: unknown, rule: unknown, ruleRequired: boolean): Justified | { error: string } {
   const why = reasonOrNull(reason);
   if (!why) return { error: "Nurodykite priežastį." };
   if (why.length > 500) return { error: "Priežastis per ilga — daugiausia 500 ženklų." };
-  if (!isModerationRule(rule)) return { error: "Pasirinkite pažeistą taisyklių punktą." };
-  return { reason: why, rule };
+  if (rule === null || rule === undefined || rule === "") {
+    return ruleRequired ? { error: "Pasirinkite taisyklių punktą." } : { reason: why, rule: null };
+  }
+  const parsed = ruleFor(rule);
+  if (!parsed) return { error: "Taisyklių punktų sąrašas pasikeitė — atnaujinkite puslapį ir pasirinkite iš naujo." };
+  return { reason: why, rule: parsed };
 }
 
 const DB_ERRORS: Record<string, string> = {
   row_not_found: "Šios eilutės nebėra — gal ją jau ištrynė kitas administratorius.",
   // Antras saugiklis duomenų bazėje (#169), jei kas nors kviestų RPC aplenkdamas šią patikrą.
   reason_required: "Nurodykite priežastį.",
-  rule_required: "Pasirinkite pažeistą taisyklių punktą.",
+  rule_required: "Pasirinkite taisyklių punktą.",
+  bad_rule: "Duomenų bazė atmetė taisyklių punktą — atnaujinkite puslapį ir pasirinkite iš naujo.",
+  "Per ilga priezastis": "Priežastis per ilga — daugiausia 500 ženklų.",
 };
 
 const dbError = (message: string) => DB_ERRORS[message] ?? message;
@@ -70,7 +81,8 @@ async function requireAdmin() {
 
 /**
  * Ištrina pažeidžiantį turinį arba uždaro pranešimą. Trinant — privalomi
- * priežastis ir punktas (#169); skundą peržiūrint ar atmetant — ne.
+ * priežastis ir punktas (#169); skundą uždarant — ne: pranešusiam sprendimą
+ * paaiškina db šablonas („imtasi veiksmų" arba „pažeidimo nerasta").
  */
 export async function moderate(
   action: "delete_post" | "delete_comment" | "review_report" | "dismiss_report",
@@ -81,7 +93,7 @@ export async function moderate(
   try {
     const admin = await requireAdmin();
     const removes = action === "delete_post" || action === "delete_comment";
-    const why = removes ? justify(reason, rule) : null;
+    const why = removes ? justify(reason, rule, true) : null;
     if (why && "error" in why) return { ok: false, error: why.error };
     const db = createSupabaseAdminClient();
 
@@ -122,8 +134,9 @@ export async function moderate(
  * blokuojant, kitaip žmogus liktų užblokuotas be įrašo žurnale.
  *
  * Blokuojant priežastis ir punktas privalomi (#169), ir žurnale abu atsiranda
- * `details` — iš ten juos ims sprendimo pranešimas. Atblokuojant priežastis
- * lieka nebūtina.
+ * `details` tokiu pat pavidalu, kaip kitų veiksmų (`rule` — db `jsonb`): iš
+ * ten juos ims sprendimo pranešimas, kai db jį prijungs. Atblokuojant
+ * priežastis lieka nebūtina.
  */
 export async function setSuspended(
   userId: string,
@@ -133,9 +146,9 @@ export async function setSuspended(
 ): Promise<ActionResult> {
   try {
     const admin = await requireAdmin();
-    let details: { reason: string; rule?: string } | null;
+    let details: Justified | { reason: string } | null;
     if (suspended) {
-      const why = justify(reason, rule);
+      const why = justify(reason, rule, true);
       if ("error" in why) return { ok: false, error: why.error };
       details = why;
     } else {
@@ -185,6 +198,10 @@ export async function setSuspended(
  * `admin_edit_text`, `admin_delete_account`, 20261001012855) — tas pats
  * principas, kaip `moderate()`. Ką galima trinti ir taisyti, sprendžia
  * duomenų bazės katalogas, ne šis failas: čia tikrinama tik prašymo forma.
+ *
+ * #169: priežastis — visada; punktas — kai lentelė yra kitiems matomas
+ * turinys (`MODERATED_TABLES`, db `moderation_noun_of`), nes tada db praneša
+ * autoriui. Kitur jis nebūtinas, bet jei nurodytas, turi būti tikras.
  */
 
 const isKey = (value: unknown): value is Record<string, unknown> =>
@@ -202,7 +219,7 @@ export async function removeRow(
     if (typeof table !== "string" || !isKey(key)) {
       return { ok: false, error: "Netinkamas prašymas." };
     }
-    const why = justify(reason, rule);
+    const why = justify(reason, rule, MODERATED_TABLES.has(table));
     if ("error" in why) return { ok: false, error: why.error };
     const db = createSupabaseAdminClient();
 
@@ -229,12 +246,15 @@ export async function editText(
   column: string,
   value: string,
   reason: string,
+  rule: string | null,
 ): Promise<ActionResult> {
   try {
     const admin = await requireAdmin();
     if (typeof table !== "string" || !isKey(key) || typeof column !== "string" || typeof value !== "string") {
       return { ok: false, error: "Netinkamas prašymas." };
     }
+    const why = justify(reason, rule, MODERATED_TABLES.has(table));
+    if ("error" in why) return { ok: false, error: why.error };
     const db = createSupabaseAdminClient();
 
     const { error } = await db.rpc("admin_edit_text", {
@@ -243,7 +263,8 @@ export async function editText(
       _key: key,
       _column: column,
       _value: value,
-      _reason: reasonOrNull(reason),
+      _reason: why.reason,
+      _rule: why.rule,
     });
     if (error) return { ok: false, error: dbError(error.message) };
 
@@ -262,12 +283,15 @@ export async function editText(
  * Be `revalidatePath`: puslapis, iš kurio kviečiama, yra ištrintos paskyros
  * puslapis, ir jo perpiešimas tik parodytų „naudotojo nėra" — klientas iš
  * jo išeina pats.
+ *
+ * Punktas nebūtinas (#169, db sutartis): paskyra dažniausiai trinama paties
+ * žmogaus prašymu arba testinė, o pranešimo po trynimo nebūtų kur parodyti.
  */
 export async function deleteAccount(userId: string, reason: string, rule: string | null): Promise<ActionResult> {
   try {
     const admin = await requireAdmin();
     if (typeof userId !== "string") return { ok: false, error: "Netinkamas prašymas." };
-    const why = justify(reason, rule);
+    const why = justify(reason, rule, false);
     if ("error" in why) return { ok: false, error: why.error };
     const db = createSupabaseAdminClient();
 

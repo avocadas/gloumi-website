@@ -65,6 +65,12 @@ const STATUS_TAG: Record<string, { label: string; tone: "warn" | "ok" | "neutral
  * turinys → kieno jis → veiksmai. Veiksmai padalyti į dvi grupes: kairėje
  * tie, kurie tik uždaro skundą, dešinėje — tie, kurie ką nors ištrina ar
  * užblokuoja, kad greitai skaitant ranka nenukryptų ne į tą pusę.
+ *
+ * Uždarant skundą pranešusiam nusiunčiamas atsakymas (#169 4 p., db
+ * `20261004145806`): „Imtasi veiksmų" — kad pagal Taisykles imtasi veiksmų,
+ * „Atmesti skundą" — kad pažeidimo nerasta ir turinys lieka. Todėl mygtukas
+ * vadinasi tuo, ką išgirs pranešęs: buvęs „Peržiūrėta" skambėjo kaip „pažiūrėjau",
+ * o žmogui būtų nuėjęs „ėmėmės veiksmų", nors niekas nepadaryta.
  */
 export function ReportCard({ report }: { report: ReportView }) {
   const [pending, startTransition] = useTransition();
@@ -164,16 +170,18 @@ export function ReportCard({ report }: { report: ReportView }) {
             <button
               type="button"
               disabled={pending}
-              onClick={() => run(() => moderate("review_report", report.id), "Peržiūrėta")}
+              onClick={() => run(() => moderate("review_report", report.id), "Imtasi veiksmų")}
+              title="Pranešusiam: imtasi veiksmų pagal Taisykles. Spauskite, kai turinys jau pašalintas ar paskyra apribota."
               className={btn}
             >
               <CircleCheck size={16} strokeWidth={STROKE} aria-hidden />
-              Peržiūrėta
+              Imtasi veiksmų
             </button>
             <button
               type="button"
               disabled={pending}
               onClick={() => run(() => moderate("dismiss_report", report.id), "Atmesta")}
+              title="Pranešusiam: Taisyklių pažeidimo nerasta, turinys lieka."
               className={btnQuiet}
             >
               <X size={16} strokeWidth={STROKE} aria-hidden />
@@ -191,7 +199,7 @@ export function ReportCard({ report }: { report: ReportView }) {
                     title: report.targetType === "post" ? "Ištrinti įrašą?" : "Ištrinti komentarą?",
                     body: [
                       "Jis bus pašalintas visiems, ir atšaukti negalima.",
-                      "Veiksmas, priežastis ir punktas įrašomi į administratorių žurnalą.",
+                      "Autorius programėlėje gaus pranešimą su priežastimi ir punktu, o pranešę — kad imtasi veiksmų. Viskas įrašoma į administratorių žurnalą.",
                     ],
                     confirmLabel: "Ištrinti",
                     danger: true,

@@ -5,6 +5,8 @@ import { ChevronDown, ChevronRight, Clock, ImageOff, Pencil, Trash2, UserRound }
 import type { CatalogKind, DataRow, SignedMedia } from "@/lib/admin-data";
 import { editText, removeRow } from "../actions";
 import { useConfirm } from "../ConfirmDialog";
+import { MODERATED_TABLES } from "../moderated-tables";
+import { RuleSelect } from "../ModerationRules";
 import { UUID_PATTERN, columnLabel, formatValue, formatWhen, ownerLabel } from "../format";
 import { STROKE, Tag, btn, btnDanger, btnQuiet, card, eyebrow, input } from "../ui";
 
@@ -29,6 +31,10 @@ type Props = {
  * kartu ir kodėl — atšaukus langą, trynimas atšaukiamas. Nepavykęs veiksmas
  * rodomas, ne nutylimas: `row_not_found` reiškia, kad mygtukas nieko
  * nepadarė, ir administratorius turi tai žinoti.
+ *
+ * Ir trynimas, ir taisymas prašo priežasties, o kitiems matomam turiniui
+ * (`MODERATED_TABLES`) — ir taisyklių punkto (#169): tada db autoriui
+ * nusiunčia pranešimą su abiem.
  */
 export function RowCard({
   table,
@@ -48,11 +54,14 @@ export function RowCard({
   const [saved, setSaved] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
   const [reason, setReason] = useState("");
+  const [rule, setRule] = useState("");
   const [dialog, ask] = useConfirm();
 
   const { row, key } = entry;
   const canRemove = kind === "content";
   const canEdit = kind !== "view";
+  const moderated = MODERATED_TABLES.has(table);
+  const canSave = reason.trim() !== "" && (!moderated || rule !== "");
   const stamp = row.created_at ?? row.updated_at;
   const texts = highlightCols.filter((c) => c in row);
   const ownerLinks = owners.filter((c) => typeof row[c] === "string" && UUID_PATTERN.test(row[c] as string));
@@ -61,10 +70,14 @@ export function RowCard({
   const remove = async () => {
     const answer = await ask({
       title: "Ištrinti šią eilutę?",
-      body: [cascadeNote, "Ištrinta eilutė įrašoma į administratorių žurnalą, bet atstatyti jos negalima."],
+      body: [
+        cascadeNote,
+        "Ištrinta eilutė įrašoma į administratorių žurnalą, bet atstatyti jos negalima.",
+        moderated ? "Autorius programėlėje gaus pranešimą su priežastimi ir punktu." : null,
+      ],
       confirmLabel: "Ištrinti",
       danger: true,
-      rule: true,
+      rule: moderated ? true : "optional",
       reasonRequired: true,
     });
     if (!answer) return;
@@ -81,16 +94,17 @@ export function RowCard({
     setEditing(column);
     setDraft(typeof row[column] === "string" ? (row[column] as string) : "");
     setReason("");
+    setRule("");
     setSaved(null);
     setError(null);
   };
 
   const save = () => {
-    if (!editing) return;
+    if (!editing || !canSave) return;
     const column = editing;
     setError(null);
     startTransition(async () => {
-      const res = await editText(table, key, column, draft, reason);
+      const res = await editText(table, key, column, draft, reason, rule || null);
       if (res.ok) {
         setEditing(null);
         setSaved(column);
@@ -167,11 +181,25 @@ export function RowCard({
                         aria-label={`Naujas tekstas: ${columnLabel(c)}`}
                         className={`${input} h-auto resize-y py-3 leading-relaxed`}
                       />
+                      <label className="block pt-1">
+                        <span className="text-[13px] font-semibold text-app-ink">
+                          Pagrindas{" "}
+                          <span className="font-normal text-app-muted">
+                            {moderated ? "— pažeistas taisyklių punktas" : "— nebūtina"}
+                          </span>
+                        </span>
+                        <RuleSelect value={rule} onChange={setRule} required={moderated} className={`${input} mt-2`} />
+                      </label>
                       <input
                         value={reason}
                         onChange={(e) => setReason(e.target.value)}
                         maxLength={500}
-                        placeholder="Priežastis (nebūtina, matys tik administratoriai)"
+                        required
+                        placeholder={
+                          moderated
+                            ? "Priežastis — privaloma; ją matys ir autorius"
+                            : "Priežastis — privaloma, matys tik administratoriai"
+                        }
                         aria-label="Taisymo priežastis"
                         className={input}
                       />
@@ -179,7 +207,7 @@ export function RowCard({
                         <button type="button" disabled={pending} onClick={() => setEditing(null)} className={btnQuiet}>
                           Atšaukti
                         </button>
-                        <button type="button" disabled={pending} onClick={save} className={btn}>
+                        <button type="button" disabled={pending || !canSave} onClick={save} className={btn}>
                           Išsaugoti
                         </button>
                       </div>

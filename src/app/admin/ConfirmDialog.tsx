@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { CircleAlert } from "lucide-react";
-import { useModerationRules } from "./ModerationRules";
+import { RuleSelect } from "./ModerationRules";
 import { btn, btnDanger, btnQuiet, input, STROKE } from "./ui";
 
 export type ConfirmOptions = {
@@ -20,13 +20,17 @@ export type ConfirmOptions = {
   reasonRequired?: boolean;
   /** Lauko pavadinimas, jei ne „Priežastis" (pvz. ginčo sprendimui — „Pastaba"). */
   reasonLabel?: string;
-  /** Privaloma pasirinkti pažeistą taisyklių punktą (#169). */
-  rule?: boolean;
+  /**
+   * Taisyklių punktas (#169): `true` — privalomas (šalinamas ar ribojamas
+   * kitiems matomas turinys), `"optional"` — klausiamas, bet gali likti
+   * nenurodytas (pvz. paskyros trynimas, dažniausiai paties žmogaus prašymu).
+   */
+  rule?: boolean | "optional";
   /** Žodis, kurį reikia įrašyti, kad mygtukas įsijungtų. */
   typeToConfirm?: string;
 };
 
-/** `rule` — `null`, jei langas punkto neklausė. */
+/** `rule` — `null`, jei langas punkto neklausė arba jis paliktas nenurodytas. */
 export type ConfirmResult = { reason: string; rule: string | null } | null;
 
 /*
@@ -74,16 +78,16 @@ function ConfirmDialog({
   onSettle: (result: ConfirmResult) => void;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
-  const groups = useModerationRules();
   const [reason, setReason] = useState("");
   const [rule, setRule] = useState("");
   const [typed, setTyped] = useState("");
   const { title, body, confirmLabel, danger, typeToConfirm, reasonRequired } = options;
   const showReason = options.reason || reasonRequired;
+  const ruleRequired = options.rule === true;
   const ready =
     (!typeToConfirm || typed.trim() === typeToConfirm) &&
     (!reasonRequired || reason.trim() !== "") &&
-    (!options.rule || rule !== "");
+    (!ruleRequired || rule !== "");
 
   useEffect(() => {
     const el = ref.current;
@@ -93,7 +97,7 @@ function ConfirmDialog({
   const confirm = (e: React.FormEvent) => {
     e.preventDefault();
     if (!ready) return;
-    onSettle({ reason: reason.trim(), rule: options.rule ? rule : null });
+    onSettle({ reason: reason.trim(), rule: options.rule && rule ? rule : null });
   };
 
   return (
@@ -149,27 +153,20 @@ function ConfirmDialog({
 
         {options.rule ? (
           <label className="mt-5 block">
-            <span className="text-[13px] font-semibold text-app-ink">Pažeistas taisyklių punktas</span>
-            <select
+            {/* „Pagrindas" — tas pats žodis, kuriuo punktą įvardija pranešimas naudotojui. */}
+            <span className="text-[13px] font-semibold text-app-ink">
+              Pagrindas{" "}
+              <span className="font-normal text-app-muted">
+                {ruleRequired ? "— pažeistas taisyklių punktas" : "— nebūtina"}
+              </span>
+            </span>
+            <RuleSelect
               value={rule}
-              onChange={(e) => setRule(e.target.value)}
-              required
+              onChange={setRule}
+              required={ruleRequired}
               autoFocus={!typeToConfirm}
               className={`${input} mt-2`}
-            >
-              <option value="" disabled>
-                Pasirinkite punktą
-              </option>
-              {groups.map((g) => (
-                <optgroup key={g.label} label={g.label}>
-                  {g.options.map((o) => (
-                    <option key={o.value} value={o.value}>
-                      {o.label}
-                    </option>
-                  ))}
-                </optgroup>
-              ))}
-            </select>
+            />
           </label>
         ) : null}
 
