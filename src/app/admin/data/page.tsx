@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { IconChevronRight } from "@/components/icons";
 import { checkAdmin } from "@/lib/admin-guard";
@@ -62,6 +63,17 @@ export default async function DataPage({ searchParams }: { searchParams: Promise
           </span>
           <IconChevronRight size={16} strokeWidth={STROKE} aria-hidden className="shrink-0 text-app-faint" />
         </a>
+        {/* #29: programėlės klaidos iš Sentry – čia, ne atskiru skirtuku, kad juosta telpa telefone. */}
+        <Link
+          href="/admin/errors"
+          className={`${card} mb-6 flex items-center justify-between gap-3 px-5 py-4 text-sm font-semibold text-app-ink transition-colors hover:bg-app-surface`}
+        >
+          <span>
+            Programėlės klaidos{" "}
+            <span className="font-normal text-app-muted">– iš Sentry, tik skaitymas</span>
+          </span>
+          <IconChevronRight size={16} strokeWidth={STROKE} aria-hidden className="shrink-0 text-app-faint" />
+        </Link>
         <CatalogIndex catalog={catalog} />
       </AdminShell>
     );
