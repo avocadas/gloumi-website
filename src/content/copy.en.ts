@@ -221,6 +221,7 @@ export const en: typeof lt = {
       { key: "partner", label: "Terms for Masters and Salons" },
       { key: "refunds", label: "Refund Policy" },
       { key: "transparency", label: "DAC7 and platform transparency" },
+      { key: "deletion", label: "Account deletion" },
     ],
     companyLabel: "Company number",
     vatLabel: "VAT number",

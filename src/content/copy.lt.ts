@@ -224,6 +224,7 @@ export const lt = {
       { key: "partner", label: "Meistrų ir salonų sąlygos" },
       { key: "refunds", label: "Grąžinimo sąlygos" },
       { key: "transparency", label: "DAC7 ir platformos skaidrumas" },
+      { key: "deletion", label: "Paskyros trynimas" },
     ] as { key: LegalKey; label: string }[],
     companyLabel: "Įmonės kodas",
     vatLabel: "PVM kodas",

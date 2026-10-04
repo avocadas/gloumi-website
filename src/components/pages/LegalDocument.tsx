@@ -1,10 +1,10 @@
 import { LegalPage } from "@/components/legal/LegalPage";
 import { getCopy } from "@/content/copy";
 import type { Lang, LegalKey } from "@/content/lang";
-import { dac7Sections, LEGAL_DOCS, LEGAL_META, PARTNER_META, refundSections } from "@/content/legal";
+import { dac7Sections, deletionSections, LEGAL_DOCS, LEGAL_META, PARTNER_META, refundSections } from "@/content/legal";
 
 /**
- * Assembles one of the five legal documents for one language.
+ * Assembles one of the legal documents for one language.
  *
  * One page carries one language: the Lithuanian path shows the Lithuanian text,
  * `/en` shows the English one, and the switcher in the header moves between them
@@ -44,7 +44,8 @@ export function LegalDocument({ lang, docKey }: { lang: Lang; docKey: LegalKey }
     );
   }
 
-  const sections = docKey === "refunds" ? refundSections(lang) : dac7Sections(lang);
+  const sections =
+    docKey === "refunds" ? refundSections(lang) : docKey === "deletion" ? deletionSections(lang) : dac7Sections(lang);
   // The transparency page quotes the Terms for Masters and Salons too, which carry their own date.
   const updated =
     docKey === "transparency" && PARTNER_META.lastUpdated > LEGAL_META.lastUpdated

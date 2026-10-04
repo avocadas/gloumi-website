@@ -62,9 +62,11 @@ export const sectionHref = (lang: Lang, key: SectionKey): string =>
 export const homePath = (lang: Lang): string => (lang === DEFAULT_LANG ? "/" : `/${lang}`);
 
 /**
- * The five legal documents, with the slug each language uses.
+ * The legal documents, with the slug each language uses.
  *
  * The Lithuanian slugs are the ones already published and must not change.
+ * `deletion` is the page Google Play's data safety form links to (Gloumi #171):
+ * once given to the store, its slugs are as fixed as the others.
  */
 export const LEGAL_ROUTES = [
   { key: "terms", lt: "taisykles", en: "terms" },
@@ -72,6 +74,7 @@ export const LEGAL_ROUTES = [
   { key: "partner", lt: "meistru-ir-salonu-salygos", en: "master-and-salon-terms" },
   { key: "refunds", lt: "grazinimo-salygos", en: "refunds" },
   { key: "transparency", lt: "dac7", en: "dac7" },
+  { key: "deletion", lt: "paskyros-trynimas", en: "account-deletion" },
 ] as const;
 
 export type LegalKey = (typeof LEGAL_ROUTES)[number]["key"];

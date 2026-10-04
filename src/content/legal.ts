@@ -27,6 +27,7 @@ export const LEGAL_TITLES: Record<Lang, Record<LegalKey, string>> = {
     partner: "Meistrų ir salonų sąlygos",
     refunds: "Grąžinimo sąlygos",
     transparency: "DAC7 ir platformos skaidrumas",
+    deletion: "Paskyros trynimas",
   },
   en: {
     terms: "Terms of Service",
@@ -34,6 +35,7 @@ export const LEGAL_TITLES: Record<Lang, Record<LegalKey, string>> = {
     partner: "Terms for Masters and Salons",
     refunds: "Refund Policy",
     transparency: "DAC7 and platform transparency",
+    deletion: "Account deletion",
   },
 };
 
@@ -60,7 +62,7 @@ function termsSection(lang: Lang, title: string): LegalSection {
   return docSection(lang, "terms", title);
 }
 
-function docSection(lang: Lang, doc: "terms" | "partner", title: string): LegalSection {
+function docSection(lang: Lang, doc: "terms" | "partner" | "privacy", title: string): LegalSection {
   const found = LEGAL_DOCS[lang][doc].find((s) => s.title === title);
   if (!found) {
     throw new Error(`Section "${title}" of "${doc}" (${lang}) not found in legal-source.ts – regenerate it and update this title.`);
@@ -114,6 +116,12 @@ const ILLEGAL_CONTENT_TITLES: Record<Lang, string> = {
 const P2B_TITLES: Record<Lang, string> = {
   lt: "Meistrams: sąlygų keitimas, ribojimas ir skundai",
   en: "For masters: changes, restrictions and complaints",
+};
+
+/** The Privacy Policy section the account deletion page quotes (#171). */
+const RETENTION_TITLES: Record<Lang, string> = {
+  lt: "Kiek laiko saugome",
+  en: "How long we keep data",
 };
 
 /**
@@ -289,5 +297,84 @@ export function dac7Sections(lang: Lang): LegalSection[] {
     },
     { title: p2b.title, paragraphs: p2b.paragraphs, bullets: p2b.bullets },
     { title: "Kontaktai", paragraphs: [controllerLine("lt")] },
+  ];
+}
+
+/**
+ * Account deletion (Gloumi #171): the page Google Play's data safety form
+ * links to. The steps name the app's own labels (`translations.js`
+ * `faqDeleteAccountA`, `deleteAccountConfirm`), and what is kept and for how
+ * long is quoted from the Privacy Policy by title rather than restated, so the
+ * two cannot drift apart.
+ *
+ * How a pending deletion is undone is deliberately not spelled out: today
+ * signing in cancels it, and #171 is changing that to an explicit button, so
+ * the page only says it can be cancelled in the app — true either way.
+ */
+export function deletionSections(lang: Lang): LegalSection[] {
+  const retention = docSection(lang, "privacy", RETENTION_TITLES[lang]);
+
+  if (lang === "en") {
+    return [
+      {
+        title: "About this page",
+        paragraphs: [
+          `The Gloumi app is provided by ${site.legalName}. This page explains how to delete your Gloumi account and the data linked to it, in the app or by email.`,
+        ],
+      },
+      {
+        title: "Deleting your account in the app",
+        bullets: [
+          "Open Gloumi and sign in.",
+          "In the side menu choose “App settings” → “Delete account” and confirm with “Request deletion”.",
+          "Your account and its data are deleted after 30 days. Until then you can cancel the deletion in the app.",
+        ],
+      },
+      {
+        title: "If you no longer have the app",
+        paragraphs: [
+          `Write to ${site.email} from the email address linked to your Gloumi account, with “Account deletion” in the subject. If you sign in with Apple or Google, give that account's email address in your message.`,
+          "So that we do not delete someone else's account, we may ask you to confirm that the account is yours. We delete it without undue delay, within one month of your request at the latest, and write to you when it is done.",
+        ],
+      },
+      {
+        title: "A master's subscription",
+        paragraphs: [
+          "A master subscription (Pro or VIP Studio) is bought in the App Store or on Google Play and does not end with the account. Cancel it in the store's subscription settings before deleting your account, or the store will keep charging for it.",
+        ],
+      },
+      quote(retention),
+    ];
+  }
+
+  return [
+    {
+      title: "Apie šį puslapį",
+      paragraphs: [
+        `Gloumi programėlę teikia ${site.legalName}. Čia rasite, kaip ištrinti Gloumi paskyrą ir su ja susijusius duomenis – programėlėje arba el. paštu.`,
+      ],
+    },
+    {
+      title: "Kaip ištrinti paskyrą programėlėje",
+      bullets: [
+        "Atidarykite Gloumi ir prisijunkite.",
+        "Šoniniame meniu pasirinkite „Programos nustatymai“ → „Ištrinti paskyrą“ ir patvirtinkite „Prašyti ištrinti“.",
+        "Paskyra ir jos duomenys ištrinami po 30 dienų. Iki tol trynimą galite atšaukti programėlėje.",
+      ],
+    },
+    {
+      title: "Jei programėlės nebeturite",
+      paragraphs: [
+        `Parašykite ${site.email} iš el. pašto adreso, susieto su Gloumi paskyra, ir laiško temoje nurodykite „Paskyros trynimas“. Jei prisijungiate per Apple ar Google, laiške nurodykite tos paskyros el. pašto adresą.`,
+        "Kad neištrintume svetimos paskyros, galime paprašyti patvirtinti, kad ji Jūsų. Paskyrą ištriname nedelsdami, ne vėliau kaip per mėnesį nuo prašymo, ir parašome, kai tai padaryta.",
+      ],
+    },
+    {
+      title: "Meistro prenumerata",
+      paragraphs: [
+        "Meistro prenumerata (Pro ar VIP Studio) perkama App Store arba Google Play ir kartu su paskyra nesibaigia. Prieš trindami paskyrą, atšaukite ją parduotuvės prenumeratų nustatymuose – kitaip parduotuvė toliau imtų mokestį.",
+      ],
+    },
+    quote(retention),
   ];
 }
