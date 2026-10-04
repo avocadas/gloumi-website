@@ -6,6 +6,8 @@ import { loadCatalog, signMedia } from "@/lib/admin-data";
 import { AdminShell } from "../../AdminShell";
 import { MfaNotice } from "../../MfaNotice";
 import { UUID_PATTERN } from "../../format";
+import { latestDay, vilniusToday } from "../../grants/dates";
+import { loadGrants } from "../../grants/load";
 import { EmptyState, STROKE } from "../../ui";
 import { UserOverview, asString, identityOf, type Overview } from "./UserOverview";
 
@@ -63,7 +65,17 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
 
   const { user } = overview;
   const avatarId = asString(user.master?.avatar_media_id) ?? asString(user.profile?.avatar_media_id);
-  const media = avatarId ? await signMedia(check.userId, [avatarId]) : {};
+  const [media, grantsResult] = await Promise.all([
+    avatarId ? signMedia(check.userId, [avatarId]) : Promise.resolve<Awaited<ReturnType<typeof signMedia>>>({}),
+    // Individualios sąlygos (#179) — tik meistrui.
+    user.master ? loadGrants(check.userId) : Promise.resolve(null),
+  ]);
+  const grants = grantsResult
+    ? grantsResult.ok
+      ? grantsResult.grants.filter((g) => g.masterId === user.id)
+      : null
+    : undefined;
+  const today = vilniusToday();
   const { name, handle } = identityOf(user);
 
   return (
@@ -81,6 +93,8 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
         avatar={avatarId ? media[avatarId] : undefined}
         banned={isBanned(user.banned_until)}
         restrictedUntil={isBanned(restrictedUntil) ? restrictedUntil : null}
+        grants={grants}
+        grantDays={{ min: today, max: latestDay(today) }}
       />
     </AdminShell>
   );

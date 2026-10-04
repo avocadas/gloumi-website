@@ -4,6 +4,8 @@ import type { CatalogEntry, SignedMedia } from "@/lib/admin-data";
 import { columnLabel, formatDate, formatValue, formatWhen } from "../../format";
 import { STROKE, SectionTitle, Tag, card } from "../../ui";
 import { AccountActions } from "./AccountActions";
+import type { GrantView } from "../../grants/GrantRows";
+import { MasterGrants } from "./MasterGrants";
 import { CopyButton } from "./CopyButton";
 import { PhoneReveal } from "./PhoneReveal";
 
@@ -65,6 +67,8 @@ export function UserOverview({
   avatar,
   banned,
   restrictedUntil,
+  grants,
+  grantDays,
 }: {
   overview: Overview;
   catalog: CatalogEntry[];
@@ -73,6 +77,9 @@ export function UserOverview({
   banned: boolean;
   /** Iki kada apribotas rezervavimas, jei apribotas dabar (#207); kitaip `null`. */
   restrictedUntil: string | null;
+  /** Meistro individualios sąlygos (#179); `undefined` — ne meistras, `null` — gauti nepavyko. */
+  grants?: GrantView[] | null;
+  grantDays: { min: string; max: string };
 }) {
   const { user, counts } = overview;
   const profile = Object.fromEntries(Object.entries(user.profile ?? {}).filter(([f]) => !NEVER_RENDERED.has(f)));
@@ -220,6 +227,10 @@ export function UserOverview({
               ))}
             </dl>
           </section>
+        ) : null}
+
+        {master && grants !== undefined ? (
+          <MasterGrants masterId={user.id} grants={grants} minDay={grantDays.min} maxDay={grantDays.max} />
         ) : null}
 
         <details className={`${card} group overflow-hidden`}>
