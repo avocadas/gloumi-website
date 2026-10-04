@@ -17,8 +17,12 @@ lieka kitoms sesijoms. Į `main` — tik po developerio „pushink“, per Bash 
 
 ## 1. Kas šiuo push'u patenka į `main`
 
-Prieš jį `main` = `e9c05a5` (gyvas nuo 2026-10-02 22:39 UTC: Taisyklės ir
-Privatumo politika 1.12, Meistrų ir salonų sąlygos 1.0).
+Šie commit'ai stovi ant `2a03b63` — Next.js 16.3.4 → 16.3.8
+(GHSA-vcvr-r3jv-pc5j; `npm audit --omit=dev` po jo 0), kuris į `main` eina
+pirmas arba tame pačiame push'e. Iki jo `main` = `e9c05a5` (gyvas nuo
+2026-10-02 22:39 UTC: Taisyklės ir Privatumo politika 1.12, Meistrų ir salonų
+sąlygos 1.0). Pilnas `npm audit` dar rodo 6 high kūrimo įrankiuose
+(`brace-expansion`, `braces`) — į svetainę jie nepatenka.
 
 - **#171 — paskyros trynimo puslapis** `/paskyros-trynimas` ir
   `/en/account-deletion` (`3174fea`). Google Play duomenų saugos formai —
