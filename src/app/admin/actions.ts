@@ -68,6 +68,11 @@ const DB_ERRORS: Record<string, string> = {
   rule_required: "Pasirinkite taisyklių punktą.",
   bad_rule: "Duomenų bazė atmetė taisyklių punktą — atnaujinkite puslapį ir pasirinkite iš naujo.",
   "Per ilga priezastis": "Priežastis per ilga — daugiausia 500 ženklų.",
+  // Blokavimas (`admin_suspend_user`, #169 3 p.).
+  user_not_found: "Šios paskyros blokuoti negalima: jos nebėra arba tai administratorius.",
+  already_suspended: "Paskyra jau užblokuota — gal tai ką tik padarė kitas administratorius.",
+  not_suspended: "Paskyra jau atblokuota — gal tai ką tik padarė kitas administratorius.",
+  bad_suspend: "Netinkamas prašymas.",
 };
 
 const dbError = (message: string) => DB_ERRORS[message] ?? message;
@@ -123,28 +128,24 @@ export async function moderate(
 /**
  * Sustabdo arba atstato vartotoją.
  *
- * WHY GoTrue AND NOT A COLUMN
- * ---------------------------
- * `auth.users.banned_until` is checked by GoTrue itself: the account cannot
- * sign in and its existing tokens stop working. A `suspended` flag on
- * `profiles` would have needed every content table's write policy changed,
- * and a half-enforced ban is worse than none — the portal would say
- * "suspended" while the person kept posting.
+ * KODĖL VIENAS RPC (Gloumi `20261004231227`, #169 3 p.)
+ * ----------------------------------------------------
+ * `admin_suspend_user` vienoje transakcijoje nustato `auth.users.banned_until`,
+ * įrašo žurnalą ir pranešimą žmogui jo kalba, su priežastimi ir punktu, ir
+ * grąžina žurnalo id. Meistrų sąlygos (skyrius „Ribojimas, sustabdymas ir
+ * nutraukimas") sako, kad apribojimas įsigalioja, kai meistrui pateikiamas
+ * motyvuotas pranešimas – todėl blokavimas be pranešimo neturi būti įmanomas.
+ * Anksčiau čia buvo du žingsniai (GoTrue `ban_duration` ir atskiras
+ * `log_admin_action`) ir jokio pranešimo.
  *
- * The duration is "forever" in practice (100 years) rather than a real
- * infinity, because GoTrue takes a duration string. Lifting it is
- * `ban_duration: "none"`, which is why unsuspending is the same call.
- */
-/*
- * Priežastis — kaip trynimo (#129, developeris 2026-10-02: „reikia ir
- * blokavimui notes"). `log_admin_action` ilgio neriboja, o trynimo RPC
- * atmeta ilgesnę nei 500 ženklų, tad ta pati riba tikrinama čia — PRIEŠ
- * blokuojant, kitaip žmogus liktų užblokuotas be įrašo žurnale.
+ * `banned_until` tikrina pats GoTrue: užblokuotas neprisijungia ir prieigos
+ * rakto nebeatnaujina. Ar SQL kelias GoTrue `ban_duration` lygiavertis visais
+ * atžvilgiais, NEIŠMATUOTA – įrodys tik užblokuota QA paskyra po migracijos.
  *
- * Blokuojant priežastis ir punktas privalomi (#169), ir žurnale abu atsiranda
- * `details` tokiu pat pavidalu, kaip kitų veiksmų (`rule` — db `jsonb`): iš
- * ten juos ims sprendimo pranešimas, kai db jį prijungs. Atblokuojant
- * priežastis lieka nebūtina.
+ * Laiškas – tuo pačiu keliu, kaip turinio sprendimų (`moderation-email.ts`):
+ * užblokuotas programėlės nebeatidarys, tad laiškas jam siunčiamas visada.
+ * Priežastis ir punktas tikrinami ir čia, ne tik bazėje: veiksmas yra viešas
+ * HTTP taškas. Atblokuojant priežastis nebūtina, punkto nėra.
  */
 export async function setSuspended(
   userId: string,
@@ -154,47 +155,31 @@ export async function setSuspended(
 ): Promise<ActionResult> {
   try {
     const admin = await requireAdmin();
-    let details: Justified | { reason: string } | null;
+    let why: Justified;
     if (suspended) {
-      const why = justify(reason, rule, true);
-      if ("error" in why) return { ok: false, error: why.error };
-      details = why;
+      const checked = justify(reason, rule, true);
+      if ("error" in checked) return { ok: false, error: checked.error };
+      why = checked;
     } else {
-      const why = reasonOrNull(reason);
-      if (why && why.length > 500) return { ok: false, error: "Priežastis per ilga — daugiausia 500 ženklų." };
-      details = why ? { reason: why } : null;
+      const text = reasonOrNull(reason);
+      if (text && text.length > 500) return { ok: false, error: "Priežastis per ilga — daugiausia 500 ženklų." };
+      why = { reason: text ?? "", rule: null };
     }
     const db = createSupabaseAdminClient();
 
-    const { error } = await db.auth.admin.updateUserById(userId, {
-      ban_duration: suspended ? "876000h" : "none",
-    });
-    if (error) return { ok: false, error: error.message };
-
-    /*
-     * Logged SEPARATELY, and that is the one place where the two-step problem
-     * described above genuinely exists: the ban lives in GoTrue, not in a
-     * table this transaction can reach. If this call fails, the person is
-     * banned and the log does not say so — so the failure is returned rather
-     * than swallowed, and the operator sees it.
-     */
-    const { error: logError } = await db.rpc("log_admin_action", {
+    const { data: auditLogId, error } = await db.rpc("admin_suspend_user", {
       _admin_id: admin.userId,
-      _action: suspended ? "suspend_user" : "unsuspend_user",
-      _target_type: "profile",
-      _target_id: userId,
-      _details: details,
+      _user_id: userId,
+      _suspend: suspended,
+      _reason: why.reason || null,
+      _rule: why.rule,
     });
-    if (logError) {
-      return {
-        ok: false,
-        error: `Veiksmas atliktas, bet į žurnalą neįrašytas: ${logError.message}`,
-      };
-    }
+    if (error) return { ok: false, error: dbError(error.message) };
 
+    const note = await authorEmailNote(db, auditLogId);
     // Visas `/admin`, ne tik skundai: būseną rodo ir paskyros puslapis (#129).
     revalidatePath("/admin", "layout");
-    return { ok: true };
+    return { ok: true, note };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
   }

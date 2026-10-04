@@ -34,6 +34,13 @@ import type { createSupabaseAdminClient } from "@/lib/supabase/admin";
  * reglamento 4 str.). Laiškas jam — ne mandagumas, o pažadas, todėl ribos jam
  * netaikomos; jei Resend atsisakytų, administratorius tai pamatys.
  *
+ * PASKYROS BLOKAVIMAS — VISADA (Gloumi `20261004231227`, #169 3 p.).
+ * `admin_suspend_user` įrašo `account_suspended` arba `account_unsuspended`
+ * pranešimą su tuo pačiu `auditLogId`. Užblokuotas žmogus programėlės
+ * nebeatidarys, tad laiškas jam — vienintelis kanalas, ir klientų ribos šiems
+ * pranešimams netaikomos. Jų taip pat neskaičiuoja ribos: blokavimų būna
+ * mažai, o turinio laiškų ribą jie neturi suvalgyti.
+ *
  * Laiškas nepavyko — veiksmas vis tiek atliktas, o pranešimas programėlėje
  * liko. Todėl klaida čia niekada nemetama: grąžinama būsena, kurią portalas
  * parodo administratoriui.
@@ -53,7 +60,11 @@ export type NoticeEmail =
 /** `master` — gavėjas meistras: jam laiškas privalomas (žr. viršų), tad nepavykęs — rimtesnis. */
 export type NoticeEmailResult = { status: NoticeEmail; master: boolean };
 
-const KINDS = ["moderation_content_removed", "moderation_content_edited"];
+/** Turinio sprendimai — klientams su ribomis (žr. viršų). */
+const CONTENT_KINDS = ["moderation_content_removed", "moderation_content_edited"];
+/** Paskyros blokavimas ir atblokavimas — visada. */
+const ACCOUNT_KINDS = ["account_suspended", "account_unsuspended"];
+const KINDS = [...CONTENT_KINDS, ...ACCOUNT_KINDS];
 const BURST_MS = 60 * 60 * 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;
 const DAILY_CAP = 20;
@@ -79,7 +90,7 @@ export async function emailAuthorNotice(db: AdminDb, auditLogId: unknown): Promi
   try {
     const { data: notice, error } = await db
       .from("notifications")
-      .select("id, recipient_id, recipient_role, title, body")
+      .select("id, kind, recipient_id, recipient_role, title, body")
       .eq("payload->>auditLogId", String(auditLogId))
       .in("kind", KINDS)
       .maybeSingle();
@@ -87,13 +98,13 @@ export async function emailAuthorNotice(db: AdminDb, auditLogId: unknown): Promi
     if (!notice) return result("none");
     master = notice.recipient_role === "master";
 
-    if (!master) {
+    if (!master && CONTENT_KINDS.includes(String(notice.kind))) {
       const now = Date.now();
       const { count: earlier, error: burstError } = await db
         .from("notifications")
         .select("id", { count: "exact", head: true })
         .eq("recipient_id", notice.recipient_id)
-        .in("kind", KINDS)
+        .in("kind", CONTENT_KINDS)
         .neq("id", notice.id)
         .gte("created_at", new Date(now - BURST_MS).toISOString());
       if (burstError) return result("failed");
@@ -102,7 +113,7 @@ export async function emailAuthorNotice(db: AdminDb, auditLogId: unknown): Promi
       const { count: today, error: capError } = await db
         .from("notifications")
         .select("id", { count: "exact", head: true })
-        .in("kind", KINDS)
+        .in("kind", CONTENT_KINDS)
         .neq("recipient_role", "master")
         .gte("created_at", new Date(now - DAY_MS).toISOString());
       if (capError) return result("failed");
@@ -168,23 +179,23 @@ export function noticeEmailNote({ status, master }: NoticeEmailResult): NoticeNo
   }
   switch (status) {
     case "sent":
-      return info("Autoriui pranešta programėlėje ir el. paštu.");
+      return info("Pranešta programėlėje ir el. paštu.");
     case "burst":
       return info(
-        "Autoriui pranešta programėlėje. Laiško nesiuntėme: per pastarąją valandą jam jau pranešta apie kitą sprendimą.",
+        "Pranešta programėlėje. Laiško nesiuntėme: per pastarąją valandą jam jau pranešta apie kitą sprendimą.",
       );
     case "cap":
       return info(
-        `Autoriui pranešta programėlėje. Laiško nesiuntėme: per paskutines 24 val. moderavimo pranešimų klientams jau daugiau nei ${DAILY_CAP}, o Resend paros limitą saugome registracijos laiškams.`,
+        `Pranešta programėlėje. Laiško nesiuntėme: per paskutines 24 val. moderavimo pranešimų klientams jau daugiau nei ${DAILY_CAP}, o Resend paros limitą saugome registracijos laiškams.`,
       );
     case "no_address":
-      return info("Autoriui pranešta programėlėje. Laiško nėra kur siųsti — paskyra be el. pašto.");
+      return info("Pranešta programėlėje. Laiško nėra kur siųsti — paskyra be el. pašto.");
     case "not_configured":
-      return warn("Autoriui pranešta programėlėje, bet laiškai nesiunčiami — nenustatytas RESEND_API_KEY.");
+      return warn("Pranešta programėlėje, bet laiškai nesiunčiami — nenustatytas RESEND_API_KEY.");
     case "failed":
-      return warn("Autoriui pranešta programėlėje, bet laiško išsiųsti nepavyko.");
+      return warn("Pranešta programėlėje, bet laiško išsiųsti nepavyko.");
     case "lookup_failed":
-      return warn("Nepavyko patikrinti, ar autoriui reikia laiško: bazė neatsakė. Laiškas neišsiųstas.");
+      return warn("Nepavyko patikrinti, ar reikia laiško: bazė neatsakė. Laiškas neišsiųstas.");
     case "none":
       return null;
   }

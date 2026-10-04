@@ -6,7 +6,8 @@ import { Ban, Trash2, Undo2 } from "lucide-react";
 import { deleteAccount, setSuspended } from "../../actions";
 import { useConfirm } from "../../ConfirmDialog";
 import { useTerminationNotice } from "../../ModerationRules";
-import { STROKE, SectionTitle, btn, btnDanger, card } from "../../ui";
+import type { NoticeNote } from "../../moderation-email";
+import { ActionNote, STROKE, SectionTitle, btn, btnDanger, card } from "../../ui";
 
 /*
  * Paskyros blokavimas ir trynimas (#129, developerio sprendimas: abu).
@@ -34,6 +35,8 @@ export function AccountActions({
   const notice = useTerminationNotice();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  // Ar žmogui išsiųstas laiškas apie blokavimą (#169 3 p.) – kaip turinio sprendimų kortelėse.
+  const [note, setNote] = useState<NoticeNote | null>(null);
   const [deleted, setDeleted] = useState(false);
   const [dialog, ask] = useConfirm();
 
@@ -42,14 +45,15 @@ export function AccountActions({
       banned
         ? {
             title: "Atblokuoti paskyrą?",
-            body: ["Žmogus vėl galės prisijungti."],
+            body: ["Žmogus vėl galės prisijungti.", "Jam pranešime, kad prieiga grąžinta – programėlėje ir el. paštu."],
             confirmLabel: "Atblokuoti",
             reason: true,
           }
         : {
             title: "Užblokuoti paskyrą?",
             body: [
-              "Žmogus nebegalės prisijungti, o esami seansai nustos galioti.",
+              "Žmogus nebegalės prisijungti, o jau atidaryta programėlė nustos veikti, kai baigsis jos prieigos raktas.",
+              "Jam iš karto pranešime priežastį ir punktą – programėlėje ir el. paštu; blokavimas be pranešimo neįvyksta.",
               "Atblokuoti galima bet kada, tuo pačiu mygtuku.",
             ],
             confirmLabel: "Užblokuoti",
@@ -60,9 +64,11 @@ export function AccountActions({
     );
     if (!answer) return;
     setError(null);
+    setNote(null);
     startTransition(async () => {
       const res = await setSuspended(userId, !banned, answer.reason, answer.rule);
-      if (!res.ok) setError(res.error);
+      if (res.ok) setNote(res.note ?? null);
+      else setError(res.error);
     });
   };
 
@@ -129,6 +135,7 @@ export function AccountActions({
           </button>
         </div>
       </div>
+      <ActionNote note={note} />
       {error ? (
         <p role="alert" className="mt-3 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
           {error}
