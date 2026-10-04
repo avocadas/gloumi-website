@@ -2,16 +2,37 @@
 
 import { createContext, useContext, type ReactNode } from "react";
 import type { RuleGroup } from "./moderation-rules";
+import type { TerminationNotice } from "./termination-notice";
 
 /*
  * Taisyklių punktų sąrašas patvirtinimo langui ir teksto taisymui (#169). Jį
  * sudaro serveris (`moderation-rules.ts`) ir perduoda maketas, tad kortelėms
- * nereikia jo nešti per savybes, o naršyklė gauna tik pavadinimus.
+ * nereikia jo nešti per savybes, o naršyklė gauna tik pavadinimus. Tuo pačiu
+ * keliu keliauja ir viena Meistrų sąlygų pastraipa trynimo langui
+ * (`termination-notice.ts`).
  */
 const RulesContext = createContext<RuleGroup[]>([]);
+const NoticeContext = createContext<TerminationNotice | null>(null);
 
-export function ModerationRulesProvider({ groups, children }: { groups: RuleGroup[]; children: ReactNode }) {
-  return <RulesContext.Provider value={groups}>{children}</RulesContext.Provider>;
+export function ModerationRulesProvider({
+  groups,
+  terminationNotice,
+  children,
+}: {
+  groups: RuleGroup[];
+  terminationNotice: TerminationNotice;
+  children: ReactNode;
+}) {
+  return (
+    <RulesContext.Provider value={groups}>
+      <NoticeContext.Provider value={terminationNotice}>{children}</NoticeContext.Provider>
+    </RulesContext.Provider>
+  );
+}
+
+/** Meistrų sąlygų pastraipa apie 30 dienų įspėjimą – meistro paskyros trynimo langui. */
+export function useTerminationNotice(): TerminationNotice | null {
+  return useContext(NoticeContext);
 }
 
 /**

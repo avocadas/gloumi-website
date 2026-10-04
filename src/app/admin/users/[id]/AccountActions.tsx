@@ -5,6 +5,7 @@ import { useState, useTransition } from "react";
 import { Ban, Trash2, Undo2 } from "lucide-react";
 import { deleteAccount, setSuspended } from "../../actions";
 import { useConfirm } from "../../ConfirmDialog";
+import { useTerminationNotice } from "../../ModerationRules";
 import { STROKE, SectionTitle, btn, btnDanger, card } from "../../ui";
 
 /*
@@ -22,12 +23,15 @@ export function AccountActions({
   userId,
   banned,
   confirmName,
+  isMaster,
 }: {
   userId: string;
   banned: boolean;
   confirmName: string;
+  isMaster: boolean;
 }) {
   const router = useRouter();
+  const notice = useTerminationNotice();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [deleted, setDeleted] = useState(false);
@@ -68,6 +72,9 @@ export function AccountActions({
       body: [
         "Kartu dings profilis ir viskas, kas duomenų bazėje priklauso šiai paskyrai, taip pat jos pateikti skundai, lojalumo taškai, rekomendacijos ir prenumeratos įrašai.",
         "Vizitai, sąskaitos ir dovanų kortelės lieka, tik be nuorodos į paskyrą. Failai iš saugyklos ištrinami naktį. Atšaukti negalima.",
+        // Meistrui trynimas = visos paslaugos nutraukimas: Sąlygos pažada įspėti iš anksto (`termination-notice.ts`).
+        isMaster && notice ? `Tai meistras. Jei trinate kaip sankciją, pirma įspėkite – ${notice.source}:` : null,
+        isMaster && notice ? `„${notice.text}“` : null,
       ],
       confirmLabel: "Ištrinti paskyrą",
       danger: true,

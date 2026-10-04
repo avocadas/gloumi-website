@@ -129,7 +129,7 @@ export function UserOverview({
         {user.is_admin ? (
           <p className="px-1 text-sm text-app-muted">Administratorių paskyros portale neblokuojamos ir netrinamos.</p>
         ) : (
-          <AccountActions userId={user.id} banned={banned} confirmName={handle ?? "IŠTRINTI"} />
+          <AccountActions userId={user.id} banned={banned} confirmName={handle ?? "IŠTRINTI"} isMaster={Boolean(master)} />
         )}
       </div>
 
