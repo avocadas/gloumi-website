@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { CalendarClock, HandCoins, Landmark, Undo2, UserRound } from "lucide-react";
+import { Building2, CalendarClock, HandCoins, Landmark, Undo2, UserRound } from "lucide-react";
 import { resolveDispute } from "../actions";
-import { useConfirm } from "../ConfirmDialog";
+import { useConfirm, type ConfirmOptions } from "../ConfirmDialog";
 import { formatMoney, formatWhen } from "../format";
 import { STROKE, Tag, btn, card, eyebrow } from "../ui";
 
@@ -22,7 +22,11 @@ export type DisputeView = {
   amountCents: number | null;
   transferredAt: string | null;
   stripeDisputeId: string | null;
+  /* Kas nešė pralaimėto kortelės ginčo nuostolį (#164); `null` — dar nenuspręsta arba ne kortelės ginčas. */
+  chargebackBearer: "gloumi" | "master" | null;
 };
+
+type Decision = "refund" | "release" | "gloumi_bears" | "master_bears";
 
 export const STATUS_TAG: Record<string, { label: string; tone: "warn" | "ok" | "neutral" | "danger" | "peach" }> = {
   open: { label: "Atviras", tone: "warn" },
@@ -38,54 +42,131 @@ const SOURCE_TAG: Record<string, { label: string; tone: "rose" | "lavender" | "n
   admin: { label: "Administratorius", tone: "neutral" },
 };
 
+/** Kokią būseną ginčas gauna po sprendimo (Gloumi `admin_resolve_dispute`). */
+const STATUS_AFTER: Record<Decision, string> = {
+  refund: "refund",
+  release: "release",
+  gloumi_bears: "release",
+  master_bears: "closed",
+};
+
+const BEARER_TAG: Record<"gloumi" | "master", string> = {
+  gloumi: "Nuostolį nešė Gloumi",
+  master: "Nuostolį nešė meistras",
+};
+
+/*
+ * Stripe kortelės ginčo priežasties kodai (`dispute.reason`); `stripe-webhook`
+ * juos saugo kaip `chargeback: <kodas>`. Kodas nepasako, kas kaltas
+ * (`fraudulent` — ir svetima kortelė, ir meistro sukčiavimas), tad jis tik
+ * padeda administratoriui, o nesprendžia už jį. Nežinomas kodas rodomas toks,
+ * koks atėjo.
+ */
+const CHARGEBACK_REASONS: Record<string, string> = {
+  fraudulent: "Kortelės savininkas teigia, kad mokėjimo nedarė",
+  product_not_received: "Klientas teigia, kad paslaugos negavo",
+  product_unacceptable: "Klientas teigia, kad paslauga neatitiko aprašymo",
+  duplicate: "Klientas teigia, kad sumokėjo du kartus",
+  credit_not_processed: "Klientas teigia, kad negavo pažadėto grąžinimo",
+  unrecognized: "Klientas mokėjimo neatpažįsta",
+  subscription_canceled: "Klientas teigia, kad prenumeratą atšaukė",
+  general: "Bendra priežastis, be smulkesnės",
+};
+
+function bankReason(raw: string | null): string | null {
+  if (!raw) return null;
+  const match = /^chargeback: ?(.*)$/.exec(raw);
+  if (!match) return raw;
+  const code = match[1].trim();
+  if (!code) return null;
+  return CHARGEBACK_REASONS[code] ? `${CHARGEBACK_REASONS[code]} (${code})` : code;
+}
+
 /*
  * Vienas ginčas (#147). Kortelės tvarka ta pati, kaip skundų: kas ir kada →
- * kokį vizitą ir kiek pinigų liečia → ką parašė klientas → kieno jis → ką
- * daryti.
+ * kokį vizitą ir kiek pinigų liečia → ką parašė klientas ar bankas → kieno
+ * jis → ką daryti.
  *
- * Sprendimai tik kliento pranešimams. Kortelės ginčą sprendžia bankas
- * (`chargeback_decided_by_bank`), tad jam mygtukų nėra — tik būsena ir
- * Stripe ginčo ID, pagal kurį jį rasti Stripe skydelyje.
+ * Kliento pranešimui — „Grąžinti klientui" arba „Išmokėti meistrui". Kortelės
+ * ginčą sprendžia bankas (`chargeback_decided_by_bank`): kol jis atviras,
+ * mygtukų nėra. Bankui ginčą išsprendus kliento naudai (`lost`), lieka
+ * nuspręsti, kas neša nuostolį (#164): Meistrų sąlygos jį palieka meistrui tik
+ * tada, kai ginčą sukėlė jo paslauga ar elgesys, o kitaip neša Gloumi.
  *
- * Abu sprendimai negrįžtami ir pinigus perkelia tik kitą naktį
+ * Visi sprendimai negrįžtami, o pinigus perkelia tik kitą naktį
  * (`stripe-settle`), todėl langas tai sako, o kortelė po sprendimo rodo, kas
  * laukia.
  */
 export function DisputeCard({ dispute }: { dispute: DisputeView }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [decided, setDecided] = useState<"refund" | "release" | null>(null);
+  const [decided, setDecided] = useState<Decision | null>(null);
   const [dialog, ask] = useConfirm();
 
-  const status = STATUS_TAG[decided ?? dispute.status];
+  const isChargeback = dispute.source === "chargeback";
+  const statusKey = decided ? STATUS_AFTER[decided] : dispute.status;
+  const bearer =
+    decided === "gloumi_bears" ? "gloumi" : decided === "master_bears" ? "master" : dispute.chargebackBearer;
+  const status = STATUS_TAG[statusKey];
   const source = SOURCE_TAG[dispute.source];
-  const canDecide = dispute.status === "open" && dispute.source !== "chargeback" && !decided;
+  const canDecide = dispute.status === "open" && !isChargeback && !decided;
+  const canSplitLoss = isChargeback && dispute.status === "lost" && !dispute.chargebackBearer && !decided;
   const amount = formatMoney(dispute.amountCents);
+  const reasonText = isChargeback ? bankReason(dispute.reason) : dispute.reason;
 
-  const decide = async (decision: "refund" | "release") => {
-    const answer = await ask(
-      decision === "refund"
-        ? {
-            title: "Grąžinti pinigus klientui?",
-            body: [
-              `Kitą naktį klientui bus grąžinta visa suma (${amount}), o meistras už šį vizitą išmokos negaus.`,
-              "Atšaukti negalima. Sprendimas įrašomas į administratorių žurnalą.",
-            ],
-            confirmLabel: "Grąžinti klientui",
-            reason: true,
-            reasonLabel: "Pastaba",
-          }
-        : {
-            title: "Išmokėti meistrui?",
-            body: [
-              "Kitą naktį išmoka bus pervesta meistrui, nelaukiant 3 dienų. Klientui pinigai negrąžinami.",
-              "Atšaukti negalima. Sprendimas įrašomas į administratorių žurnalą.",
-            ],
-            confirmLabel: "Išmokėti meistrui",
-            reason: true,
-            reasonLabel: "Pastaba",
-          },
-    );
+  const dialogs: Record<Decision, ConfirmOptions> = {
+    refund: {
+      title: "Grąžinti pinigus klientui?",
+      body: [
+        `Kitą naktį klientui bus grąžinta visa suma (${amount}), o meistras už šį vizitą išmokos negaus.`,
+        "Atšaukti negalima. Sprendimas įrašomas į administratorių žurnalą.",
+      ],
+      confirmLabel: "Grąžinti klientui",
+      reason: true,
+      reasonLabel: "Pastaba",
+    },
+    release: {
+      title: "Išmokėti meistrui?",
+      body: [
+        "Kitą naktį išmoka bus pervesta meistrui, nelaukiant 3 dienų. Klientui pinigai negrąžinami.",
+        "Atšaukti negalima. Sprendimas įrašomas į administratorių žurnalą.",
+      ],
+      confirmLabel: "Išmokėti meistrui",
+      reason: true,
+      reasonLabel: "Pastaba",
+    },
+    gloumi_bears: {
+      title: "Nuostolį neša Gloumi?",
+      body: [
+        `Bankas klientui jau grąžino ${amount}.`,
+        // `stripe-settle` perveda tik dar nepervestus vizitus (`transferred_at is null`).
+        dispute.transferredAt
+          ? "Išmoka meistrui jau pervesta, tad papildomai nieko nepervedama."
+          : "Kitą naktį meistrui bus pervesta išmoka iš Gloumi lėšų.",
+        "Atšaukti negalima. Sprendimas įrašomas į administratorių žurnalą.",
+      ],
+      confirmLabel: "Nuostolį neša Gloumi",
+      reason: true,
+      reasonLabel: "Pastaba",
+    },
+    master_bears: {
+      title: "Nuostolį neša meistras?",
+      body: [
+        "Vizitas bus pažymėtas grąžintu, ginčas uždarytas, o meistras už šį vizitą išmokos negaus.",
+        "Stripe grąžinimo nebus: pinigus klientui jau grąžino bankas.",
+        dispute.transferredAt
+          ? "Dėmesio: išmoka meistrui jau pervesta, ir jos atsiimti nepavyko. Kol nėra meistrų skolų apskaitos, ši suma liks meistrui — patikrinkite Stripe skydelyje."
+          : null,
+        "Atšaukti negalima. Sprendimas įrašomas į administratorių žurnalą.",
+      ],
+      confirmLabel: "Nuostolį neša meistras",
+      reason: true,
+      reasonLabel: "Pastaba",
+    },
+  };
+
+  const decide = async (decision: Decision) => {
+    const answer = await ask(dialogs[decision]);
     if (!answer) return;
     setError(null);
     startTransition(async () => {
@@ -101,7 +182,8 @@ export function DisputeCard({ dispute }: { dispute: DisputeView }) {
       <header className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-2">
           {source ? <Tag tone={source.tone}>{source.label}</Tag> : <Tag>{dispute.source}</Tag>}
-          {status ? <Tag tone={status.tone}>{status.label}</Tag> : <Tag>{dispute.status}</Tag>}
+          {status ? <Tag tone={status.tone}>{status.label}</Tag> : <Tag>{statusKey}</Tag>}
+          {bearer ? <Tag>{BEARER_TAG[bearer]}</Tag> : null}
         </div>
         <time dateTime={dispute.createdAt} className="text-xs tabular-nums text-app-muted">
           {formatWhen(dispute.createdAt)}
@@ -130,9 +212,11 @@ export function DisputeCard({ dispute }: { dispute: DisputeView }) {
       </dl>
 
       <div className="mt-4 rounded-[14px] bg-app-sheet p-4">
-        <p className={`${eyebrow} text-app-muted`}>{dispute.source === "chargeback" ? "Banko priežastis" : "Ką parašė klientas"}</p>
+        <p className={`${eyebrow} text-app-muted`}>{isChargeback ? "Banko priežastis" : "Ką parašė klientas"}</p>
         <p className="mt-1.5 whitespace-pre-wrap break-words text-sm text-app-ink">
-          {dispute.reason || <span className="italic text-app-muted">Nieko neparašė.</span>}
+          {reasonText || (
+            <span className="italic text-app-muted">{isChargeback ? "Bankas priežasties nenurodė." : "Nieko neparašė."}</span>
+          )}
         </p>
       </div>
 
@@ -168,7 +252,40 @@ export function DisputeCard({ dispute }: { dispute: DisputeView }) {
             </button>
           </div>
         </footer>
-      ) : dispute.source === "chargeback" && dispute.status === "open" ? (
+      ) : canSplitLoss ? (
+        <footer className="mt-5 flex flex-col gap-3 border-t border-app-hairline pt-4">
+          <p className="text-[13px] text-app-muted">
+            Bankas ginčą išsprendė kliento naudai ir grąžino jam {amount}. Kas neša nuostolį, lemia ne banko priežastis, o
+            tai, ar ginčą sukėlė meistro paslauga ar elgesys (Meistrų sąlygos). Kol nenuspręsta, išmoka meistrui sulaikyta.
+          </p>
+          {dispute.transferredAt ? (
+            <p className="rounded-[14px] bg-app-warn-bg px-4 py-3 text-[13px] font-semibold text-app-warn">
+              Išmoka meistrui vis dar pervesta: jos atsiimti automatiškai nepavyko. Patikrinkite Stripe skydelyje.
+            </p>
+          ) : null}
+          {/* Ilgas tekstas: telefone mygtukas lūžta į dvi eilutes, o ne išlenda už kortelės. */}
+          <div className="flex flex-wrap gap-2 sm:justify-end">
+            <button
+              type="button"
+              disabled={pending}
+              onClick={() => decide("gloumi_bears")}
+              className={`${btn} h-auto min-h-10 max-w-full py-2 text-left`}
+            >
+              <Building2 size={16} strokeWidth={STROKE} aria-hidden className="shrink-0" />
+              Nuostolį neša Gloumi – išmokėti meistrui
+            </button>
+            <button
+              type="button"
+              disabled={pending}
+              onClick={() => decide("master_bears")}
+              className={`${btn} h-auto min-h-10 max-w-full py-2 text-left`}
+            >
+              <UserRound size={16} strokeWidth={STROKE} aria-hidden className="shrink-0" />
+              Nuostolį neša meistras
+            </button>
+          </div>
+        </footer>
+      ) : isChargeback && statusKey === "open" ? (
         /*
          * `stripe-webhook` gavęs ginčą pervestą išmoką atsiima iš meistro
          * (`createReversal`) ir `transferred_at` nuima. Jei ji vis dar
@@ -185,6 +302,16 @@ export function DisputeCard({ dispute }: { dispute: DisputeView }) {
             pervesta kitą naktį.
           </p>
         )
+      ) : isChargeback && bearer ? (
+        <p className="mt-5 border-t border-app-hairline pt-4 text-[13px] text-app-muted">
+          {bearer === "master"
+            ? "Nuostolį neša meistras: vizitas pažymėtas grąžintu, išmokos už jį nebus."
+            : statusKey !== "release"
+              ? "Nuostolį nešė Gloumi."
+              : dispute.transferredAt
+                ? "Nuostolį neša Gloumi. Išmoka meistrui jau pervesta."
+                : "Nuostolį neša Gloumi. Išmoka meistrui bus pervesta kitą naktį, tada ginčas bus uždarytas."}
+        </p>
       ) : decided || dispute.status === "refund" || dispute.status === "release" ? (
         <p className="mt-5 border-t border-app-hairline pt-4 text-[13px] text-app-muted">
           Sprendimas priimtas. Pinigai pajudės kitą naktį, tada ginčas bus uždarytas.

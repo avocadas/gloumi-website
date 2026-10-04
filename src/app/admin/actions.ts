@@ -239,29 +239,38 @@ export async function deleteAccount(userId: string, reason: string): Promise<Act
  * pažymi sprendimą ir įrašo jį į žurnalą toje pačioje transakcijoje, o
  * grąžinimą ar išmoką kitą naktį įvykdo `stripe-settle`.
  *
- * Kortelės ginčą (`source = 'chargeback'`) sprendžia bankas — RPC jį atmeta
- * pats, o puslapis tokiam mygtukų ir nerodo.
+ * Kortelės ginčą (`source = 'chargeback'`) sprendžia bankas: `refund` ir
+ * `release` jam RPC atmeta. Pralaimėjus (`lost`) lieka nuspręsti tik, kas neša
+ * nuostolį (#164, Gloumi `20261004101651`): `gloumi_bears` → `release`,
+ * `master_bears` → vizitas `refunded`, ginčas `closed`. Stripe grąžinimo nėra
+ * nė vienu atveju — pinigus klientui jau grąžino bankas.
  */
+const DISPUTE_DECISIONS = ["refund", "release", "gloumi_bears", "master_bears"] as const;
+
 const DISPUTE_ERRORS: Record<string, string> = {
   bad_decision: "Nežinomas sprendimas.",
   dispute_not_found: "Šio ginčo nebėra.",
-  chargeback_decided_by_bank: "Kortelės ginčą sprendžia bankas, ne portalas.",
+  chargeback_decided_by_bank: "Kortelės ginčo pinigus grąžina bankas, ne portalas.",
+  decision_not_for_source: "Kas neša nuostolį, sprendžiama tik pralaimėtam kortelės ginčui.",
+  already_resolved: "Kas neša nuostolį, jau nuspręsta — gal tai padarė kitas administratorius.",
 };
 
 const disputeError = (message: string) => {
   const notOpen = /^dispute_not_open: (.+)$/.exec(message);
   if (notOpen) return `Ginčas jau išspręstas (būsena: ${notOpen[1]}) — gal tai padarė kitas administratorius.`;
+  const notLost = /^chargeback_not_lost: (.+)$/.exec(message);
+  if (notLost) return `Bankas ginčo dar nepralaimėjo (būsena: ${notLost[1]}) — nuostolį skirstyti dar nėra ko.`;
   return DISPUTE_ERRORS[message] ?? message;
 };
 
 export async function resolveDispute(
   bookingId: string,
-  decision: "refund" | "release",
+  decision: (typeof DISPUTE_DECISIONS)[number],
   note: string,
 ): Promise<ActionResult> {
   try {
     const admin = await requireAdmin();
-    if (typeof bookingId !== "string" || (decision !== "refund" && decision !== "release")) {
+    if (typeof bookingId !== "string" || !DISPUTE_DECISIONS.includes(decision)) {
       return { ok: false, error: "Netinkamas prašymas." };
     }
     // RPC pastabą nukerpa iki 500 tyliai; čia sakome aiškiai, kaip ir kitur portale.

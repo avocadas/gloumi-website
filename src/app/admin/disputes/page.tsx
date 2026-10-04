@@ -35,6 +35,8 @@ type Row = {
   amount_total_cents: number | null;
   transferred_at: string | null;
   stripe_dispute_id: string | null;
+  /* Nuo Gloumi `20261004101651` (#164); iki tol stulpelio nėra — `undefined`. */
+  chargeback_bearer?: string | null;
 };
 
 export default async function DisputesPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
@@ -76,6 +78,7 @@ export default async function DisputesPage({ searchParams }: { searchParams: Pro
       amountCents: r.amount_total_cents,
       transferredAt: r.transferred_at,
       stripeDisputeId: r.stripe_dispute_id,
+      chargebackBearer: r.chargeback_bearer === "gloumi" || r.chargeback_bearer === "master" ? r.chargeback_bearer : null,
     }));
 
   /*
