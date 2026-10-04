@@ -5,6 +5,128 @@ savo dieną.
 
 ---
 
+# 2026-10-04 — Paskyros trynimo puslapis, laiškas moderatoriui ir ofiso `web` šakos
+
+Rašo ofiso `web` rolė (Gloumi `AGENTS.md` XI): savo worktree'e
+`C:\Users\Avocadas\Gloumi-office\web` (savas `node_modules`), šakose
+`office/web-<tema>` nuo `origin/main`; bendras `../gloumi-website` aplankas
+lieka kitoms sesijoms. Į `main` — tik po developerio „pushink“, per Bash su
+`GLOUMI_RELEASE=1`. Šis įrašas išleidžiamas tame pačiame push'e kaip #171 ir
+#170, todėl jis viršesnis už portalo skyriaus §1 eilutes apie `main` ir
+šakas.
+
+## 1. Kas šiuo push'u patenka į `main`
+
+Prieš jį `main` = `e9c05a5` (gyvas nuo 2026-10-02 22:39 UTC: Taisyklės ir
+Privatumo politika 1.12, Meistrų ir salonų sąlygos 1.0).
+
+- **#171 — paskyros trynimo puslapis** `/paskyros-trynimas` ir
+  `/en/account-deletion` (`3174fea`). Google Play duomenų saugos formai —
+  `https://gloumi.lt/en/account-deletion`. Tai šeštas `LEGAL_ROUTES` raktas
+  (`deletion`, `lang.ts`): iš jo — sitemap'as ir kitų teisinių puslapių
+  nuorodos; poraštėje — `copy.*.ts` `footer.legalLinks`.
+  Žingsniai — programėlės mygtukų pavadinimai; „Kiek laiko saugome“
+  cituojamas iš Privatumo politikos PAGAL PAVADINIMĄ (`legal.ts`), tad
+  pervadinus skyrių programėlėje krenta `npm run build`, ne puslapis.
+- **#170 — laiškas moderatoriui** `POST /api/hooks/new-report` (`9a15f43`,
+  `0caf7d5`). Kviečia ne naršyklė, o bazės trigeris (`pg_net`) su antrašte
+  `x-gloumi-hook-secret`; kūnas — tik `{reason, target_type}`. Laiškas „Yra
+  naujų pranešimų apie turinį“ per Resend iš `no-reply@mail.gloumi.lt` į
+  `MODERATION_ALERT_TO` arba info@gloumi.lt: naujausio pranešimo priežastis,
+  kam jis skirtas ir nuoroda į portalą, be turinio, vardų ir ID (formuluotė
+  tokia, nes trigeris laišką siunčia ne kiekvienam pranešimui, žr. §2).
+  Atsakymai: 503 — nėra `REPORT_HOOK_SECRET` (arba production'e
+  nėra Resend rakto), 401 — bloga paslaptis, 400 — ne JSON, 502 — Resend
+  atmetė, 200 — išsiųsta.
+- **HANDOVER** — portalo skyriaus atnaujinimas (`82a189d`, buvo
+  `portal/handover-2026-10-04` `ec695a0`) ir šis įrašas.
+
+## 2. Kaip įjungti #170 (tvarka svarbi)
+
+1. Šis push'as: maršrutas gyvas, bet be paslapties atsako 503 ir nieko
+   nesiunčia (2026-10-04 18:18 UTC Vercel'yje `REPORT_HOOK_SECRET` ir
+   `MODERATION_ALERT_TO` nėra).
+2. Developeris sugeneruoja paslaptį ir įrašo ją dviejose vietose: Vercel
+   `REPORT_HOOK_SECRET` (Production, Sensitive) ir Supabase Vault
+   `report_hook_secret`. Agentas jos nemato ir neįrašo.
+3. **Naujas production deploy'us:** kintamasis įsigalioja tik naujam
+   deploy'ui („Kas gyvena Vercel'yje“ §2). Be jo maršrutas ir toliau atsakys
+   503.
+4. db pritaiko Gloumi `20261004152607` (`office/db-pranesimu-priezastys`,
+   su developerio „taip“ db pokalbyje). Įjungia įrašas
+   `app_config.report_hook_url` = `https://gloumi.lt/api/hooks/new-report`;
+   jį ir Vault paslaptį įrašo developeris (komandos — Gloumi
+   `supabase/migrations/PENDING.md`). Kol URL nėra, trigeris nieko
+   nesiunčia, tad migracija gali būti bazėje ir anksčiau. URL įrašyti tik po
+   1–3 žingsnių, kitaip pirmi kvietimai gaus 503 ir laiškų nebus.
+5. Patikra: vienas pranešimas iš QA paskyros programėlėje → Resend
+   `list-emails` arba info@ dėžutė. Trigeris kviečia ne dažniau kaip kas 10
+   min ir ne daugiau kaip 24 per parą, o ko nepakvietė, vėliau nebepakviečia,
+   tad antras bandymas per 10 min laiško nesukels — tai ne gedimas.
+
+`RESEND_API_KEY` yra tik Production, todėl šakų Preview deploy'uose laiško
+neišbandysi. Tas raktas tebėra 2026-09-14 (Gloumi #67), o nemokama Resend
+para — 100 laiškų visam projektui kartu su registracijos laiškais.
+
+## 3. Laukia „pushink“ (šakos įstumtos, `main`'e jų nėra)
+
+| Šaka | Kas | Ko laukia |
+|---|---|---|
+| `office/web-ginco-sprendimas` `13d21d9` | #164: pralaimėtam banko ginčui — „Nuostolį neša Gloumi“ arba „Nuostolį neša meistras“ (`gloumi_bears`, `master_bears`) | db `20261004101651` (`office/db-ginco-sprendimas` `867fd8a4`); sutartis sutampa (palyginta 2026-10-04 18:30 UTC); po web payments diegia `stripe-webhook` |
+| `office/web-admin-errors` `f169ee7` | #29: skirtukas „Klaidos“ (Sentry, tik skaitymas) | `SENTRY_READ_TOKEN` Vercel'yje (2026-10-04 18:18 UTC — nėra) |
+| `office/web-moderavimo-priezastis` `6593e76` | #169: privaloma priežastis ir pažeistas punktas portale | PERDARYTI: db `20261004145806` (`office/db-moderavimo-pranesimai`) `_rule` laukia `jsonb` `{"doc":"terms"\|"partner","version":"1.12","section":{"lt":"…","en":"…"}}` arba `{"doc":"request"}`, o šaka siunčia tekstą `terms@1.12:<pavadinimas>`; priežastis privaloma ir `admin_edit_text`. Į `main` — tik kartu su ta migracija, kitaip gyvo portalo trynimai gaus `reason_required` |
+
+Visos trys stovi ant `e9c05a5`: prieš push'ą perkelti ant naujo `main` ir iš
+naujo paleisti `npm run check` ir `npm run build`. #29 ir #170 abu prideda
+eilutes po `SUPABASE_SERVICE_ROLE_KEY` `README.md` ir `.env.example` —
+perkeliant #29 palikti abi dalis.
+
+## 4. Laukia developerio
+
+- **#129:** penki nepažymėti punktai — lentelė portalo skyriaus §5.
+- **#20:** socialinių tinklų adresai (`site.ts` `social` — visi `null`);
+  parduotuvių nuorodos — po viešo išleidimo (`NEXT_PUBLIC_*`, tad perdiegti
+  be build kešo).
+- **1.13** (build'o dieną): `gen:app` iš tos šakos → check + build → ranka
+  rašytos grąžinimų puslapio eilutės (`legal.ts` `refundSections`) ir DAC7
+  dalys → žymos „Pro ir VIP“ meistrų bloke (Gloumi #20, S-082) → „pushink“
+  kartu su build'u.
+- **#67:** naujas Resend raktas Vercel'yje ir planas.
+
+## 5. Išmatuota ir spąstai
+
+- **Sutartį su db tikrinti prieš push'ą, ne iš atminties:**
+  `git -C <Gloumi> show origin/office/db-<tema>:supabase/migrations/<failas>`
+  ir palyginti su šakos `actions.ts` (parašai, sprendimų vardai, klaidų
+  kodai). Taip 2026-10-04 rasta, kad #164 sutampa, o #169 — ne.
+- **Gloumi #142 2 p.:** Vercel `SUPABASE_SERVICE_ROLE_KEY` nekeistas nuo
+  2026-09-30 15:41 UTC (`createdAt` = `updatedAt`), o 10-01 matavimas rodė
+  `sb_secret_`. Vercel MCP `get_project_env` grąžina IŠŠIFRUOTĄ reikšmę —
+  jo nenaudoti; metaduomenims — `filter_project_envs` su `decrypt: false`.
+- **Portalas be prisijungimo:** laikinas `src/app/admin-preview/` ir
+  `.claude/launch.json` su uostu 3117 (3100 gali užimti kitas pokalbis);
+  prieš commit'ą ištrinti abu ir `.next/dev/types`.
+- **Ilgas mygtuko tekstas:** `btn` turi `h-10` ir `shrink-0`, tad telefone
+  mygtukas išlenda už kortelės — `h-auto min-h-10 max-w-full py-2`.
+- **Nauji failai** — `git add -N` prieš `npm run check`, kitaip
+  `check:cyrillic` jų nemato.
+- **Apostrofas JSX tekste** krenta per `react/no-unescaped-entities` —
+  rašyti `{"…"}`.
+- **Tracker'io komentaras gali turėti kelių rolių eilutes** („Ima: db…“,
+  „Ima: web…“): skaityti visą, ne pirmą eilutę.
+- Vietinė `legal-1.12` ištrinta 2026-10-04 — portalo skyriaus §6 pavyzdys
+  jau istorinis.
+
+## 6. Ko NEĮRODYTA
+
+- #170 visa grandinė (trigeris → maršrutas → Resend → dėžutė): migracija
+  nepritaikyta, paslapties nėra. Vietoje išbandyti tik maršruto atsakymai.
+- Kad #171 adresas tinka Google Play formai — formą pildo developeris.
+- Kad šie puslapiai gyvi: įrašas rašytas prieš push'ą, o po deploy'aus
+  tikrinama po vieną užklausą.
+
+---
+
 # 2026-10-01 — Kas gyvena Vercel'yje, o ne šioje repozitorijoje
 
 Portalas iki 2026-09-30 atsakinėjo `500 MIDDLEWARE_INVOCATION_FAILED`
