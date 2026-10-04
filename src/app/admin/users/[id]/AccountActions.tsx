@@ -50,13 +50,14 @@ export function AccountActions({
             ],
             confirmLabel: "Užblokuoti",
             danger: true,
-            reason: true,
+            rule: true,
+            reasonRequired: true,
           },
     );
     if (!answer) return;
     setError(null);
     startTransition(async () => {
-      const res = await setSuspended(userId, !banned, answer.reason);
+      const res = await setSuspended(userId, !banned, answer.reason, answer.rule);
       if (!res.ok) setError(res.error);
     });
   };
@@ -70,14 +71,15 @@ export function AccountActions({
       ],
       confirmLabel: "Ištrinti paskyrą",
       danger: true,
-      reason: true,
+      rule: true,
+      reasonRequired: true,
       typeToConfirm: confirmName,
     });
     if (!answer) return;
 
     setError(null);
     startTransition(async () => {
-      const res = await deleteAccount(userId, answer.reason);
+      const res = await deleteAccount(userId, answer.reason, answer.rule);
       if (res.ok) {
         setDeleted(true);
         router.replace("/admin/data?table=profiles");

@@ -64,13 +64,14 @@ export function RowCard({
       body: [cascadeNote, "Ištrinta eilutė įrašoma į administratorių žurnalą, bet atstatyti jos negalima."],
       confirmLabel: "Ištrinti",
       danger: true,
-      reason: true,
+      rule: true,
+      reasonRequired: true,
     });
     if (!answer) return;
 
     setError(null);
     startTransition(async () => {
-      const res = await removeRow(table, key, answer.reason);
+      const res = await removeRow(table, key, answer.reason, answer.rule);
       if (res.ok) setRemoved(true);
       else setError(res.error);
     });

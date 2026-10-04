@@ -72,21 +72,21 @@ export function ReportCard({ report }: { report: ReportView }) {
   const [done, setDone] = useState<string | null>(null);
   const [dialog, ask] = useConfirm();
 
-  // `reason` — tai, ką žmogus įrašė patvirtinimo lange (jei jame buvo laukas).
+  // `answer` — tai, ką žmogus įrašė ir pasirinko patvirtinimo lange (jei jame buvo laukai).
   const run = async (
-    fn: (reason: string) => Promise<{ ok: true } | { ok: false; error: string }>,
+    fn: (answer: { reason: string; rule: string | null }) => Promise<{ ok: true } | { ok: false; error: string }>,
     doneText: string,
     confirm?: ConfirmOptions,
   ) => {
-    let reason = "";
+    let answer: { reason: string; rule: string | null } = { reason: "", rule: null };
     if (confirm) {
-      const answer = await ask(confirm);
-      if (!answer) return;
-      reason = answer.reason;
+      const given = await ask(confirm);
+      if (!given) return;
+      answer = given;
     }
     setError(null);
     startTransition(async () => {
-      const res = await fn(reason);
+      const res = await fn(answer);
       if (res.ok) setDone(doneText);
       else setError(res.error);
     });
@@ -187,14 +187,16 @@ export function ReportCard({ report }: { report: ReportView }) {
                 type="button"
                 disabled={pending}
                 onClick={() =>
-                  run(() => moderate(deleteAction, report.targetId), "Turinys ištrintas", {
+                  run(({ reason, rule }) => moderate(deleteAction, report.targetId, reason, rule), "Turinys ištrintas", {
                     title: report.targetType === "post" ? "Ištrinti įrašą?" : "Ištrinti komentarą?",
                     body: [
                       "Jis bus pašalintas visiems, ir atšaukti negalima.",
-                      "Veiksmas įrašomas į administratorių žurnalą.",
+                      "Veiksmas, priežastis ir punktas įrašomi į administratorių žurnalą.",
                     ],
                     confirmLabel: "Ištrinti",
                     danger: true,
+                    rule: true,
+                    reasonRequired: true,
                   })
                 }
                 className={btnDanger}
@@ -209,7 +211,7 @@ export function ReportCard({ report }: { report: ReportView }) {
                 type="button"
                 disabled={pending}
                 onClick={() =>
-                  run((reason) => setSuspended(report.authorId!, true, reason), "Autorius užblokuotas", {
+                  run(({ reason, rule }) => setSuspended(report.authorId!, true, reason, rule), "Autorius užblokuotas", {
                     title: "Užblokuoti autorių?",
                     body: [
                       "Žmogus nebegalės prisijungti, o esami seansai nustos galioti.",
@@ -217,7 +219,8 @@ export function ReportCard({ report }: { report: ReportView }) {
                     ],
                     confirmLabel: "Užblokuoti",
                     danger: true,
-                    reason: true,
+                    rule: true,
+                    reasonRequired: true,
                   })
                 }
                 className={btnDanger}

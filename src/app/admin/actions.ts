@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { checkAdmin } from "@/lib/admin-guard";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { isModerationRule } from "./moderation-rules";
 
 /**
  * Server actions for every destructive admin operation.
@@ -29,6 +30,30 @@ type ActionResult = { ok: true } | { ok: false; error: string };
 const reasonOrNull = (reason: unknown) =>
   typeof reason === "string" && reason.trim() ? reason.trim() : null;
 
+/*
+ * #169: šalinant turinį ar ribojant paskyrą reikia ir priežasties, ir pažeisto
+ * taisyklių punkto — Taisyklės žada juos nurodyti, o DSA 17 str. reikalauja jų
+ * sprendimo pranešime. Tikrinama čia, ne tik lange: veiksmas yra viešas HTTP
+ * taškas. Punktas turi būti vienas iš dabartinių dokumentų skyrių
+ * (`moderation-rules.ts`), ne bet koks tekstas.
+ */
+function justify(reason: unknown, rule: unknown): { reason: string; rule: string } | { error: string } {
+  const why = reasonOrNull(reason);
+  if (!why) return { error: "Nurodykite priežastį." };
+  if (why.length > 500) return { error: "Priežastis per ilga — daugiausia 500 ženklų." };
+  if (!isModerationRule(rule)) return { error: "Pasirinkite pažeistą taisyklių punktą." };
+  return { reason: why, rule };
+}
+
+const DB_ERRORS: Record<string, string> = {
+  row_not_found: "Šios eilutės nebėra — gal ją jau ištrynė kitas administratorius.",
+  // Antras saugiklis duomenų bazėje (#169), jei kas nors kviestų RPC aplenkdamas šią patikrą.
+  reason_required: "Nurodykite priežastį.",
+  rule_required: "Pasirinkite pažeistą taisyklių punktą.",
+};
+
+const dbError = (message: string) => DB_ERRORS[message] ?? message;
+
 async function requireAdmin() {
   const check = await checkAdmin();
   if (!check.ok) {
@@ -43,21 +68,30 @@ async function requireAdmin() {
   return check;
 }
 
-/** Ištrina pažeidžiantį turinį arba uždaro pranešimą. */
+/**
+ * Ištrina pažeidžiantį turinį arba uždaro pranešimą. Trinant — privalomi
+ * priežastis ir punktas (#169); skundą peržiūrint ar atmetant — ne.
+ */
 export async function moderate(
   action: "delete_post" | "delete_comment" | "review_report" | "dismiss_report",
   targetId: string,
+  reason?: string,
+  rule?: string | null,
 ): Promise<ActionResult> {
   try {
     const admin = await requireAdmin();
+    const removes = action === "delete_post" || action === "delete_comment";
+    const why = removes ? justify(reason, rule) : null;
+    if (why && "error" in why) return { ok: false, error: why.error };
     const db = createSupabaseAdminClient();
 
     const { error } = await db.rpc("admin_moderate", {
       _admin_id: admin.userId,
       _action: action,
       _target_id: targetId,
+      ...(why ? { _reason: why.reason, _rule: why.rule } : {}),
     });
-    if (error) return { ok: false, error: error.message };
+    if (error) return { ok: false, error: dbError(error.message) };
 
     revalidatePath("/admin");
     return { ok: true };
@@ -86,12 +120,29 @@ export async function moderate(
  * blokavimui notes"). `log_admin_action` ilgio neriboja, o trynimo RPC
  * atmeta ilgesnę nei 500 ženklų, tad ta pati riba tikrinama čia — PRIEŠ
  * blokuojant, kitaip žmogus liktų užblokuotas be įrašo žurnale.
+ *
+ * Blokuojant priežastis ir punktas privalomi (#169), ir žurnale abu atsiranda
+ * `details` — iš ten juos ims sprendimo pranešimas. Atblokuojant priežastis
+ * lieka nebūtina.
  */
-export async function setSuspended(userId: string, suspended: boolean, reason?: string): Promise<ActionResult> {
+export async function setSuspended(
+  userId: string,
+  suspended: boolean,
+  reason?: string,
+  rule?: string | null,
+): Promise<ActionResult> {
   try {
     const admin = await requireAdmin();
-    const why = reasonOrNull(reason);
-    if (why && why.length > 500) return { ok: false, error: "Priežastis per ilga — daugiausia 500 ženklų." };
+    let details: { reason: string; rule?: string } | null;
+    if (suspended) {
+      const why = justify(reason, rule);
+      if ("error" in why) return { ok: false, error: why.error };
+      details = why;
+    } else {
+      const why = reasonOrNull(reason);
+      if (why && why.length > 500) return { ok: false, error: "Priežastis per ilga — daugiausia 500 ženklų." };
+      details = why ? { reason: why } : null;
+    }
     const db = createSupabaseAdminClient();
 
     const { error } = await db.auth.admin.updateUserById(userId, {
@@ -111,7 +162,7 @@ export async function setSuspended(userId: string, suspended: boolean, reason?: 
       _action: suspended ? "suspend_user" : "unsuspend_user",
       _target_type: "profile",
       _target_id: userId,
-      _details: why ? { reason: why } : null,
+      _details: details,
     });
     if (logError) {
       return {
@@ -136,12 +187,6 @@ export async function setSuspended(userId: string, suspended: boolean, reason?: 
  * duomenų bazės katalogas, ne šis failas: čia tikrinama tik prašymo forma.
  */
 
-const DB_ERRORS: Record<string, string> = {
-  row_not_found: "Šios eilutės nebėra — gal ją jau ištrynė kitas administratorius.",
-};
-
-const dbError = (message: string) => DB_ERRORS[message] ?? message;
-
 const isKey = (value: unknown): value is Record<string, unknown> =>
   !!value && typeof value === "object" && !Array.isArray(value);
 
@@ -150,19 +195,23 @@ export async function removeRow(
   table: string,
   key: Record<string, unknown>,
   reason: string,
+  rule: string | null,
 ): Promise<ActionResult> {
   try {
     const admin = await requireAdmin();
     if (typeof table !== "string" || !isKey(key)) {
       return { ok: false, error: "Netinkamas prašymas." };
     }
+    const why = justify(reason, rule);
+    if ("error" in why) return { ok: false, error: why.error };
     const db = createSupabaseAdminClient();
 
     const { error } = await db.rpc("admin_remove", {
       _admin_id: admin.userId,
       _table: table,
       _key: key,
-      _reason: reasonOrNull(reason),
+      _reason: why.reason,
+      _rule: why.rule,
     });
     if (error) return { ok: false, error: dbError(error.message) };
 
@@ -214,16 +263,19 @@ export async function editText(
  * puslapis, ir jo perpiešimas tik parodytų „naudotojo nėra" — klientas iš
  * jo išeina pats.
  */
-export async function deleteAccount(userId: string, reason: string): Promise<ActionResult> {
+export async function deleteAccount(userId: string, reason: string, rule: string | null): Promise<ActionResult> {
   try {
     const admin = await requireAdmin();
     if (typeof userId !== "string") return { ok: false, error: "Netinkamas prašymas." };
+    const why = justify(reason, rule);
+    if ("error" in why) return { ok: false, error: why.error };
     const db = createSupabaseAdminClient();
 
     const { error } = await db.rpc("admin_delete_account", {
       _admin_id: admin.userId,
       _user_id: userId,
-      _reason: reasonOrNull(reason),
+      _reason: why.reason,
+      _rule: why.rule,
     });
     if (error) return { ok: false, error: dbError(error.message) };
 

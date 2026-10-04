@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { CircleAlert } from "lucide-react";
+import { useModerationRules } from "./ModerationRules";
 import { btn, btnDanger, btnQuiet, input, STROKE } from "./ui";
 
 export type ConfirmOptions = {
@@ -10,15 +11,23 @@ export type ConfirmOptions = {
   body?: (string | null | undefined)[];
   confirmLabel: string;
   danger?: boolean;
-  /** Rodyti nebūtiną priežasties lauką; ji keliauja į administratorių žurnalą. */
+  /** Rodyti priežasties lauką; ji keliauja į administratorių žurnalą. */
   reason?: boolean;
+  /**
+   * Priežastis privaloma (#169): šalinant turinį ar ribojant paskyrą ją reikia
+   * nurodyti sprendimo pranešime naudotojui, tad ji rašoma jam suprantamai.
+   */
+  reasonRequired?: boolean;
   /** Lauko pavadinimas, jei ne „Priežastis" (pvz. ginčo sprendimui — „Pastaba"). */
   reasonLabel?: string;
+  /** Privaloma pasirinkti pažeistą taisyklių punktą (#169). */
+  rule?: boolean;
   /** Žodis, kurį reikia įrašyti, kad mygtukas įsijungtų. */
   typeToConfirm?: string;
 };
 
-export type ConfirmResult = { reason: string } | null;
+/** `rule` — `null`, jei langas punkto neklausė. */
+export type ConfirmResult = { reason: string; rule: string | null } | null;
 
 /*
  * Vienas langas vietoj `window.confirm` + `window.prompt` (#129). Naršyklės
@@ -65,10 +74,16 @@ function ConfirmDialog({
   onSettle: (result: ConfirmResult) => void;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const groups = useModerationRules();
   const [reason, setReason] = useState("");
+  const [rule, setRule] = useState("");
   const [typed, setTyped] = useState("");
-  const { title, body, confirmLabel, danger, typeToConfirm } = options;
-  const matches = !typeToConfirm || typed.trim() === typeToConfirm;
+  const { title, body, confirmLabel, danger, typeToConfirm, reasonRequired } = options;
+  const showReason = options.reason || reasonRequired;
+  const ready =
+    (!typeToConfirm || typed.trim() === typeToConfirm) &&
+    (!reasonRequired || reason.trim() !== "") &&
+    (!options.rule || rule !== "");
 
   useEffect(() => {
     const el = ref.current;
@@ -77,8 +92,8 @@ function ConfirmDialog({
 
   const confirm = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!matches) return;
-    onSettle({ reason: reason.trim() });
+    if (!ready) return;
+    onSettle({ reason: reason.trim(), rule: options.rule ? rule : null });
   };
 
   return (
@@ -132,16 +147,47 @@ function ConfirmDialog({
           </label>
         ) : null}
 
-        {options.reason ? (
+        {options.rule ? (
+          <label className="mt-5 block">
+            <span className="text-[13px] font-semibold text-app-ink">Pažeistas taisyklių punktas</span>
+            <select
+              value={rule}
+              onChange={(e) => setRule(e.target.value)}
+              required
+              autoFocus={!typeToConfirm}
+              className={`${input} mt-2`}
+            >
+              <option value="" disabled>
+                Pasirinkite punktą
+              </option>
+              {groups.map((g) => (
+                <optgroup key={g.label} label={g.label}>
+                  {g.options.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+          </label>
+        ) : null}
+
+        {showReason ? (
           <label className="mt-5 block">
             <span className="text-[13px] font-semibold text-app-ink">
               {options.reasonLabel ?? "Priežastis"}{" "}
-              <span className="font-normal text-app-muted">— nebūtina, matys tik administratoriai</span>
+              <span className="font-normal text-app-muted">
+                {reasonRequired
+                  ? "— privaloma; rašykite taip, kad suprastų ir pats naudotojas"
+                  : "— nebūtina, matys tik administratoriai"}
+              </span>
             </span>
             <textarea
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              autoFocus={!typeToConfirm}
+              required={reasonRequired}
+              autoFocus={!typeToConfirm && !options.rule}
               maxLength={500}
               rows={2}
               className={`${input} mt-2 h-auto resize-none py-3`}
@@ -150,10 +196,10 @@ function ConfirmDialog({
         ) : null}
 
         <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <button type="button" onClick={() => onSettle(null)} className={btnQuiet} autoFocus={!options.reason && !typeToConfirm}>
+          <button type="button" onClick={() => onSettle(null)} className={btnQuiet} autoFocus={!showReason && !options.rule && !typeToConfirm}>
             Atšaukti
           </button>
-          <button type="submit" disabled={!matches} className={danger ? btnDanger : btn}>
+          <button type="submit" disabled={!ready} className={danger ? btnDanger : btn}>
             {confirmLabel}
           </button>
         </div>

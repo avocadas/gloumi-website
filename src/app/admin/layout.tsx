@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "../globals.css";
 import { adminFontVariables } from "@/app/fonts";
+import { moderationRules } from "./moderation-rules";
+import { ModerationRulesProvider } from "./ModerationRules";
 
 /**
  * Root layout for the admin portal.
@@ -36,7 +38,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="lt" className={`${adminFontVariables} h-full antialiased`}>
       <body className="flex min-h-full flex-col bg-app-sheet font-app-sans text-app-ink [&_:focus-visible]:outline-app-accent">
-        {children}
+        <ModerationRulesProvider groups={moderationRules()}>{children}</ModerationRulesProvider>
       </body>
     </html>
   );
