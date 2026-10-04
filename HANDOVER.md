@@ -92,23 +92,36 @@ sutvarkyti, kas neveiks, ir tik tada juos pažymėti.
 sutikus), VIII (paslaptys) ir Gloumi `.claude/LESSONS.md` 4.8. Duomenų bazė ir
 Edge funkcija gyvena **Gloumi** repozitorijoje, ne čia.
 
-## 1. Kas dabar gyva (išmatuota 2026-10-01 ~02:30 UTC)
+## 1. Kas dabar gyva (išmatuota 2026-10-04)
 
-- **Svetainė:** `main` = `d0596f4`, Vercel production
-  `dpl_5gAvqMFFmKoqKd7CDLzdYXmLJhWJ` (`READY`, `gloumi.lt`). Puslapiai:
-  `/admin/login`, `/admin` (Skundai), `/admin/data` (Duomenys),
-  `/admin/users/[id]` (paskyra).
-- **Gloumi `ringaudas-prod`:** `d9c49f5` (migracija
-  `20261001012855_admin_data_browser`, pritaikyta per MCP 01:28 UTC) ir
-  `012e718` (Edge `admin-media-urls`, versija 2). Į `prod` dar **neįlieta** —
-  pateks su kitu `ringaudas-prod` → `prod` sujungimu (Gloumi VI.1.3). Bazė ir
-  funkcija gyvos jau dabar: pritaikytos tiesiai, ne per šaką.
-- **Administratoriai:** `admin_ids` lygiai trys — `admin.ieva`,
-  `admin.karolis`, `admin.ringaudas`. Patvirtintą TOTP turi `admin.ieva` ir
-  `admin.ringaudas`; `admin.karolis` dar nė karto neprisijungė (0 faktorių,
-  nė vieno `ok` bandymo). Užrakintų nėra.
-- **#129:** 1 (atsijungimas) ir 7 (senųjų funkcijų pašalinimas) pažymėti;
-  **2–6 laukia developerio patikros** — jis pažadėjo patikrinti pats.
+- **Svetainė:** `main` = `e9c05a5` (portalo kodas paskutinį kartą keistas
+  `d3b3d7a`, po jo — tik #146 teisiniai tekstai). Puslapiai: `/admin/login`,
+  `/admin` (Skundai), `/admin/disputes` (Ginčai, #147), `/admin/data`
+  (Duomenys), `/admin/users/[id]` (paskyra). Nuo `9241a5d` — programėlės
+  dizainu (žr. §2 „Išvaizda“).
+- **Ofiso `web` rolė** (Gloumi AGENTS XI) nuo 10-03 portalą keičia savo
+  šakose `office/web-*`, dar neįlietose į `main`: `web-ginco-sprendimas`
+  (#164, kas neša pralaimėtą banko ginčą), `web-moderavimo-priezastis`
+  (privaloma priežastis ir pažeista taisyklė), `web-admin-errors` (#29,
+  Sentry klaidos portale), `web-pranesimo-laiskas` (#170). Jos keičia
+  `actions.ts`, `ConfirmDialog.tsx`, `ReportCard.tsx`, `RowCard.tsx`,
+  `AccountActions.tsx`, `DisputeCard.tsx`, `AdminShell.tsx` — prieš liečiant
+  šiuos failus pasitikrinti su ja.
+- **Gloumi:** portalo bazė ir Edge (`20261001012855`, `admin-media-urls` v2)
+  jau `prod`'e. Ginčų RPC (`20261001233134`) — Ringaudo juostos, pritaikyti.
+- **Administratoriai:** `admin_ids` trys — `admin.ieva`, `admin.karolis`,
+  `admin.ringaudas`; TOTP `verified` visi trys (Karolis įsijungė 10-01
+  20:45 UTC). Užrakintų nėra.
+- **#129 (4 iš 9):** pažymėti 1 (atsijungimas), 5 (blokavimas ir trynimas —
+  gyvai išbandyta 10-01 22:18–22:22 UTC, ištrintos `gloumi.test.client2` ir
+  „Claude“), 7 (senos funkcijos), 8 (perpiešimas). **Gyvai NEIŠBANDYTA:** 2
+  (paieška ir nuotraukos), 3 (turinio trynimas), 4 (žmogaus apžvalga), 6
+  (tekstų taisymas), 9 (priežastis blokuojant — kodas `0c6d0f1` gyvas).
+  Skundų „peržiūrėti / atmesti“ gyvai veikia (`admin.karolis`, 10-01 21:51).
+- **#147** uždarytas 10-02 (3 punktas — portalo ginčų mygtukai — pažymėtas),
+  bet ginčų dar nebuvo nė vieno, tad sprendimo kelias gyvai neišbandytas.
+- Nuo 10-01 22:22 UTC iki 10-04 portale nebuvo nė vieno veiksmo
+  (`admin_audit_logs` tuščias tame lange).
 
 ## 2. Kaip portalas sudėtas
 
@@ -301,13 +314,15 @@ spaudžia, agentas skaito, kas įvyko:
 
 Ką tikrinti kiekvienam #129 punktui:
 
-| # | developeris daro | turi įvykti |
-|---|---|---|
-| 2 | Duomenys → Įrašai, paieška | eilutės ir nuotraukos; vietoj nuotraukos „Peržiūra nepasiekiama“ → funkcijos žurnalas |
-| 3 | ištrina testinį komentarą | eilutės nebėra; žurnale `remove` su ta eilute |
-| 4 | kortelėje paspaudžia „paskyra“ | skaičiai pagal lenteles, nuorodos filtruoja pagal naudotoją |
-| 5 | Užblokuoti / Atblokuoti; trinti tik nereikalingą testinę paskyrą | `auth.users.banned_until`; žurnale `suspend_user` / `unsuspend_user`; po trynimo — `delete_account` ir eilutė `deleted_account_media` |
-| 6 | pataiso testinio įrašo aprašymą | tekstas pasikeitė; žurnale `edit_text` su `before` ir `after` |
+| # | developeris daro | turi įvykti | būklė 10-02 |
+|---|---|---|---|
+| 2 | Duomenys → Įrašai, paieška `TEST` | „Rasta 204“, eilutės ir nuotraukos; vietoj nuotraukos „Peržiūra nepasiekiama“ → funkcijos žurnalas | neišbandyta |
+| 3 | programėlėje parašo komentarą `testas 129`, portale Komentarai → ištrina (komentarų bazėje 0) | eilutės nebėra; žurnale `remove` su ta eilute | neišbandyta |
+| 4 | įrašo kortelėje paspaudžia „Meistras“ (TEST - Meistras Kaunietis) | Įrašai 100, Nuotraukos 25, Atsiliepimai 15, Vizitai 15, Pranešimai 15, kitos po 1 (išmatuota 10-01) | neišbandyta |
+| 5 | Užblokuoti / Atblokuoti; trinti testinę paskyrą | žurnale `suspend_user`, `delete_account`, eilutė `deleted_account_media` | **padaryta** (atblokuoti nespausta) |
+| 6 | pataiso testinio įrašo aprašymą ir grąžina | tekstas pasikeitė; žurnale du `edit_text` su `before` ir `after` | neišbandyta |
+| 9 | užblokuoja ir atblokuoja testinę paskyrą (pvz. „TEST - QA Klientas“) su priežastimi | žurnale `suspend_user` ir `unsuspend_user` su `details.reason` | neišbandyta |
+| #147 | ginčas (testinis klientas programėlėje „Vizitas neįvyko?“) → Ginčai → sprendimas | `booking_disputes.status` = `refund`/`release`, žurnale `resolve_dispute` | ginčų 0 |
 
 Pažymėti punktus ir siūlyti uždaryti #129 — tik developeriui sutikus (Gloumi
 VII.14). Neprisijungus saugu patikrinti tik vieną dalyką, viena užklausa:
@@ -316,7 +331,8 @@ VII.14). Neprisijungus saugu patikrinti tik vieną dalyką, viena užklausa:
 
 ## 6. Ko NEĮRODYTA
 
-- Prisijungus `/admin/data` ir `/admin/users/[id]` dar niekas neatidarė.
+- `/admin/data` lentelių ir `/admin/users/[id]` su tikrais duomenimis
+  nuotraukų dar niekas nematė (paskyros puslapiai atidaryti 10-01 vakare).
 - `admin-media-urls` sėkmės kelias (svetainės raktas → `service_role`).
   Išmatuoti tik atsisakymai: viešas raktas → `permission denied for function
   admin_require`, netikras Bearer → JWT klaida.
@@ -324,8 +340,10 @@ VII.14). Neprisijungus saugu patikrinti tik vieną dalyką, viena užklausa:
   to gyvai nestebėtas.
 - Apple atšaukimas `purge_accounts` viduje — repeticijos paskyros
   `apple_refresh_tokens` neturėjo.
-- `admin.karolis` neprisijungęs: kol jis neįsijungs TOTP, kas žino jo
-  slaptažodį, gali įsijungti savo.
+- Ginčo sprendimas (`resolveDispute`) — ginčų dar nebuvo.
+- **Bendras aplankas:** kitos sesijos šiame checkout'e laiko vietines šakas ir
+  neišsiųstus commit'us (pvz. `legal-1.12` su #146 tekstais, laukia
+  developerio). Prieš push'ą — `git log origin/main..main`, išsiųsti tik savo.
 
 ## 7. Kas liko už #129
 
