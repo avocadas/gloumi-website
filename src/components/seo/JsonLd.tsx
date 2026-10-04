@@ -44,6 +44,10 @@ export function JsonLd({ lang }: { lang: Lang }) {
     },
   ];
 
-  const json = JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\u003c");
+  // Keičiama į šešių simbolių seką (atgalinis brūkšnys ir u003c), ne į patį `<`:
+  // JS eilutėje viengubas brūkšnys su u003c ir yra `<`, tad keitimas nieko
+  // nekeisdavo. Kol duomenys pastovūs, žalos nėra, bet pirma vartotojo eilutė
+  // su `</script>` uždarytų žymę (SECURITY_AUDIT.md I-6, avocadas/Gloumi).
+  const json = JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c");
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: json }} />;
 }
