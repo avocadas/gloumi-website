@@ -72,7 +72,7 @@ para — 100 laiškų visam projektui kartu su registracijos laiškais.
 
 | Šaka | Kas | Ko laukia |
 |---|---|---|
-| `office/web-ginco-sprendimas` `13d21d9` | #164: pralaimėtam banko ginčui — „Nuostolį neša Gloumi“ arba „Nuostolį neša meistras“ (`gloumi_bears`, `master_bears`) | db `20261004101651` (`office/db-ginco-sprendimas` `867fd8a4`); sutartis sutampa (palyginta 2026-10-04 18:30 UTC); po web payments diegia `stripe-webhook` |
+| `office/web-ginco-sprendimas` `13d21d9` | #164: pralaimėtam banko ginčui — „Nuostolį neša Gloumi“ arba „Nuostolį neša meistras“ (`gloumi_bears`, `master_bears`) | db dalis jau GYVA: `booking_disputes.chargeback_bearer` ir `admin_resolve_dispute` su abiem sprendimais ir visomis klaidomis, kurias verčia šaka (`20261004174752`, `…174827`, `…174851`; patikrinta gyvoje bazėje 2026-10-04 19:26 UTC). `admin_list_disputes` `chargeback_bearer` dar negrąžina (`20261004191736`, `office/db-ginco-sprendimas` `7c541093`, nepritaikyta), bet puslapis tą lauką skaito kaip nebūtiną — tad „pushink“ galimas jau dabar; po web payments diegia `stripe-webhook` |
 | `office/web-admin-errors` `f169ee7` | #29: skirtukas „Klaidos“ (Sentry, tik skaitymas) | `SENTRY_READ_TOKEN` Vercel'yje (2026-10-04 18:18 UTC — nėra) |
 | `office/web-moderavimo-priezastis` `6593e76` | #169: privaloma priežastis ir pažeistas punktas portale | PERDARYTI: db `20261004145806` (`office/db-moderavimo-pranesimai`) `_rule` laukia `jsonb` `{"doc":"terms"\|"partner","version":"1.12","section":{"lt":"…","en":"…"}}` arba `{"doc":"request"}`, o šaka siunčia tekstą `terms@1.12:<pavadinimas>`; priežastis privaloma ir `admin_edit_text`. Į `main` — tik kartu su ta migracija, kitaip gyvo portalo trynimai gaus `reason_required` |
 
@@ -98,7 +98,10 @@ perkeliant #29 palikti abi dalis.
 - **Sutartį su db tikrinti prieš push'ą, ne iš atminties:**
   `git -C <Gloumi> show origin/office/db-<tema>:supabase/migrations/<failas>`
   ir palyginti su šakos `actions.ts` (parašai, sprendimų vardai, klaidų
-  kodai). Taip 2026-10-04 rasta, kad #164 sutampa, o #169 — ne.
+  kodai). Taip 2026-10-04 rasta, kad #164 sutampa, o #169 — ne. db šakos
+  keičiasi greitai (tą patį vakarą `20261004101651` virto trimis jau
+  pritaikytomis migracijomis), tad prieš push'ą žiūrėti ir gyvą bazę:
+  `supabase_migrations.schema_migrations` ir `pg_get_functiondef`.
 - **Gloumi #142 2 p.:** Vercel `SUPABASE_SERVICE_ROLE_KEY` nekeistas nuo
   2026-09-30 15:41 UTC (`createdAt` = `updatedAt`), o 10-01 matavimas rodė
   `sb_secret_`. Vercel MCP `get_project_env` grąžina IŠŠIFRUOTĄ reikšmę —
