@@ -76,11 +76,12 @@ para — 100 laiškų visam projektui kartu su registracijos laiškais.
 
 | Šaka | Kas | Ko laukia |
 |---|---|---|
-| `office/web-ginco-sprendimas` `13d21d9` | #164: pralaimėtam banko ginčui — „Nuostolį neša Gloumi“ arba „Nuostolį neša meistras“ (`gloumi_bears`, `master_bears`) | db dalis jau GYVA: `booking_disputes.chargeback_bearer` ir `admin_resolve_dispute` su abiem sprendimais ir visomis klaidomis, kurias verčia šaka (`20261004174752`, `…174827`, `…174851`; patikrinta gyvoje bazėje 2026-10-04 19:26 UTC). `admin_list_disputes` `chargeback_bearer` dar negrąžina (`20261004191736`, `office/db-ginco-sprendimas` `7c541093`, nepritaikyta), bet puslapis tą lauką skaito kaip nebūtiną — tad „pushink“ galimas jau dabar; po web payments diegia `stripe-webhook` |
+| `office/web-ginco-sprendimas-2` (= `13d21d9` ant šio įrašo) | #164: pralaimėtam banko ginčui — „Nuostolį neša Gloumi“ arba „Nuostolį neša meistras“ (`gloumi_bears`, `master_bears`) | IŠLEIDŽIAMA atskiru push'u iškart po šio įrašo (developerio sprendimas 2026-10-04 ~22:45 UTC). db dalis gyva (`20261004174752`, `…174827`, `…174851`; patikrinta gyvoje bazėje 19:26 UTC); `admin_list_disputes` `chargeback_bearer` grąžins tik `20261004191736` (nepritaikyta) — iki jos žymos „Nuostolį nešė…“ nėra, mygtukai veikia. Po web payments diegia `stripe-webhook` |
 | `office/web-admin-errors` `f169ee7` | #29: skirtukas „Klaidos“ (Sentry, tik skaitymas) | `SENTRY_READ_TOKEN` Vercel'yje (2026-10-04 18:18 UTC — nėra) |
-| `office/web-moderavimo-priezastis` `6593e76` | #169: privaloma priežastis ir pažeistas punktas portale | PERDARYTI: db `20261004145806` (`office/db-moderavimo-pranesimai`) `_rule` laukia `jsonb` `{"doc":"terms"\|"partner","version":"1.12","section":{"lt":"…","en":"…"}}` arba `{"doc":"request"}`, o šaka siunčia tekstą `terms@1.12:<pavadinimas>`; priežastis privaloma ir `admin_edit_text`. Į `main` — tik kartu su ta migracija, kitaip gyvo portalo trynimai gaus `reason_required` |
+| `office/web-moderavimo-priezastis` `c2ce7d9` | #169: privaloma priežastis ir pažeistas punktas (`jsonb` su LT ir EN skyriaus pavadinimu), laiškas autoriui apie sprendimą | db `20261004145806` (`office/db-moderavimo-pranesimai`, nepritaikyta). Į `main` — tik kartu su ta migracija, kitaip gyvo portalo trynimai gaus `reason_required` |
+| `office/web-individualios-salygos` `b4772a0` | #179: individualios sąlygos meistrui (komisinio atsisakymas, Pro ar VIP iki datos) | db `20261004135403` (nepritaikyta) |
 
-Visos trys stovi ant `e9c05a5`: prieš push'ą perkelti ant naujo `main` ir iš
+Likusios trys stovi ant `e9c05a5`: prieš push'ą perkelti ant naujo `main` ir iš
 naujo paleisti `npm run check` ir `npm run build`. #29 ir #170 abu prideda
 eilutes po `SUPABASE_SERVICE_ROLE_KEY` `README.md` ir `.env.example` —
 perkeliant #29 palikti abi dalis.
@@ -304,9 +305,14 @@ filtras iš to paties, iki 200) ir `dac7_held_masters()` (tik skaito; nepavykus 
 sąrašo nėra, ne „nė vieno“). Sprendimas — `resolveDispute` (`actions.ts`) →
 `admin_resolve_dispute` (`refund` / `release`, pastaba ≤ 500, žurnale
 `resolve_dispute`); pinigus kitą naktį perkelia `stripe-settle`. Kortelės ginčui
-(`source = 'chargeback'`) mygtukų nėra; jei jis `open`, o `transferred_at` vis
-dar užpildytas, `stripe-webhook` išmokos atsiimti nepavyko — kortelė rodo
-įspėjimą. Būsenos: `open`, `refund`, `release` (ir laimėtas banko ginčas),
+(`source = 'chargeback'`) `refund` / `release` mygtukų nėra — pinigus grąžina
+bankas. Kai bankas ginčą pralaimi (`lost`), nuo #164 portalas siūlo du
+sprendimus: „Nuostolį neša Gloumi“ (`gloumi_bears` → `release`, meistrui
+išmokama) ir „Nuostolį neša meistras“ (`master_bears` → vizitas `refunded`,
+ginčas `closed`, be Stripe grąžinimo); kas nešė, rodo žyma, kai sąrašas
+grąžina `chargeback_bearer` (Gloumi `20261004191736`). Jei kortelės ginčas
+`open`, o `transferred_at` vis dar užpildytas, `stripe-webhook` išmokos atsiimti
+nepavyko — kortelė rodo įspėjimą. Būsenos: `open`, `refund`, `release` (ir laimėtas banko ginčas),
 `lost` (bankas — klientui), `closed`. Spalva — „Vizitai“ persikas (`peach`).
 
 **Išvaizda (2026-10-01, #129):** portalas kalba programėlės dizainu, ne

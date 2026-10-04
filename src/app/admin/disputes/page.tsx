@@ -35,7 +35,7 @@ type Row = {
   amount_total_cents: number | null;
   transferred_at: string | null;
   stripe_dispute_id: string | null;
-  /* Nuo Gloumi `20261004101651` (#164); iki tol stulpelio nėra — `undefined`. */
+  /* Sąrašą su šiuo stulpeliu grąžina Gloumi `20261004191736` (#164); iki jos — `undefined`. */
   chargeback_bearer?: string | null;
 };
 

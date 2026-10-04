@@ -241,7 +241,7 @@ export async function deleteAccount(userId: string, reason: string): Promise<Act
  *
  * Kortelės ginčą (`source = 'chargeback'`) sprendžia bankas: `refund` ir
  * `release` jam RPC atmeta. Pralaimėjus (`lost`) lieka nuspręsti tik, kas neša
- * nuostolį (#164, Gloumi `20261004101651`): `gloumi_bears` → `release`,
+ * nuostolį (#164, Gloumi `20261004174851`): `gloumi_bears` → `release`,
  * `master_bears` → vizitas `refunded`, ginčas `closed`. Stripe grąžinimo nėra
  * nė vienu atveju — pinigus klientui jau grąžino bankas.
  */
