@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { checkAdmin } from "@/lib/admin-guard";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { MODERATED_TABLES } from "./moderated-tables";
+import { emailAuthorNotice, noticeEmailNote, type NoticeNote } from "./moderation-email";
 import { ruleFor, type ModerationRule } from "./moderation-rules";
 
 /**
@@ -26,7 +27,13 @@ import { ruleFor, type ModerationRule } from "./moderation-rules";
  * the logging line.
  */
 
-type ActionResult = { ok: true } | { ok: false; error: string };
+/** `note` — ką dar pasakyti administratoriui po pavykusio veiksmo (pvz. ar autoriui išsiųstas laiškas). */
+type ActionResult = { ok: true; note?: NoticeNote } | { ok: false; error: string };
+
+/** Po šalinimo ar taisymo: laiškas autoriui (#169 2 p.), jei bazė jam įrašė pranešimą. */
+async function authorEmailNote(db: ReturnType<typeof createSupabaseAdminClient>, auditLogId: unknown) {
+  return noticeEmailNote(await emailAuthorNotice(db, auditLogId)) ?? undefined;
+}
 
 const reasonOrNull = (reason: unknown) =>
   typeof reason === "string" && reason.trim() ? reason.trim() : null;
@@ -97,7 +104,7 @@ export async function moderate(
     if (why && "error" in why) return { ok: false, error: why.error };
     const db = createSupabaseAdminClient();
 
-    const { error } = await db.rpc("admin_moderate", {
+    const { data: auditLogId, error } = await db.rpc("admin_moderate", {
       _admin_id: admin.userId,
       _action: action,
       _target_id: targetId,
@@ -105,8 +112,9 @@ export async function moderate(
     });
     if (error) return { ok: false, error: dbError(error.message) };
 
+    const note = removes ? await authorEmailNote(db, auditLogId) : undefined;
     revalidatePath("/admin");
-    return { ok: true };
+    return { ok: true, note };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
   }
@@ -223,7 +231,7 @@ export async function removeRow(
     if ("error" in why) return { ok: false, error: why.error };
     const db = createSupabaseAdminClient();
 
-    const { error } = await db.rpc("admin_remove", {
+    const { data: auditLogId, error } = await db.rpc("admin_remove", {
       _admin_id: admin.userId,
       _table: table,
       _key: key,
@@ -232,8 +240,9 @@ export async function removeRow(
     });
     if (error) return { ok: false, error: dbError(error.message) };
 
+    const note = MODERATED_TABLES.has(table) ? await authorEmailNote(db, auditLogId) : undefined;
     revalidatePath("/admin", "layout");
-    return { ok: true };
+    return { ok: true, note };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
   }
@@ -257,7 +266,7 @@ export async function editText(
     if ("error" in why) return { ok: false, error: why.error };
     const db = createSupabaseAdminClient();
 
-    const { error } = await db.rpc("admin_edit_text", {
+    const { data: auditLogId, error } = await db.rpc("admin_edit_text", {
       _admin_id: admin.userId,
       _table: table,
       _key: key,
@@ -268,8 +277,9 @@ export async function editText(
     });
     if (error) return { ok: false, error: dbError(error.message) };
 
+    const note = MODERATED_TABLES.has(table) ? await authorEmailNote(db, auditLogId) : undefined;
     revalidatePath("/admin", "layout");
-    return { ok: true };
+    return { ok: true, note };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
   }

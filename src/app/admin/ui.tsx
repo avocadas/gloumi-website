@@ -144,6 +144,25 @@ export function Tag({ tone = "neutral", children }: { tone?: TagTone; children: 
   );
 }
 
+/**
+ * Pastaba po pavykusio veiksmo — pvz. ar autoriui išsiųstas laiškas (#169).
+ * `warn` — kai kas nepavyko, nors pats veiksmas atliktas; klaida (`role="alert"`)
+ * lieka tam, kas neįvyko visai.
+ */
+export function ActionNote({ note }: { note: { text: string; tone: "info" | "warn" } | null | undefined }) {
+  if (!note) return null;
+  return (
+    <p
+      role="status"
+      className={`mt-4 rounded-[14px] px-4 py-3 text-[13px] font-semibold ${
+        note.tone === "warn" ? "bg-app-warn-bg text-app-warn" : "bg-app-band text-app-ink"
+      }`}
+    >
+      {note.text}
+    </p>
+  );
+}
+
 type Accent = "content" | "account" | "value";
 
 const DASH: Record<Accent, string> = {

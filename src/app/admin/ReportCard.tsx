@@ -5,7 +5,8 @@ import { Ban, CircleCheck, Trash2, UserRound, X } from "lucide-react";
 import { moderate, setSuspended } from "./actions";
 import { useConfirm, type ConfirmOptions } from "./ConfirmDialog";
 import { formatWhen } from "./format";
-import { STROKE, Tag, btn, btnDanger, btnQuiet, card, eyebrow } from "./ui";
+import type { NoticeNote } from "./moderation-email";
+import { ActionNote, STROKE, Tag, btn, btnDanger, btnQuiet, card, eyebrow } from "./ui";
 
 export type ReportView = {
   id: string;
@@ -76,11 +77,15 @@ export function ReportCard({ report }: { report: ReportView }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<string | null>(null);
+  const [note, setNote] = useState<NoticeNote | null>(null);
   const [dialog, ask] = useConfirm();
 
   // `answer` — tai, ką žmogus įrašė ir pasirinko patvirtinimo lange (jei jame buvo laukai).
   const run = async (
-    fn: (answer: { reason: string; rule: string | null }) => Promise<{ ok: true } | { ok: false; error: string }>,
+    fn: (answer: {
+      reason: string;
+      rule: string | null;
+    }) => Promise<{ ok: true; note?: NoticeNote } | { ok: false; error: string }>,
     doneText: string,
     confirm?: ConfirmOptions,
   ) => {
@@ -93,8 +98,10 @@ export function ReportCard({ report }: { report: ReportView }) {
     setError(null);
     startTransition(async () => {
       const res = await fn(answer);
-      if (res.ok) setDone(doneText);
-      else setError(res.error);
+      if (res.ok) {
+        setDone(doneText);
+        setNote(res.note ?? null);
+      } else setError(res.error);
     });
   };
 
@@ -163,6 +170,7 @@ export function ReportCard({ report }: { report: ReportView }) {
           {error}
         </p>
       ) : null}
+      <ActionNote note={note} />
 
       {!done && report.status === "open" ? (
         <footer className="mt-5 flex flex-col gap-2 border-t border-app-hairline pt-4 sm:flex-row sm:items-center sm:justify-between">
@@ -199,7 +207,7 @@ export function ReportCard({ report }: { report: ReportView }) {
                     title: report.targetType === "post" ? "Ištrinti įrašą?" : "Ištrinti komentarą?",
                     body: [
                       "Jis bus pašalintas visiems, ir atšaukti negalima.",
-                      "Autorius programėlėje gaus pranešimą su priežastimi ir punktu, o pranešę — kad imtasi veiksmų. Viskas įrašoma į administratorių žurnalą.",
+                      "Autorius gaus pranešimą su priežastimi ir punktu — programėlėje ir, jei leidžia laiškų riba, el. paštu. Pranešę gaus žinią, kad imtasi veiksmų. Viskas įrašoma į administratorių žurnalą.",
                     ],
                     confirmLabel: "Ištrinti",
                     danger: true,

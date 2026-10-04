@@ -6,9 +6,10 @@ import type { CatalogKind, DataRow, SignedMedia } from "@/lib/admin-data";
 import { editText, removeRow } from "../actions";
 import { useConfirm } from "../ConfirmDialog";
 import { MODERATED_TABLES } from "../moderated-tables";
+import type { NoticeNote } from "../moderation-email";
 import { RuleSelect } from "../ModerationRules";
 import { UUID_PATTERN, columnLabel, formatValue, formatWhen, ownerLabel } from "../format";
-import { STROKE, Tag, btn, btnDanger, btnQuiet, card, eyebrow, input } from "../ui";
+import { ActionNote, STROKE, Tag, btn, btnDanger, btnQuiet, card, eyebrow, input } from "../ui";
 
 type Props = {
   table: string;
@@ -49,6 +50,7 @@ export function RowCard({
 }: Props) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [note, setNote] = useState<NoticeNote | null>(null);
   const [removed, setRemoved] = useState(false);
   const [editing, setEditing] = useState<string | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
@@ -73,7 +75,9 @@ export function RowCard({
       body: [
         cascadeNote,
         "Ištrinta eilutė įrašoma į administratorių žurnalą, bet atstatyti jos negalima.",
-        moderated ? "Autorius programėlėje gaus pranešimą su priežastimi ir punktu." : null,
+        moderated
+          ? "Autorius gaus pranešimą su priežastimi ir punktu — programėlėje ir, jei leidžia laiškų riba, el. paštu."
+          : null,
       ],
       confirmLabel: "Ištrinti",
       danger: true,
@@ -83,10 +87,13 @@ export function RowCard({
     if (!answer) return;
 
     setError(null);
+    setNote(null);
     startTransition(async () => {
       const res = await removeRow(table, key, answer.reason, answer.rule);
-      if (res.ok) setRemoved(true);
-      else setError(res.error);
+      if (res.ok) {
+        setRemoved(true);
+        setNote(res.note ?? null);
+      } else setError(res.error);
     });
   };
 
@@ -97,6 +104,7 @@ export function RowCard({
     setRule("");
     setSaved(null);
     setError(null);
+    setNote(null);
   };
 
   const save = () => {
@@ -108,6 +116,7 @@ export function RowCard({
       if (res.ok) {
         setEditing(null);
         setSaved(column);
+        setNote(res.note ?? null);
       } else setError(res.error);
     });
   };
@@ -254,6 +263,7 @@ export function RowCard({
           {error}
         </p>
       ) : null}
+      <ActionNote note={note} />
 
       {canRemove && !removed ? (
         <footer className="mt-4 flex justify-end border-t border-app-hairline pt-4">
