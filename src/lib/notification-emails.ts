@@ -14,22 +14,27 @@ import type { createSupabaseAdminClient } from "@/lib/supabase/admin";
  * Resend ir praneša bazei, kas nutiko (`finish_notification_email`). Kiek
  * kartų bandyti ir kada, sprendžia bazė; čia – tik kiekvieno laiško baigtis.
  *
- * Laiške – tas pats tekstas, kaip programėlėje: antraštė ir kūnas ateina iš
- * `notifications`, jau gavėjo kalba. Resend `Idempotency-Key` – pranešimo id,
- * tad pakartotinis bandymas po nutrūkusio atsakymo antro laiško nesiunčia.
+ * Laiške – tas pats tekstas, kaip programėlėje: antraštę ir kūną bazė
+ * nukopijuoja į eilę, jau gavėjo kalba, tad laiškas išeina, net jei meistras
+ * pranešimą programėlėje spėjo ištrinti (`notification_id` tada `null`).
+ * Resend `Idempotency-Key` – eilės eilutės id, tad pakartotinis bandymas po
+ * nutrūkusio atsakymo antro laiško nesiunčia.
  *
  * Žurnale – tik skaičiai: adresai ir id į jį nepatenka.
  */
 
 type AdminDb = ReturnType<typeof createSupabaseAdminClient>;
 
+/** `claim_notification_emails` eilutė (Gloumi `20261005224404`). */
 export type ClaimedEmail = {
-  notification_id: string;
+  email_id: string;
+  notification_id: string | null;
   kind: string;
   recipient_id: string;
   recipient_role: string;
-  title: string;
-  body: string;
+  /** Išsiuntus bazė tekstą ištrina; išsiimtoje eilutėje jis turi būti. */
+  title: string | null;
+  body: string | null;
   attempts: number;
 };
 
@@ -44,12 +49,12 @@ const FRAME = {
   lt: {
     hello: "Sveiki,",
     reply: `Galite tiesiog atsakyti į šį laišką – jis pasieks ${site.email}.`,
-    app: "Tą patį pranešimą rasite ir Gloumi programėlėje.",
+    app: "Tą patį pranešimą išsiuntėme ir į Gloumi programėlę.",
   },
   en: {
     hello: "Hello,",
     reply: `You can simply reply to this email – it will reach ${site.email}.`,
-    app: "You will also find this notice in the Gloumi app.",
+    app: "We also sent you this notice in the Gloumi app.",
   },
 };
 
@@ -64,6 +69,7 @@ export function outcomeForStatus(status: number): Outcome["outcome"] {
 }
 
 async function deliver(db: AdminDb, key: string, row: ClaimedEmail): Promise<Outcome> {
+  if (!row.title?.trim() || !row.body?.trim()) return { outcome: "skip", error: "no_text" };
   try {
     const { data: account, error } = await db.auth.admin.getUserById(row.recipient_id);
     if (error) return { outcome: "retry", error: "user_lookup_failed" };
@@ -73,7 +79,7 @@ async function deliver(db: AdminDb, key: string, row: ClaimedEmail): Promise<Out
     // Ta pati taisyklė, kaip bazės šablonuose: tekstai yra tik LT ir EN.
     const { data: profile } = await db.from("profiles").select("language").eq("id", row.recipient_id).maybeSingle();
     const frame = profile?.language === "en" ? FRAME.en : FRAME.lt;
-    const title = String(row.title).replace(/\s+/g, " ").trim();
+    const title = row.title.replace(/\s+/g, " ").trim();
     const heading = /[.!?…]$/.test(title) ? title : `${title}.`;
 
     const res = await fetch("https://api.resend.com/emails", {
@@ -83,7 +89,7 @@ async function deliver(db: AdminDb, key: string, row: ClaimedEmail): Promise<Out
       headers: {
         Authorization: `Bearer ${key}`,
         "Content-Type": "application/json",
-        "Idempotency-Key": `notification-email/${row.notification_id}`,
+        "Idempotency-Key": `notification-email/${row.email_id}`,
       },
       body: JSON.stringify({
         from: `Gloumi <no-reply@${site.sendingDomain}>`,
@@ -112,7 +118,7 @@ export async function processNotificationEmails(db: AdminDb, key: string): Promi
   for (const row of rows) {
     const result = await deliver(db, key, row);
     const { error: finishError } = await db.rpc("finish_notification_email", {
-      _notification_id: row.notification_id,
+      _email_id: row.email_id,
       _outcome: result.outcome,
       _resend_id: result.resendId ?? null,
       _error: result.error ?? null,
