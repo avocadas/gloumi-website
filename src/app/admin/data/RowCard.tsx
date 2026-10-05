@@ -280,7 +280,7 @@ export function RowCard({
           ištrinti testinę paskyrą). */}
       {kind === "account" && ownerLinks.length > 0 ? (
         <footer className="mt-4 flex flex-col gap-3 border-t border-app-hairline pt-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-[13px] text-app-muted">Užblokuoti ir ištrinti galima paskyros puslapyje.</p>
+          <p className="text-[13px] text-app-muted">Sustabdyti ir ištrinti galima paskyros puslapyje.</p>
           <a href={`/admin/users/${row[ownerLinks[0]] as string}`} className={btn}>
             <UserRound size={16} strokeWidth={STROKE} aria-hidden />
             Atidaryti paskyrą

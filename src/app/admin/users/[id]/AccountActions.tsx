@@ -2,17 +2,21 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { Ban, Trash2, Undo2 } from "lucide-react";
+import { Ban, CalendarPlus, Trash2, Undo2 } from "lucide-react";
 import { deleteAccount, setSuspended } from "../../actions";
 import { useConfirm } from "../../ConfirmDialog";
 import { useTerminationNotice } from "../../ModerationRules";
+import { formatWhen } from "../../format";
 import type { NoticeNote } from "../../moderation-email";
+import { SUSPEND_DAYS, SUSPEND_SOURCES } from "../../suspension";
 import { ActionNote, STROKE, SectionTitle, btn, btnDanger, card } from "../../ui";
 
 /*
- * Paskyros blokavimas ir trynimas (#129, developerio sprendimas: abu).
+ * Paskyros sustabdymas ir trynimas (#129, developerio sprendimas: abu).
  *
- * Blokavimas atšaukiamas tuo pačiu mygtuku. Trynimas — ne, todėl jis prašo
+ * Sustabdymas – iki 30 d. su terminu ir šaltiniu (#169 3 p., developeris
+ * 2026-10-05); pasibaigus terminui prieiga grąžinama automatiškai, anksčiau –
+ * mygtuku „Atkurti", ilgiau – tik pratęsimu, t. y. nauju sprendimu. Trynimas — ne, todėl jis prašo
  * įrašyti paskyros vardą: patvirtinimas paspaudžiamas iš įpročio, o vardo iš
  * įpročio niekas neįrašo. Abu prašymai — ir vardas, ir priežastis — dabar
  * viename lange, kad žmogus matytų, ką patvirtina, kol rašo.
@@ -23,11 +27,14 @@ import { ActionNote, STROKE, SectionTitle, btn, btnDanger, card } from "../../ui
 export function AccountActions({
   userId,
   banned,
+  bannedUntil,
   confirmName,
   isMaster,
 }: {
   userId: string;
   banned: boolean;
+  /** `auth.users.banned_until` – iki kada sustabdyta. */
+  bannedUntil: string | null;
   confirmName: string;
   isMaster: boolean;
 }) {
@@ -35,41 +42,70 @@ export function AccountActions({
   const notice = useTerminationNotice();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  // Ar žmogui išsiųstas laiškas apie blokavimą (#169 3 p.) – kaip turinio sprendimų kortelėse.
+  // Ar žmogui išsiųstas laiškas apie sustabdymą (#169 3 p.) – kaip turinio sprendimų kortelėse.
   const [note, setNote] = useState<NoticeNote | null>(null);
   const [deleted, setDeleted] = useState(false);
   const [dialog, ask] = useConfirm();
 
-  const toggleBan = async () => {
-    const answer = await ask(
-      banned
-        ? {
-            title: "Atblokuoti paskyrą?",
-            body: ["Žmogus vėl galės prisijungti.", "Jam pranešime, kad prieiga grąžinta – programėlėje ir el. paštu."],
-            confirmLabel: "Atblokuoti",
-            reason: true,
-          }
-        : {
-            title: "Užblokuoti paskyrą?",
-            body: [
-              "Žmogus nebegalės prisijungti, o jau atidaryta programėlė nustos veikti, kai baigsis jos prieigos raktas.",
-              "Jam iš karto pranešime priežastį ir punktą – programėlėje ir el. paštu; blokavimas be pranešimo neįvyksta.",
-              "Atblokuoti galima bet kada, tuo pačiu mygtuku.",
-            ],
-            confirmLabel: "Užblokuoti",
-            danger: true,
-            rule: true,
-            reasonRequired: true,
-          },
-    );
-    if (!answer) return;
+  const run = (suspend: boolean, reason: string, rule: string | null, days?: number, source?: string) => {
     setError(null);
     setNote(null);
     startTransition(async () => {
-      const res = await setSuspended(userId, !banned, answer.reason, answer.rule);
+      const res = await setSuspended(userId, suspend, reason, rule, days, source);
       if (res.ok) setNote(res.note ?? null);
       else setError(res.error);
     });
+  };
+
+  /** Sustabdyti arba pratęsti (`banned`) – tas pats langas: pratęsimas yra naujas sprendimas su nauju pranešimu. */
+  const suspend = async () => {
+    const answer = await ask({
+      title: banned ? "Pratęsti sustabdymą?" : "Sustabdyti paskyrą?",
+      body: [
+        banned
+          ? `Dabar sustabdyta iki ${formatWhen(bannedUntil)}. Naujas terminas turi būti vėlesnis; tai naujas sprendimas, ir žmogus gaus naują pranešimą.`
+          : "Žmogus nebegalės prisijungti iki termino pabaigos, o jau atidaryta programėlė nustos veikti, kai baigsis jos prieigos raktas. Pasibaigus terminui prieiga grąžinama automatiškai.",
+        "Jam iš karto pranešime priežastį, punktą, šaltinį ir terminą – programėlėje ir el. paštu; sustabdymas be pranešimo neįvyksta.",
+        isMaster
+          ? "Tai meistras: jo vizitai iki termino pabaigos bus atšaukti, klientams pranešta, o programėlėje sumokėta suma grąžinta."
+          : null,
+      ],
+      confirmLabel: banned ? "Pratęsti" : "Sustabdyti",
+      danger: true,
+      choices: [
+        {
+          key: "days",
+          label: "Terminas",
+          hint: "ne ilgiau 30 dienų; ilgiau – tik nauju sprendimu",
+          options: SUSPEND_DAYS.map((d) => ({ value: String(d), label: d === 1 ? "1 diena" : `${d} d.` })),
+        },
+        {
+          key: "source",
+          label: "Kodėl imtasi",
+          hint: "nurodoma pranešime",
+          options: SUSPEND_SOURCES.map((o) => ({ value: o.value, label: o.label })),
+        },
+      ],
+      rule: true,
+      ruleNoRequest: true,
+      reasonRequired: true,
+    });
+    if (!answer) return;
+    run(true, answer.reason, answer.rule, Number(answer.choices.days), answer.choices.source);
+  };
+
+  const restore = async () => {
+    const answer = await ask({
+      title: "Atkurti prieigą dabar?",
+      body: [
+        `Sustabdyta iki ${formatWhen(bannedUntil)}; pasibaigus terminui prieiga grįžtų ir be šio mygtuko.`,
+        "Žmogus vėl galės prisijungti. Jam pranešime, kad prieiga grąžinta – programėlėje ir el. paštu.",
+      ],
+      confirmLabel: "Atkurti",
+      reason: true,
+    });
+    if (!answer) return;
+    run(false, answer.reason, null);
   };
 
   const remove = async () => {
@@ -114,15 +150,31 @@ export function AccountActions({
       <div className={`${card} divide-y divide-app-hairline`}>
         <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-app-ink">{banned ? "Atblokuoti paskyrą" : "Užblokuoti paskyrą"}</p>
+            <p className="text-sm font-semibold text-app-ink">
+              {banned ? `Sustabdyta iki ${formatWhen(bannedUntil)}` : "Sustabdyti paskyrą"}
+            </p>
             <p className="mt-0.5 text-[13px] text-app-muted">
-              {banned ? "Žmogus vėl galės prisijungti." : "Negalės prisijungti; atšaukiama bet kada."}
+              {banned
+                ? "Pasibaigus terminui prieiga grįš automatiškai."
+                : "Iki 30 dienų; nebegalės prisijungti, gaus pranešimą."}
             </p>
           </div>
-          <button type="button" disabled={pending} onClick={toggleBan} className={banned ? btn : btnDanger}>
-            {banned ? <Undo2 size={16} strokeWidth={STROKE} aria-hidden /> : <Ban size={16} strokeWidth={STROKE} aria-hidden />}
-            {banned ? "Atblokuoti" : "Užblokuoti"}
-          </button>
+          <div className="flex flex-wrap gap-2">
+            {banned ? (
+              <button type="button" disabled={pending} onClick={restore} className={btn}>
+                <Undo2 size={16} strokeWidth={STROKE} aria-hidden />
+                Atkurti
+              </button>
+            ) : null}
+            <button type="button" disabled={pending} onClick={suspend} className={btnDanger}>
+              {banned ? (
+                <CalendarPlus size={16} strokeWidth={STROKE} aria-hidden />
+              ) : (
+                <Ban size={16} strokeWidth={STROKE} aria-hidden />
+              )}
+              {banned ? "Pratęsti" : "Sustabdyti"}
+            </button>
+          </div>
         </div>
         <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">

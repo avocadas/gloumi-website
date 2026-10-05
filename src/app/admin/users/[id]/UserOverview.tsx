@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import type { CatalogEntry, SignedMedia } from "@/lib/admin-data";
-import { columnLabel, formatDate, formatValue } from "../../format";
+import { columnLabel, formatDate, formatValue, formatWhen } from "../../format";
 import { STROKE, SectionTitle, Tag, card } from "../../ui";
 import { AccountActions } from "./AccountActions";
 import { CopyButton } from "./CopyButton";
@@ -58,6 +58,7 @@ export function UserOverview({
   overview: Overview;
   catalog: CatalogEntry[];
   avatar: SignedMedia | undefined;
+  /** Ar dabar sustabdyta – skaičiuoja puslapis; iki kada – `user.banned_until`. */
   banned: boolean;
 }) {
   const { user, counts } = overview;
@@ -92,7 +93,7 @@ export function UserOverview({
               <p className="truncate font-app-serif text-xl text-app-ink">{name}</p>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {user.is_admin ? <Tag tone="dark">Administratorius</Tag> : null}
-                {banned ? <Tag tone="danger">Užblokuota</Tag> : <Tag tone="ok">Aktyvi</Tag>}
+                {banned ? <Tag tone="danger">Sustabdyta iki {formatWhen(user.banned_until)}</Tag> : <Tag tone="ok">Aktyvi</Tag>}
                 {master ? <Tag tone="lavender">Meistras</Tag> : <Tag tone="neutral">Klientas</Tag>}
                 {profile.deletion_requested_at ? <Tag tone="warn">Paprašė ištrinti</Tag> : null}
               </div>
@@ -129,7 +130,13 @@ export function UserOverview({
         {user.is_admin ? (
           <p className="px-1 text-sm text-app-muted">Administratorių paskyros portale neblokuojamos ir netrinamos.</p>
         ) : (
-          <AccountActions userId={user.id} banned={banned} confirmName={handle ?? "IŠTRINTI"} isMaster={Boolean(master)} />
+          <AccountActions
+            userId={user.id}
+            banned={banned}
+            bannedUntil={banned ? user.banned_until : null}
+            confirmName={handle ?? "IŠTRINTI"}
+            isMaster={Boolean(master)}
+          />
         )}
       </div>
 

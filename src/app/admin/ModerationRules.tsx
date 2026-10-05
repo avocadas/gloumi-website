@@ -45,14 +45,20 @@ export function RuleSelect({
   required,
   autoFocus,
   className,
+  hideRequest,
 }: {
   value: string;
   onChange: (value: string) => void;
   required: boolean;
   autoFocus?: boolean;
   className?: string;
+  /** Be „paties naudotojo prašymu": sustabdymas visada yra sprendimas dėl pažeidimo (#169 3 p.). */
+  hideRequest?: boolean;
 }) {
-  const groups = useContext(RulesContext);
+  const all = useContext(RulesContext);
+  const groups = hideRequest
+    ? all.map((g) => ({ ...g, options: g.options.filter((o) => o.value !== "request") })).filter((g) => g.options.length)
+    : all;
   return (
     <select
       value={value}

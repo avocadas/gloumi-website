@@ -26,12 +26,30 @@ export type ConfirmOptions = {
    * nenurodytas (pvz. paskyros trynimas, dažniausiai paties žmogaus prašymu).
    */
   rule?: boolean | "optional";
+  /** Punktų sąraše nerodyti „paties naudotojo prašymu" (pvz. sustabdymui – jis visada dėl pažeidimo). */
+  ruleNoRequest?: boolean;
   /** Žodis, kurį reikia įrašyti, kad mygtukas įsijungtų. */
   typeToConfirm?: string;
+  /**
+   * Privalomi pasirinkimai iš sąrašo (pvz. sustabdymo terminas ir šaltinis,
+   * #169): kol kuris nors nepasirinktas, mygtukas neveikia. Atsakyme – pagal `key`.
+   */
+  choices?: ConfirmChoice[];
 };
 
-/** `rule` — `null`, jei langas punkto neklausė arba jis paliktas nenurodytas. */
-export type ConfirmResult = { reason: string; rule: string | null } | null;
+export type ConfirmChoice = {
+  key: string;
+  label: string;
+  /** Paaiškinimas po pavadinimu, pilkai. */
+  hint?: string;
+  options: { value: string; label: string }[];
+};
+
+/**
+ * `rule` — `null`, jei langas punkto neklausė arba jis paliktas nenurodytas;
+ * `choices` — pasirinktos reikšmės pagal `key` (tuščia, jei langas jų neklausė).
+ */
+export type ConfirmResult = { reason: string; rule: string | null; choices: Record<string, string> } | null;
 
 /*
  * Vienas langas vietoj `window.confirm` + `window.prompt` (#129). Naršyklės
@@ -81,13 +99,15 @@ function ConfirmDialog({
   const [reason, setReason] = useState("");
   const [rule, setRule] = useState("");
   const [typed, setTyped] = useState("");
+  const [picked, setPicked] = useState<Record<string, string>>({});
   const { title, body, confirmLabel, danger, typeToConfirm, reasonRequired } = options;
   const showReason = options.reason || reasonRequired;
   const ruleRequired = options.rule === true;
   const ready =
     (!typeToConfirm || typed.trim() === typeToConfirm) &&
     (!reasonRequired || reason.trim() !== "") &&
-    (!ruleRequired || rule !== "");
+    (!ruleRequired || rule !== "") &&
+    (options.choices ?? []).every((c) => (picked[c.key] ?? "") !== "");
 
   useEffect(() => {
     const el = ref.current;
@@ -97,7 +117,7 @@ function ConfirmDialog({
   const confirm = (e: React.FormEvent) => {
     e.preventDefault();
     if (!ready) return;
-    onSettle({ reason: reason.trim(), rule: options.rule && rule ? rule : null });
+    onSettle({ reason: reason.trim(), rule: options.rule && rule ? rule : null, choices: picked });
   };
 
   return (
@@ -151,6 +171,30 @@ function ConfirmDialog({
           </label>
         ) : null}
 
+        {options.choices?.map((c) => (
+          <label key={c.key} className="mt-5 block">
+            <span className="text-[13px] font-semibold text-app-ink">
+              {c.label}
+              {c.hint ? <span className="font-normal text-app-muted"> — {c.hint}</span> : null}
+            </span>
+            <select
+              value={picked[c.key] ?? ""}
+              onChange={(e) => setPicked((prev) => ({ ...prev, [c.key]: e.target.value }))}
+              required
+              className={`${input} mt-2`}
+            >
+              <option value="" disabled>
+                Pasirinkite
+              </option>
+              {c.options.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        ))}
+
         {options.rule ? (
           <label className="mt-5 block">
             {/* „Pagrindas" — tas pats žodis, kuriuo punktą įvardija pranešimas naudotojui. */}
@@ -164,6 +208,7 @@ function ConfirmDialog({
               value={rule}
               onChange={setRule}
               required={ruleRequired}
+              hideRequest={options.ruleNoRequest}
               autoFocus={!typeToConfirm}
               className={`${input} mt-2`}
             />

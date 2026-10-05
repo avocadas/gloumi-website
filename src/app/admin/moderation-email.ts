@@ -34,9 +34,9 @@ import type { createSupabaseAdminClient } from "@/lib/supabase/admin";
  * reglamento 4 str.). Laiškas jam — ne mandagumas, o pažadas, todėl ribos jam
  * netaikomos; jei Resend atsisakytų, administratorius tai pamatys.
  *
- * PASKYROS BLOKAVIMAS — VISADA (Gloumi `20261004231227`, #169 3 p.).
+ * PASKYROS SUSTABDYMAS — VISADA (Gloumi `20261004231227`, #169 3 p.; iki 30 d.).
  * `admin_suspend_user` įrašo `account_suspended` arba `account_unsuspended`
- * pranešimą su tuo pačiu `auditLogId`. Užblokuotas žmogus programėlės
+ * pranešimą su tuo pačiu `auditLogId`. Sustabdytas žmogus programėlės
  * nebeatidarys, tad laiškas jam — vienintelis kanalas, ir klientų ribos šiems
  * pranešimams netaikomos. Jų taip pat neskaičiuoja ribos: blokavimų būna
  * mažai, o turinio laiškų ribą jie neturi suvalgyti.
@@ -62,7 +62,7 @@ export type NoticeEmailResult = { status: NoticeEmail; master: boolean };
 
 /** Turinio sprendimai — klientams su ribomis (žr. viršų). */
 const CONTENT_KINDS = ["moderation_content_removed", "moderation_content_edited"];
-/** Paskyros blokavimas ir atblokavimas — visada. */
+/** Paskyros sustabdymas ir atkūrimas (ir automatinis) — visada. */
 const ACCOUNT_KINDS = ["account_suspended", "account_unsuspended"];
 const KINDS = [...CONTENT_KINDS, ...ACCOUNT_KINDS];
 const BURST_MS = 60 * 60 * 1000;

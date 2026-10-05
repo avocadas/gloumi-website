@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { Ban, CircleCheck, Trash2, UserRound, X } from "lucide-react";
 import { moderate, setSuspended } from "./actions";
+import { SUSPEND_DAYS } from "./suspension";
 import { useConfirm, type ConfirmOptions } from "./ConfirmDialog";
 import { formatWhen } from "./format";
 import type { NoticeNote } from "./moderation-email";
@@ -85,11 +86,16 @@ export function ReportCard({ report }: { report: ReportView }) {
     fn: (answer: {
       reason: string;
       rule: string | null;
+      choices: Record<string, string>;
     }) => Promise<{ ok: true; note?: NoticeNote } | { ok: false; error: string }>,
     doneText: string,
     confirm?: ConfirmOptions,
   ) => {
-    let answer: { reason: string; rule: string | null } = { reason: "", rule: null };
+    let answer: { reason: string; rule: string | null; choices: Record<string, string> } = {
+      reason: "",
+      rule: null,
+      choices: {},
+    };
     if (confirm) {
       const given = await ask(confirm);
       if (!given) return;
@@ -227,22 +233,38 @@ export function ReportCard({ report }: { report: ReportView }) {
                 type="button"
                 disabled={pending}
                 onClick={() =>
-                  run(({ reason, rule }) => setSuspended(report.authorId!, true, reason, rule), "Autorius užblokuotas", {
-                    title: "Užblokuoti autorių?",
-                    body: [
-                      "Žmogus nebegalės prisijungti, o esami seansai nustos galioti.",
-                      "Atblokuoti galima jo paskyros puslapyje.",
-                    ],
-                    confirmLabel: "Užblokuoti",
-                    danger: true,
-                    rule: true,
-                    reasonRequired: true,
-                  })
+                  run(
+                    // Iš skundo – visada „gavus pranešimą" (#169 3 p.); terminą renkasi administratorius.
+                    ({ reason, rule, choices }) =>
+                      setSuspended(report.authorId!, true, reason, rule, Number(choices.days), "report"),
+                    "Autorius sustabdytas",
+                    {
+                      title: "Sustabdyti autoriaus paskyrą?",
+                      body: [
+                        "Žmogus nebegalės prisijungti iki termino pabaigos; pasibaigus terminui prieiga grąžinama automatiškai.",
+                        "Jam iš karto pranešime priežastį, punktą ir terminą – programėlėje ir el. paštu. Jei tai meistras, jo vizitai iki termino bus atšaukti, klientams pranešta.",
+                        "Atkurti anksčiau ar pratęsti galima jo paskyros puslapyje.",
+                      ],
+                      confirmLabel: "Sustabdyti",
+                      danger: true,
+                      choices: [
+                        {
+                          key: "days",
+                          label: "Terminas",
+                          hint: "ne ilgiau 30 dienų",
+                          options: SUSPEND_DAYS.map((d) => ({ value: String(d), label: d === 1 ? "1 diena" : `${d} d.` })),
+                        },
+                      ],
+                      rule: true,
+                      ruleNoRequest: true,
+                      reasonRequired: true,
+                    },
+                  )
                 }
                 className={btnDanger}
               >
                 <Ban size={16} strokeWidth={STROKE} aria-hidden />
-                Užblokuoti autorių
+                Sustabdyti autorių
               </button>
             ) : null}
           </div>

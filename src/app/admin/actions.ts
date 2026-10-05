@@ -5,6 +5,7 @@ import { checkAdmin } from "@/lib/admin-guard";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { MODERATED_TABLES } from "./moderated-tables";
 import { emailAuthorNotice, noticeEmailNote, type NoticeNote } from "./moderation-email";
+import { isSuspendDays, isSuspendSource } from "./suspension";
 import { ruleFor, type ModerationRule } from "./moderation-rules";
 
 /**
@@ -70,8 +71,10 @@ const DB_ERRORS: Record<string, string> = {
   "Per ilga priezastis": "Priežastis per ilga — daugiausia 500 ženklų.",
   // Blokavimas (`admin_suspend_user`, #169 3 p.).
   user_not_found: "Šios paskyros blokuoti negalima: jos nebėra arba tai administratorius.",
-  already_suspended: "Paskyra jau užblokuota — gal tai ką tik padarė kitas administratorius.",
-  not_suspended: "Paskyra jau atblokuota — gal tai ką tik padarė kitas administratorius.",
+  already_suspended: "Paskyra jau sustabdyta bent iki šio termino — pratęsti galima tik ilgesniu terminu.",
+  not_suspended: "Paskyra jau atkurta — gal tai ką tik padarė kitas administratorius ar terminas baigėsi.",
+  bad_until: "Terminas turi būti ateityje ir ne ilgesnis nei 30 dienų.",
+  bad_source: "Nurodykite, kodėl imtasi: gavus pranešimą ar mūsų iniciatyva.",
   bad_suspend: "Netinkamas prašymas.",
 };
 
@@ -126,40 +129,62 @@ export async function moderate(
 }
 
 /**
- * Sustabdo arba atstato vartotoją.
+ * Sustabdo paskyrą iki 30 d. arba ją atkuria.
  *
  * KODĖL VIENAS RPC (Gloumi `20261004231227`, #169 3 p.)
  * ----------------------------------------------------
- * `admin_suspend_user` vienoje transakcijoje nustato `auth.users.banned_until`,
- * įrašo žurnalą ir pranešimą žmogui jo kalba, su priežastimi ir punktu, ir
- * grąžina žurnalo id. Meistrų sąlygos (skyrius „Ribojimas, sustabdymas ir
- * nutraukimas") sako, kad apribojimas įsigalioja, kai meistrui pateikiamas
- * motyvuotas pranešimas – todėl blokavimas be pranešimo neturi būti įmanomas.
- * Anksčiau čia buvo du žingsniai (GoTrue `ban_duration` ir atskiras
- * `log_admin_action`) ir jokio pranešimo.
+ * `admin_suspend_user` vienoje transakcijoje nustato `auth.users.banned_until`
+ * (= terminą), įrašo žurnalą ir pranešimą žmogui jo kalba – su priežastimi,
+ * punktu, šaltiniu ir data „iki" – o meistrui dar atšaukia jo vizitus iki
+ * termino (klientams pranešama, sumokėtą sumą grąžina `stripe-settle`, kaip
+ * trinant paskyrą, #106). Grąžina žurnalo id. Meistrų sąlygos (skyrius
+ * „Ribojimas, sustabdymas ir nutraukimas") sako, kad apribojimas įsigalioja,
+ * kai meistrui pateikiamas motyvuotas pranešimas, todėl sustabdymas be
+ * pranešimo neturi būti įmanomas.
  *
- * `banned_until` tikrina pats GoTrue: užblokuotas neprisijungia ir prieigos
- * rakto nebeatnaujina. Ar SQL kelias GoTrue `ban_duration` lygiavertis visais
- * atžvilgiais, NEIŠMATUOTA – įrodys tik užblokuota QA paskyra po migracijos.
+ * Developeris 2026-10-05: sustabdymas – iki 30 d., data pranešime, pasibaigus
+ * – atkuriama automatiškai (bazės cron `restore-suspensions`, žurnale be
+ * administratoriaus); ilgiau – tik nauju sprendimu, t. y. pratęsimu su nauju
+ * pranešimu. Trumpesnio termino nei dabartinis bazė neleidžia
+ * (`already_suspended`).
  *
- * Laiškas – tuo pačiu keliu, kaip turinio sprendimų (`moderation-email.ts`):
- * užblokuotas programėlės nebeatidarys, tad laiškas jam siunčiamas visada.
- * Priežastis ir punktas tikrinami ir čia, ne tik bazėje: veiksmas yra viešas
- * HTTP taškas. Atblokuojant priežastis nebūtina, punkto nėra.
+ * `banned_until` tikrina pats GoTrue: sustabdytas neprisijungia ir prieigos
+ * rakto nebeatnaujina, o terminui praėjus vėl įleidžiamas. Ar tai visais
+ * atžvilgiais lygu GoTrue `ban_duration`, NEIŠMATUOTA – įrodys tik QA paskyra
+ * po migracijos.
+ *
+ * Laiškas – tuo pačiu keliu, kaip turinio sprendimų (`moderation-email.ts`),
+ * ir visada. Priežastis, punktas, terminas ir šaltinis tikrinami ir čia, ne
+ * tik bazėje: veiksmas yra viešas HTTP taškas. Terminas skaičiuojamas
+ * serveryje iš pasirinktų dienų, ne priimamas iš naršyklės kaip data.
  */
 export async function setSuspended(
   userId: string,
   suspended: boolean,
   reason?: string,
   rule?: string | null,
+  days?: number,
+  source?: string,
 ): Promise<ActionResult> {
   try {
     const admin = await requireAdmin();
     let why: Justified;
+    let until: string | null = null;
     if (suspended) {
       const checked = justify(reason, rule, true);
       if ("error" in checked) return { ok: false, error: checked.error };
       why = checked;
+      // Bazė jį atmestų (`bad_rule`): savo prašymu paskyra trinama, ne sustabdoma.
+      if (why.rule?.doc === "request") {
+        return { ok: false, error: "Sustabdymas – sprendimas dėl pažeidimo: pasirinkite pažeistą punktą." };
+      }
+      if (!isSuspendDays(days)) {
+        return { ok: false, error: "Pasirinkite terminą — ne ilgiau 30 dienų." };
+      }
+      if (!isSuspendSource(source)) {
+        return { ok: false, error: "Nurodykite, kodėl imtasi: gavus pranešimą ar mūsų iniciatyva." };
+      }
+      until = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString();
     } else {
       const text = reasonOrNull(reason);
       if (text && text.length > 500) return { ok: false, error: "Priežastis per ilga — daugiausia 500 ženklų." };
@@ -173,16 +198,40 @@ export async function setSuspended(
       _suspend: suspended,
       _reason: why.reason || null,
       _rule: why.rule,
+      _until: until,
+      _source: suspended ? source : null,
     });
     if (error) return { ok: false, error: dbError(error.message) };
 
-    const note = await authorEmailNote(db, auditLogId);
+    const emailNote = await authorEmailNote(db, auditLogId);
+    const cancelled = suspended ? await cancelledBookings(db, auditLogId) : 0;
+    const note: NoticeNote | undefined =
+      cancelled > 0
+        ? {
+            tone: emailNote?.tone ?? "info",
+            text: [`Atšaukta meistro vizitų: ${cancelled}; klientams pranešta, sumokėta suma bus grąžinta.`, emailNote?.text]
+              .filter(Boolean)
+              .join(" "),
+          }
+        : emailNote;
     // Visas `/admin`, ne tik skundai: būseną rodo ir paskyros puslapis (#129).
     revalidatePath("/admin", "layout");
     return { ok: true, note };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
   }
+}
+
+/** Kiek meistro vizitų atšaukė sustabdymas – iš to paties žurnalo įrašo, tik šis skaičius. */
+async function cancelledBookings(db: ReturnType<typeof createSupabaseAdminClient>, auditLogId: unknown) {
+  if (typeof auditLogId !== "number" && typeof auditLogId !== "string") return 0;
+  const { data } = await db
+    .from("admin_audit_logs")
+    .select("cancelled:details->cancelled_bookings")
+    .eq("id", auditLogId)
+    .maybeSingle();
+  const n = Number((data as { cancelled?: unknown } | null)?.cancelled ?? 0);
+  return Number.isFinite(n) ? n : 0;
 }
 
 /*
