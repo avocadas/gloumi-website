@@ -248,7 +248,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         },
         {
           "id": "K-46",
-          "q": "Ar galiu atsakyti į atsiliepimą ar jį pašalinti?",
+          "q": "Ar galima pašalinti atsiliepimą?",
           "a": "Tikrų neigiamų atsiliepimų nešaliname – tik pažeidžiančius taisykles, melagingus ar nesusijusius su paslauga; tokį nurodykite info@gloumi.lt."
         },
         {
@@ -531,7 +531,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         },
         {
           "id": "K-46",
-          "q": "Can I reply to a review or have it removed?",
+          "q": "Can a review be removed?",
           "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report those to info@gloumi.lt."
         },
         {

@@ -25,6 +25,17 @@ const HOLD = ["K-9", "K-28", "K-40", "K-43", "K-54"];
 /** Markers whose text starts like this cut the answer there: what follows waits for a feature. */
 const CUT = /^(Skelbti tik su|Publish only with)/;
 /**
+ * The question to show while its answer is cut, when the full question asks
+ * about the part that waits. K-46 asks about replying to a review too, which
+ * the app cannot do yet (U-19, #207); the developer chose to ask only about
+ * removal until it can (2026-10-05, through the office manager). The run
+ * fails if such an item is no longer cut, so the full question comes back
+ * with the feature instead of staying short by accident.
+ */
+const QUESTION_WHILE_CUT = {
+  "K-46": { lt: "Ar galima pašalinti atsiliepimą?", en: "Can a review be removed?" },
+};
+/**
  * Stable section keys (the page's anchors, the footer's "for masters" link),
  * by the Lithuanian title; the English sections follow in the same order. A
  * new or renamed section stops the run until it gets a key here.
@@ -55,12 +66,15 @@ function block(heading) {
 
 const heldRef = new RegExp(`\\b(${HOLD.join("|")})\\b`);
 
-function clean(answer) {
+function clean(answer, item, lang) {
   let a = answer;
   // A cutting marker drops itself and everything after it.
   const markers = [...a.matchAll(/\*\*\[(.*?)\]\*\*/g)];
   const cut = markers.find((m) => CUT.test(m[1]));
   if (cut) a = a.slice(0, cut.index);
+  const short = QUESTION_WHILE_CUT[item.id];
+  if (short && !cut) throw new Error(`${item.id} is no longer cut: drop it from QUESTION_WHILE_CUT`);
+  if (short) item.q = short[lang];
   a = a.replace(/\*\*\[.*?\]\*\*/g, ""); // "change later" markers
   a = a.replace(/\s*\{[^}]*\}/g, ""); // editor notes, incl. {→ new label}
   a = a.replace(/\s*\((K-\d+)\)/g, (m, k) => (HOLD.includes(k) ? "" : m)); // "(K-40)"
@@ -73,13 +87,13 @@ function clean(answer) {
   return a;
 }
 
-function parse(heading) {
+function parse(heading, lang) {
   const sections = [];
   let section = null;
   let item = null;
   const flush = () => {
     if (item) {
-      item.a = clean(item.lines.join(" "));
+      item.a = clean(item.lines.join(" "), item, lang);
       delete item.lines;
       if (!HOLD.includes(item.id)) section.items.push(item);
       item = null;
@@ -106,8 +120,8 @@ function parse(heading) {
   return sections.filter((s) => s.items.length);
 }
 
-const lt = parse("LIETUVIŠKAI");
-const en = parse("ENGLISH");
+const lt = parse("LIETUVIŠKAI", "lt");
+const en = parse("ENGLISH", "en");
 const ids = (doc) => doc.flatMap((s) => s.items.map((i) => i.id)).join(",");
 if (ids(lt) !== ids(en)) throw new Error(`LT and EN items differ:\n${ids(lt)}\n${ids(en)}`);
 if (lt.length !== en.length) throw new Error("LT and EN sections differ");
