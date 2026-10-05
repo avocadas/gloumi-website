@@ -5,7 +5,8 @@ import { Building2, CalendarClock, HandCoins, Landmark, Undo2, UserRound } from 
 import { resolveDispute } from "../actions";
 import { useConfirm, type ConfirmOptions } from "../ConfirmDialog";
 import { formatMoney, formatWhen } from "../format";
-import { STROKE, Tag, btn, card, eyebrow } from "../ui";
+import type { NoticeNote } from "../moderation-email";
+import { ActionNote, STROKE, Tag, btn, card, eyebrow } from "../ui";
 
 export type DisputeView = {
   bookingId: string;
@@ -101,6 +102,7 @@ export function DisputeCard({ dispute }: { dispute: DisputeView }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [decided, setDecided] = useState<Decision | null>(null);
+  const [note, setNote] = useState<NoticeNote | null>(null);
   const [dialog, ask] = useConfirm();
 
   const isChargeback = dispute.source === "chargeback";
@@ -113,27 +115,36 @@ export function DisputeCard({ dispute }: { dispute: DisputeView }) {
   const canSplitLoss = isChargeback && dispute.status === "lost" && !dispute.chargebackBearer && !decided;
   const amount = formatMoney(dispute.amountCents);
   const reasonText = isChargeback ? bankReason(dispute.reason) : dispute.reason;
+  /*
+   * Gloumi atidarytas ginčas (K-U24-4): sprendimą ir jo motyvus meistras gauna
+   * programėlėje ir el. paštu (Meistrų sąlygų 15–16 sk.), tad pastaba privaloma.
+   */
+  const byGloumi = dispute.source === "admin";
+  const motive: Partial<ConfirmOptions> = byGloumi
+    ? { reasonRequired: true, reasonLabel: "Sprendimo motyvai" }
+    : { reason: true, reasonLabel: "Pastaba" };
+  const tellsMaster = byGloumi ? "Meistras gaus pranešimą su sprendimu ir motyvais – programėlėje ir el. paštu." : null;
 
   const dialogs: Record<Decision, ConfirmOptions> = {
     refund: {
       title: "Grąžinti pinigus klientui?",
       body: [
         `Kitą naktį klientui bus grąžinta visa suma (${amount}), o meistras už šį vizitą išmokos negaus.`,
+        tellsMaster,
         "Atšaukti negalima. Sprendimas įrašomas į administratorių žurnalą.",
       ],
       confirmLabel: "Grąžinti klientui",
-      reason: true,
-      reasonLabel: "Pastaba",
+      ...motive,
     },
     release: {
       title: "Išmokėti meistrui?",
       body: [
         "Kitą naktį išmoka bus pervesta meistrui, nelaukiant 3 dienų. Klientui pinigai negrąžinami.",
+        tellsMaster,
         "Atšaukti negalima. Sprendimas įrašomas į administratorių žurnalą.",
       ],
       confirmLabel: "Išmokėti meistrui",
-      reason: true,
-      reasonLabel: "Pastaba",
+      ...motive,
     },
     gloumi_bears: {
       title: "Nuostolį neša Gloumi?",
@@ -171,8 +182,10 @@ export function DisputeCard({ dispute }: { dispute: DisputeView }) {
     setError(null);
     startTransition(async () => {
       const res = await resolveDispute(dispute.bookingId, decision, answer.reason);
-      if (res.ok) setDecided(decision);
-      else setError(res.error);
+      if (res.ok) {
+        setDecided(decision);
+        setNote(res.note ?? null);
+      } else setError(res.error);
     });
   };
 
@@ -237,6 +250,7 @@ export function DisputeCard({ dispute }: { dispute: DisputeView }) {
           {error}
         </p>
       ) : null}
+      <ActionNote note={note} />
 
       {canDecide ? (
         <footer className="mt-5 flex flex-col gap-3 border-t border-app-hairline pt-4 sm:flex-row sm:items-center sm:justify-between">

@@ -64,7 +64,13 @@ export type NoticeEmailResult = { status: NoticeEmail; master: boolean };
 const CONTENT_KINDS = ["moderation_content_removed", "moderation_content_edited"];
 /** Paskyros sustabdymas ir atkūrimas (ir automatinis) — visada. */
 const ACCOUNT_KINDS = ["account_suspended", "account_unsuspended"];
-const KINDS = [...CONTENT_KINDS, ...ACCOUNT_KINDS];
+/**
+ * Gloumi sulaikytas vizitas (K-U24-4, Gloumi `20261005211440`): suma rezervuota
+ * arba jau nurašyta, ir sprendimas. Gavėjas visada meistras — laiškas visada
+ * (Meistrų sąlygų 16 sk.: apie sulaikymą ir priežastį — programėlėje ir el. paštu).
+ */
+const HOLD_KINDS = ["visit_charge_held", "visit_payout_held", "visit_hold_resolved"];
+const KINDS = [...CONTENT_KINDS, ...ACCOUNT_KINDS, ...HOLD_KINDS];
 const BURST_MS = 60 * 60 * 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;
 const DAILY_CAP = 20;
@@ -163,6 +169,25 @@ export async function emailAuthorNotice(db: AdminDb, auditLogId: unknown): Promi
     console.error("[moderation-email]", e instanceof Error ? e.message : "unknown error");
     return result("failed");
   }
+}
+
+/**
+ * Sprendimo pranešimo žurnalo id, kai RPC grąžina ne jį (`admin_resolve_dispute`
+ * grąžina sprendimą): naujausias tos rūšies pranešimas apie tą vizitą per
+ * paskutines 10 min. `null` — tokio nėra (pvz. ne Gloumi atidarytas ginčas).
+ */
+export async function latestNoticeLogId(db: AdminDb, kind: string, bookingId: string): Promise<string | null> {
+  const { data } = await db
+    .from("notifications")
+    .select("payload")
+    .eq("kind", kind)
+    .eq("payload->>bookingId", bookingId)
+    .gte("created_at", new Date(Date.now() - 10 * 60 * 1000).toISOString())
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const id = (data?.payload as { auditLogId?: unknown } | null)?.auditLogId;
+  return typeof id === "number" || typeof id === "string" ? String(id) : null;
 }
 
 export type NoticeNote = { text: string; tone: "info" | "warn" };

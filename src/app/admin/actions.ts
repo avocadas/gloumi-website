@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { checkAdmin } from "@/lib/admin-guard";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { MODERATED_TABLES } from "./moderated-tables";
-import { emailAuthorNotice, noticeEmailNote, type NoticeNote } from "./moderation-email";
+import { emailAuthorNotice, latestNoticeLogId, noticeEmailNote, type NoticeNote } from "./moderation-email";
 import { isSuspendDays, isSuspendSource } from "./suspension";
 import { ruleFor, type ModerationRule } from "./moderation-rules";
 
@@ -374,6 +374,8 @@ const DISPUTE_ERRORS: Record<string, string> = {
   chargeback_decided_by_bank: "Kortelės ginčo pinigus grąžina bankas, ne portalas.",
   decision_not_for_source: "Kas neša nuostolį, sprendžiama tik pralaimėtam kortelės ginčui.",
   already_resolved: "Kas neša nuostolį, jau nuspręsta — gal tai padarė kitas administratorius.",
+  // Gloumi atidarytam ginčui (K-U24-4) pastaba privaloma: ją su sprendimu gauna meistras.
+  reason_required: "Gloumi sulaikytam vizitui įrašykite sprendimo motyvus — juos gaus meistras.",
 };
 
 const disputeError = (message: string) => {
@@ -407,8 +409,11 @@ export async function resolveDispute(
     });
     if (error) return { ok: false, error: disputeError(error.message) };
 
+    // Gloumi sulaikytą vizitą išsprendus meistras gauna sprendimą ir motyvus (K-U24-4) — ir laišku.
+    const logId = await latestNoticeLogId(db, "visit_hold_resolved", bookingId);
+    const mailNote = logId ? await authorEmailNote(db, logId) : undefined;
     revalidatePath("/admin", "layout");
-    return { ok: true };
+    return { ok: true, note: mailNote };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
   }

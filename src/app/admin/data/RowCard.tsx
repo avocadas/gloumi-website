@@ -5,6 +5,7 @@ import { ChevronDown, ChevronRight, Clock, ImageOff, Pencil, Trash2, UserRound }
 import type { CatalogKind, DataRow, SignedMedia } from "@/lib/admin-data";
 import { editText, removeRow } from "../actions";
 import { useConfirm } from "../ConfirmDialog";
+import { HoldBooking, canHold } from "../disputes/HoldBooking";
 import { MODERATED_TABLES } from "../moderated-tables";
 import type { NoticeNote } from "../moderation-email";
 import { RuleSelect } from "../ModerationRules";
@@ -264,6 +265,9 @@ export function RowCard({
         </p>
       ) : null}
       <ActionNote note={note} />
+
+      {/* K-U24-4: vizitą, kurio pinigai dar Gloumi rankose, galima sulaikyti ginču. */}
+      {table === "bookings" && typeof row.id === "string" && canHold(row) ? <HoldBooking bookingId={row.id} /> : null}
 
       {canRemove && !removed ? (
         <footer className="mt-4 flex justify-end border-t border-app-hairline pt-4">
