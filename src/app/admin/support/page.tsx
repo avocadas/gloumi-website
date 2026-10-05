@@ -31,6 +31,8 @@ type Row = {
   message: string;
   status: string;
   created_at: string;
+  /* Gloumi `20261005205320`: uždarius – laikas, atidarius vėl – null. */
+  closed_at: string | null;
 };
 
 export default async function SupportPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
@@ -48,7 +50,7 @@ export default async function SupportPage({ searchParams }: { searchParams: Prom
   const db = createSupabaseAdminClient();
   const { data, error } = await db
     .from("support_tickets")
-    .select("id, author_id, author_role, booking_id, subject, message, status, created_at")
+    .select("id, author_id, author_role, booking_id, subject, message, status, created_at, closed_at")
     .order("created_at", { ascending: false })
     .limit(200);
 
@@ -94,6 +96,7 @@ export default async function SupportPage({ searchParams }: { searchParams: Prom
     message: r.message,
     status: r.status === "closed" ? "closed" : "open",
     createdAt: r.created_at,
+    closedAt: r.closed_at,
   }));
 
   return (

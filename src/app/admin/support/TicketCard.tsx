@@ -19,6 +19,7 @@ export type TicketView = {
   message: string;
   status: "open" | "closed";
   createdAt: string;
+  closedAt: string | null;
 };
 
 /*
@@ -32,13 +33,17 @@ export type TicketView = {
 export function TicketCard({ ticket }: { ticket: TicketView }) {
   const [pending, startTransition] = useTransition();
   const [status, setStatus] = useState(ticket.status);
+  const [closedAt, setClosedAt] = useState(ticket.closedAt);
   const [error, setError] = useState<string | null>(null);
 
   const change = (next: "open" | "closed") => {
     setError(null);
     startTransition(async () => {
       const res = await setSupportTicketStatus(ticket.id, next);
-      if (res.ok) setStatus(next);
+      if (res.ok) {
+        setStatus(next);
+        setClosedAt(next === "closed" ? new Date().toISOString() : null);
+      }
       else setError(res.error);
     });
   };
@@ -55,7 +60,7 @@ export function TicketCard({ ticket }: { ticket: TicketView }) {
           <Tag tone={ticket.authorRole === "master" ? "lavender" : "neutral"}>
             {ticket.authorRole === "master" ? "Meistras" : "Klientas"}
           </Tag>
-          {status === "open" ? <Tag tone="warn">Atvira</Tag> : <Tag tone="ok">Išspręsta</Tag>}
+          {status === "open" ? <Tag tone="warn">Atvira</Tag> : <Tag tone="ok">{closedAt ? `Išspręsta ${formatWhen(closedAt)}` : "Išspręsta"}</Tag>}
         </div>
         <time dateTime={ticket.createdAt} className="text-xs tabular-nums text-app-muted">
           {formatWhen(ticket.createdAt)}

@@ -3,7 +3,8 @@ import { NextResponse } from "next/server";
 import { site } from "@/content/site";
 
 /*
- * Laiškas moderatoriui apie naują pranešimą apie turinį (Gloumi #170 4 p.).
+ * Laiškas moderatoriui apie naują pranešimą apie turinį (Gloumi #170 4 p.) ir
+ * apie naują pagalbos užklausą (#209, kūne `kind: "support"`; žr. `supportMail`).
  *
  * Kviečia ne naršyklė, o duomenų bazė: `content_reports` AFTER INSERT trigeris
  * per `pg_net` siunčia čia POST su paslaptimi antraštėje `x-gloumi-hook-secret`
@@ -53,6 +54,49 @@ const TARGET_LABEL: Record<string, string> = {
 const code = (value: unknown): string | null =>
   typeof value === "string" && /^[a-z_]{1,40}$/.test(value) ? value : null;
 
+/** Pranešimas apie turinį (#170): kūnas `{reason, target_type}`. */
+function reportMail(body: Record<string, unknown>) {
+  const reasonCode = code(body.reason);
+  const targetCode = code(body.target_type);
+  const reason = reasonCode ? (REASON_LABEL[reasonCode] ?? reasonCode) : "nenurodyta";
+  const target = targetCode ? (TARGET_LABEL[targetCode] ?? targetCode) : "turinys";
+  const text = [
+    "Yra naujų pranešimų apie turinį.",
+    "",
+    "Naujausias:",
+    `Priežastis: ${reason}`,
+    `Kam: ${target}`,
+    "",
+    `Peržiūrėti visus ir nuspręsti: ${site.url}/admin`,
+    "",
+    "Laiškas siunčiamas ne kiekvienam pranešimui, todėl kitų čia nematysite.",
+    "Turinio ir vardų šiame laiške nėra tyčia – jie matomi tik portale.",
+  ].join("\n");
+  return { subject: "Yra naujų pranešimų apie turinį", text };
+}
+
+/*
+ * Pagalbos užklausa (#209, Gloumi `20261005205320`): kūnas `{kind: "support",
+ * author_role}`. Trigeris turi savo ribą (≤ 1 per 10 min, ≤ 12 per parą), tad
+ * laiškas, kaip ir apie pranešimus, sako „yra naujų“ ir rodo tik naujausią.
+ * Užklausos teksto ir vardo nėra tyčia – tik kas rašė: klientas ar meistras.
+ */
+function supportMail(body: Record<string, unknown>) {
+  const role = body.author_role === "master" ? "meistras" : body.author_role === "client" ? "klientas" : "nenurodyta";
+  const text = [
+    "Yra naujų pagalbos užklausų.",
+    "",
+    `Naujausią parašė: ${role}`,
+    "",
+    `Peržiūrėti ir atsakyti: ${site.url}/admin/support`,
+    "Taisyklės žada patvirtinti gavimą per 2 darbo dienas.",
+    "",
+    "Laiškas siunčiamas ne kiekvienai užklausai, todėl kitų čia nematysite.",
+    "Užklausos teksto ir vardų šiame laiške nėra tyčia – jie matomi tik portale.",
+  ].join("\n");
+  return { subject: "Yra naujų pagalbos užklausų", text };
+}
+
 function authorised(request: Request, secret: string): boolean {
   const given = Buffer.from(request.headers.get("x-gloumi-hook-secret") ?? "");
   const expected = Buffer.from(secret);
@@ -73,24 +117,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "bad_json" }, { status: 400 });
   }
 
-  const reasonCode = code(body.reason);
-  const targetCode = code(body.target_type);
-  const reason = reasonCode ? (REASON_LABEL[reasonCode] ?? reasonCode) : "nenurodyta";
-  const target = targetCode ? (TARGET_LABEL[targetCode] ?? targetCode) : "turinys";
-  const portal = `${site.url}/admin`;
-
-  const text = [
-    "Yra naujų pranešimų apie turinį.",
-    "",
-    "Naujausias:",
-    `Priežastis: ${reason}`,
-    `Kam: ${target}`,
-    "",
-    `Peržiūrėti visus ir nuspręsti: ${portal}`,
-    "",
-    "Laiškas siunčiamas ne kiekvienam pranešimui, todėl kitų čia nematysite.",
-    "Turinio ir vardų šiame laiške nėra tyčia – jie matomi tik portale.",
-  ].join("\n");
+  const { subject, text } = body.kind === "support" ? supportMail(body) : reportMail(body);
 
   const resendKey = process.env.RESEND_API_KEY?.trim();
   if (!resendKey) {
@@ -107,7 +134,7 @@ export async function POST(request: Request) {
     body: JSON.stringify({
       from: `Gloumi <no-reply@${site.sendingDomain}>`,
       to: [process.env.MODERATION_ALERT_TO?.trim() || site.email],
-      subject: "Yra naujų pranešimų apie turinį",
+      subject,
       text,
     }),
   });
