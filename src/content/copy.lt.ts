@@ -134,7 +134,7 @@ export const lt = {
   masters: {
     eyebrow: "Meistrams",
     title: "Daugiau klientų. Mažiau tuščių valandų.",
-    lead: "Gloumi – tavo registratūra, vitrina ir apskaita vienoje programėlėje. Pradėk nemokamai, mokėk tik tada, kai reikia daugiau.",
+    lead: "Gloumi – jūsų registratūra, vitrina ir kalendorius vienoje programėlėje. Pradėkite nuo Starter plano už 0 € – mokamą planą rinkitės, kai reikės daugiau.",
     items: [
       {
         title: "Nulis neatvykimų",
