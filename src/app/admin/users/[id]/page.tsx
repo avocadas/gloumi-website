@@ -36,10 +36,17 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
   if (!UUID_PATTERN.test(id)) notFound();
 
   const db = createSupabaseAdminClient();
-  const [{ data, error }, catalog] = await Promise.all([
+  const [{ data, error }, catalog, restriction] = await Promise.all([
     db.rpc("admin_user_overview", { _admin_id: check.userId, _user_id: id }),
     loadCatalog(),
+    /*
+     * Galiojantis rezervavimo apribojimas (#207). Lentelė uždara klientams,
+     * servisinis raktas ją skaito; nepavykus – rodoma kaip neapribota, o
+     * mygtukas tada gaus bazės atsakymą (`already_restricted`).
+     */
+    db.from("booking_restrictions").select("until").eq("user_id", id).maybeSingle(),
   ]);
+  const restrictedUntil = typeof restriction.data?.until === "string" ? restriction.data.until : null;
   const overview = error ? null : (data as Overview);
   const username = check.username ?? check.userId;
   const back = { href: "/admin/data?table=profiles", label: "Paskyros" };
@@ -73,6 +80,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
         catalog={catalog}
         avatar={avatarId ? media[avatarId] : undefined}
         banned={isBanned(user.banned_until)}
+        restrictedUntil={isBanned(restrictedUntil) ? restrictedUntil : null}
       />
     </AdminShell>
   );

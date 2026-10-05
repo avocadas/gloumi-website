@@ -54,12 +54,15 @@ export function UserOverview({
   catalog,
   avatar,
   banned,
+  restrictedUntil,
 }: {
   overview: Overview;
   catalog: CatalogEntry[];
   avatar: SignedMedia | undefined;
   /** Ar dabar sustabdyta – skaičiuoja puslapis; iki kada – `user.banned_until`. */
   banned: boolean;
+  /** Iki kada apribotas rezervavimas, jei apribotas dabar (#207); kitaip `null`. */
+  restrictedUntil: string | null;
 }) {
   const { user, counts } = overview;
   const profile = user.profile ?? {};
@@ -94,6 +97,7 @@ export function UserOverview({
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {user.is_admin ? <Tag tone="dark">Administratorius</Tag> : null}
                 {banned ? <Tag tone="danger">Sustabdyta iki {formatWhen(user.banned_until)}</Tag> : <Tag tone="ok">Aktyvi</Tag>}
+                {restrictedUntil ? <Tag tone="warn">Rezervavimas apribotas iki {formatWhen(restrictedUntil)}</Tag> : null}
                 {master ? <Tag tone="lavender">Meistras</Tag> : <Tag tone="neutral">Klientas</Tag>}
                 {profile.deletion_requested_at ? <Tag tone="warn">Paprašė ištrinti</Tag> : null}
               </div>
@@ -134,6 +138,7 @@ export function UserOverview({
             userId={user.id}
             banned={banned}
             bannedUntil={banned ? user.banned_until : null}
+            restrictedUntil={restrictedUntil}
             confirmName={handle ?? "IŠTRINTI"}
             isMaster={Boolean(master)}
           />

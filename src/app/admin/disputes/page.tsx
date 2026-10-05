@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { checkAdmin } from "@/lib/admin-guard";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -108,6 +109,11 @@ export default async function DisputesPage({ searchParams }: { searchParams: Pro
       subtitle="Klientų pranešimai „Vizitas neįvyko?“ ir kortelių ginčai. Kol ginčas atviras, išmoka meistrui laukia."
       username={check.username ?? check.userId}
     >
+      <p className="mb-5 text-sm">
+        <Link href="/admin/debts" className="font-semibold text-app-accent hover:underline">
+          Meistrų mokėjimo prašymai →
+        </Link>
+      </p>
       {error ? (
         <p role="alert" className="mb-6 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
           Ginčų gauti nepavyko: {error.message}

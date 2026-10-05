@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { Ban, CalendarPlus, Trash2, Undo2 } from "lucide-react";
-import { deleteAccount, setSuspended } from "../../actions";
+import { Ban, CalendarPlus, CalendarX, Trash2, Undo2 } from "lucide-react";
+import { deleteAccount, setBookingRestriction, setSuspended } from "../../actions";
 import { useConfirm } from "../../ConfirmDialog";
 import { useTerminationNotice } from "../../ModerationRules";
 import { formatWhen } from "../../format";
@@ -21,6 +21,9 @@ import { ActionNote, STROKE, SectionTitle, btn, btnDanger, card } from "../../ui
  * įpročio niekas neįrašo. Abu prašymai — ir vardas, ir priežastis — dabar
  * viename lange, kad žmogus matytų, ką patvirtina, kol rašo.
  *
+ * Rezervavimo apribojimas (#207) – to paties pavidalo, tik stabdo naujas
+ * rezervacijas, ne prisijungimą; automatiniai įspėjimai jo nesukuria.
+ *
  * Kiekvienas veiksmas — atskira eilutė su paaiškinimu, ką jis padarys:
  * mygtukas be paaiškinimo verčia spėlioti, o čia spėlioti brangu.
  */
@@ -28,6 +31,7 @@ export function AccountActions({
   userId,
   banned,
   bannedUntil,
+  restrictedUntil,
   confirmName,
   isMaster,
 }: {
@@ -35,6 +39,8 @@ export function AccountActions({
   banned: boolean;
   /** `auth.users.banned_until` – iki kada sustabdyta. */
   bannedUntil: string | null;
+  /** `booking_restrictions.until`, jei rezervavimas dabar apribotas; kitaip `null`. */
+  restrictedUntil: string | null;
   confirmName: string;
   isMaster: boolean;
 }) {
@@ -106,6 +112,64 @@ export function AccountActions({
     run(false, answer.reason, null);
   };
 
+  const runRestriction = (restrict: boolean, reason: string, rule: string | null, days?: number, source?: string) => {
+    setError(null);
+    setNote(null);
+    startTransition(async () => {
+      const res = await setBookingRestriction(userId, restrict, reason, rule, days, source);
+      if (res.ok) setNote(res.note ?? null);
+      else setError(res.error);
+    });
+  };
+
+  /** Apriboti arba pratęsti – kaip sustabdymas: pratęsimas yra naujas sprendimas su nauju pranešimu. */
+  const restrict = async () => {
+    const answer = await ask({
+      title: restrictedUntil ? "Pratęsti rezervavimo apribojimą?" : "Apriboti rezervavimą?",
+      body: [
+        restrictedUntil
+          ? `Dabar apribota iki ${formatWhen(restrictedUntil)}. Naujas terminas turi būti vėlesnis; tai naujas sprendimas, ir žmogus gaus naują pranešimą.`
+          : "Iki termino pabaigos žmogus negalės rezervuoti naujų vizitų. Jau rezervuoti vizitai lieka, prisijungti galės; pasibaigus terminui apribojimas nuimamas automatiškai.",
+        "Jam iš karto pranešime priežastį, punktą, šaltinį ir terminą programėlėje.",
+      ],
+      confirmLabel: restrictedUntil ? "Pratęsti" : "Apriboti",
+      danger: true,
+      choices: [
+        {
+          key: "days",
+          label: "Terminas",
+          hint: "ne ilgiau 30 dienų; ilgiau – tik nauju sprendimu",
+          options: SUSPEND_DAYS.map((d) => ({ value: String(d), label: d === 1 ? "1 diena" : `${d} d.` })),
+        },
+        {
+          key: "source",
+          label: "Kodėl imtasi",
+          hint: "nurodoma pranešime",
+          options: SUSPEND_SOURCES.map((o) => ({ value: o.value, label: o.label })),
+        },
+      ],
+      rule: true,
+      ruleNoRequest: true,
+      reasonRequired: true,
+    });
+    if (!answer) return;
+    runRestriction(true, answer.reason, answer.rule, Number(answer.choices.days), answer.choices.source);
+  };
+
+  const unrestrict = async () => {
+    const answer = await ask({
+      title: "Nuimti rezervavimo apribojimą dabar?",
+      body: [
+        `Apribota iki ${formatWhen(restrictedUntil)}; pasibaigus terminui apribojimas nusiimtų ir be šio mygtuko.`,
+        "Žmogus vėl galės rezervuoti vizitus. Jam pranešime programėlėje.",
+      ],
+      confirmLabel: "Nuimti",
+      reason: true,
+    });
+    if (!answer) return;
+    runRestriction(false, answer.reason, null);
+  };
+
   const remove = async () => {
     const answer = await ask({
       title: "Ištrinti paskyrą visam laikui?",
@@ -171,6 +235,34 @@ export function AccountActions({
                 <Ban size={16} strokeWidth={STROKE} aria-hidden />
               )}
               {banned ? "Pratęsti" : "Sustabdyti"}
+            </button>
+          </div>
+        </div>
+        <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-app-ink">
+              {restrictedUntil ? `Rezervavimas apribotas iki ${formatWhen(restrictedUntil)}` : "Apriboti rezervavimą"}
+            </p>
+            <p className="mt-0.5 text-[13px] text-app-muted">
+              {restrictedUntil
+                ? "Pasibaigus terminui apribojimas nusiims automatiškai."
+                : "Iki 30 dienų negalės rezervuoti naujų vizitų; gaus pranešimą."}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {restrictedUntil ? (
+              <button type="button" disabled={pending} onClick={unrestrict} className={btn}>
+                <Undo2 size={16} strokeWidth={STROKE} aria-hidden />
+                Nuimti
+              </button>
+            ) : null}
+            <button type="button" disabled={pending} onClick={restrict} className={btnDanger}>
+              {restrictedUntil ? (
+                <CalendarPlus size={16} strokeWidth={STROKE} aria-hidden />
+              ) : (
+                <CalendarX size={16} strokeWidth={STROKE} aria-hidden />
+              )}
+              {restrictedUntil ? "Pratęsti" : "Apriboti"}
             </button>
           </div>
         </div>

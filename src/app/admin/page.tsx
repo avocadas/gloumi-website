@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { checkAdmin } from "@/lib/admin-guard";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -139,6 +140,12 @@ export default async function AdminPage({
       subtitle="Ką naudotojai pranešė apie įrašus, komentarus ir paskyras."
       username={check.username ?? check.userId}
     >
+      {/* Automatiniai rezervavimo įspėjimai (#207) – atskiras sąrašas, tas pats skirtukas. */}
+      <p className="mb-5 text-sm">
+        <Link href="/admin/warnings" className="font-semibold text-app-accent hover:underline">
+          Rezervavimo įspėjimai →
+        </Link>
+      </p>
       <ReportQueue wanted={wanted} counts={counts} views={views} />
     </AdminShell>
   );

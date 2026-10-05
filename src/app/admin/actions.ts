@@ -69,13 +69,19 @@ const DB_ERRORS: Record<string, string> = {
   rule_required: "Pasirinkite taisyklių punktą.",
   bad_rule: "Duomenų bazė atmetė taisyklių punktą — atnaujinkite puslapį ir pasirinkite iš naujo.",
   "Per ilga priezastis": "Priežastis per ilga — daugiausia 500 ženklų.",
-  // Blokavimas (`admin_suspend_user`, #169 3 p.).
-  user_not_found: "Šios paskyros blokuoti negalima: jos nebėra arba tai administratorius.",
+  // Sustabdymas (`admin_suspend_user`, #169 3 p.) ir rezervavimo apribojimas (`admin_restrict_bookings`, #207).
+  user_not_found: "Šiai paskyrai to padaryti negalima: jos nebėra arba tai administratorius.",
   already_suspended: "Paskyra jau sustabdyta bent iki šio termino — pratęsti galima tik ilgesniu terminu.",
   not_suspended: "Paskyra jau atkurta — gal tai ką tik padarė kitas administratorius ar terminas baigėsi.",
   bad_until: "Terminas turi būti ateityje ir ne ilgesnis nei 30 dienų.",
   bad_source: "Nurodykite, kodėl imtasi: gavus pranešimą ar mūsų iniciatyva.",
   bad_suspend: "Netinkamas prašymas.",
+  bad_restrict: "Netinkamas prašymas.",
+  booking_limits_not_in_force: "Rezervavimo ribos dar neįsigaliojo — apriboti dar negalima.",
+  already_restricted: "Rezervavimas jau apribotas bent iki šio termino — pratęsti galima tik ilgesniu terminu.",
+  not_restricted: "Apribojimo jau nėra — gal jį atšaukė kitas administratorius ar baigėsi terminas.",
+  // Skolos pranešimas (`admin_mark_debt_notice_paid`).
+  already_paid: "Jau pažymėta apmokėta — gal tai ką tik padarė kitas administratorius.",
 };
 
 const dbError = (message: string) => DB_ERRORS[message] ?? message;
@@ -233,6 +239,90 @@ async function cancelledBookings(db: ReturnType<typeof createSupabaseAdminClient
     .maybeSingle();
   const n = Number((data as { cancelled?: unknown } | null)?.cancelled ?? 0);
   return Number.isFinite(n) ? n : 0;
+}
+
+/**
+ * Apriboja paskyros naujų vizitų rezervavimą iki 30 d. arba apribojimą nuima
+ * (#207; Gloumi `20261005185534`).
+ *
+ * Tas pats pavidalas, kaip sustabdymo: `admin_restrict_bookings` vienoje
+ * transakcijoje įrašo apribojimą, žurnalą ir pranešimą žmogui jo kalba – su
+ * priežastimi, punktu, šaltiniu ir data „iki" – ir grąžina žurnalo id.
+ * Apribojimas stabdo tik naujas rezervacijas kaip kliento (bazės trigeris
+ * prieš įrašant vizitą); jau rezervuoti vizitai lieka, prisijungti galima.
+ * Pasibaigus terminui jis nuimamas automatiškai. Apriboti gali tik žmogus:
+ * automatiniai įspėjimai (3 atšaukimai ar 2 neatvykimai per 30 d.) apribojimo
+ * nesukuria – jie tik parodomi `/admin/warnings` (developeris, #207).
+ *
+ * Programėlę žmogus atsidaro kaip anksčiau, tad pranešimas jam – programėlėje;
+ * laiško čia nėra. Priežastis, punktas, terminas ir šaltinis tikrinami ir
+ * čia: veiksmas yra viešas HTTP taškas.
+ */
+export async function setBookingRestriction(
+  userId: string,
+  restrict: boolean,
+  reason?: string,
+  rule?: string | null,
+  days?: number,
+  source?: string,
+): Promise<ActionResult> {
+  try {
+    const admin = await requireAdmin();
+    let why: Justified;
+    let until: string | null = null;
+    if (restrict) {
+      const checked = justify(reason, rule, true);
+      if ("error" in checked) return { ok: false, error: checked.error };
+      why = checked;
+      if (why.rule?.doc === "request") {
+        return { ok: false, error: "Apribojimas – sprendimas dėl pažeidimo: pasirinkite pažeistą punktą." };
+      }
+      if (!isSuspendDays(days)) return { ok: false, error: "Pasirinkite terminą — ne ilgiau 30 dienų." };
+      if (!isSuspendSource(source)) {
+        return { ok: false, error: "Nurodykite, kodėl imtasi: gavus pranešimą ar mūsų iniciatyva." };
+      }
+      until = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString();
+    } else {
+      const text = reasonOrNull(reason);
+      if (text && text.length > 500) return { ok: false, error: "Priežastis per ilga — daugiausia 500 ženklų." };
+      why = { reason: text ?? "", rule: null };
+    }
+    const db = createSupabaseAdminClient();
+    const { error } = await db.rpc("admin_restrict_bookings", {
+      _admin_id: admin.userId,
+      _user_id: userId,
+      _restrict: restrict,
+      _reason: why.reason || null,
+      _rule: why.rule,
+      _until: until,
+      _source: restrict ? source : null,
+    });
+    if (error) return { ok: false, error: dbError(error.message) };
+    revalidatePath("/admin", "layout");
+    return { ok: true, note: { tone: "info", text: "Žmogui pranešta programėlėje." } };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
+  }
+}
+
+/**
+ * Pažymi meistro skolos pranešimą apmokėtu (Gloumi `20261005214547`).
+ * Bazė įrašo žurnalą, o jei meistrui nebelieka pradelstų pranešimų – atnaujina
+ * mokėjimą vietoje ir praneša jam (`onsite_payments_unblocked`). Pinigų čia
+ * nejudinama: pažymima tai, kas jau gauta.
+ */
+export async function markDebtNoticePaid(noticeId: string): Promise<ActionResult> {
+  try {
+    const admin = await requireAdmin();
+    if (typeof noticeId !== "string" || !noticeId) return { ok: false, error: "Netinkamas prašymas." };
+    const db = createSupabaseAdminClient();
+    const { error } = await db.rpc("admin_mark_debt_notice_paid", { _admin_id: admin.userId, _notice_id: noticeId });
+    if (error) return { ok: false, error: dbError(error.message) };
+    revalidatePath("/admin", "layout");
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
+  }
 }
 
 /*
