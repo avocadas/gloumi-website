@@ -135,9 +135,10 @@ export async function moderate(
  * ----------------------------------------------------
  * `admin_suspend_user` vienoje transakcijoje nustato `auth.users.banned_until`
  * (= terminą), įrašo žurnalą ir pranešimą žmogui jo kalba – su priežastimi,
- * punktu, šaltiniu ir data „iki" – o meistrui dar atšaukia jo vizitus iki
- * termino (klientams pranešama, sumokėtą sumą grąžina `stripe-settle`, kaip
- * trinant paskyrą, #106). Grąžina žurnalo id. Meistrų sąlygos (skyrius
+ * punktu, šaltiniu ir data „iki" – ir atšaukia paskyros vizitus iki termino,
+ * ir kaip meistro, ir kaip kliento (developeris 2026-10-05; kitai šaliai
+ * pranešama, sumokėtą sumą grąžina `stripe-settle`, kaip trinant paskyrą,
+ * #106). Grąžina žurnalo id. Meistrų sąlygos (skyrius
  * „Ribojimas, sustabdymas ir nutraukimas") sako, kad apribojimas įsigalioja,
  * kai meistrui pateikiamas motyvuotas pranešimas, todėl sustabdymas be
  * pranešimo neturi būti įmanomas.
@@ -209,7 +210,7 @@ export async function setSuspended(
       cancelled > 0
         ? {
             tone: emailNote?.tone ?? "info",
-            text: [`Atšaukta meistro vizitų: ${cancelled}; klientams pranešta, sumokėta suma bus grąžinta.`, emailNote?.text]
+            text: [`Atšaukta vizitų: ${cancelled}; kitai šaliai pranešta, sumokėta suma bus grąžinta.`, emailNote?.text]
               .filter(Boolean)
               .join(" "),
           }
@@ -222,7 +223,7 @@ export async function setSuspended(
   }
 }
 
-/** Kiek meistro vizitų atšaukė sustabdymas – iš to paties žurnalo įrašo, tik šis skaičius. */
+/** Kiek vizitų (kaip meistro ir kaip kliento) atšaukė sustabdymas – iš to paties žurnalo įrašo, tik šis skaičius. */
 async function cancelledBookings(db: ReturnType<typeof createSupabaseAdminClient>, auditLogId: unknown) {
   if (typeof auditLogId !== "number" && typeof auditLogId !== "string") return 0;
   const { data } = await db

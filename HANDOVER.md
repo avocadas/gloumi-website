@@ -304,7 +304,7 @@ transakcijoje:
 | `removeRow` | `admin_remove` |
 | `editText` | `admin_edit_text` |
 | `deleteAccount` | `admin_delete_account` → `purge_accounts` |
-| `setSuspended` | `admin_suspend_user` (Gloumi `20261004231227`, #169 3 p.) — sustabdymas iki 30 d. su šaltiniu (`report` / `own`): `banned_until`, žurnalas, pranešimas žmogui ir meistro vizitų atšaukimas vienoje transakcijoje; laiškas jam — visada (`moderation-email.ts`). Atkuria mygtukas arba bazės cron `restore-suspensions` (žurnale be administratoriaus). Iki jo: GoTrue `ban_duration` + `log_admin_action`, be pranešimo |
+| `setSuspended` | `admin_suspend_user` (Gloumi `20261004231227`, #169 3 p.) — sustabdymas iki 30 d. su šaltiniu (`report` / `own`): `banned_until`, žurnalas, pranešimas žmogui ir jo vizitų (kaip meistro ir kaip kliento) atšaukimas vienoje transakcijoje; laiškas jam — visada (`moderation-email.ts`). Atkuria mygtukas arba bazės cron `restore-suspensions` (žurnale be administratoriaus). Iki jo: GoTrue `ban_duration` + `log_admin_action`, be pranešimo |
 
 **Duomenys:** `src/lib/admin-data.ts` (`server-only`) — `loadCatalog`,
 `searchTable`, `mediaIdsOf`, `signMedia`. Puslapiai (`page.tsx`) nuo

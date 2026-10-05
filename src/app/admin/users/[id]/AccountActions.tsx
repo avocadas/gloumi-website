@@ -66,9 +66,7 @@ export function AccountActions({
           ? `Dabar sustabdyta iki ${formatWhen(bannedUntil)}. Naujas terminas turi būti vėlesnis; tai naujas sprendimas, ir žmogus gaus naują pranešimą.`
           : "Žmogus nebegalės prisijungti iki termino pabaigos, o jau atidaryta programėlė nustos veikti, kai baigsis jos prieigos raktas. Pasibaigus terminui prieiga grąžinama automatiškai.",
         "Jam iš karto pranešime priežastį, punktą, šaltinį ir terminą – programėlėje ir el. paštu; sustabdymas be pranešimo neįvyksta.",
-        isMaster
-          ? "Tai meistras: jo vizitai iki termino pabaigos bus atšaukti, klientams pranešta, o programėlėje sumokėta suma grąžinta."
-          : null,
+        "Jo vizitai iki termino pabaigos – ir kaip meistro, ir kaip kliento – bus atšaukti, kitai šaliai pranešta, o programėlėje sumokėta suma grąžinta.",
       ],
       confirmLabel: banned ? "Pratęsti" : "Sustabdyti",
       danger: true,

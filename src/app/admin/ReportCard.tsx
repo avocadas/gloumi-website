@@ -242,7 +242,7 @@ export function ReportCard({ report }: { report: ReportView }) {
                       title: "Sustabdyti autoriaus paskyrą?",
                       body: [
                         "Žmogus nebegalės prisijungti iki termino pabaigos; pasibaigus terminui prieiga grąžinama automatiškai.",
-                        "Jam iš karto pranešime priežastį, punktą ir terminą – programėlėje ir el. paštu. Jei tai meistras, jo vizitai iki termino bus atšaukti, klientams pranešta.",
+                        "Jam iš karto pranešime priežastį, punktą ir terminą – programėlėje ir el. paštu. Jo vizitai iki termino bus atšaukti, kitai šaliai pranešta.",
                         "Atkurti anksčiau ar pratęsti galima jo paskyros puslapyje.",
                       ],
                       confirmLabel: "Sustabdyti",
