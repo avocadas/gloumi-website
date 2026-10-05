@@ -53,10 +53,16 @@ export default async function DisputesPage({ searchParams }: { searchParams: Pro
   const wanted = DISPUTE_FILTERS.some((f) => f.key === status) ? status : "open";
 
   const db = createSupabaseAdminClient();
-  const [{ data, error }, heldRes] = await Promise.all([
+  const [{ data, error }, heldRes, debtsRes] = await Promise.all([
     db.rpc("admin_list_disputes", { _admin_id: check.userId, _status: null }),
     db.rpc("dac7_held_masters"),
+    db.rpc("admin_list_debt_notices", { _admin_id: check.userId, _status: "overdue" }),
   ]);
+  // Mokėjimo prašymai, kurių laiškas neišėjo (`20261005224404`): įspėjimas matomas jau čia,
+  // nes be laiško mokėjimas vietoje neišjungiamas. Nepavykus gauti – tiesiog be skaičiaus.
+  const debtAttention = ((debtsRes.error ? [] : (debtsRes.data ?? [])) as { block_state: string | null }[]).filter(
+    (d) => d.block_state === "email_failed" || d.block_state === "email_missing",
+  ).length;
 
   const rows = (error ? [] : (data ?? [])) as Row[];
   const counts: Record<string, number> = { all: rows.length };
@@ -113,6 +119,11 @@ export default async function DisputesPage({ searchParams }: { searchParams: Pro
         <Link href="/admin/debts" className="font-semibold text-app-accent hover:underline">
           Meistrų mokėjimo prašymai →
         </Link>
+        {debtAttention > 0 ? (
+          <span className="ml-2 rounded-full bg-app-danger-bg px-2 py-0.5 text-xs font-bold text-app-danger-text">
+            Reikia dėmesio: {debtAttention}
+          </span>
+        ) : null}
       </p>
       {error ? (
         <p role="alert" className="mb-6 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">

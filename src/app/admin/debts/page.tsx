@@ -4,12 +4,14 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { AdminShell } from "../AdminShell";
 import { MfaNotice } from "../MfaNotice";
 import { chip, chipActive } from "../ui";
-import { DebtNoticeList, type DebtNoticeView } from "./DebtNoticeList";
+import { DebtNoticeList, type BlockState, type DebtNoticeView } from "./DebtNoticeList";
 
 /*
  * Meistrų mokėjimo prašymai (Gloumi `20261005214547`, K-U24-3): klientams
  * grąžintos sumos, kurių nepavyko išskaičiuoti iš išmokų. Prašymą ir priminimą
- * bazė siunčia pati; pradelsus – sustabdo meistro mokėjimą vietoje. Čia
+ * bazė siunčia pati; pradelsus – išjungia meistrui mokėjimą vietoje, bet tik
+ * išėjus laiškui (P2B 4 str., `20261005224404`). Laiškas neišėjo – mokėjimas
+ * neišjungiamas, ir čia tai rodoma kaip įspėjimas (`email_failed`). Čia
  * administratorius mato prašymus ir pažymi apmokėtą, kai pinigai gauti
  * (`admin_mark_debt_notice_paid`): jei pradelstų nebelieka, mokėjimas vietoje
  * vėl įjungiamas, ir meistrui pranešama.
@@ -45,7 +47,14 @@ type Row = {
   paid_at: string | null;
   master_id: string | null;
   master_name: string | null;
+  block_state: string | null;
 };
+
+const BLOCK_STATES = ["email_pending", "email_failed", "blocked", "email_missing"] as const;
+const blockStateOf = (v: string | null): BlockState =>
+  BLOCK_STATES.find((s) => s === v) ?? null;
+/** Šioms būsenoms reikia žmogaus: mokėjimas vietoje neišjungtas, nes laiškas neišėjo. */
+const needsAttention = (r: Row) => r.block_state === "email_failed" || r.block_state === "email_missing";
 
 /** Kaip RPC `overdue`: neapmokėtas, ir terminas jau atėjo. */
 const isOverdue = (r: Row) => !r.paid_at && new Date(r.due_at).getTime() <= Date.now();
@@ -86,7 +95,9 @@ export default async function DebtsPage({ searchParams }: { searchParams: Promis
     overdue: isOverdue(r),
     masterId: r.master_id,
     masterName: r.master_name || (r.master_id ? "Be vardo" : "Paskyra ištrinta"),
+    blockState: blockStateOf(r.block_state),
   }));
+  const attention = rows.filter(needsAttention).length;
 
   return (
     <AdminShell
@@ -102,6 +113,16 @@ export default async function DebtsPage({ searchParams }: { searchParams: Promis
         </p>
       ) : (
         <>
+          {attention > 0 ? (
+            <p role="alert" className="mb-5 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
+              Reikia dėmesio: {attention}. Pradelstų prašymų laiškai meistrams neišėjo, todėl mokėjimas vietoje jiems
+              neišjungtas. Jie pažymėti sąraše{" "}
+              <a href="/admin/debts?status=overdue" className="underline">
+                „Pradelsti“
+              </a>
+              .
+            </p>
+          ) : null}
           <nav aria-label="Prašymų būsena" className="mb-6 flex flex-wrap gap-2">
             {FILTERS.map(({ key, label }) => (
               <a

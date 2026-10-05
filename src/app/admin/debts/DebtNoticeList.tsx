@@ -19,7 +19,15 @@ export type DebtNoticeView = {
   overdue: boolean;
   masterId: string | null;
   masterName: string;
+  /**
+   * Pradelsus mokėjimas vietoje išjungiamas tik išėjus laiškui (P2B 4 str.,
+   * `20261005224404`): `email_pending` – laiškas eilėje, `blocked` – išjungta,
+   * `email_failed` – laiškas neišėjo, todėl neišjungta; `null` – nieko nevyksta.
+   */
+  blockState: BlockState;
 };
+
+export type BlockState = "email_pending" | "email_failed" | "blocked" | "email_missing" | null;
 
 /** Vienas prašymas – viena eilutė; mygtukas tik neapmokėtiems. */
 export function DebtNoticeList({ notices }: { notices: DebtNoticeView[] }) {
@@ -78,6 +86,17 @@ export function DebtNoticeList({ notices }: { notices: DebtNoticeView[] }) {
                 · išrašyta {formatWhen(n.issuedAt)} · terminas {formatWhen(n.dueAt)}
                 {n.remindedAt ? ` · priminta ${formatWhen(n.remindedAt)}` : ""}
               </p>
+              {n.blockState === "email_failed" ? (
+                <p role="alert" className="mt-2 rounded-[12px] bg-app-danger-bg px-3 py-2 text-[13px] font-semibold text-app-danger-text">
+                  Laiškas apie mokėjimo vietoje išjungimą neišėjo (nepavyko arba paskyra be el. pašto), todėl mokėjimas
+                  vietoje neišjungtas. Patikrinkite meistro el. pašto adresą ir susisiekite su juo.
+                </p>
+              ) : null}
+              {n.blockState === "email_missing" ? (
+                <p role="alert" className="mt-2 rounded-[12px] bg-app-danger-bg px-3 py-2 text-[13px] font-semibold text-app-danger-text">
+                  Pradelsta, bet laiško apie išjungimą eilėje nėra – taip būti neturėtų. Praneškite programuotojui.
+                </p>
+              ) : null}
             </div>
             <div className="flex shrink-0 flex-wrap items-center gap-2">
               {n.paidAt ? (
@@ -85,6 +104,8 @@ export function DebtNoticeList({ notices }: { notices: DebtNoticeView[] }) {
               ) : (
                 <>
                   {n.overdue ? <Tag tone="danger">Pradelsta</Tag> : <Tag tone="warn">Laukia</Tag>}
+                  {n.blockState === "blocked" ? <Tag tone="danger">Mokėjimas vietoje išjungtas</Tag> : null}
+                  {n.blockState === "email_pending" ? <Tag tone="warn">Siunčiamas laiškas apie išjungimą</Tag> : null}
                   <button type="button" disabled={pending} onClick={() => markPaid(n)} className={btn}>
                     <CheckCheck size={16} strokeWidth={STROKE} aria-hidden />
                     Pažymėti apmokėtą
