@@ -7,6 +7,7 @@ import { MODERATED_TABLES } from "./moderated-tables";
 import { emailAuthorNotice, latestNoticeLogId, noticeEmailNote, type NoticeNote } from "./moderation-email";
 import { isSuspendDays, isSuspendSource } from "./suspension";
 import { ruleFor, type ModerationRule } from "./moderation-rules";
+import { UUID_PATTERN } from "./format";
 
 /**
  * Server actions for every destructive admin operation.
@@ -504,6 +505,32 @@ export async function resolveDispute(
     const mailNote = logId ? await authorEmailNote(db, logId) : undefined;
     revalidatePath("/admin", "layout");
     return { ok: true, note: mailNote };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
+  }
+}
+
+/*
+ * Kliento telefonas (K-T3, teisininkas U-27): portalas jo su puslapiu
+ * nesiunčia – numeris gaunamas tik paspaudus „Rodyti“, ir kiekvieną atvėrimą
+ * `admin_reveal_phone` įrašo į administratoriaus žurnalą toje pačioje
+ * transakcijoje (P-8). Žurnale – tik kas ir kieno, numerio ten nėra.
+ */
+export async function revealPhone(
+  userId: string,
+): Promise<{ ok: true; phone: string | null } | { ok: false; error: string }> {
+  try {
+    const admin = await requireAdmin();
+    if (typeof userId !== "string" || !UUID_PATTERN.test(userId)) return { ok: false, error: "Netinkamas prašymas." };
+    const db = createSupabaseAdminClient();
+    const { data, error } = await db.rpc("admin_reveal_phone", { _admin_id: admin.userId, _user_id: userId });
+    if (error) {
+      return {
+        ok: false,
+        error: error.message.startsWith("user_not_found") ? "Šios paskyros nebėra." : error.message,
+      };
+    }
+    return { ok: true, phone: typeof data === "string" && data.trim() ? data.trim() : null };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
   }

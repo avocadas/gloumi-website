@@ -54,8 +54,28 @@ export async function searchTable(
     _offset: offset,
   });
   if (error) return { ok: false, error: error.message };
-  return { ok: true, result: data as SearchResult };
+  const result = data as SearchResult;
+  const never = NEVER_SENT[table];
+  if (!never) return { ok: true, result };
+  return {
+    ok: true,
+    result: {
+      ...result,
+      rows: result.rows.map((r) => ({
+        ...r,
+        row: Object.fromEntries(Object.entries(r.row).filter(([col]) => !never.includes(col))),
+      })),
+    },
+  };
 }
+
+/*
+ * Stulpeliai, kurių naršyklė niekada negauna, net jei katalogas jų nepaslėptų:
+ * kliento telefonas matomas tik paskyros puslapyje per „Rodyti“, kad kiekvienas
+ * atvėrimas būtų žurnale (teisininkas U-27). Pirmoji apsauga – `hidden_cols`
+ * bazėje; ši – kad klaida kataloge numerio neatskleistų.
+ */
+const NEVER_SENT: Record<string, string[]> = { profiles: ['phone_number'] };
 
 /*
  * Nuotraukų id eilutėje: `media` lentelėje tai pati eilutė, kitur —

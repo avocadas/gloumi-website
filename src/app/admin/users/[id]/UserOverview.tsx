@@ -5,6 +5,7 @@ import { columnLabel, formatDate, formatValue, formatWhen } from "../../format";
 import { STROKE, SectionTitle, Tag, card } from "../../ui";
 import { AccountActions } from "./AccountActions";
 import { CopyButton } from "./CopyButton";
+import { PhoneReveal } from "./PhoneReveal";
 
 export type Overview = {
   user: {
@@ -14,14 +15,22 @@ export type Overview = {
     last_sign_in_at: string | null;
     banned_until: string | null;
     is_admin: boolean;
+    /** Ar profilyje yra telefonas – pats numeris tik per `admin_reveal_phone` (U-27). */
+    has_phone?: boolean;
     profile: Record<string, unknown> | null;
     master: Record<string, unknown> | null;
   };
   counts: Record<string, number>;
 };
 
-// Telefonas – viršuje, prie el. pašto (K-T3); čia lieka tik, ar jis patvirtintas.
+// Telefonas – viršuje, prie el. pašto, už „Rodyti“ (K-T3, U-27); čia lieka tik, ar jis patvirtintas.
 const PROFILE_FIELDS = ["display_name", "username", "bio", "phone_verified", "deletion_requested_at"];
+
+/**
+ * Laukai, kurių puslapis niekada nerodo, net jei bazė juos atsiųstų: numeris
+ * matomas tik per „Rodyti“, kad kiekvienas atvėrimas būtų žurnale (U-27).
+ */
+const NEVER_RENDERED = new Set(["phone_number"]);
 const MASTER_FIELDS = ["display_name", "specialty", "city", "bio", "verified", "subscribed_plan"];
 
 /** Skaičių juosta: tai, ko apie žmogų klausiama pirmiausia. */
@@ -66,12 +75,11 @@ export function UserOverview({
   restrictedUntil: string | null;
 }) {
   const { user, counts } = overview;
-  const profile = user.profile ?? {};
+  const profile = Object.fromEntries(Object.entries(user.profile ?? {}).filter(([f]) => !NEVER_RENDERED.has(f)));
   const master = user.master;
   const { name, handle } = identityOf(user);
   const owned = catalog.filter((c) => (counts[c.tbl] ?? 0) > 0);
   const profileFields = PROFILE_FIELDS.filter((f) => f in profile);
-  const phone = asString(profile.phone_number);
 
   return (
     <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
@@ -128,13 +136,10 @@ export function UserOverview({
                 {user.email ? <CopyButton value={user.email} label="Kopijuoti el. paštą" /> : null}
               </Fact>
             ) : null}
-            {/* K-T3 (developeris 2026-10-05): skubiu atveju administratorius skambina – numeris čia, su nuoroda. */}
-            {phone ? (
+            {/* K-T3 (developeris 2026-10-05): skubiu atveju administratorius skambina; numeris – tik paspaudus (U-27). */}
+            {user.has_phone && !user.is_admin ? (
               <Fact label="Telefonas" stacked>
-                <a href={`tel:${phone.replace(/[^\d+]/g, "")}`} className="min-w-0 break-all hover:underline">
-                  {phone}
-                </a>
-                <CopyButton value={phone} label="Kopijuoti telefoną" />
+                <PhoneReveal userId={user.id} />
               </Fact>
             ) : null}
             <Fact label="Sukurta" stacked>{formatDate(user.created_at)}</Fact>
