@@ -131,7 +131,7 @@ export const en: typeof lt = {
   masters: {
     eyebrow: "For masters",
     title: "More clients. Fewer empty hours.",
-    lead: "Gloumi is your front desk, your shop window and your calendar, in one app. Start on the €0 Starter plan and pick a paid plan when you need more.",
+    lead: "Gloumi is your front desk, your shop window and your calendar, in one app. Start on the Starter plan for €0 – Gloumi only takes a 5% commission on visits paid in the app.",
     items: [
       {
         title: "Fewer no-shows",
