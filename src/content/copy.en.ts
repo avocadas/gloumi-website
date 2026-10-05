@@ -19,7 +19,7 @@ export const en: typeof lt = {
     links: [
       { key: "categories", label: "Categories" },
       { key: "why", label: "Why Gloumi" },
-      { key: "masters", label: "For professionals" },
+      { key: "masters", label: "For masters" },
       { key: "contact", label: "Contact" },
     ],
     cta: "Get the app",
@@ -30,10 +30,10 @@ export const en: typeof lt = {
   },
 
   seo: {
-    title: "Gloumi – book beauty and wellness professionals in Lithuania",
+    title: "Gloumi – book beauty and wellness masters in Lithuania",
     titleTemplate: "%s · Gloumi",
     description:
-      "Find and book the best beauty and wellness professionals in Lithuania: nails, hair, brows and lashes, massage, make-up and skincare. Real availability, clear prices and reviews from real appointments, in one app.",
+      "Find and book the best beauty and wellness masters in Lithuania: nails, hair, brows and lashes, massage, make-up and skincare. Real availability, clear prices and reviews from real visits, in one app.",
     keywords: [
       "beauty professionals Lithuania",
       "book beauty appointment",
@@ -46,20 +46,20 @@ export const en: typeof lt = {
       "beauty booking app",
       "Gloumi",
     ],
-    ogAlt: "Gloumi – the app for finding and booking beauty professionals",
-    ogHeadline: "Beauty professionals and bookings in Lithuania",
+    ogAlt: "Gloumi – the app for finding and booking beauty masters",
+    ogHeadline: "Beauty masters and bookings in Lithuania",
     ogSub: "Nails · Hair · Brows · Massage · Make-up · Skin",
     ogStores: "App Store · Google Play",
   },
 
   hero: {
-    eyebrow: "Beauty and wellness professionals in Lithuania",
+    eyebrow: "Beauty and wellness masters in Lithuania",
     titleStart: "Find and book the",
     titleAccent: "best",
-    titleEnd: "beauty professionals in Lithuania",
+    titleEnd: "beauty masters in Lithuania",
     lead:
-      "Nails, hair, brows, massage, make-up and skincare. Real work from real professionals, live availability and clear prices, all in one app. Book at any hour, without a single phone call.",
-    masterCta: "I'm a professional / Sign in",
+      "Nails, hair, brows, massage, make-up and skincare. Real work from real masters, live availability and clear prices, all in one app. Book at any hour, without a single phone call.",
+    masterCta: "I'm a master / Sign in",
     trustLabel: "Why it is worth it",
     trust: ["Free for clients", "No hidden fees", "Reviews only after a visit"],
     floatingReviews: { title: "Real reviews", sub: "Only after a visit" },
@@ -78,46 +78,46 @@ export const en: typeof lt = {
     ariaLabel: "Preview of the app's screens",
     tabsLabel: "App screens",
     tabs: [
-      { id: "feed", label: "Discover", alt: "The Gloumi feed: professionals' stories and latest work" },
-      { id: "search", label: "Search", alt: "Gloumi search: professionals by service, price, rating and distance" },
+      { id: "feed", label: "Discover", alt: "The Gloumi feed: masters' stories and latest work" },
+      { id: "search", label: "Search", alt: "Gloumi search: masters by service, price, rating and distance" },
       {
         id: "profile",
         label: "Profile",
-        alt: "A professional's profile in the Gloumi app: rating, bio, address and map",
+        alt: "A master's profile in the Gloumi app: rating, bio, address and map",
       },
       { id: "booking", label: "Booking", alt: "Booking a visit in the Gloumi app: calendar and free times" },
     ],
-    note: "The screens show sample professionals and reviews.",
+    note: "The screens show sample masters and reviews.",
   },
 
   categories: {
     eyebrow: "Categories",
-    title: "A professional for every part of your routine",
-    lead: "Pick a category and see what it holds. In the app each one has its own professionals, their work and their free slots.",
-    cta: "Find a professional",
+    title: "A master for every part of your routine",
+    lead: "Pick a category and see what it holds. In the app each one has its own masters, their work and their free slots.",
+    cta: "Find a master",
     listLabel: "Service categories",
   },
 
   why: {
     eyebrow: "For clients",
     title: "Why Gloumi?",
-    lead: "Everything that makes a beauty appointment start without stress, from the first idea to a confirmed time.",
+    lead: "Everything that makes a beauty visit start without stress, from the first idea to a confirmed time.",
     items: [
       {
         title: "Booking around the clock",
         text: "You see live availability and book straight away, at midnight or on your lunch break. No phone calls, no waiting for someone to write back.",
       },
       {
-        title: "A lookbook of real work",
-        text: "Browse work done by real professionals, save what you like, and show it when you book: this is what I want.",
+        title: "Real work to show",
+        text: "Browse work done by real masters, save what you like to your collections, and show it when you book: this is what I want.",
       },
       {
         title: "Prices you can see",
-        text: "The price and the length of the appointment are there before you book. You pay what it says, with no fees appearing at the till.",
+        text: "The price and the length of the visit are there before you book. You pay what it says, with no fees appearing at the till.",
       },
       {
         title: "Reviews that were earned",
-        text: "A review can only be left after an appointment that actually happened, so every rating comes from someone who sat in the chair.",
+        text: "A review can only be left after a visit that actually happened, so every rating comes from someone who sat in the chair.",
       },
     ],
     howTitle: "How it works",
@@ -129,17 +129,17 @@ export const en: typeof lt = {
   },
 
   masters: {
-    eyebrow: "For professionals",
+    eyebrow: "For masters",
     title: "More clients. Fewer empty hours.",
     lead: "Gloumi is your front desk, your shop window and your calendar, in one app. Start on the €0 Starter plan and pick a paid plan when you need more.",
     items: [
       {
-        title: "No more no-shows",
+        title: "Fewer no-shows",
         text: "Ask for a deposit and the client confirms the time with money. If they do not turn up, the deposit stays with you.",
       },
       {
         title: "Reminders that bring people back",
-        text: "Automatic reminders before an appointment, and a nudge to rebook when it is time for the next one.",
+        text: "Automatic reminders before a visit, and a nudge to rebook when it is time for the next one.",
       },
       {
         title: "A profile you arrange yourself",
@@ -161,8 +161,8 @@ export const en: typeof lt = {
   },
 
   form: {
-    eyebrow: "Professional account",
-    title: "Join Gloumi as a professional",
+    eyebrow: "Master account",
+    title: "Join Gloumi as a master",
     lead: "Leave your details and we will help you set the profile up and answer any questions. You can also build the profile yourself in the app.",
     fields: {
       name: "Name",
@@ -177,7 +177,7 @@ export const en: typeof lt = {
       messagePlaceholder: "How long you have been working, whether you have a salon, what you want from Gloumi…",
       optional: "optional",
     },
-    consentStart: "I agree that MB „Gloumi“ may contact me about a professional account. Data is handled under the ",
+    consentStart: "I agree that MB “Gloumi” may contact me about a master account. Data is handled under the ",
     consentLink: "Privacy Policy",
     consentEnd: ".",
     submit: "I want to join",
@@ -191,19 +191,19 @@ export const en: typeof lt = {
     errorRateLimited: "Too many attempts in a row. Try again in a few minutes.",
     unconfiguredTitle: "The form is not ready yet",
     unconfiguredText: "Write to us directly and we will answer from the same address:",
-    mailSubject: "I want to join Gloumi as a professional",
+    mailSubject: "I want to join Gloumi as a master",
   },
 
   finalCta: {
     title: "Beauty starts with a good time slot.",
-    lead: "Download Gloumi and book your first appointment, or join as a professional and fill your calendar.",
-    masterLink: "I'm a professional",
+    lead: "Download Gloumi and book your first visit, or join as a master and fill your calendar.",
+    masterLink: "I'm a master",
   },
 
   footer: {
-    tagline: "The platform for beauty professionals and their clients in Lithuania.",
+    tagline: "The platform for beauty masters and their clients in Lithuania.",
     clients: "For clients",
-    masters: "For professionals",
+    masters: "For masters",
     legal: "Legal",
     contacts: "Contact",
     clientLinks: [
@@ -213,7 +213,7 @@ export const en: typeof lt = {
     ],
     masterLinks: [
       { key: "masters", label: "What you get" },
-      { key: "join", label: "Join as a professional" },
+      { key: "join", label: "Join as a master" },
     ],
     legalLinks: [
       { key: "terms", label: "Terms of Service" },

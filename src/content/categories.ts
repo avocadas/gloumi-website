@@ -73,7 +73,7 @@ const TEXT: Record<Lang, Record<CategoryId, CategoryText>> = {
     skincare: {
       label: "Odos priežiūra",
       short: "Oda",
-      tagline: "Procedūros pagal tavo odą, ne pagal madą.",
+      tagline: "Procedūros pagal jūsų odą, ne pagal madą.",
       examples: ["Veido procedūros", "Pilingai", "Kosmetologija"],
     },
   },
@@ -87,7 +87,7 @@ const TEXT: Record<Lang, Record<CategoryId, CategoryText>> = {
     nails: {
       label: "Nails",
       short: "Nails",
-      tagline: "A manicure that lasts until the next appointment.",
+      tagline: "A manicure that lasts until the next visit.",
       examples: ["Manicure", "Pedicure", "Extensions", "Nail art"],
     },
     brows_lashes: {

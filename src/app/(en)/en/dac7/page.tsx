@@ -10,7 +10,7 @@ export const metadata: Metadata = buildMetadata(
   { kind: "legal", key: "transparency" },
   {
     title: LEGAL_TITLES.en.transparency,
-    description: "What Gloumi reports to the tax authority under DAC7, how content reports work under the DSA, and how professionals are ranked in search.",
+    description: "What Gloumi reports to the tax authority under DAC7, how content reports work under the DSA, and how masters are ranked in search.",
   }
 );
 

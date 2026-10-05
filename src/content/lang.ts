@@ -27,7 +27,7 @@ export const LANG_LABELS: Record<Lang, { label: string; short: string; htmlLang:
  *
  * Both the `id` on the section and the `href` in a menu come from here, so a
  * menu item cannot point at an anchor that does not exist. English pages get
- * English anchors: an English reader clicking "For professionals" should not
+ * English anchors: an English reader clicking "For masters" should not
  * land on #meistrams.
  */
 export const SECTION_IDS = {
@@ -43,7 +43,7 @@ export const SECTION_IDS = {
     download: "download",
     categories: "categories",
     why: "why-gloumi",
-    masters: "for-professionals",
+    masters: "for-masters",
     join: "join",
     contact: "contact",
   },

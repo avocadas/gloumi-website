@@ -46,7 +46,7 @@ export default async function DataPage({ searchParams }: { searchParams: Promise
       <AdminShell
         section="data"
         title="Duomenys"
-        subtitle="Rask žmogų arba atsidaryk lentelę. Kiekvienas pakeitimas įrašomas į žurnalą."
+        subtitle="Raskite žmogų arba atsidarykite lentelę. Kiekvienas pakeitimas įrašomas į žurnalą."
         username={username}
       >
         <CatalogIndex catalog={catalog} />

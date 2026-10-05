@@ -10,7 +10,7 @@ export const metadata: Metadata = buildMetadata(
   { kind: "legal", key: "terms" },
   {
     title: LEGAL_TITLES.en.terms,
-    description: "Gloumi's terms of service: the platform's role, accounts, bookings and deposits, the professional subscription, content rules and liability.",
+    description: "Gloumi's terms of service: the platform's role, accounts, bookings and deposits, the subscription for masters, content rules and liability.",
   }
 );
 

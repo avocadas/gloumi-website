@@ -10,7 +10,7 @@ export const metadata: Metadata = buildMetadata(
   { kind: "legal", key: "refunds" },
   {
     title: LEGAL_TITLES.en.refunds,
-    description: "When and how Gloumi refunds a deposit for an appointment, how subscription refunds work, and where to turn if you disagree.",
+    description: "When and how Gloumi refunds a deposit for a visit, how subscription refunds work, and where to turn if you disagree.",
   }
 );
 

@@ -10,7 +10,8 @@ import type { LegalKey, SectionKey } from "./lang";
  *
  * One file so the tone stays consistent and so a second language later is a
  * second file, not a hunt through components. Lithuanian quotation marks are
- * „ “ throughout; the reader is addressed as „tu“ – the app talks the same way.
+ * „ “ throughout; the reader is addressed as „jūs“, lowercase – the app talks the same way
+ * (`docs/content/tonas.md` in the Gloumi repo).
  */
 export const lt = {
   a11y: {
@@ -33,10 +34,10 @@ export const lt = {
   },
 
   seo: {
-    title: "Gloumi – grožio meistrai ir rezervacijos Lietuvoje",
+    title: "Gloumi – grožio meistrų paieška ir rezervavimas Lietuvoje",
     titleTemplate: "%s · Gloumi",
     description:
-      "Atrask ir rezervuok geriausius grožio bei savijautos meistrus Lietuvoje: nagai, plaukai, antakiai, masažai, makiažas ir odos priežiūra. Laisvi laikai, aiškios kainos ir tikri atsiliepimai – vienoje programėlėje.",
+      "Atraskite ir rezervuokite geriausius grožio bei savijautos meistrus Lietuvoje: nagai, plaukai, antakiai, masažai, makiažas ir odos priežiūra. Laisvi laikai, aiškios kainos ir tikri atsiliepimai – vienoje programėlėje.",
     keywords: [
       "grožio meistrai",
       "rezervacija internetu",
@@ -49,19 +50,19 @@ export const lt = {
       "grožio salonas programėlė",
       "Gloumi",
     ],
-    ogAlt: "Gloumi – grožio meistrų ir rezervacijų programėlė",
-    ogHeadline: "Grožio meistrai ir rezervacijos Lietuvoje",
+    ogAlt: "Gloumi – grožio meistrų paieškos ir rezervavimo programėlė",
+    ogHeadline: "Grožio meistrai ir rezervavimas internetu",
     ogSub: "Nagai · Plaukai · Antakiai · Masažai · Makiažas · Oda",
     ogStores: "App Store · Google Play",
   },
 
   hero: {
     eyebrow: "Grožio ir savijautos meistrai Lietuvoje",
-    titleStart: "Atrask ir rezervuok",
+    titleStart: "Atraskite ir rezervuokite",
     titleAccent: "geriausius",
     titleEnd: "grožio meistrus Lietuvoje",
     lead:
-      "Nagai, plaukai, antakiai, masažai, makiažas ir odos priežiūra – tikri meistrų darbai, laisvi laikai ir aiškios kainos vienoje programėlėje. Rezervuok bet kurią paros valandą, be skambučių ir laukimo.",
+      "Nagai, plaukai, antakiai, masažai, makiažas ir odos priežiūra – tikri meistrų darbai, laisvi laikai ir aiškios kainos vienoje programėlėje. Rezervuokite bet kurią paros valandą, be skambučių ir laukimo.",
     masterCta: "Esu meistras / Prisijungti",
     trustLabel: "Kodėl verta",
     trust: ["Nemokama klientams", "Be paslėptų mokesčių", "Atsiliepimai tik po vizito"],
@@ -81,14 +82,14 @@ export const lt = {
     ariaLabel: "Programėlės ekranų peržiūra",
     tabsLabel: "Programėlės ekranai",
     tabs: [
-      { id: "feed", label: "Atrasti", alt: "Gloumi srautas: meistrų istorijos ir naujausi darbai" },
+      { id: "feed", label: "Atrasti", alt: "Gloumi srautas: meistrų Story ir naujausi darbai" },
       { id: "search", label: "Paieška", alt: "Gloumi paieška: meistrai pagal paslaugą, kainą, įvertinimą ir atstumą" },
       {
         id: "profile",
         label: "Profilis",
         alt: "Meistrės profilis Gloumi programėlėje: įvertinimas, aprašymas, adresas ir žemėlapis",
       },
-      { id: "booking", label: "Rezervacija", alt: "Vizito rezervacija Gloumi programėlėje: kalendorius ir laisvi laikai" },
+      { id: "booking", label: "Rezervavimas", alt: "Vizito rezervavimas Gloumi programėlėje: kalendorius ir laisvi laikai" },
     ] as { id: "feed" | "search" | "profile" | "booking"; label: string; alt: string }[],
     note: "Ekranuose – pavyzdiniai meistrai ir atsiliepimai.",
   },
@@ -96,7 +97,7 @@ export const lt = {
   categories: {
     eyebrow: "Kategorijos",
     title: "Kiekvienai grožio rutinai – savas meistras",
-    lead: "Paspausk kategoriją ir pažiūrėk, ką joje rasi. Programėlėje kiekviena turi savo meistrus, darbus ir laisvus laikus.",
+    lead: "Paspauskite kategoriją ir pažiūrėkite, ką joje rasite. Programėlėje kiekviena turi savo meistrus, darbus ir laisvus laikus.",
     cta: "Rasti meistrą",
     listLabel: "Paslaugų kategorijos",
   },
@@ -107,16 +108,16 @@ export const lt = {
     lead: "Viskas, kad grožio vizitas prasidėtų be streso – nuo įkvėpimo iki patvirtinto laiko.",
     items: [
       {
-        title: "Rezervacija 24/7",
-        text: "Matai meistro laisvus laikus realiu laiku ir užsirašai iškart – vidurnaktį ar per pietų pertrauką. Be skambučių, be „parašysiu vėliau“.",
+        title: "Rezervuokite 24/7",
+        text: "Matote meistro laisvus laikus realiu laiku ir rezervuojate iškart – vidurnaktį ar per pietų pertrauką. Be skambučių, be „parašysiu vėliau“.",
       },
       {
         title: "„Noriu taip“ – įkvėpimas iš tikrų darbų",
-        text: "Lookbook’e naršai tikrus meistrų darbus, išsaugai patikusius ir rezervacijoje parodai meistrui: noriu būtent taip.",
+        text: "Naršote tikrus meistrų darbus, išsaugote patikusius į bloknotus ir rezervuodami parodote meistrui: noriu būtent taip.",
       },
       {
         title: "Skaidrios kainos",
-        text: "Kainą ir trukmę matai prieš rezervaciją. Moki tiek, kiek parašyta – be paslėptų mokesčių ir netikėtumų kasoje.",
+        text: "Kainą ir trukmę matote prieš rezervuodami. Mokate tiek, kiek parašyta – be paslėptų mokesčių ir netikėtumų kasoje.",
       },
       {
         title: "Tikri atsiliepimai",
@@ -125,9 +126,9 @@ export const lt = {
     ],
     howTitle: "Kaip tai veikia",
     steps: [
-      { title: "Rask", text: "Pagal kategoriją, vietą žemėlapyje ar darbą, kuris patiko." },
-      { title: "Rezervuok", text: "Pasirink laiką ir patvirtink per kelias sekundes." },
-      { title: "Ateik", text: "Priminimą atsiųsime, o atsiliepimą paliksi po vizito." },
+      { title: "Raskite", text: "Pagal kategoriją, vietą žemėlapyje ar darbą, kuris patiko." },
+      { title: "Rezervuokite", text: "Pasirinkite laiką ir patvirtinkite per kelias sekundes." },
+      { title: "Ateikite", text: "Priminimą atsiųsime, o atsiliepimą paliksite po vizito." },
     ],
   },
 
@@ -137,16 +138,16 @@ export const lt = {
     lead: "Gloumi – jūsų registratūra, vitrina ir kalendorius vienoje programėlėje. Pradėkite nuo Starter plano už 0 € – mokamą planą rinkitės, kai reikės daugiau.",
     items: [
       {
-        title: "Nulis neatvykimų",
-        text: "Nustatyk užstatą ar avansą – klientas patvirtina laiką pinigais, o neatvykus kompensacija lieka tau.",
+        title: "Mažiau neatvykimų",
+        text: "Prašykite avanso – klientas patvirtina laiką pinigais, o neatvykus avansas lieka jums.",
       },
       {
         title: "Priminimai, kurie sugrąžina",
-        text: "Automatiniai priminimai apie artėjantį vizitą ir pasiūlymas užsirašyti iš naujo, kai laikas pakartoti procedūrą.",
+        text: "Automatiniai priminimai apie artėjantį vizitą ir pasiūlymas rezervuoti iš naujo, kai laikas pakartoti vizitą.",
       },
       {
-        title: "Profilis – tavo vitrina",
-        text: "Lankstūs valdikliai: portfolio, paslaugos, darbo laikas, istorijos ir atsiliepimai. Sudėliok profilį taip, kaip nori, kad jį matytų klientas.",
+        title: "Profilis – jūsų vitrina",
+        text: "Lankstūs valdikliai: portfolio, paslaugos, darbo laikas, Story ir atsiliepimai. Sudėliokite profilį taip, kaip norite, kad jį matytų klientas.",
       },
       {
         title: "Pajamų analitika",
@@ -159,25 +160,25 @@ export const lt = {
       "Klientų kortelės su privačiais užrašais",
       "Asmeninė registracijos nuoroda",
       "Pertraukos ir užblokuotas laikas kalendoriuje",
-      "Istorijos ir įrašai bendruomenei",
+      "Story ir įrašai bendruomenei",
     ],
   },
 
   form: {
     eyebrow: "Meistro paskyra",
-    title: "Tapk Gloumi meistru",
-    lead: "Palik kontaktus – padėsime susikurti profilį ir atsakysime į klausimus. Meistro profilį programėlėje gali susikurti ir savarankiškai.",
+    title: "Tapkite Gloumi meistru",
+    lead: "Palikite kontaktus – padėsime susikurti profilį ir atsakysime į klausimus. Meistro profilį programėlėje galite susikurti ir patys.",
     fields: {
       name: "Vardas",
       email: "El. paštas",
       phone: "Telefonas",
       city: "Miestas",
       category: "Pagrindinė kategorija",
-      categoryPlaceholder: "Pasirink kategoriją",
+      categoryPlaceholder: "Pasirinkite kategoriją",
       categoryOther: "Kita",
       link: "Instagram ar kita nuoroda į darbus",
       message: "Žinutė",
-      messagePlaceholder: "Kiek metų dirbi, ar turi saloną, ko tikiesi iš Gloumi…",
+      messagePlaceholder: "Kiek metų dirbate, ar turite saloną, ko tikitės iš Gloumi…",
       optional: "neprivaloma",
     },
     consentStart: "Sutinku, kad MB „Gloumi“ susisiektų su manimi dėl meistro paskyros. Duomenys tvarkomi pagal ",
@@ -186,20 +187,20 @@ export const lt = {
     submit: "Noriu prisijungti",
     submitting: "Siunčiama…",
     successTitle: "Ačiū – gavome!",
-    successText: "Netrukus susisieksime nurodytu el. paštu. O kol kas – atsisiųsk programėlę ir apsižiūrėk.",
+    successText: "Netrukus susisieksime nurodytu el. paštu. O kol kas – atsisiųskite programėlę ir apsižiūrėkite.",
     another: "Siųsti kitą užklausą",
-    errorGeneric: "Nepavyko išsiųsti. Pabandyk dar kartą arba parašyk mums el. paštu.",
-    errorNetwork: "Nėra ryšio. Patikrink internetą ir pabandyk dar kartą.",
-    errorValidation: "Patikrink pažymėtus laukus.",
-    errorRateLimited: "Per daug bandymų iš eilės. Pabandyk po kelių minučių.",
+    errorGeneric: "Nepavyko išsiųsti. Pabandykite dar kartą arba parašykite mums el. paštu.",
+    errorNetwork: "Nėra ryšio. Patikrinkite internetą ir pabandykite dar kartą.",
+    errorValidation: "Patikrinkite pažymėtus laukus.",
+    errorRateLimited: "Per daug bandymų iš eilės. Pabandykite po kelių minučių.",
     unconfiguredTitle: "Forma dar ruošiama",
-    unconfiguredText: "Parašyk mums tiesiai – atsakysime tuo pačiu adresu:",
+    unconfiguredText: "Parašykite mums tiesiai – atsakysime tuo pačiu adresu:",
     mailSubject: "Noriu tapti Gloumi meistru",
   },
 
   finalCta: {
     title: "Grožis prasideda nuo gero laiko.",
-    lead: "Atsisiųsk Gloumi ir rezervuok pirmąjį vizitą – arba prisijunk kaip meistras ir užpildyk savo kalendorių.",
+    lead: "Atsisiųskite Gloumi ir rezervuokite pirmąjį vizitą – arba prisijunkite kaip meistras ir užpildykite savo kalendorių.",
     masterLink: "Esu meistras",
   },
 
