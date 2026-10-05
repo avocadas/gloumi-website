@@ -1,4 +1,4 @@
-import { BellRing, ChartColumn, LayoutGrid, ShieldCheck } from "lucide-react";
+import { BellRing, LayoutGrid, ShieldCheck, Users } from "lucide-react";
 import { WaitlistForm } from "@/components/sections/WaitlistForm";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
@@ -6,7 +6,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { getCopy } from "@/content/copy";
 import { sectionId, type Lang } from "@/content/lang";
 
-const ICONS = [ShieldCheck, BellRing, LayoutGrid, ChartColumn];
+const ICONS = [ShieldCheck, BellRing, LayoutGrid, Users];
 
 export function ForMasters({ lang }: { lang: Lang }) {
   const copy = getCopy(lang);

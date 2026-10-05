@@ -37,7 +37,7 @@ export const lt = {
     title: "Gloumi – grožio meistrų paieška ir rezervavimas Lietuvoje",
     titleTemplate: "%s · Gloumi",
     description:
-      "Atraskite ir rezervuokite geriausius grožio bei savijautos meistrus Lietuvoje: nagai, plaukai, antakiai, masažai, makiažas ir odos priežiūra. Laisvi laikai, aiškios kainos ir tikri atsiliepimai – vienoje programėlėje.",
+      "Raskite grožio ir savijautos meistrus Lietuvoje ir rezervuokite bet kada: nagai, plaukai, antakiai, masažai, makiažas ir odos priežiūra. Laisvi laikai, kainos prieš rezervuojant ir atsiliepimai tik po įvykusio vizito – vienoje programėlėje.",
     keywords: [
       "grožio meistrai",
       "rezervacija internetu",
@@ -58,15 +58,15 @@ export const lt = {
 
   hero: {
     eyebrow: "Grožio ir savijautos meistrai Lietuvoje",
-    titleStart: "Atraskite ir rezervuokite",
-    titleAccent: "geriausius",
-    titleEnd: "grožio meistrus Lietuvoje",
+    titleStart: "Raskite grožio meistrą ir",
+    titleAccent: "rezervuokite",
+    titleEnd: "bet kada",
     lead:
-      "Nagai, plaukai, antakiai, masažai, makiažas ir odos priežiūra – tikri meistrų darbai, laisvi laikai ir aiškios kainos vienoje programėlėje. Rezervuokite bet kurią paros valandą, be skambučių ir laukimo.",
+      "Nagai, plaukai, antakiai, masažai, makiažas ir odos priežiūra – meistrų darbai, laisvi laikai ir aiškios kainos vienoje programėlėje. Rezervuokite bet kurią paros valandą, be skambučių ir laukimo.",
     masterCta: "Esu meistras / Prisijungti",
     trustLabel: "Kodėl verta",
     trust: ["Nemokama klientams", "Be paslėptų mokesčių", "Atsiliepimai tik po vizito"],
-    floatingReviews: { title: "Tikri atsiliepimai", sub: "Tik po įvykusio vizito" },
+    floatingReviews: { title: "Atsiliepimai", sub: "Tik po įvykusio vizito" },
     floatingBooking: { title: "Laikas patvirtintas", sub: "Penktadienis, 13:00" },
   },
 
@@ -112,16 +112,16 @@ export const lt = {
         text: "Matote meistro laisvus laikus realiu laiku ir rezervuojate iškart – vidurnaktį ar per pietų pertrauką. Be skambučių, be „parašysiu vėliau“.",
       },
       {
-        title: "„Noriu taip“ – įkvėpimas iš tikrų darbų",
-        text: "Naršote tikrus meistrų darbus, išsaugote patikusius į bloknotus ir rezervuodami parodote meistrui: noriu būtent taip.",
+        title: "„Noriu taip“ – įkvėpimas iš meistrų darbų",
+        text: "Naršote meistrų darbus, išsaugote patikusius į bloknotus ir rezervuodami parodote meistrui: noriu būtent taip.",
       },
       {
         title: "Skaidrios kainos",
-        text: "Kainą ir trukmę matote prieš rezervuodami. Mokate tiek, kiek parašyta – be paslėptų mokesčių ir netikėtumų kasoje.",
+        text: "Kainą ir trukmę matote prieš rezervuodami, o Gloumi prie kainos nieko neprideda.",
       },
       {
-        title: "Tikri atsiliepimai",
-        text: "Atsiliepimą palikti galima tik po įvykusio vizito, todėl kiekvienas įvertinimas – iš tikros patirties, ne iš anoniminės minios.",
+        title: "Atsiliepimai tik po vizito",
+        text: "Atsiliepimą palikti gali tik klientas, kurio vizitas pas tą meistrą įvyko. Jokių atsiliepimų „iš šono“.",
       },
     ],
     howTitle: "Kaip tai veikia",
@@ -143,21 +143,22 @@ export const lt = {
       },
       {
         title: "Priminimai, kurie sugrąžina",
-        text: "Automatiniai priminimai apie artėjantį vizitą ir pasiūlymas rezervuoti iš naujo, kai laikas pakartoti vizitą.",
+        text: "Priminimas klientui prieš vizitą ir pasiūlymas rezervuoti iš naujo, kai ateina laikas – kiekvienai paslaugai patys nustatote, po kiek laiko ją verta kartoti.",
       },
       {
         title: "Profilis – jūsų vitrina",
         text: "Lankstūs valdikliai: portfolio, paslaugos, darbo laikas, Story ir atsiliepimai. Sudėliokite profilį taip, kaip norite, kad jį matytų klientas.",
       },
       {
-        title: "Pajamų analitika",
-        text: "Dienos ir mėnesio pajamos, populiariausios paslaugos, grįžtantys klientai – skaičiai, kurie padeda planuoti, o ne spėlioti.",
+        title: "Savo klientus atsiveskite be komisinio",
+        text: "Gaunate kodą klientams, kuriuos aptarnavote iki Gloumi: jį gali panaudoti iki 50 klientų per 3 mėn. nuo paskyros sukūrimo. Su kodu atėjęs klientas komisinio nesukuria niekada.",
       },
     ],
     chipsLabel: "Kitos galimybės",
     chips: [
       "Išmokos į banko sąskaitą per Stripe",
       "Klientų kortelės su privačiais užrašais",
+      "Mėnesio pajamų ir populiariausių paslaugų statistika",
       "Asmeninė registracijos nuoroda",
       "Pertraukos ir užblokuotas laikas kalendoriuje",
       "Story ir įrašai bendruomenei",
@@ -168,6 +169,8 @@ export const lt = {
     eyebrow: "Meistro paskyra",
     title: "Tapkite Gloumi meistru",
     lead: "Palikite kontaktus – padėsime susikurti profilį ir atsakysime į klausimus. Meistro profilį programėlėje galite susikurti ir patys.",
+    /** Kol programėlės parduotuvėse nėra (`site.stores` tušti): profilio patys susikurti dar negali. */
+    leadSoon: "Palikite kontaktus – padėsime susikurti profilį, kai tik programėlė pasirodys parduotuvėse, ir atsakysime į klausimus.",
     fields: {
       name: "Vardas",
       email: "El. paštas",
@@ -188,6 +191,7 @@ export const lt = {
     submitting: "Siunčiama…",
     successTitle: "Ačiū – gavome!",
     successText: "Netrukus susisieksime nurodytu el. paštu. O kol kas – atsisiųskite programėlę ir apsižiūrėkite.",
+    successTextSoon: "Netrukus susisieksime nurodytu el. paštu. Programėlė netrukus pasirodys App Store ir Google Play.",
     another: "Siųsti kitą užklausą",
     errorGeneric: "Nepavyko išsiųsti. Pabandykite dar kartą arba parašykite mums el. paštu.",
     errorNetwork: "Nėra ryšio. Patikrinkite internetą ir pabandykite dar kartą.",

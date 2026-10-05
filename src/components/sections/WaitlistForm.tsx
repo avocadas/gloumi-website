@@ -12,6 +12,13 @@ import { cn } from "@/lib/cn";
 
 type Status = "idle" | "submitting" | "success" | "error" | "unconfigured";
 
+/*
+ * Kol programėlės parduotuvėse nėra, meistras profilio pats susikurti negali, o
+ * „atsisiųskite programėlę“ nuvestų niekur (#20, B1–B2). Tekstai persijungia
+ * patys, kai Vercel'yje atsiras parduotuvių nuorodos (`NEXT_PUBLIC_*_STORE_URL`).
+ */
+const inStores = Boolean(site.stores.appStore || site.stores.googlePlay);
+
 type ApiResponse = { ok?: boolean; error?: string; fields?: string[] } | null;
 
 const inputClass =
@@ -95,7 +102,7 @@ export function WaitlistForm({ lang }: { lang: Lang }) {
             <CircleCheck className="h-6 w-6" aria-hidden="true" />
           </span>
           <h3 className="font-serif text-3xl font-medium">{f.successTitle}</h3>
-          <p className="leading-relaxed text-espresso-500">{f.successText}</p>
+          <p className="leading-relaxed text-espresso-500">{inStores ? f.successText : f.successTextSoon}</p>
           <div className="mt-2 flex flex-wrap gap-3">
             <ButtonLink href={sectionHref(lang, "download")} size="sm">
               {copy.nav.cta}
@@ -131,7 +138,7 @@ export function WaitlistForm({ lang }: { lang: Lang }) {
     <Card>
       <p className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta-600">{f.eyebrow}</p>
       <h3 className="mt-3 font-serif text-3xl font-medium">{f.title}</h3>
-      <p className="mt-3 text-[15px] leading-relaxed text-espresso-500">{f.lead}</p>
+      <p className="mt-3 text-[15px] leading-relaxed text-espresso-500">{inStores ? f.lead : f.leadSoon}</p>
 
       <form onSubmit={onSubmit} className="mt-6 grid gap-4 sm:grid-cols-2" aria-busy={submitting}>
         <div>

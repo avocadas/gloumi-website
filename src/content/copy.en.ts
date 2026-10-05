@@ -33,7 +33,7 @@ export const en: typeof lt = {
     title: "Gloumi – book beauty and wellness masters in Lithuania",
     titleTemplate: "%s · Gloumi",
     description:
-      "Find and book the best beauty and wellness masters in Lithuania: nails, hair, brows and lashes, massage, make-up and skincare. Real availability, clear prices and reviews from real visits, in one app.",
+      "Find beauty and wellness masters in Lithuania and book any time: nails, hair, brows and lashes, massage, make-up and skincare. Live availability, prices before you book and reviews only after a completed visit, in one app.",
     keywords: [
       "beauty professionals Lithuania",
       "book beauty appointment",
@@ -54,15 +54,15 @@ export const en: typeof lt = {
 
   hero: {
     eyebrow: "Beauty and wellness masters in Lithuania",
-    titleStart: "Find and book the",
-    titleAccent: "best",
-    titleEnd: "beauty masters in Lithuania",
+    titleStart: "Find a beauty master and",
+    titleAccent: "book",
+    titleEnd: "any time",
     lead:
-      "Nails, hair, brows, massage, make-up and skincare. Real work from real masters, live availability and clear prices, all in one app. Book at any hour, without a single phone call.",
+      "Nails, hair, brows, massage, make-up and skincare. Masters' work, live availability and clear prices, all in one app. Book at any hour, without a single phone call.",
     masterCta: "I'm a master / Sign in",
     trustLabel: "Why it is worth it",
     trust: ["Free for clients", "No hidden fees", "Reviews only after a visit"],
-    floatingReviews: { title: "Real reviews", sub: "Only after a visit" },
+    floatingReviews: { title: "Reviews", sub: "Only after a visit" },
     floatingBooking: { title: "Booking confirmed", sub: "Friday, 13:00" },
   },
 
@@ -108,16 +108,16 @@ export const en: typeof lt = {
         text: "You see live availability and book straight away, at midnight or on your lunch break. No phone calls, no waiting for someone to write back.",
       },
       {
-        title: "Real work to show",
-        text: "Browse work done by real masters, save what you like to your collections, and show it when you book: this is what I want.",
+        title: "Inspiration from masters' work",
+        text: "Browse masters' work, save what you like to your collections, and show it when you book: this is what I want.",
       },
       {
         title: "Prices you can see",
-        text: "The price and the length of the visit are there before you book. You pay what it says, with no fees appearing at the till.",
+        text: "You see the price and the length of the visit before you book, and Gloumi adds nothing to the price.",
       },
       {
-        title: "Reviews that were earned",
-        text: "A review can only be left after a visit that actually happened, so every rating comes from someone who sat in the chair.",
+        title: "Reviews only after a visit",
+        text: "Only a client whose visit with that master actually happened can leave a review.",
       },
     ],
     howTitle: "How it works",
@@ -139,21 +139,22 @@ export const en: typeof lt = {
       },
       {
         title: "Reminders that bring people back",
-        text: "Automatic reminders before a visit, and a nudge to rebook when it is time for the next one.",
+        text: "A reminder to the client before a visit, and a nudge to book again when it is time – you set for each service how often it is worth repeating.",
       },
       {
         title: "A profile you arrange yourself",
         text: "Movable widgets: portfolio, services, working hours, stories and reviews. Put your profile together the way you want a client to read it.",
       },
       {
-        title: "Revenue you can read",
-        text: "Daily and monthly takings, your most booked services, who comes back. Numbers you can plan with instead of guessing.",
+        title: "Bring your own clients, commission-free",
+        text: "You get a code for clients you served before Gloumi: up to 50 of them can use it within 3 months of sign-up. A client who comes with your code never generates a commission.",
       },
     ],
     chipsLabel: "Also included",
     chips: [
       "Payouts to your bank account through Stripe",
       "Client cards with private notes",
+      "Monthly takings and most booked services",
       "Your own booking link to share",
       "Breaks and blocked time in the calendar",
       "Stories and posts for the community",
@@ -164,6 +165,7 @@ export const en: typeof lt = {
     eyebrow: "Master account",
     title: "Join Gloumi as a master",
     lead: "Leave your details and we will help you set the profile up and answer any questions. You can also build the profile yourself in the app.",
+    leadSoon: "Leave your details and we will help you set up your profile as soon as the app is in the stores, and answer any questions.",
     fields: {
       name: "Name",
       email: "Email",
@@ -184,6 +186,7 @@ export const en: typeof lt = {
     submitting: "Sending…",
     successTitle: "Thank you, we have it",
     successText: "We will be in touch at the address you gave. In the meantime, download the app and have a look around.",
+    successTextSoon: "We will be in touch at the address you gave. The app is coming soon to the App Store and Google Play.",
     another: "Send another enquiry",
     errorGeneric: "That did not send. Try again, or write to us by email.",
     errorNetwork: "No connection. Check your internet and try again.",
