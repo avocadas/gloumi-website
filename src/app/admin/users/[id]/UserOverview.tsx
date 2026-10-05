@@ -20,7 +20,8 @@ export type Overview = {
   counts: Record<string, number>;
 };
 
-const PROFILE_FIELDS = ["display_name", "username", "bio", "phone_number", "phone_verified", "deletion_requested_at"];
+// Telefonas – viršuje, prie el. pašto (K-T3); čia lieka tik, ar jis patvirtintas.
+const PROFILE_FIELDS = ["display_name", "username", "bio", "phone_verified", "deletion_requested_at"];
 const MASTER_FIELDS = ["display_name", "specialty", "city", "bio", "verified", "subscribed_plan"];
 
 /** Skaičių juosta: tai, ko apie žmogų klausiama pirmiausia. */
@@ -70,6 +71,7 @@ export function UserOverview({
   const { name, handle } = identityOf(user);
   const owned = catalog.filter((c) => (counts[c.tbl] ?? 0) > 0);
   const profileFields = PROFILE_FIELDS.filter((f) => f in profile);
+  const phone = asString(profile.phone_number);
 
   return (
     <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
@@ -124,6 +126,15 @@ export function UserOverview({
               <Fact label="El. paštas" stacked>
                 <span className="min-w-0 break-all">{formatValue(user.email)}</span>
                 {user.email ? <CopyButton value={user.email} label="Kopijuoti el. paštą" /> : null}
+              </Fact>
+            ) : null}
+            {/* K-T3 (developeris 2026-10-05): skubiu atveju administratorius skambina – numeris čia, su nuoroda. */}
+            {phone ? (
+              <Fact label="Telefonas" stacked>
+                <a href={`tel:${phone.replace(/[^\d+]/g, "")}`} className="min-w-0 break-all hover:underline">
+                  {phone}
+                </a>
+                <CopyButton value={phone} label="Kopijuoti telefoną" />
               </Fact>
             ) : null}
             <Fact label="Sukurta" stacked>{formatDate(user.created_at)}</Fact>
