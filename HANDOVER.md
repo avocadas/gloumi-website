@@ -5,6 +5,28 @@ savo dieną.
 
 ---
 
+# 2026-10-05 — DUK puslapis (#209) ir kreipinys „jūs“ (#20)
+
+Rašo ofiso `web` rolė. Kas pasikeitė ir ką žinoti kitam pokalbiui:
+
+- **DUK `/duk` ir `/en/faq`** (Gloumi #209): turinys – `src/content/faq.ts`, GENERUOJAMAS
+  `node scripts/gen-faq.mjs <kelias į DUK.md>` iš support rolės juodraščio (ofiso aplankas
+  `pagalba/DUK.md`, ne git'e; 2026-10-05). Skelbiama tik tai, kas galioja pagal Taisykles 1.12
+  (developeris per Manager'į 2026-10-05): `HOLD` – K-9, K-28, K-40, K-43, K-54; K-46 – tik iki
+  žymės „skelbti tik su funkcija“; nuorodos į neskelbiamus klausimus nuimamos. Pasikeitus juodraščiui ar
+  įsigaliojus 1.13 – pataisyti `HOLD` ir pergeneruoti (`FAQ_UPDATED=YYYY-MM-DD`), tada check + build.
+  Scenarijus nerašo, jei LT ir EN klausimai nesutampa ar liko nuoroda į neskelbiamą klausimą.
+- DUK naudoja `LEGAL_ROUTES` (`faq`): sitemap, `hreflang`, kalbos perjungiklis – savaime; į teisinių
+  dokumentų „Kiti dokumentai“ jis nepatenka (`LegalPage.tsx`). Poraštėje – „Klientams“ ir
+  „Meistrams“ (`/duk#masters`). Skyrių inkarai – `faq.ts` `key` (`about` … `content`), klausimų – `#k-12`.
+- **Kreipinys „jūs“, EN „master“ ir „visit“** (Gloumi #20, content `docs/content/svetaine.md` A, B, D4):
+  `copy.lt.ts`, `copy.en.ts`, kategorijų šūkiai, EN teisinių puslapių meta aprašai; EN inkaras
+  `#for-masters` (buvo `#for-professionals`). `masters.lead` – developerio B3 (`cdc0dad`).
+- Neįrodyta: naršyklės skydelyje (paslėptas, `visibilityState: hidden`) Next po perėjimo į `/duk#masters`
+  neslenka – taip pat ir esamos nuorodos į `/#kategorijos`; tiesiogiai atidarytas adresas skyrių randa.
+
+---
+
 # 2026-10-04 — Paskyros trynimo puslapis, laiškas moderatoriui ir ofiso `web` šakos
 
 Rašo ofiso `web` rolė (Gloumi `AGENTS.md` XI): savo worktree'e

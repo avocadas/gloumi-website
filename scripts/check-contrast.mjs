@@ -46,6 +46,7 @@ const PAIRS = [
   ["espresso-700", "sand-100", 4.5, "chips on sand"],
   ["terracotta-600", "cream-100", 4.5, "eyebrows, prices and text links"],
   ["terracotta-600", "white", 4.5, "links inside cards"],
+  ["terracotta-600", "sand-100", 4.5, "links in a sand note, e.g. the FAQ intro"],
   ["white", "terracotta-600", 4.5, "primary button label"],
   ["white", "terracotta-700", 4.5, "primary button label on hover"],
   ["cream-100", "espresso-900", 4.5, "dark section body copy"],

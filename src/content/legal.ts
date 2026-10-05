@@ -28,6 +28,7 @@ export const LEGAL_TITLES: Record<Lang, Record<LegalKey, string>> = {
     refunds: "Grąžinimo sąlygos",
     transparency: "DAC7 ir platformos skaidrumas",
     deletion: "Paskyros trynimas",
+    faq: "Dažniausi klausimai",
   },
   en: {
     terms: "Terms of Service",
@@ -36,6 +37,7 @@ export const LEGAL_TITLES: Record<Lang, Record<LegalKey, string>> = {
     refunds: "Refund Policy",
     transparency: "DAC7 and platform transparency",
     deletion: "Account deletion",
+    faq: "Frequently asked questions",
   },
 };
 

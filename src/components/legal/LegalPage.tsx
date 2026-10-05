@@ -27,7 +27,8 @@ type Props = {
 export function LegalPage({ lang, docKey, updated, version, intro, note, sections }: Props) {
   const copy = getCopy(lang);
   const title = LEGAL_TITLES[lang][docKey];
-  const others = LEGAL_ROUTES.filter((route) => route.key !== docKey);
+  // The FAQ shares the routing, but it is not one of the documents.
+  const others = LEGAL_ROUTES.filter((route) => route.key !== docKey && route.key !== "faq");
 
   return (
     <article className="py-14 sm:py-20">

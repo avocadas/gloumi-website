@@ -87,11 +87,18 @@ export function Footer({ lang }: { lang: Lang }) {
           </div>
           <Column
             title={copy.footer.clients}
-            links={copy.footer.clientLinks.map((l) => ({ href: sectionHref(lang, l.key), label: l.label }))}
+            links={[
+              ...copy.footer.clientLinks.map((l) => ({ href: sectionHref(lang, l.key), label: l.label })),
+              { href: legalPath(lang, "faq"), label: copy.footer.faq },
+            ]}
           />
           <Column
             title={copy.footer.masters}
-            links={copy.footer.masterLinks.map((l) => ({ href: sectionHref(lang, l.key), label: l.label }))}
+            links={[
+              ...copy.footer.masterLinks.map((l) => ({ href: sectionHref(lang, l.key), label: l.label })),
+              // Straight to the FAQ's section for masters (`faq.ts` section key).
+              { href: `${legalPath(lang, "faq")}#masters`, label: copy.footer.faqMasters },
+            ]}
           />
           <Column
             title={copy.footer.legal}

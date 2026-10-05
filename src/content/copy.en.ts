@@ -215,6 +215,8 @@ export const en: typeof lt = {
       { key: "masters", label: "What you get" },
       { key: "join", label: "Join as a master" },
     ],
+    faq: "FAQ",
+    faqMasters: "Questions from masters",
     legalLinks: [
       { key: "terms", label: "Terms of Service" },
       { key: "privacy", label: "Privacy Policy" },
@@ -244,6 +246,12 @@ export const en: typeof lt = {
     disclaimer:
       "This page is an informational summary. The legally binding documents are the Terms of Service, the Privacy Policy and the Terms for Masters and Salons.",
     otherDocs: "Other documents",
+  },
+
+  faq: {
+    eyebrow: "Help",
+    intro: "Short answers under the Terms of Service as they stand today. No answer here? Write to",
+    toc: "Topics",
   },
 
   notFound: {

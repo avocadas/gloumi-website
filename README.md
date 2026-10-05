@@ -41,6 +41,7 @@ scripts/
   gen-from-app.mjs      regenerates the GENERATED files from ../Gloumi/gloumi-app/src
   make-icons.mjs       favicon / apple-icon / manifest icons from public/brand/gloumi-mark.svg
   check-contrast.mjs   WCAG 2.1 AA check for every text/background pairing in use
+  gen-faq.mjs          regenerates src/content/faq.ts (/duk, /en/faq) from the support role's FAQ draft
 ```
 
 ## Kept in step with the app

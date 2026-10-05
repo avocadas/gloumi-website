@@ -219,6 +219,8 @@ export const lt = {
       { key: "masters", label: "Privalumai meistrams" },
       { key: "join", label: "Tapti meistru" },
     ] as { key: SectionKey; label: string }[],
+    faq: "Dažniausi klausimai",
+    faqMasters: "Klausimai meistrams",
     legalLinks: [
       { key: "terms", label: "Naudojimosi taisyklės" },
       { key: "privacy", label: "Privatumo politika" },
@@ -248,6 +250,12 @@ export const lt = {
     disclaimer:
       "Šis puslapis – informacinio pobūdžio santrauka. Teisiškai įpareigojantys dokumentai yra Naudojimosi taisyklės, Privatumo politika ir Meistrų ir salonų sąlygos.",
     otherDocs: "Kiti dokumentai",
+  },
+
+  faq: {
+    eyebrow: "Pagalba",
+    intro: "Trumpi atsakymai pagal dabar galiojančias Naudojimosi taisykles. Neradote atsakymo? Rašykite",
+    toc: "Temos",
   },
 
   notFound: {

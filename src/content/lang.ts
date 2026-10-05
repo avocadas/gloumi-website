@@ -75,6 +75,8 @@ export const LEGAL_ROUTES = [
   { key: "refunds", lt: "grazinimo-salygos", en: "refunds" },
   { key: "transparency", lt: "dac7", en: "dac7" },
   { key: "deletion", lt: "paskyros-trynimas", en: "account-deletion" },
+  // Not a legal document, but a page with the same routing: one path per language, alternates, sitemap (#209).
+  { key: "faq", lt: "duk", en: "faq" },
 ] as const;
 
 export type LegalKey = (typeof LEGAL_ROUTES)[number]["key"];
