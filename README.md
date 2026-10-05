@@ -73,6 +73,7 @@ The public pages build and run with none of them. The admin portal does not: wit
 | `SUPABASE_SERVICE_ROLE_KEY` | Admin portal, server only (`src/lib/supabase/admin.ts`). A real secret that bypasses RLS: never `NEXT_PUBLIC_`, never in git; in Vercel, Production only and Sensitive. |
 | `REPORT_HOOK_SECRET` | The shared secret the database sends in `x-gloumi-hook-secret` when it calls `/api/hooks/new-report` on a new content report (Gloumi #170); the same value lives in the Supabase Vault. Without it the route answers `503`, with a wrong one `401`. In Vercel, Production only and Sensitive. |
 | `MODERATION_ALERT_TO` | Where the new-report email goes. Defaults to the site's `info@` address. Sent through Resend with `RESEND_API_KEY`, from `no-reply@mail.gloumi.lt`, carrying only the reason and a link to `/admin` – no content, no names. |
+| `CRON_SECRET` | Guards `/api/cron/notification-emails`, which Vercel Cron calls every 10 minutes (`vercel.json`) with `Authorization: Bearer <CRON_SECRET>` to send the e-mails the database queues in `notification_emails` (masters' debt notices and the like, P2B art. 4) through `RESEND_API_KEY`. Without it the route answers `503` and leaves the queue alone; with a wrong one `401`. In Vercel, Production only and Sensitive. |
 
 With neither channel configured, `/api/waitlist` answers `503 not_configured` in production and the form turns into a plain mailto – nothing is silently dropped. In development it logs the submission and answers OK.
 
