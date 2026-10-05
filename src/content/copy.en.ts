@@ -139,7 +139,7 @@ export const en: typeof lt = {
       },
       {
         title: "Reminders that bring people back",
-        text: "A reminder to the client before a visit, and a nudge to book again when it is time – you set for each service how often it is worth repeating.",
+        text: "A reminder to the client before the visit, and – for clients who agreed to receive offers – an invitation to book again when it is time: you set for each service how soon it is worth repeating.",
       },
       {
         title: "A profile you arrange yourself",

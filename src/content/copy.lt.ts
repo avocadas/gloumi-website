@@ -143,7 +143,7 @@ export const lt = {
       },
       {
         title: "Priminimai, kurie sugrąžina",
-        text: "Priminimas klientui prieš vizitą ir pasiūlymas rezervuoti iš naujo, kai ateina laikas – kiekvienai paslaugai patys nustatote, po kiek laiko ją verta kartoti.",
+        text: "Priminimas klientui prieš vizitą, o sutikusiems gauti pasiūlymus – kvietimas rezervuoti iš naujo, kai ateina laikas: kiekvienai paslaugai patys nustatote, po kiek laiko ją verta kartoti.",
       },
       {
         title: "Profilis – jūsų vitrina",
