@@ -115,16 +115,19 @@ export default async function DisputesPage({ searchParams }: { searchParams: Pro
       subtitle="Klientų pranešimai „Vizitas neįvyko?“ ir kortelių ginčai. Kol ginčas atviras, išmoka meistrui laukia."
       username={check.username ?? check.userId}
     >
-      <p className="mb-5 text-sm">
-        <Link href="/admin/debts" className="font-semibold text-app-accent hover:underline">
-          Meistrų mokėjimo prašymai →
-        </Link>
-        {debtAttention > 0 ? (
-          <span className="ml-2 rounded-full bg-app-danger-bg px-2 py-0.5 text-xs font-bold text-app-danger-text">
-            Reikia dėmesio: {debtAttention}
-          </span>
-        ) : null}
-      </p>
+      {/* Mokėjimo prašymai (K-U24-3) įsijungia su `20261005214547`; iki tol nuorodos nerodome — puslapis būtų tuščias su klaida. */}
+      {debtsRes.error ? null : (
+        <p className="mb-5 text-sm">
+          <Link href="/admin/debts" className="font-semibold text-app-accent hover:underline">
+            Meistrų mokėjimo prašymai →
+          </Link>
+          {debtAttention > 0 ? (
+            <span className="ml-2 rounded-full bg-app-danger-bg px-2 py-0.5 text-xs font-bold text-app-danger-text">
+              Reikia dėmesio: {debtAttention}
+            </span>
+          ) : null}
+        </p>
+      )}
       {error ? (
         <p role="alert" className="mb-6 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
           Ginčų gauti nepavyko: {error.message}

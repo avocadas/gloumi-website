@@ -4,7 +4,8 @@
  * patiktukai, darbo laikas, privatūs užrašai) punktas nebūtinas — ten nėra ko
  * riboti, nors priežastis privaloma visada.
  *
- * Tas pats sąrašas, kaip Gloumi `moderation_noun_of` (`20261004145806`): bazė
+ * Tas pats sąrašas, kaip Gloumi `moderation_noun_of` (`20261004145806`, U-19
+ * `20261005162057` prideda `review_replies`): bazė
  * tai tikrina pati, o čia — kad langas iš karto žinotų, ar punktas privalomas.
  * Ne `server-only`: jį naudoja ir naršyklės komponentas (`RowCard`).
  */
@@ -26,4 +27,5 @@ export const MODERATED_TABLES: ReadonlySet<string> = new Set([
   "messages",
   "profiles",
   "master_profiles",
+  "review_replies",
 ]);
