@@ -31,7 +31,7 @@ type Row = {
   message: string;
   status: string;
   created_at: string;
-  /* Gloumi `20261005205320`: uždarius – laikas, atidarius vėl – null. */
+  /* Gloumi `20261006104530`: uždarius – laikas, atidarius vėl – null. */
   closed_at: string | null;
 };
 

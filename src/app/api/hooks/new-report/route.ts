@@ -76,7 +76,7 @@ function reportMail(body: Record<string, unknown>) {
 }
 
 /*
- * Pagalbos užklausa (#209, Gloumi `20261005205320`): kūnas `{kind: "support",
+ * Pagalbos užklausa (#209, Gloumi `20261006104530`): kūnas `{kind: "support",
  * author_role}`. Trigeris turi savo ribą (≤ 1 per 10 min, ≤ 12 per parą), tad
  * laiškas, kaip ir apie pranešimus, sako „yra naujų“ ir rodo tik naujausią.
  * Užklausos teksto ir vardo nėra tyčia – tik kas rašė: klientas ar meistras.
