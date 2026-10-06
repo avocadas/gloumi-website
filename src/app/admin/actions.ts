@@ -412,6 +412,53 @@ export async function editText(
 }
 
 /*
+ * Meistro atsakymo į atsiliepimą slėpimas ir grąžinimas (U-19, #207; Gloumi
+ * `20261006095247`, `admin_set_review_reply_hidden`). Paslėptas atsakymas lieka
+ * bazėje, tik nerodomas po atsiliepimu, todėl grąžinamas tuo pačiu mygtuku.
+ * Slepiant — priežastis ir punktas (ne „paties prašymu“: db `bad_rule`), ir
+ * meistras gauna pranešimą `moderation_content_hidden` (laiškas — visada, jis
+ * meistras); rodant vėl — tik priežastis žurnalui, pranešimo nėra.
+ */
+const REPLY_ERRORS: Record<string, string> = {
+  already_hidden: "Atsakymas jau paslėptas — gal tai padarė kitas administratorius.",
+  not_hidden: "Atsakymas jau rodomas.",
+  bad_hidden: "Netinkamas prašymas.",
+};
+
+export async function setReviewReplyHidden(
+  replyId: string,
+  hidden: boolean,
+  reason: string,
+  rule: string | null,
+): Promise<ActionResult> {
+  try {
+    const admin = await requireAdmin();
+    if (typeof replyId !== "string" || !UUID_PATTERN.test(replyId) || typeof hidden !== "boolean") {
+      return { ok: false, error: "Netinkamas prašymas." };
+    }
+    const why = justify(reason, hidden ? rule : null, hidden);
+    if ("error" in why) return { ok: false, error: why.error };
+    if (why.rule?.doc === "request") return { ok: false, error: "Slepiant reikia pažeisto taisyklių punkto." };
+    const db = createSupabaseAdminClient();
+
+    const { data: auditLogId, error } = await db.rpc("admin_set_review_reply_hidden", {
+      _admin_id: admin.userId,
+      _reply_id: replyId,
+      _hidden: hidden,
+      _reason: why.reason,
+      _rule: why.rule,
+    });
+    if (error) return { ok: false, error: REPLY_ERRORS[error.message] ?? dbError(error.message) };
+
+    const note = hidden ? await authorEmailNote(db, auditLogId) : undefined;
+    revalidatePath("/admin", "layout");
+    return { ok: true, note };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
+  }
+}
+
+/*
  * Ištrina paskyrą iškart, tais pačiais žingsniais kaip naktinis valymas
  * (`purge_accounts`). Ne „pažymėti ir laukti": pažymėtą paskyrą naudotojas
  * atstatytų pats (`cancel_account_deletion`).
