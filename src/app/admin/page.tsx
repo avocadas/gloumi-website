@@ -79,8 +79,19 @@ export default async function AdminPage({
   const commentIds = rows.filter((r) => r.target_type === "comment").map((r) => r.target_id);
   const storyIds = rows.filter((r) => r.target_type === "story").map((r) => r.target_id);
   const profileIds = rows.filter((r) => r.target_type === "profile").map((r) => r.target_id);
+  // #170 leidžia pranešti apie atsiliepimą, U-19 — apie meistro atsakymą į jį.
+  const reviewIds = rows.filter((r) => r.target_type === "review").map((r) => r.target_id);
+  const replyIds = rows.filter((r) => r.target_type === "review_reply").map((r) => r.target_id);
 
-  const [{ data: reporters }, { data: posts }, { data: comments }, { data: stories }, { data: targetProfiles }] = await Promise.all([
+  const [
+    { data: reporters },
+    { data: posts },
+    { data: comments },
+    { data: stories },
+    { data: targetProfiles },
+    { data: reviews },
+    { data: replies },
+  ] = await Promise.all([
     reporterIds.length
       ? db.from("profiles").select("id, display_name, username").in("id", reporterIds)
       : Promise.resolve({ data: [] as { id: string; display_name: string | null; username: string | null }[] }),
@@ -96,6 +107,12 @@ export default async function AdminPage({
     profileIds.length
       ? db.from("profiles").select("id, display_name, username").in("id", profileIds)
       : Promise.resolve({ data: [] as { id: string; display_name: string | null; username: string | null }[] }),
+    reviewIds.length
+      ? db.from("reviews").select("id, rating, body, author_id").in("id", reviewIds)
+      : Promise.resolve({ data: [] as { id: string; rating: number | null; body: string | null; author_id: string }[] }),
+    replyIds.length
+      ? db.from("review_replies").select("id, body, master_id, hidden_at").in("id", replyIds)
+      : Promise.resolve({ data: [] as { id: string; body: string | null; master_id: string; hidden_at: string | null }[] }),
   ]);
 
   const reporterById = new Map((reporters ?? []).map((p) => [p.id, p]));
@@ -103,12 +120,16 @@ export default async function AdminPage({
   const commentById = new Map((comments ?? []).map((c) => [c.id, c]));
   const storyById = new Map((stories ?? []).map((s) => [s.id, s]));
   const targetProfileById = new Map((targetProfiles ?? []).map((p) => [p.id, p]));
+  const reviewById = new Map((reviews ?? []).map((v) => [v.id, v]));
+  const replyById = new Map((replies ?? []).map((v) => [v.id, v]));
 
   const views: ReportView[] = rows.map((r) => {
     const post = postById.get(r.target_id);
     const comment = commentById.get(r.target_id);
     const story = r.target_type === "story" ? storyById.get(r.target_id) : undefined;
     const targetProfile = r.target_type === "profile" ? targetProfileById.get(r.target_id) : undefined;
+    const review = r.target_type === "review" ? reviewById.get(r.target_id) : undefined;
+    const reply = r.target_type === "review_reply" ? replyById.get(r.target_id) : undefined;
     const reporter = reporterById.get(r.reporter_id);
     return {
       id: r.id,
@@ -128,8 +149,12 @@ export default async function AdminPage({
         // A story with no caption still exists; never let "" read as "gone".
         : story ? story.caption || "(Story be aprašymo)"
         : targetProfile ? targetProfile.display_name || targetProfile.username || "(Profilis be vardo)"
+        : review ? [review.rating ? `${review.rating} ★` : null, review.body].filter(Boolean).join(" · ") || "(Atsiliepimas be teksto)"
+        : reply ? reply.body || "(Atsakymas be teksto)"
         : null,
-      authorId: post?.master_id ?? comment?.author_id ?? story?.author_id ?? targetProfile?.id ?? null,
+      authorId:
+        post?.master_id ?? comment?.author_id ?? story?.author_id ?? targetProfile?.id ?? review?.author_id ?? reply?.master_id ?? null,
+      hiddenAt: reply ? reply.hidden_at : undefined,
     };
   });
 

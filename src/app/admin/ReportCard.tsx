@@ -7,6 +7,7 @@ import { SUSPEND_DAYS } from "./suspension";
 import { useConfirm, type ConfirmOptions } from "./ConfirmDialog";
 import { formatWhen } from "./format";
 import type { NoticeNote } from "./moderation-email";
+import { ReplyVisibility } from "./ReplyVisibility";
 import { ActionNote, STROKE, Tag, btn, btnDanger, btnQuiet, card, eyebrow } from "./ui";
 
 export type ReportView = {
@@ -21,6 +22,8 @@ export type ReportView = {
   reporterId: string | null;
   preview: string | null;
   authorId: string | null;
+  /** Tik `review_reply`: kada paslėptas (`review_replies.hidden_at`), `null` — rodomas. */
+  hiddenAt?: string | null;
 };
 
 const TARGET_LABEL: Record<string, string> = {
@@ -29,6 +32,8 @@ const TARGET_LABEL: Record<string, string> = {
   story: "Story",
   message: "Žinutė",
   profile: "Profilis",
+  review: "Atsiliepimas",
+  review_reply: "Atsakymas į atsiliepimą",
 };
 
 const TARGET_TONE: Record<string, "rose" | "lavender" | "mint"> = {
@@ -37,6 +42,8 @@ const TARGET_TONE: Record<string, "rose" | "lavender" | "mint"> = {
   story: "rose",
   message: "lavender",
   profile: "mint",
+  review: "rose",
+  review_reply: "rose",
 };
 
 const STATUS_TAG: Record<string, { label: string; tone: "warn" | "ok" | "neutral" }> = {
@@ -204,6 +211,10 @@ export function ReportCard({ report }: { report: ReportView }) {
           </div>
 
           <div className="flex flex-wrap gap-2">
+            {/* U-19: atsakymas ne trinamas, o paslepiamas — grąžinti galima tuo pačiu mygtuku. */}
+            {report.targetType === "review_reply" && report.preview !== null ? (
+              <ReplyVisibility replyId={report.targetId} hiddenAt={report.hiddenAt ?? null} />
+            ) : null}
             {canDelete && report.preview !== null ? (
               <button
                 type="button"

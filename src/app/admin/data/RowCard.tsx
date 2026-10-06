@@ -6,6 +6,7 @@ import type { CatalogKind, DataRow, SignedMedia } from "@/lib/admin-data";
 import { editText, removeRow } from "../actions";
 import { useConfirm } from "../ConfirmDialog";
 import { HoldBooking, canHold } from "../disputes/HoldBooking";
+import { ReplyVisibility } from "../ReplyVisibility";
 import { MODERATED_TABLES } from "../moderated-tables";
 import type { NoticeNote } from "../moderation-email";
 import { RuleSelect } from "../ModerationRules";
@@ -268,6 +269,13 @@ export function RowCard({
 
       {/* K-U24-4: vizitą, kurio pinigai dar Gloumi rankose, galima sulaikyti ginču. */}
       {table === "bookings" && typeof row.id === "string" && canHold(row) ? <HoldBooking bookingId={row.id} /> : null}
+
+      {/* U-19: meistro atsakymą galima paslėpti ir vėl rodyti, ne tik ištrinti. */}
+      {table === "review_replies" && typeof row.id === "string" && !removed ? (
+        <div className="mt-4 flex justify-end border-t border-app-hairline pt-4">
+          <ReplyVisibility replyId={row.id} hiddenAt={typeof row.hidden_at === "string" ? row.hidden_at : null} />
+        </div>
+      ) : null}
 
       {canRemove && !removed ? (
         <footer className="mt-4 flex justify-end border-t border-app-hairline pt-4">

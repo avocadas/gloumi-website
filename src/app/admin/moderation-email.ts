@@ -61,7 +61,7 @@ export type NoticeEmail =
 export type NoticeEmailResult = { status: NoticeEmail; master: boolean };
 
 /** Turinio sprendimai — klientams su ribomis (žr. viršų). */
-const CONTENT_KINDS = ["moderation_content_removed", "moderation_content_edited"];
+const CONTENT_KINDS = ["moderation_content_removed", "moderation_content_edited", "moderation_content_hidden"];
 /** Paskyros sustabdymas ir atkūrimas (ir automatinis) — visada. */
 const ACCOUNT_KINDS = ["account_suspended", "account_unsuspended"];
 /**
