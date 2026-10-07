@@ -351,8 +351,9 @@ export function IconSpinner({ size = 24, strokeWidth = ICON_STROKE, ...rest }: I
  */
 
 /*
- * Lucide icons (building-2, circle-alert, copy, database, flag, inbox,
- * landmark, layout-grid, log-out, scale, shield-check, user-x) – ISC License
+ * Lucide icons (badge-percent, building-2, circle-alert, copy, crown, database,
+ * flag, inbox, landmark, layout-grid, log-out, scale, shield-check, user-x) –
+ * ISC License
  *
  * Copyright (c) 2026 Lucide Icons and Contributors
  *
@@ -391,6 +392,17 @@ export function IconSpinner({ size = 24, strokeWidth = ICON_STROKE, ...rest }: I
  * SOFTWARE.
  */
 
+/** lucide `badge-percent` – komisinio atleidimas (#179). */
+export const IconBadgePercent = make(
+  "0 0 24 24",
+  <>
+    <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
+    <path d="m15 9-6 6" />
+    <path d="M9 9h.01" />
+    <path d="M15 15h.01" />
+  </>,
+);
+
 /** lucide `building-2` */
 export const IconBuilding = make(
   "0 0 24 24",
@@ -419,6 +431,15 @@ export const IconCopy = make(
   <>
     <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
     <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+  </>,
+);
+
+/** lucide `crown` – suteiktas planas (#179). */
+export const IconCrown = make(
+  "0 0 24 24",
+  <>
+    <path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z" />
+    <path d="M5 21h14" />
   </>,
 );
 

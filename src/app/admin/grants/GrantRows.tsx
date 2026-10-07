@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { BadgePercent, Crown, UserRound } from "lucide-react";
+import { IconBadgePercent, IconCrown, IconProfile } from "@/components/icons";
 import { useConfirm } from "../ConfirmDialog";
 import { STROKE, Tag, btnQuiet, card } from "../ui";
 import { clearCommissionWaiver, revokePlanGrant } from "./actions";
@@ -105,9 +105,9 @@ function GrantRow({ grant, showMaster }: { grant: GrantView; showMaster: boolean
 
       <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold tabular-nums text-app-ink">
         {isWaiver ? (
-          <BadgePercent size={15} strokeWidth={STROKE} aria-hidden className="text-app-faint" />
+          <IconBadgePercent size={15} strokeWidth={STROKE} aria-hidden className="text-app-faint" />
         ) : (
-          <Crown size={15} strokeWidth={STROKE} aria-hidden className="text-app-faint" />
+          <IconCrown size={15} strokeWidth={STROKE} aria-hidden className="text-app-faint" />
         )}
         Nuo {formatDay(grant.validFrom)} iki {ended ? "dabar" : formatDay(grant.until)}
       </p>
@@ -118,7 +118,7 @@ function GrantRow({ grant, showMaster }: { grant: GrantView; showMaster: boolean
           href={`/admin/users/${grant.masterId}`}
           className="mt-2 inline-flex items-center gap-1 text-xs text-app-muted hover:underline"
         >
-          <UserRound size={13} strokeWidth={STROKE} aria-hidden />
+          <IconProfile size={13} strokeWidth={STROKE} aria-hidden />
           Meistras: <span className="font-semibold text-app-ink">{grant.masterName || "be vardo"}</span>
         </a>
       ) : null}

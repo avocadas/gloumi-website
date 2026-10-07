@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { BadgePercent } from "lucide-react";
+import { IconBadgePercent } from "@/components/icons";
 import { checkAdmin } from "@/lib/admin-guard";
 import { AdminShell } from "../AdminShell";
 import { MfaNotice } from "../MfaNotice";
@@ -38,7 +38,7 @@ export default async function GrantsPage() {
           Sąrašo gauti nepavyko: {result.error}
         </p>
       ) : result.grants.length === 0 ? (
-        <EmptyState tone="lavender" icon={<BadgePercent size={24} strokeWidth={STROKE} aria-hidden />} title="Individualių sąlygų dar niekam nėra">
+        <EmptyState tone="lavender" icon={<IconBadgePercent size={24} strokeWidth={STROKE} aria-hidden />} title="Individualių sąlygų dar niekam nėra">
           Komisinio atsisakymą ar nemokamą planą galima suteikti meistro paskyros puslapyje.
         </EmptyState>
       ) : (

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ChevronRight } from "lucide-react";
+import { IconChevronRight } from "@/components/icons";
 import { checkAdmin } from "@/lib/admin-guard";
 import { loadCatalog, mediaIdsOf, PAGE_SIZE, searchTable, signMedia } from "@/lib/admin-data";
 import { AdminShell } from "../AdminShell";
@@ -60,7 +60,7 @@ export default async function DataPage({ searchParams }: { searchParams: Promise
             Individualios sąlygos{" "}
             <span className="font-normal text-app-muted">– kam neimamas komisinis ir kam suteiktas nemokamas planas</span>
           </span>
-          <ChevronRight size={16} strokeWidth={STROKE} aria-hidden className="shrink-0 text-app-faint" />
+          <IconChevronRight size={16} strokeWidth={STROKE} aria-hidden className="shrink-0 text-app-faint" />
         </a>
         <CatalogIndex catalog={catalog} />
       </AdminShell>
