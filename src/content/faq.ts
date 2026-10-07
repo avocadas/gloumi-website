@@ -132,7 +132,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-22",
           "q": "Kaip palikti atsiliepimą?",
-          "a": "Kai meistras pažymi vizitą atliktu: Užsakymai → Atliktos procedūros → Įvertinti meistrą. Galima per 48 val. po vizito ir tik po įvykusio vizito. Paskelbto pakeisti negalite – parašykite mums."
+          "a": "Kai vizitas pažymėtas įvykusiu: Užsakymai → Atliktos procedūros → Įvertinti meistrą. Galima per 48 val. nuo pažymėjimo. Jei vizitą įvykusiu pažymėjo sistema, patvirtinsite, kad jis įvyko. Paskelbto pakeisti negalite – parašykite mums."
         }
       ]
     },
@@ -214,7 +214,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-37",
           "q": "Kaip pažymėti vizitą atliktu?",
-          "a": "Atidarykite vizitą → Užbaigti vizitą (nuo vizito pradžios). Po vizito atsakykite „Ar klientas atvyko?“ – kitaip po 24 val. jis pasižymės įvykęs. Atsiliepimą klientas palieka tik po atlikto vizito."
+          "a": "Atidarykite vizitą → Užbaigti vizitą (nuo vizito pradžios). Po vizito atsakykite „Ar klientas atvyko?“ – kitaip po 24 val. vizitas pažymimas įvykusiu automatiškai, o klientas, rašydamas atsiliepimą, patvirtina, kad vizitas įvyko. Atsiliepimą galima parašyti per 48 val. nuo pažymėjimo. Jei „Neatvyko“ pažymite jau po atsiliepimo, jį peržiūri Gloumi darbuotojas. Plačiau – Taisyklių skyrius „Kaip tikriname atsiliepimus“."
         },
         {
           "id": "K-38",
@@ -430,7 +430,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-22",
           "q": "How do I leave a review?",
-          "a": "Once the master marks the visit complete: Bookings → Completed procedures → Review professional. You have 48 h after the visit, and only for a visit that happened. A posted review cannot be edited – write to us."
+          "a": "Once the visit is marked as having taken place: Bookings → Completed procedures → Review professional. You have 48 h from that mark. If the system marked it, you confirm that the visit took place. A posted review cannot be edited – write to us."
         }
       ]
     },
@@ -512,7 +512,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-37",
           "q": "How do I mark a visit complete?",
-          "a": "Open the visit → Complete visit (from its start time). Afterwards answer “Did the client show up?” – otherwise it marks itself attended after 24 h. A client can review only a completed visit."
+          "a": "Open the visit → Complete visit (from its start time). Afterwards answer “Did the client show up?” – otherwise after 24 h the visit is marked as having taken place automatically, and the client confirms it took place when writing a review. A review can be written within 48 h of the visit being marked. If you mark a no-show only after the review, a Gloumi staff member looks into it. More in the Terms, “How we verify reviews”."
         },
         {
           "id": "K-38",
