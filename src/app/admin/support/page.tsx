@@ -33,6 +33,9 @@ type Row = {
   created_at: string;
   /* Gloumi `20261006104530`: uždarius – laikas, atidarius vėl – null. */
   closed_at: string | null;
+  /* Gloumi `20261007164539`: iš kokios programėlės parašyta; senesniems – null. */
+  app_version: string | null;
+  platform: string | null;
 };
 
 export default async function SupportPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
@@ -50,7 +53,7 @@ export default async function SupportPage({ searchParams }: { searchParams: Prom
   const db = createSupabaseAdminClient();
   const { data, error } = await db
     .from("support_tickets")
-    .select("id, author_id, author_role, booking_id, subject, message, status, created_at, closed_at")
+    .select("id, author_id, author_role, booking_id, subject, message, status, created_at, closed_at, app_version, platform")
     .order("created_at", { ascending: false })
     .limit(200);
 
@@ -97,6 +100,8 @@ export default async function SupportPage({ searchParams }: { searchParams: Prom
     status: r.status === "closed" ? "closed" : "open",
     createdAt: r.created_at,
     closedAt: r.closed_at,
+    appVersion: r.app_version,
+    platform: r.platform === "ios" || r.platform === "android" || r.platform === "web" ? r.platform : null,
   }));
 
   return (

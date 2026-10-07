@@ -20,7 +20,16 @@ export type TicketView = {
   status: "open" | "closed";
   createdAt: string;
   closedAt: string | null;
+  /**
+   * Iš kokios programėlės parašyta (#209, db `20261007164539`): be jų
+   * „neveikia“ tenka klausti atgal. Senesni kreipimai ir senesnės versijos
+   * jų neturi – tada nerodoma nieko.
+   */
+  appVersion: string | null;
+  platform: "ios" | "android" | "web" | null;
 };
+
+const PLATFORM_LABEL = { ios: "iOS", android: "Android", web: "Naršyklė" } as const;
 
 /*
  * Viena užklausa (#209): kas ir kada → tema ir tekstas → kieno ir dėl kurio
@@ -87,6 +96,13 @@ export function TicketCard({ ticket }: { ticket: TicketView }) {
             <IconCalendar size={13} strokeWidth={STROKE} aria-hidden />
             Dėl vizito <span className="font-mono font-normal">{ticket.bookingId.slice(0, 8)}</span>
           </a>
+        ) : null}
+        {ticket.platform || ticket.appVersion ? (
+          <span title="Programėlė, iš kurios parašyta">
+            {[ticket.platform ? PLATFORM_LABEL[ticket.platform] : null, ticket.appVersion ? `v${ticket.appVersion}` : null]
+              .filter(Boolean)
+              .join(" · ")}
+          </span>
         ) : null}
       </div>
 
