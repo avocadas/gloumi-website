@@ -152,6 +152,8 @@ write(
  * conflict the Lithuanian version prevails (stated in the source).
  */
 export type LegalSection = {
+  /** Stable anchor the app links to (e.g. "ranking", #152); most sections have none. */
+  id?: string;
   title: string;
   paragraphs?: string[];
   bullets?: string[];

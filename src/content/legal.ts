@@ -80,7 +80,7 @@ const quote = (section: LegalSection): LegalSection => ({
 });
 
 const DEPOSIT_TITLES: Record<Lang, string> = {
-  lt: "Rezervacijos ir avansas",
+  lt: "Rezervavimas ir avansas",
   en: "Bookings and deposits",
 };
 

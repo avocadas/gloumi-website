@@ -41,7 +41,7 @@ type Doc = 'terms' | 'partner';
 /** Skyriai, kurių angliška vieta kita: LT pavadinimas → EN pavadinimas. */
 const EN_BY_LT: Record<Doc, Record<string, string>> = {
   terms: {
-    'Rezervacijos ir avansas': 'Bookings and deposits',
+    'Rezervavimas ir avansas': 'Bookings and deposits',
     'Kai apmokėtas vizitas neįvyko': 'When a paid visit did not happen',
     'Mokėjimai, komisinis ir išmokos meistrui': 'Payments, commission and payouts to masters',
     'Teisė atsisakyti sutarties': 'Right of withdrawal',
