@@ -9,7 +9,7 @@ import type { Lang } from "./lang";
 export type FaqItem = { id: string; q: string; a: string };
 export type FaqSection = { key: string; title: string; items: FaqItem[] };
 
-export const FAQ_UPDATED = "2026-10-05";
+export const FAQ_UPDATED = "2026-10-07";
 
 export const FAQ: Record<Lang, FaqSection[]> = {
   "lt": [
@@ -219,7 +219,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-38",
           "q": "Kaip priimti mokėjimus programėlėje?",
-          "a": "Profilis → Verslas → Mokėjimai → Stripe mokėjimų nustatymai → Įjungti mokėjimus internetu; tapatybę patvirtinsite Stripe lange. Neužbaigus per 30 d. nuo kliento mokėjimo, pinigai grąžinami klientui."
+          "a": "Nuo Taisyklių 1.13 (2026-10-07) mokėjimai programėlėje galimi tik su Pro ir VIP Studio planais; su Starter klientai moka vietoje. Profilis → Verslas → Mokėjimai → Stripe mokėjimų nustatymai → Įjungti mokėjimus internetu; tapatybę patvirtinsite Stripe lange. Neužbaigus per 30 d. nuo kliento mokėjimo, pinigai grąžinami klientui."
         },
         {
           "id": "K-39",
@@ -502,7 +502,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-38",
           "q": "How do I take payments in the app?",
-          "a": "Profile → Business → Payments → Stripe payment settings → Turn on online payments; verify your identity in Stripe's window. If it is not finished within 30 days of a client's payment, the money goes back to the client."
+          "a": "From Terms 1.13 (7 October 2026), in-app payments come only with the Pro and VIP Studio plans; on Starter, clients pay on site. Profile → Business → Payments → Stripe payment settings → Turn on online payments; verify your identity in Stripe's window. If it is not finished within 30 days of a client's payment, the money goes back to the client."
         },
         {
           "id": "K-39",
