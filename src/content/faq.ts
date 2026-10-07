@@ -2,7 +2,7 @@
 // (Gloumi office pagalba/DUK.md). Do not edit by hand: change the draft or
 // the script's HOLD list, then regenerate.
 //
-// Published now: what holds under Terms 1.12 (Gloumi #209). Held back: K-9, K-28, K-40, K-43, K-54.
+// Published now: what holds under Terms 1.13 (Gloumi #209). Held back: K-9, K-28.
 // Answers may refer to another item as "K-n"; the page turns that into a link.
 import type { Lang } from "./lang";
 
@@ -25,12 +25,12 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-2",
           "q": "Ar Gloumi nemokama?",
-          "a": "Klientams – taip: mokate tik meistro nustatytą kainą, Gloumi nieko neprideda. Meistrams Starter kainuoja 0 € per mėn., o Gloumi ima komisinį; Pro ir VIP Studio – mokami planai."
+          "a": "Klientams – taip: mokate tik meistro nustatytą kainą, Gloumi nieko neprideda. Meistrams Starter kainuoja 0 € per mėn., o Gloumi ima komisinį (K-40); Pro ir VIP Studio – mokami planai (K-43)."
         },
         {
           "id": "K-3",
           "q": "Kaip susisiekti su pagalba?",
-          "a": "Šoninis meniu → Pagalba → Neradote atsakymo? arba info@gloumi.lt. Dėl konkretaus vizito – jame „Pranešti apie problemą“. Gavimą patvirtiname per 2 darbo dienas, atsakome per 14 d., dažniausiai greičiau."
+          "a": "Šoninis meniu → Pagalba → Neradote atsakymo? arba info@gloumi.lt. Dėl konkretaus vizito – jame „Pranešti apie problemą“. Gavimą patvirtiname per 2 darbo dienas, iš esmės atsakome per 14 kalendorinių d., dažniausiai greičiau."
         }
       ]
     },
@@ -82,7 +82,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-12",
           "q": "Kaip rasti meistrą?",
-          "a": "„Paieška“: ieškokite pagal paslaugą, meistrą ar saloną, naudokite „Filtrai“ ar „Žemėlapis“. „Atrasti“ – meistrų darbų srautas."
+          "a": "„Paieška“: ieškokite pagal paslaugą, meistrą ar saloną, naudokite „Filtrai“ ar „Žemėlapis“. „Atrasti“ – meistrų darbų srautas. Kaip rikiuojama – K-54."
         },
         {
           "id": "K-13",
@@ -112,7 +112,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-18",
           "q": "Ar atgausiu pinigus, jei atšauksiu?",
-          "a": "Atšaukus likus daugiau nei 24 val. arba meistrui atšaukus – grąžinama visa programėlėje sumokėta suma. Atšaukus patvirtintą vizitą vėliau ar neatvykus, avansas gali likti meistrui pagal jo atšaukimo sąlygas, likusi suma grąžinama."
+          "a": "Atšaukus likus daugiau nei 24 val., rezervacija kortelėje atlaisvinama ir nieko nenurašoma. Atšaukus patvirtintą vizitą vėliau ar neatvykus, nurašoma meistro atšaukimo sąlygose nurodyta dalis (avansas), o likusi rezervuota suma atlaisvinama. Jei vizitą atšaukia meistras ar Gloumi, rezervacija atlaisvinama, o jau nurašyta suma grąžinama visa."
         },
         {
           "id": "K-19",
@@ -143,7 +143,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-23",
           "q": "Kaip apmokamas vizitas?",
-          "a": "Kokius mokėjimo būdus priimti, renkasi meistras: „Grynieji“, „Kortele salone“ ar „Programėlėje“. Programėlėje mokama kortele ar Apple Pay, kvitą Stripe atsiunčia el. paštu. Per 30 min. neapmokėtas vizitas atšaukiamas."
+          "a": "Kokius mokėjimo būdus priimti, renkasi meistras: „Grynieji“, „Kortele salone“ ar „Programėlėje“. Programėlėje mokama kortele ar Apple Pay: suma rezervuojama kortelėje (jei vizitas vėliau nei po 5 dienų – kortelė išsaugoma, o suma rezervuojama likus 3 dienoms) ir nurašoma tik po vizito. Jei rezervuoti nepavyksta, paprašysime patvirtinti mokėjimą; nepatvirtinus iki 24 val. prieš vizitą, vizitas atšaukiamas."
         },
         {
           "id": "K-24",
@@ -153,7 +153,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-25",
           "q": "Kas yra avansas?",
-          "a": "Dalis kainos – suma ar procentas, – kurią meistras prašo sumokėti programėlėje rezervuojant. Avansas įskaitomas į kainą, likusią sumą mokate vietoje. Kada grąžinamas – K-18."
+          "a": "Iš anksto nustatyta vizito kainos dalis – suma ar procentas, – kurią meistras prašo rezervuoti jūsų kortelėje. Ji įskaitoma į kainą ir nurašoma po vizito, o likusią sumą mokate vietoje. Avansas nėra rankpinigiai. Kas būna atšaukus – K-18."
         },
         {
           "id": "K-26",
@@ -163,7 +163,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-27",
           "q": "Kaip veikia dovanų kortelės?",
-          "a": "Šoninis meniu → Dovanų kortelė: pirkite (40–1000 €) arba „Turiu kodą“ – panaudokite. Suma virsta kreditu, kurį pritaikote mokėdami programėlėje. Nepanaudotą kortelę atšaukti galima per 14 d. – parašykite mums."
+          "a": "Šoninis meniu → Dovanų kortelė: pirkite (40–1000 €) arba „Turiu kodą“ – panaudokite. Suma virsta kreditu, kuriuo galite sumokėti už vizitą, visą apmokamą programėlėje (ne už avansą ir ne vietoje). Kol kortelė nepaversta kreditu, ją atšaukti galima per 14 d. nuo pirkimo – parašykite mums."
         },
         {
           "id": "K-29",
@@ -219,12 +219,17 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-38",
           "q": "Kaip priimti mokėjimus programėlėje?",
-          "a": "Nuo Taisyklių 1.13 (2026-10-07) mokėjimai programėlėje galimi tik su Pro ir VIP Studio planais; su Starter klientai moka vietoje. Profilis → Verslas → Mokėjimai → Stripe mokėjimų nustatymai → Įjungti mokėjimus internetu; tapatybę patvirtinsite Stripe lange. Neužbaigus per 30 d. nuo kliento mokėjimo, pinigai grąžinami klientui."
+          "a": "Nuo 2026-10-07 (Taisyklės 1.13) priimti mokėjimus programėlėje ir nustatyti avansą galima tik su Pro ar VIP Studio planu (ir bandomuoju laikotarpiu ar per saloną); su Starter klientai moka vietoje. Profilis → Verslas → Mokėjimai → Stripe mokėjimų nustatymai → Įjungti mokėjimus internetu; tapatybę patvirtinsite Stripe lange. Kol Stripe patikra neužbaigta, klientai pas jus moka vietoje."
         },
         {
           "id": "K-39",
           "q": "Kada gaunu pinigus?",
           "a": "Ne anksčiau kaip po 72 val. nuo vizito pabaigos, paprastai per 7 d., jei klientas nepranešė, kad vizitas neįvyko. Į banką – pagal Stripe išmokų tvarkaraštį. Išmokas matote Profilis → Verslas → Mokėjimai."
+        },
+        {
+          "id": "K-40",
+          "q": "Kiek ima Gloumi?",
+          "a": "Komisinis – 5 % už pirmą įvykusį kiekvieno kliento vizitą pas jus, rezervuotą per Gloumi, nesvarbu, ar jis apmokėtas programėlėje, ar vietoje (vietoje – tampa skola: išskaičiuojama iš vėlesnių mokėjimų programėlėje, o likusi apmokama pagal mėnesio sąskaitą); skaičiuojamas ir jūsų pačių užrašytiems vizitams. Už vėlesnius to kliento vizitus, klientus su meistro kodu ir arbatpinigius – nieko. Mokant programėlėje išskaičiuojamas ir Stripe mokestis (standartinei EEE kortelei 1,5 % + 0,25 €)."
         },
         {
           "id": "K-41",
@@ -234,7 +239,12 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-42",
           "q": "Kodėl prašoma asmens ar įmonės kodo ir IBAN?",
-          "a": "To reikalauja ES taisyklė DAC7: apie per platformą uždirbtas pajamas pranešama VMI. Įveskite juos šoniniame meniu → Programos nustatymai → Veiklos duomenys. Klientai jų nemato. Nepateikus per 60 d., išmokos sulaikomos."
+          "a": "To reikalauja ES taisyklė DAC7: apie per platformą uždirbtas pajamas pranešama VMI. Įveskite juos šoniniame meniu → Programos nustatymai → Veiklos duomenys. Klientai jų nemato. Nepateikus po prašymo ir dviejų priminimų, ne anksčiau kaip po 60 d. nuo pirmojo priminimo, išmokos sustabdomos."
+        },
+        {
+          "id": "K-43",
+          "q": "Kuo skiriasi planai?",
+          "a": "Starter kainuoja 0 € per mėn., o Gloumi ima 5 % komisinį už pirmą įvykusį kiekvieno kliento vizitą (K-40); ribos – 20 aktyvių vizitų per mėn. ir 10 darbų nuotraukų. Pro (19 € per mėn. arba 199 € per metus) – be ribų, aukščiau paieškoje ir sraute, avansai ir mokėjimai programėlėje, arbatpinigiai. VIP Studio (49 € per mėn. arba 499 € per metus) – dar ir salonas iki 10 meistrų. Komisinis visuose planuose tas pats. Pirmos 30 d. – Pro nemokamai, be kortelės. Planai – šoninis meniu → Gloumi Pro."
         },
         {
           "id": "K-44",
@@ -291,6 +301,11 @@ export const FAQ: Record<Lang, FaqSection[]> = {
           "id": "K-53",
           "q": "Kaip tvarkyti pranešimus? Kodėl jie neateina?",
           "a": "Varpelis viršuje: braukite kairėn – ištrinti, „Tvarkyti“ – keli iš karto. Neateina? Telefono nustatymuose leiskite Gloumi pranešimus ir būkite prisijungę – atsijungus jie nesiunčiami."
+        },
+        {
+          "id": "K-54",
+          "q": "Kaip rikiuojami meistrai?",
+          "a": "Paieškoje lemia jūsų filtrai. Pirmiau – meistrai su įvertinimu (bent 3 atsiliepimai), aukštesnio vidurkio – aukščiau; tarp dar neįvertintų pirmiau – Pro ir VIP Studio meistrai. Pro ir VIP Studio meistrai rodomi kiek aukščiau – tai iškėlimas už planą (paprastai mokamą), ne kokybės ar patikros ženklas: paieškoje jų vidurkis rikiuojant padidinamas 5 % (rodomas vidurkis nesikeičia), sraute įrašų balas – 15 %. Srautą taip pat lemia naujumas, žmonių reakcijos, sekami meistrai, jūsų susidomėjimas ir atstumas. Išsamiai – Taisyklių skyrius „Kaip rikiuojami rezultatai“."
         }
       ]
     }
@@ -308,12 +323,12 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-2",
           "q": "Is Gloumi free?",
-          "a": "For clients, yes: you only pay the price the master sets, and Gloumi adds nothing. For masters, Starter costs €0 a month and Gloumi takes a commission; Pro and VIP Studio are paid plans."
+          "a": "For clients, yes: you only pay the price the master sets, and Gloumi adds nothing. For masters, Starter costs €0 a month and Gloumi takes a commission (K-40); Pro and VIP Studio are paid plans (K-43)."
         },
         {
           "id": "K-3",
           "q": "How do I contact support?",
-          "a": "Side menu → Support → No answer here?, or info@gloumi.lt. About a specific visit – Report an issue in that visit. We confirm receipt within 2 working days and reply within 14 days, usually sooner."
+          "a": "Side menu → Support → No answer here?, or info@gloumi.lt. About a specific visit – Report an issue in that visit. We confirm receipt within 2 working days and reply in substance within 14 calendar days, usually sooner."
         }
       ]
     },
@@ -365,7 +380,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-12",
           "q": "How do I find a master?",
-          "a": "Search: look for a service, master or salon, and use Filters or Map. Discover is a feed of masters' work."
+          "a": "Search: look for a service, master or salon, and use Filters or Map. Discover is a feed of masters' work. How results are ranked – K-54."
         },
         {
           "id": "K-13",
@@ -395,7 +410,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-18",
           "q": "Will I get my money back if I cancel?",
-          "a": "Cancel more than 24 h ahead, or if the master cancels – everything paid in the app is refunded. Cancel a confirmed visit later or do not turn up, and the deposit may stay with the master under their cancellation terms; the rest is refunded."
+          "a": "If you cancel more than 24 hours ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit later or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full."
         },
         {
           "id": "K-19",
@@ -426,7 +441,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-23",
           "q": "How is a visit paid for?",
-          "a": "The master chooses which payment methods to accept: Cash, Card at the salon or In the app. In the app you pay by card or Apple Pay, and Stripe emails you the receipt. A visit not paid within 30 min is cancelled."
+          "a": "The master chooses which payment methods to accept: Cash, Card at the salon or In the app. In the app you pay by card or Apple Pay: the amount is reserved on your card (if the visit is more than 5 days away, your card is saved and the amount is reserved 3 days before) and charged only after the visit. If the reservation fails, we will ask you to confirm the payment; if it is not confirmed 24 h before the visit, the visit is cancelled."
         },
         {
           "id": "K-24",
@@ -436,7 +451,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-25",
           "q": "What is a deposit?",
-          "a": "Part of the price – an amount or a percentage – that the master asks you to pay in the app when booking. It counts towards the price, and you pay the rest on site. When it is refunded – K-18."
+          "a": "A set part of the visit price – an amount or a percentage – that the master asks to have reserved on your card. It counts towards the price and is charged after the visit; you pay the rest on site. A deposit is not earnest money. What happens if you cancel – K-18."
         },
         {
           "id": "K-26",
@@ -446,7 +461,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-27",
           "q": "How do gift cards work?",
-          "a": "Side menu → Gift card: buy one (€40–1,000) or tap I have a code to redeem. The amount becomes credit you apply when paying in the app. An unused card can be cancelled within 14 days – write to us."
+          "a": "Side menu → Gift card: buy one (€40–1,000) or tap I have a code to redeem. The amount becomes credit you can use for a visit paid in full in the app (not for a deposit and not on site). As long as the card has not been turned into credit, you can cancel it within 14 days of purchase – write to us."
         },
         {
           "id": "K-29",
@@ -502,12 +517,17 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-38",
           "q": "How do I take payments in the app?",
-          "a": "From Terms 1.13 (7 October 2026), in-app payments come only with the Pro and VIP Studio plans; on Starter, clients pay on site. Profile → Business → Payments → Stripe payment settings → Turn on online payments; verify your identity in Stripe's window. If it is not finished within 30 days of a client's payment, the money goes back to the client."
+          "a": "From 7 October 2026 (Terms 1.13), taking payments in the app and setting a deposit come only with the Pro or VIP Studio plan (including the trial or through a salon); on Starter, clients pay on site. Profile → Business → Payments → Stripe payment settings → Turn on online payments; verify your identity in Stripe's window. Until the Stripe check is finished, clients pay you on site."
         },
         {
           "id": "K-39",
           "q": "When do I get the money?",
           "a": "No earlier than 72 h after the visit ends, usually within 7 days, unless the client reported that it did not happen. To your bank on your Stripe payout schedule. Payouts are in Profile → Business → Payments."
+        },
+        {
+          "id": "K-40",
+          "q": "How much does Gloumi take?",
+          "a": "The commission is 5% on each client's first completed visit with you booked through Gloumi, whether paid in the app or on site (on site it becomes an amount you owe: deducted from later in-app payments, and the rest paid against the monthly invoice); it also applies to visits you enter yourself. Nothing on that client's later visits, clients with your master code, or tips. In-app payments also have the Stripe fee deducted (for a standard EEA card, 1.5% + €0.25)."
         },
         {
           "id": "K-41",
@@ -517,7 +537,12 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-42",
           "q": "Why am I asked for my personal or company code and IBAN?",
-          "a": "An EU rule, DAC7, requires platforms to report their sellers' income to the tax authority (VMI). Enter them in side menu → App settings → Business details. Clients never see them. If missing after 60 days, payouts are held."
+          "a": "An EU rule, DAC7, requires platforms to report their sellers' income to the tax authority (VMI). Enter them in side menu → App settings → Business details. Clients never see them. If they are not provided after a request and two reminders, payouts are paused no earlier than 60 days after the first reminder."
+        },
+        {
+          "id": "K-43",
+          "q": "What is the difference between the plans?",
+          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 active visits a month and 10 portfolio photos. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. First 30 days – Pro free, no card. Plans – side menu → Gloumi Pro."
         },
         {
           "id": "K-44",
@@ -574,6 +599,11 @@ export const FAQ: Record<Lang, FaqSection[]> = {
           "id": "K-53",
           "q": "How do I manage notifications? Why do they not arrive?",
           "a": "The bell at the top: swipe left to delete, Edit for several at once. Not arriving? Allow Gloumi notifications in your phone settings and stay signed in – once you sign out, they stop."
+        },
+        {
+          "id": "K-54",
+          "q": "How are masters ranked?",
+          "a": "In search, your filters decide. Masters with a rating (at least 3 reviews) come first, higher averages higher; among masters not yet rated, Pro and VIP Studio masters come first. Pro and VIP Studio masters appear a little higher – this is placement that comes with the plan (usually a paid one), not a mark of quality or of any check: in search their average is raised by 5% for ranking (the average shown does not change), in the feed their posts' score by 15%. The feed also depends on freshness, people's reactions, the masters you follow, your interests and distance. Full details: the Terms, “Ranking of results”."
         }
       ]
     }
