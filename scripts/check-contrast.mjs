@@ -27,6 +27,8 @@ const palette = {
   "terracotta-600": "#8F3D26",
   "terracotta-700": "#73301E",
   "plum-700": "#55223A",
+  /** `bg-white/6` over espresso-900 – the feature chips in the masters section. */
+  "chip-on-dark": "#3A302D",
   "sage-500": "#4C6552",
 };
 
@@ -65,7 +67,8 @@ const PAIRS = [
   ["white", "terracotta-700", 4.5, "primary button label on hover"],
   ["cream-100", "espresso-900", 4.5, "dark section body copy"],
   ["sand-400", "espresso-900", 4.5, "dark section muted copy"],
-  ["terracotta-300", "espresso-900", 4.5, "dark section eyebrow"],
+  ["terracotta-300", "espresso-900", 4.5, "dark section eyebrow, and the plan tag on a feature title"],
+  ["terracotta-300", "chip-on-dark", 4.5, "plan tag inside a feature chip (S-082)"],
   ["white", "espresso-950", 4.5, "store badge label"],
   ["espresso-900", "sand-200", 4.5, "chips"],
   ["sage-500", "white", 4.5, "trust ticks and success icons"],

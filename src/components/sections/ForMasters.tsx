@@ -8,6 +8,17 @@ import { sectionId, type Lang } from "@/content/lang";
 
 const ICONS = [IconShieldCheck, IconBell, IconLayoutGrid, IconUsers];
 
+/** Which paid plans a feature needs (S-082), so nobody reads it as part of the free Starter plan. */
+function PlanTag({ plan, className = "" }: { plan: string; className?: string }) {
+  return (
+    <span
+      className={`inline-block whitespace-nowrap rounded-full px-2 py-0.5 ring-1 ring-inset ring-terracotta-300/45 font-sans text-[11px] font-semibold uppercase tracking-[0.12em] text-terracotta-300 ${className}`}
+    >
+      {plan}
+    </span>
+  );
+}
+
 export function ForMasters({ lang }: { lang: Lang }) {
   const copy = getCopy(lang);
   return (
@@ -38,7 +49,15 @@ export function ForMasters({ lang }: { lang: Lang }) {
                         <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/8 text-terracotta-300 ring-1 ring-white/10">
                           <Icon className="h-5 w-5" aria-hidden="true" />
                         </span>
-                        <h3 className="mt-4 font-serif text-xl font-medium text-cream-50 sm:text-2xl">{item.title}</h3>
+                        <h3 className="mt-4 font-serif text-xl font-medium text-cream-50 sm:text-2xl">
+                          {item.title}
+                          {"plan" in item && item.plan ? (
+                            <>
+                              {" "}
+                              <PlanTag plan={item.plan} className="ml-1 align-middle" />
+                            </>
+                          ) : null}
+                        </h3>
                         <p className="mt-2 text-[15px] leading-relaxed text-sand-400 text-pretty">{item.text}</p>
                       </Reveal>
                     </li>
@@ -48,8 +67,12 @@ export function ForMasters({ lang }: { lang: Lang }) {
 
               <ul className="mt-10 flex flex-wrap gap-2" aria-label={copy.masters.chipsLabel}>
                 {copy.masters.chips.map((chip) => (
-                  <li key={chip} className="rounded-full bg-white/6 px-3.5 py-1.5 text-sm text-sand-200 ring-1 ring-white/10">
-                    {chip}
+                  <li
+                    key={chip.text}
+                    className="inline-flex items-center gap-2 rounded-full bg-white/6 px-3.5 py-1.5 text-sm text-sand-200 ring-1 ring-white/10"
+                  >
+                    {chip.text}
+                    {chip.plan ? <PlanTag plan={chip.plan} /> : null}
                   </li>
                 ))}
               </ul>

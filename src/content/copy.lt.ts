@@ -140,6 +140,8 @@ export const lt = {
       {
         title: "Mažiau neatvykimų",
         text: "Prašykite avanso – klientas patvirtina laiką pinigais, o neatvykus avansas lieka jums.",
+        // S-082 (Taisyklės 1.13 T-13, M-8): avansai ir mokėjimai programėlėje – tik Pro ir VIP Studio.
+        plan: "Pro ir VIP",
       },
       {
         title: "Priminimai, kurie sugrąžina",
@@ -155,14 +157,19 @@ export const lt = {
       },
     ],
     chipsLabel: "Kitos galimybės",
+    /*
+     * `plan` – mokamų planų galimybė (S-082): be žymos meistras galėtų manyti,
+     * kad ją turi ir nemokamas Starter. Klientų kortelės – visiems planams
+     * (developeris 2026-10-04), automatiniai priminimai – taip pat (2026-10-05).
+     */
     chips: [
-      "Išmokos į banko sąskaitą per Stripe",
-      "Klientų kortelės su privačiais užrašais",
-      "Mėnesio pajamų ir populiariausių paslaugų statistika",
-      "Asmeninė registracijos nuoroda",
-      "Pertraukos ir užblokuotas laikas kalendoriuje",
-      "Story ir įrašai bendruomenei",
-    ],
+      { text: "Išmokos į banko sąskaitą per Stripe", plan: "Pro ir VIP" },
+      { text: "Klientų kortelės su privačiais užrašais" },
+      { text: "Mėnesio pajamų ir populiariausių paslaugų statistika" },
+      { text: "Asmeninė registracijos nuoroda" },
+      { text: "Pertraukos ir užblokuotas laikas kalendoriuje" },
+      { text: "Story ir įrašai bendruomenei" },
+    ] as { text: string; plan?: string }[],
   },
 
   form: {

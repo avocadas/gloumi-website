@@ -136,6 +136,7 @@ export const en: typeof lt = {
       {
         title: "Fewer no-shows",
         text: "Ask for a deposit and the client confirms the time with money. If they do not turn up, the deposit stays with you.",
+        plan: "Pro and VIP",
       },
       {
         title: "Reminders that bring people back",
@@ -152,12 +153,12 @@ export const en: typeof lt = {
     ],
     chipsLabel: "Also included",
     chips: [
-      "Payouts to your bank account through Stripe",
-      "Client cards with private notes",
-      "Monthly takings and most booked services",
-      "Your own booking link to share",
-      "Breaks and blocked time in the calendar",
-      "Stories and posts for the community",
+      { text: "Payouts to your bank account through Stripe", plan: "Pro and VIP" },
+      { text: "Client cards with private notes" },
+      { text: "Monthly takings and most booked services" },
+      { text: "Your own booking link to share" },
+      { text: "Breaks and blocked time in the calendar" },
+      { text: "Stories and posts for the community" },
     ],
   },
 
