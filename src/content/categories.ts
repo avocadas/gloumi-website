@@ -21,20 +21,32 @@ export type Category = {
   tagline: string;
   examples: string[];
   icon: IconComponent;
-  /** Icon colour on the tinted disc. Checked against white by scripts/check-contrast.mjs. */
-  accent: string;
-  /** Disc tint behind the icon. */
+  /**
+   * Icon colour on the disc, and the category eyebrow in the panel below –
+   * the app's `ink`. scripts/check-contrast.mjs reads it from this file and
+   * checks it against white (text, 4.5:1) and against `tint` (icon, 3:1).
+   */
+  ink: string;
+  /** Disc fill behind the icon – the app's `tint`. */
   tint: string;
 };
 
-/** What does not change between languages: the icon and the two colours. */
-const SHARED: Record<CategoryId, Pick<Category, "icon" | "accent" | "tint">> = {
-  hair: { icon: IconCategoryHair, accent: "#7A3350", tint: "#F3E6EC" },
-  nails: { icon: IconCategoryNails, accent: "#8F3D26", tint: "#F3E1D8" },
-  brows_lashes: { icon: IconCategoryBrows, accent: "#574463", tint: "#ECE6F0" },
-  massage_body: { icon: IconCategoryMassage, accent: "#4C6552", tint: "#E4EBE5" },
-  makeup: { icon: IconCategoryMakeup, accent: "#B93E72", tint: "#FBE4EC" },
-  skincare: { icon: IconCategorySkincare, accent: "#8E6238", tint: "#F3E7DA" },
+/*
+ * What does not change between languages: the icon and the two colours.
+ *
+ * The colours are the app's, not the site's own (developer, 2026-10-07: the
+ * category row has to look like the app's): gloumi-app/src/constants/
+ * categoryIcons.js `BY_ID` `tint` and `ink` (ringaudas-prod @ 672872ad), which
+ * the app's Search screen paints as the disc and its icon. Change them there
+ * first, then here.
+ */
+const SHARED: Record<CategoryId, Pick<Category, "icon" | "ink" | "tint">> = {
+  hair: { icon: IconCategoryHair, ink: "#9A3A5C", tint: "#F7E3EA" },
+  nails: { icon: IconCategoryNails, ink: "#B8563A", tint: "#F9E4D6" },
+  brows_lashes: { icon: IconCategoryBrows, ink: "#7A5AA6", tint: "#E9E1F7" },
+  massage_body: { icon: IconCategoryMassage, ink: "#4E7A5C", tint: "#DCEDE2" },
+  makeup: { icon: IconCategoryMakeup, ink: "#B8436B", tint: "#FBE0E9" },
+  skincare: { icon: IconCategorySkincare, ink: "#8F6A3D", tint: "#F2E7D6" },
 };
 
 type CategoryText = Pick<Category, "label" | "short" | "tagline" | "examples">;
@@ -126,7 +138,3 @@ export const CATEGORY_IDS: readonly CategoryId[] = ORDER;
 export function getCategories(lang: Lang): Category[] {
   return ORDER.map((id) => ({ id, ...SHARED[id], ...TEXT[lang][id] }));
 }
-
-/** The app's StoryRing gradient – the ring around an unseen story. */
-export const RING_GRADIENT =
-  "conic-gradient(from 210deg, #8F3D26 0%, #E2578C 35%, #7A3350 70%, #4C6552 100%)";

@@ -3,9 +3,12 @@
  *
  * The palette is warm and low-contrast by taste, which is exactly how muted
  * body copy quietly slips under 4.5:1. This fails `npm run check` rather than
- * trusting an eye. Keep PAIRS in step with src/app/globals.css and with the
- * category accents in src/content/categories.ts.
+ * trusting an eye. Keep PAIRS in step with src/app/globals.css. The category
+ * colours are read from src/content/categories.ts itself (below), so the
+ * check cannot drift from what the page paints.
  */
+import { readFileSync } from "node:fs";
+
 const palette = {
   white: "#FFFFFF",
   "cream-100": "#F9F6F0",
@@ -25,13 +28,24 @@ const palette = {
   "terracotta-700": "#73301E",
   "plum-700": "#55223A",
   "sage-500": "#4C6552",
-  "accent-hair": "#7A3350",
-  "accent-nails": "#8F3D26",
-  "accent-brows": "#574463",
-  "accent-massage": "#4C6552",
-  "accent-makeup": "#B93E72",
-  "accent-skincare": "#8E6238",
 };
+
+/*
+ * The six categories' `ink` and `tint` – the app's own colours (#20). The ink
+ * is text in the panel eyebrow (4.5:1 on white) and the icon on the disc
+ * (3:1 on the tint: a graphic, WCAG 1.4.11, not text).
+ */
+const CATEGORY = /^\s+(\w+): \{ icon: \w+, ink: "(#[0-9A-Fa-f]{6})", tint: "(#[0-9A-Fa-f]{6})" \},?$/gm;
+const categorySource = readFileSync(new URL("../src/content/categories.ts", import.meta.url), "utf8");
+const categories = [...categorySource.matchAll(CATEGORY)].map(([, id, ink, tint]) => ({ id, ink, tint }));
+if (categories.length !== 6) {
+  console.error(`Expected 6 category colour lines in src/content/categories.ts, found ${categories.length}.`);
+  process.exit(1);
+}
+for (const { id, ink, tint } of categories) {
+  palette[`ink-${id}`] = ink;
+  palette[`tint-${id}`] = tint;
+}
 
 /** [foreground, background, minimum ratio, where it is used] */
 const PAIRS = [
@@ -55,12 +69,11 @@ const PAIRS = [
   ["white", "espresso-950", 4.5, "store badge label"],
   ["espresso-900", "sand-200", 4.5, "chips"],
   ["sage-500", "white", 4.5, "trust ticks and success icons"],
-  ["accent-hair", "white", 4.5, "category eyebrow – hair"],
-  ["accent-nails", "white", 4.5, "category eyebrow – nails"],
-  ["accent-brows", "white", 4.5, "category eyebrow – brows"],
-  ["accent-massage", "white", 4.5, "category eyebrow – massage"],
-  ["accent-makeup", "white", 4.5, "category eyebrow – makeup"],
-  ["accent-skincare", "white", 4.5, "category eyebrow – skincare"],
+  ["espresso-900", "cream-200", 3, "selected category border (graphic)"],
+  ...categories.flatMap(({ id }) => [
+    [`ink-${id}`, "white", 4.5, `category eyebrow – ${id}`],
+    [`ink-${id}`, `tint-${id}`, 3, `category icon on its disc – ${id} (graphic)`],
+  ]),
   ["plum-700", "cream-100", 3, "wordmark (graphic)"],
 ];
 
