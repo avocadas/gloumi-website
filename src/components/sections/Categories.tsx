@@ -18,7 +18,8 @@ import { cn } from "@/lib/cn";
 export function CategoriesSection({ lang }: { lang: Lang }) {
   const copy = getCopy(lang);
   const categories = getCategories(lang);
-  const [selectedId, setSelectedId] = useState<Category["id"]>("hair");
+  // The first in the row, as the row is the app's order (nails first).
+  const [selectedId, setSelectedId] = useState<Category["id"]>(categories[0].id);
   const reduce = useReducedMotion();
   const current = categories.find((c) => c.id === selectedId) ?? categories[0];
 

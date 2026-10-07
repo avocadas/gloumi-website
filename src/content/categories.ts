@@ -5,11 +5,12 @@ import type { Lang } from "./lang";
 /**
  * The six service categories the landing page shows.
  *
- * Both languages use the app's own strings
- * (gloumi-app/src/constants/translations.js → catNails, catHairBarber, … in its
- * lt and en blocks), so a visitor sees the same words on the site and in the
- * app. Order follows the brief; the app's seventh category, „Kita“ / "Other",
- * is a catch-all and is left out.
+ * Both languages use the app's own strings (gloumi-app/src/constants/
+ * translations/{lt,en}.js → catNails, catHairBarber, … and the …Short names),
+ * so a visitor sees the same words on the site and in the app. The order is
+ * the app's too (constants/onboarding.js MASTER_CATEGORIES; developer,
+ * 2026-10-07: order and English names as in the app); the app's seventh
+ * category, „Kita“ / "Other", is a catch-all and is left out.
  */
 export type CategoryId = "hair" | "nails" | "brows_lashes" | "massage_body" | "makeup" | "skincare";
 
@@ -92,7 +93,7 @@ const TEXT: Record<Lang, Record<CategoryId, CategoryText>> = {
   },
   en: {
     hair: {
-      label: "Hair and beard",
+      label: "Hair & barber",
       short: "Hair",
       tagline: "From an everyday trim to a wedding blow-dry.",
       examples: ["Cuts", "Colour", "Styling", "Beard care"],
@@ -104,20 +105,20 @@ const TEXT: Record<Lang, Record<CategoryId, CategoryText>> = {
       examples: ["Manicure", "Pedicure", "Extensions", "Nail art"],
     },
     brows_lashes: {
-      label: "Brows and lashes",
+      label: "Brows & lashes",
       short: "Brows",
       tagline: "A look that needs no filter.",
       examples: ["Extensions", "Lamination", "Tinting", "Shaping"],
     },
     massage_body: {
-      label: "Massage and body",
+      label: "Massage & body",
       short: "Massage",
       tagline: "An hour for yourself, for the body and for the head.",
       examples: ["Relaxing", "Anti-cellulite", "Waxing"],
     },
     makeup: {
-      label: "Make-up",
-      short: "Make-up",
+      label: "Makeup",
+      short: "Makeup",
       tagline: "Daytime, evening or permanent, to suit the occasion.",
       examples: ["Daytime", "Evening", "Permanent", "Bridal"],
     },
@@ -130,7 +131,7 @@ const TEXT: Record<Lang, Record<CategoryId, CategoryText>> = {
   },
 };
 
-const ORDER: CategoryId[] = ["hair", "nails", "brows_lashes", "massage_body", "makeup", "skincare"];
+const ORDER: CategoryId[] = ["nails", "hair", "brows_lashes", "makeup", "skincare", "massage_body"];
 
 /** The ids the API accepts. Same in both languages: only the labels are translated. */
 export const CATEGORY_IDS: readonly CategoryId[] = ORDER;

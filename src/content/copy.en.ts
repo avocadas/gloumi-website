@@ -33,7 +33,7 @@ export const en: typeof lt = {
     title: "Gloumi – book beauty and wellness masters in Lithuania",
     titleTemplate: "%s · Gloumi",
     description:
-      "Find beauty and wellness masters in Lithuania and book any time: nails, hair, brows and lashes, massage, make-up and skincare. Live availability, prices before you book and reviews only after a completed visit, in one app.",
+      "Find beauty and wellness masters in Lithuania and book any time: nails, hair, brows and lashes, massage, makeup and skincare. Live availability, prices before you book and reviews only after a completed visit, in one app.",
     keywords: [
       "beauty professionals Lithuania",
       "book beauty appointment",
@@ -48,7 +48,7 @@ export const en: typeof lt = {
     ],
     ogAlt: "Gloumi – the app for finding and booking beauty masters",
     ogHeadline: "Beauty masters and bookings in Lithuania",
-    ogSub: "Nails · Hair · Brows · Massage · Make-up · Skin",
+    ogSub: "Nails · Hair · Brows · Makeup · Skin · Massage",
     ogStores: "App Store · Google Play",
   },
 
@@ -58,7 +58,7 @@ export const en: typeof lt = {
     titleAccent: "book",
     titleEnd: "any time",
     lead:
-      "Nails, hair, brows, massage, make-up and skincare. Masters' work, live availability and clear prices, all in one app. Book at any hour, without a single phone call.",
+      "Nails, hair, brows, massage, makeup and skincare. Masters' work, live availability and clear prices, all in one app. Book at any hour, without a single phone call.",
     masterCta: "I'm a master / Sign in",
     trustLabel: "Why it is worth it",
     trust: ["Free for clients", "No hidden fees", "Reviews only after a visit"],

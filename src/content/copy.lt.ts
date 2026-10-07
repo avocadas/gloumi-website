@@ -52,7 +52,7 @@ export const lt = {
     ],
     ogAlt: "Gloumi – grožio meistrų paieškos ir rezervavimo programėlė",
     ogHeadline: "Grožio meistrai ir rezervavimas internetu",
-    ogSub: "Nagai · Plaukai · Antakiai · Masažai · Makiažas · Oda",
+    ogSub: "Nagai · Plaukai · Antakiai · Makiažas · Oda · Masažai",
     ogStores: "App Store · Google Play",
   },
 
