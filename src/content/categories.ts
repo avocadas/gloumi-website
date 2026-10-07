@@ -1,4 +1,5 @@
-import { Droplets, Eye, Flower2, Hand, Palette, Scissors, type LucideIcon } from "lucide-react";
+import { type IconComponent } from "@/components/icons";
+import { IconCategoryBrows, IconCategoryHair, IconCategoryMakeup, IconCategoryMassage, IconCategoryNails, IconCategorySkincare } from "@/components/icons/categories";
 import type { Lang } from "./lang";
 
 /**
@@ -19,7 +20,7 @@ export type Category = {
   short: string;
   tagline: string;
   examples: string[];
-  icon: LucideIcon;
+  icon: IconComponent;
   /** Icon colour on the tinted disc. Checked against white by scripts/check-contrast.mjs. */
   accent: string;
   /** Disc tint behind the icon. */
@@ -28,12 +29,12 @@ export type Category = {
 
 /** What does not change between languages: the icon and the two colours. */
 const SHARED: Record<CategoryId, Pick<Category, "icon" | "accent" | "tint">> = {
-  hair: { icon: Scissors, accent: "#7A3350", tint: "#F3E6EC" },
-  nails: { icon: Hand, accent: "#8F3D26", tint: "#F3E1D8" },
-  brows_lashes: { icon: Eye, accent: "#574463", tint: "#ECE6F0" },
-  massage_body: { icon: Flower2, accent: "#4C6552", tint: "#E4EBE5" },
-  makeup: { icon: Palette, accent: "#B93E72", tint: "#FBE4EC" },
-  skincare: { icon: Droplets, accent: "#8E6238", tint: "#F3E7DA" },
+  hair: { icon: IconCategoryHair, accent: "#7A3350", tint: "#F3E6EC" },
+  nails: { icon: IconCategoryNails, accent: "#8F3D26", tint: "#F3E1D8" },
+  brows_lashes: { icon: IconCategoryBrows, accent: "#574463", tint: "#ECE6F0" },
+  massage_body: { icon: IconCategoryMassage, accent: "#4C6552", tint: "#E4EBE5" },
+  makeup: { icon: IconCategoryMakeup, accent: "#B93E72", tint: "#FBE4EC" },
+  skincare: { icon: IconCategorySkincare, accent: "#8E6238", tint: "#F3E7DA" },
 };
 
 type CategoryText = Pick<Category, "label" | "short" | "tagline" | "examples">;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Copy } from "lucide-react";
+import { IconCheck, IconCopy } from "@/components/icons";
 import { STROKE } from "../../ui";
 
 /*
@@ -30,7 +30,7 @@ export function CopyButton({ value, label }: { value: string; label: string }) {
       title={copied ? "Nukopijuota" : label}
       className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-app-faint transition-colors hover:bg-app-input hover:text-app-ink"
     >
-      {copied ? <Check size={14} strokeWidth={STROKE} aria-hidden /> : <Copy size={14} strokeWidth={STROKE} aria-hidden />}
+      {copied ? <IconCheck size={14} strokeWidth={STROKE} aria-hidden /> : <IconCopy size={14} strokeWidth={STROKE} aria-hidden />}
     </button>
   );
 }

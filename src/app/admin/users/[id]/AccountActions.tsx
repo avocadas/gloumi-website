@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { Ban, CalendarPlus, CalendarX, Trash2, Undo2 } from "lucide-react";
+import { IconBan, IconCalendar, IconReply, IconTrash } from "@/components/icons";
 import { deleteAccount, setBookingRestriction, setSuspended } from "../../actions";
 import { useConfirm } from "../../ConfirmDialog";
 import { useTerminationNotice } from "../../ModerationRules";
@@ -224,15 +224,15 @@ export function AccountActions({
           <div className="flex flex-wrap gap-2">
             {banned ? (
               <button type="button" disabled={pending} onClick={restore} className={btn}>
-                <Undo2 size={16} strokeWidth={STROKE} aria-hidden />
+                <IconReply size={16} strokeWidth={STROKE} aria-hidden />
                 Atkurti
               </button>
             ) : null}
             <button type="button" disabled={pending} onClick={suspend} className={btnDanger}>
               {banned ? (
-                <CalendarPlus size={16} strokeWidth={STROKE} aria-hidden />
+                <IconCalendar size={16} strokeWidth={STROKE} aria-hidden />
               ) : (
-                <Ban size={16} strokeWidth={STROKE} aria-hidden />
+                <IconBan size={16} strokeWidth={STROKE} aria-hidden />
               )}
               {banned ? "Pratęsti" : "Sustabdyti"}
             </button>
@@ -252,15 +252,15 @@ export function AccountActions({
           <div className="flex flex-wrap gap-2">
             {restrictedUntil ? (
               <button type="button" disabled={pending} onClick={unrestrict} className={btn}>
-                <Undo2 size={16} strokeWidth={STROKE} aria-hidden />
+                <IconReply size={16} strokeWidth={STROKE} aria-hidden />
                 Nuimti
               </button>
             ) : null}
             <button type="button" disabled={pending} onClick={restrict} className={btnDanger}>
               {restrictedUntil ? (
-                <CalendarPlus size={16} strokeWidth={STROKE} aria-hidden />
+                <IconCalendar size={16} strokeWidth={STROKE} aria-hidden />
               ) : (
-                <CalendarX size={16} strokeWidth={STROKE} aria-hidden />
+                <IconBan size={16} strokeWidth={STROKE} aria-hidden />
               )}
               {restrictedUntil ? "Pratęsti" : "Apriboti"}
             </button>
@@ -272,7 +272,7 @@ export function AccountActions({
             <p className="mt-0.5 text-[13px] text-app-muted">Visam laikui, su viskuo, kas jai priklauso.</p>
           </div>
           <button type="button" disabled={pending} onClick={remove} className={btnDanger}>
-            <Trash2 size={16} strokeWidth={STROKE} aria-hidden />
+            <IconTrash size={16} strokeWidth={STROKE} aria-hidden />
             Ištrinti
           </button>
         </div>

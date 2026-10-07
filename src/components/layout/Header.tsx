@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AnimatePresence, m } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { IconClose, IconMenu } from "@/components/icons";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { ButtonLink } from "@/components/ui/Button";
@@ -87,7 +87,7 @@ export function Header({ lang, alternates }: HeaderProps) {
             aria-label={open ? copy.nav.close : copy.nav.open}
             onClick={() => setOpen((v) => !v)}
           >
-            {open ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
+            {open ? <IconClose className="h-5 w-5" aria-hidden="true" /> : <IconMenu className="h-5 w-5" aria-hidden="true" />}
           </button>
         </div>
       </Container>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CalendarCheck } from "lucide-react";
+import { IconCalendarCheck } from "@/components/icons";
 import { checkAdmin } from "@/lib/admin-guard";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { AdminShell } from "../AdminShell";
@@ -54,7 +54,7 @@ export default async function WarningsPage() {
           Įspėjimų gauti nepavyko: {error.message}
         </p>
       ) : warnings.length === 0 ? (
-        <EmptyState tone="rose" icon={<CalendarCheck size={24} strokeWidth={STROKE} aria-hidden />} title="Įspėjimų nėra">
+        <EmptyState tone="rose" icon={<IconCalendarCheck size={24} strokeWidth={STROKE} aria-hidden />} title="Įspėjimų nėra">
           Per 90 dienų nė vienas klientas neviršijo atšaukimų ar neatvykimų ribos.
         </EmptyState>
       ) : (

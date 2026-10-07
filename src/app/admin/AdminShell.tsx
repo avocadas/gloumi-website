@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ChevronLeft, Database, Flag, LifeBuoy, LogOut, Scale, type LucideIcon } from "lucide-react";
+import { IconChevronLeft, IconDatabase, IconFlag, IconLogOut, IconMail, IconScale, type IconComponent } from "@/components/icons";
 import { signOutAdmin } from "./sign-out";
 import { Bubbles, Brand, FIELD_BG, STROKE, onField, type Tone } from "./ui";
 
@@ -12,11 +12,11 @@ type Section = "reports" | "support" | "disputes" | "data";
  * pagalba — mėtinė (žmonių klausimai, #209), ginčai — persikinė („Vizitai",
  * pinigai ir vizitai), duomenys — levandinė.
  */
-const SECTIONS: { key: Section; href: string; label: string; Icon: LucideIcon; tone: Tone }[] = [
-  { key: "reports", href: "/admin", label: "Skundai", Icon: Flag, tone: "rose" },
-  { key: "support", href: "/admin/support", label: "Pagalba", Icon: LifeBuoy, tone: "mint" },
-  { key: "disputes", href: "/admin/disputes", label: "Ginčai", Icon: Scale, tone: "peach" },
-  { key: "data", href: "/admin/data", label: "Duomenys", Icon: Database, tone: "lavender" },
+const SECTIONS: { key: Section; href: string; label: string; Icon: IconComponent; tone: Tone }[] = [
+  { key: "reports", href: "/admin", label: "Skundai", Icon: IconFlag, tone: "rose" },
+  { key: "support", href: "/admin/support", label: "Pagalba", Icon: IconMail, tone: "mint" },
+  { key: "disputes", href: "/admin/disputes", label: "Ginčai", Icon: IconScale, tone: "peach" },
+  { key: "data", href: "/admin/data", label: "Duomenys", Icon: IconDatabase, tone: "lavender" },
 ];
 
 const ACTIVE_BG: Record<Tone, string> = FIELD_BG;
@@ -100,7 +100,7 @@ export function AdminShell({
               </span>
               <form action={signOutAdmin}>
                 <button type="submit" className={onField} title="Atsijungti">
-                  <LogOut size={18} strokeWidth={STROKE} aria-hidden />
+                  <IconLogOut size={18} strokeWidth={STROKE} aria-hidden />
                   <span className="hidden sm:inline">Atsijungti</span>
                   <span className="sr-only sm:hidden">Atsijungti</span>
                 </button>
@@ -114,7 +114,7 @@ export function AdminShell({
                 href={back.href}
                 className="mb-3 inline-flex items-center gap-1 text-sm font-semibold text-app-ink/80 hover:text-app-ink"
               >
-                <ChevronLeft size={16} strokeWidth={STROKE} aria-hidden />
+                <IconChevronLeft size={16} strokeWidth={STROKE} aria-hidden />
                 {back.label}
               </a>
             ) : null}

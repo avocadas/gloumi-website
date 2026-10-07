@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { CircleAlert } from "lucide-react";
+import { IconAlert } from "@/components/icons";
 import { RuleSelect } from "./ModerationRules";
 import { btn, btnDanger, btnQuiet, input, STROKE } from "./ui";
 
@@ -142,7 +142,7 @@ function ConfirmDialog({
               danger ? "bg-app-danger-bg text-app-danger" : "bg-app-band text-app-ink"
             }`}
           >
-            <CircleAlert size={20} strokeWidth={STROKE} aria-hidden />
+            <IconAlert size={20} strokeWidth={STROKE} aria-hidden />
           </span>
           <h2 id="confirm-title" className="pt-1.5 font-app-serif text-xl leading-snug">
             {title}

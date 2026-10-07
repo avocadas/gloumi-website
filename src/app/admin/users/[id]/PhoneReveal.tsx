@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Eye } from "lucide-react";
+import { IconEye } from "@/components/icons";
 import { revealPhone } from "../../actions";
 import { STROKE } from "../../ui";
 import { CopyButton } from "./CopyButton";
@@ -46,7 +46,7 @@ export function PhoneReveal({ userId }: { userId: string }) {
         disabled={pending}
         className="inline-flex items-center gap-1.5 font-semibold text-app-accent hover:underline disabled:opacity-60"
       >
-        <Eye size={16} strokeWidth={STROKE} aria-hidden />
+        <IconEye size={16} strokeWidth={STROKE} aria-hidden />
         Rodyti
       </button>
       <span className="text-[12px] text-app-faint">Atvėrimas įrašomas į žurnalą</span>

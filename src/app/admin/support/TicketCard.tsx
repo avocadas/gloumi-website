@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { CalendarDays, CircleCheck, Mail, RotateCcw, UserRound } from "lucide-react";
+import { IconCalendar, IconCheck, IconMail, IconProfile, IconUndo } from "@/components/icons";
 import { formatWhen } from "../format";
 import { STROKE, Tag, btn, btnQuiet, card, eyebrow } from "../ui";
 import { setSupportTicketStatus } from "./actions";
@@ -75,7 +75,7 @@ export function TicketCard({ ticket }: { ticket: TicketView }) {
           href={`/admin/users/${ticket.authorId}`}
           className="inline-flex items-center gap-1 font-semibold text-app-ink hover:underline"
         >
-          <UserRound size={13} strokeWidth={STROKE} aria-hidden />
+          <IconProfile size={13} strokeWidth={STROKE} aria-hidden />
           {who}
         </a>
         {ticket.bookingId ? (
@@ -84,7 +84,7 @@ export function TicketCard({ ticket }: { ticket: TicketView }) {
             title={`Vizitas ${ticket.bookingId}`}
             className="inline-flex items-center gap-1 font-semibold text-app-ink hover:underline"
           >
-            <CalendarDays size={13} strokeWidth={STROKE} aria-hidden />
+            <IconCalendar size={13} strokeWidth={STROKE} aria-hidden />
             Dėl vizito <span className="font-mono font-normal">{ticket.bookingId.slice(0, 8)}</span>
           </a>
         ) : null}
@@ -101,18 +101,18 @@ export function TicketCard({ ticket }: { ticket: TicketView }) {
         <div className="flex flex-wrap gap-2">
           {reply && status === "open" ? (
             <a href={reply} className={btnQuiet}>
-              <Mail size={16} strokeWidth={STROKE} aria-hidden />
+              <IconMail size={16} strokeWidth={STROKE} aria-hidden />
               Atsakyti el. paštu
             </a>
           ) : null}
           {status === "open" ? (
             <button type="button" disabled={pending} onClick={() => change("closed")} className={btn}>
-              <CircleCheck size={16} strokeWidth={STROKE} aria-hidden />
+              <IconCheck size={16} strokeWidth={STROKE} aria-hidden />
               Išspręsta
             </button>
           ) : (
             <button type="button" disabled={pending} onClick={() => change("open")} className={btnQuiet}>
-              <RotateCcw size={16} strokeWidth={STROKE} aria-hidden />
+              <IconUndo size={16} strokeWidth={STROKE} aria-hidden />
               Atidaryti vėl
             </button>
           )}

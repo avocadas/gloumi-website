@@ -1,4 +1,4 @@
-import { BellRing, LayoutGrid, ShieldCheck, Users } from "lucide-react";
+import { IconBell, IconLayoutGrid, IconShieldCheck, IconUsers } from "@/components/icons";
 import { WaitlistForm } from "@/components/sections/WaitlistForm";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
@@ -6,7 +6,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { getCopy } from "@/content/copy";
 import { sectionId, type Lang } from "@/content/lang";
 
-const ICONS = [ShieldCheck, BellRing, LayoutGrid, Users];
+const ICONS = [IconShieldCheck, IconBell, IconLayoutGrid, IconUsers];
 
 export function ForMasters({ lang }: { lang: Lang }) {
   const copy = getCopy(lang);
@@ -36,7 +36,7 @@ export function ForMasters({ lang }: { lang: Lang }) {
                     <li key={item.title}>
                       <Reveal delay={index * 0.08}>
                         <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/8 text-terracotta-300 ring-1 ring-white/10">
-                          <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
+                          <Icon className="h-5 w-5" aria-hidden="true" />
                         </span>
                         <h3 className="mt-4 font-serif text-xl font-medium text-cream-50 sm:text-2xl">{item.title}</h3>
                         <p className="mt-2 text-[15px] leading-relaxed text-sand-400 text-pretty">{item.text}</p>

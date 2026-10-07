@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import { Wordmark } from "@/components/brand/Wordmark";
+import { ICON_STROKE } from "@/components/icons";
 
 /*
  * Portalo statybiniai blokai programėlės kalba (`gloumi-app/src/theme/theme.js`,
@@ -13,8 +14,8 @@ import { Wordmark } from "@/components/brand/Wordmark";
  *  - skaičiai rašomi sansu su `tabular-nums`, ne serifu (`theme.js` `FIGURES`).
  */
 
-/** `Icons.js` `ICON_STROKE` — lucide piktogramos piešiamos tuo pačiu storiu. */
-export const STROKE = 2.2;
+/** `Icons.js` `ICON_STROKE` – ikonų (`@/components/icons`) linijos storis. */
+export const STROKE = ICON_STROKE;
 
 export type Tone = "lavender" | "mint" | "rose" | "neutral" | "peach";
 

@@ -1,4 +1,4 @@
-import { Search, UserRound } from "lucide-react";
+import { IconProfile, IconSearch } from "@/components/icons";
 import { STROKE, input } from "../ui";
 
 /** Paieškos laukas su piktograma kairėje, kaip programėlės paieškos juosta. */
@@ -17,7 +17,7 @@ export function SearchField({
   icon: "search" | "user";
   required?: boolean;
 }) {
-  const Icon = icon === "search" ? Search : UserRound;
+  const Icon = icon === "search" ? IconSearch : IconProfile;
   return (
     <label className="relative block min-w-0 flex-1 basis-60">
       <span className="sr-only">{label}</span>

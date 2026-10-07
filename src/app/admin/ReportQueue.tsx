@@ -1,4 +1,4 @@
-import { Inbox } from "lucide-react";
+import { IconInbox } from "@/components/icons";
 import { ReportCard, type ReportView } from "./ReportCard";
 import { EmptyState, STROKE, chip, chipActive } from "./ui";
 
@@ -48,7 +48,7 @@ export function ReportQueue({
       </nav>
 
       {views.length === 0 ? (
-        <EmptyState tone="rose" icon={<Inbox size={24} strokeWidth={STROKE} aria-hidden />} title={EMPTY_TEXT[wanted]}>
+        <EmptyState tone="rose" icon={<IconInbox size={24} strokeWidth={STROKE} aria-hidden />} title={EMPTY_TEXT[wanted]}>
           Naujas skundas atsiras čia, kai kas nors programėlėje paspaus „Pranešti“.
         </EmptyState>
       ) : (

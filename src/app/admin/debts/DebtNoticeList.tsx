@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useTransition } from "react";
-import { CheckCheck, ReceiptText } from "lucide-react";
+import { IconCheck, IconReceipt } from "@/components/icons";
 import { markDebtNoticePaid } from "../actions";
 import { useConfirm } from "../ConfirmDialog";
 import { formatMoney, formatWhen } from "../format";
@@ -54,7 +54,7 @@ export function DebtNoticeList({ notices }: { notices: DebtNoticeView[] }) {
 
   if (notices.length === 0) {
     return (
-      <EmptyState tone="peach" icon={<ReceiptText size={24} strokeWidth={STROKE} aria-hidden />} title="Prašymų nėra">
+      <EmptyState tone="peach" icon={<IconReceipt size={24} strokeWidth={STROKE} aria-hidden />} title="Prašymų nėra">
         Šioje būsenoje mokėjimo prašymų nėra.
       </EmptyState>
     );
@@ -107,7 +107,7 @@ export function DebtNoticeList({ notices }: { notices: DebtNoticeView[] }) {
                   {n.blockState === "blocked" ? <Tag tone="danger">Mokėjimas vietoje išjungtas</Tag> : null}
                   {n.blockState === "email_pending" ? <Tag tone="warn">Siunčiamas laiškas apie išjungimą</Tag> : null}
                   <button type="button" disabled={pending} onClick={() => markPaid(n)} className={btn}>
-                    <CheckCheck size={16} strokeWidth={STROKE} aria-hidden />
+                    <IconCheck size={16} strokeWidth={STROKE} aria-hidden />
                     Pažymėti apmokėtą
                   </button>
                 </>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Building2, CalendarClock, HandCoins, Landmark, Undo2, UserRound } from "lucide-react";
+import { IconBuilding, IconCalendar, IconLandmark, IconProfile, IconReply, IconWallet } from "@/components/icons";
 import { resolveDispute } from "../actions";
 import { useConfirm, type ConfirmOptions } from "../ConfirmDialog";
 import { formatMoney, formatWhen } from "../format";
@@ -208,7 +208,7 @@ export function DisputeCard({ dispute }: { dispute: DisputeView }) {
         <div className="flex flex-col-reverse gap-0.5 px-4 py-3">
           <dt className="text-[11px] text-app-muted">Vizitas</dt>
           <dd className="flex items-center gap-1.5 text-sm font-semibold tabular-nums text-app-ink">
-            <CalendarClock size={14} strokeWidth={STROKE} aria-hidden className="text-app-faint" />
+            <IconCalendar size={14} strokeWidth={STROKE} aria-hidden className="text-app-faint" />
             {formatWhen(dispute.startsAt)}
           </dd>
         </div>
@@ -238,7 +238,7 @@ export function DisputeCard({ dispute }: { dispute: DisputeView }) {
         <PersonLink label="Meistras" id={dispute.masterId} name={dispute.masterName} />
         {dispute.stripeDisputeId ? (
           <span className="inline-flex items-center gap-1">
-            <Landmark size={13} strokeWidth={STROKE} aria-hidden />
+            <IconLandmark size={13} strokeWidth={STROKE} aria-hidden />
             Stripe: <code className="text-app-ink">{dispute.stripeDisputeId}</code>
           </span>
         ) : null}
@@ -257,11 +257,11 @@ export function DisputeCard({ dispute }: { dispute: DisputeView }) {
           <p className="text-[13px] text-app-muted">Pinigai pajudės kitą naktį.</p>
           <div className="flex flex-wrap gap-2">
             <button type="button" disabled={pending} onClick={() => decide("refund")} className={btn}>
-              <Undo2 size={16} strokeWidth={STROKE} aria-hidden />
+              <IconReply size={16} strokeWidth={STROKE} aria-hidden />
               Grąžinti klientui
             </button>
             <button type="button" disabled={pending} onClick={() => decide("release")} className={btn}>
-              <HandCoins size={16} strokeWidth={STROKE} aria-hidden />
+              <IconWallet size={16} strokeWidth={STROKE} aria-hidden />
               Išmokėti meistrui
             </button>
           </div>
@@ -285,7 +285,7 @@ export function DisputeCard({ dispute }: { dispute: DisputeView }) {
               onClick={() => decide("gloumi_bears")}
               className={`${btn} h-auto min-h-10 max-w-full py-2 text-left`}
             >
-              <Building2 size={16} strokeWidth={STROKE} aria-hidden className="shrink-0" />
+              <IconBuilding size={16} strokeWidth={STROKE} aria-hidden className="shrink-0" />
               Nuostolį neša Gloumi – išmokėti meistrui
             </button>
             <button
@@ -294,7 +294,7 @@ export function DisputeCard({ dispute }: { dispute: DisputeView }) {
               onClick={() => decide("master_bears")}
               className={`${btn} h-auto min-h-10 max-w-full py-2 text-left`}
             >
-              <UserRound size={16} strokeWidth={STROKE} aria-hidden className="shrink-0" />
+              <IconProfile size={16} strokeWidth={STROKE} aria-hidden className="shrink-0" />
               Nuostolį neša meistras
             </button>
           </div>
@@ -339,7 +339,7 @@ function PersonLink({ label, id, name }: { label: string; id: string | null; nam
   if (!id) return <span>{label}: ištrinta paskyra</span>;
   return (
     <a href={`/admin/users/${id}`} className="inline-flex items-center gap-1 hover:underline">
-      <UserRound size={13} strokeWidth={STROKE} aria-hidden />
+      <IconProfile size={13} strokeWidth={STROKE} aria-hidden />
       {label}: <span className="font-semibold text-app-ink">{name || "be vardo"}</span>
     </a>
   );

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Mail } from "lucide-react";
+import { IconMail } from "@/components/icons";
 import { BrandMark } from "@/components/brand/BrandMark";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { Container } from "@/components/ui/Container";
@@ -125,7 +125,7 @@ export function Footer({ lang }: { lang: Lang }) {
               href={`mailto:${site.email}`}
               className="mt-2 inline-flex items-center gap-2 text-sm font-medium text-terracotta-600 hover:text-terracotta-700"
             >
-              <Mail className="h-4 w-4" aria-hidden="true" />
+              <IconMail className="h-4 w-4" aria-hidden="true" />
               {site.email}
             </a>
           </div>

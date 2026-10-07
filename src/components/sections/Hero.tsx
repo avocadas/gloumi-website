@@ -1,4 +1,4 @@
-import { CalendarCheck, Check, Star } from "lucide-react";
+import { IconCalendarCheck, IconCheck, IconStar } from "@/components/icons";
 import { PhoneMockup } from "@/components/sections/PhoneMockup";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -41,7 +41,7 @@ export function Hero({ lang }: { lang: Lang }) {
           <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-espresso-500" aria-label={h.trustLabel}>
             {h.trust.map((item) => (
               <li key={item} className="inline-flex items-center gap-2">
-                <Check className="h-4 w-4 text-sage-500" aria-hidden="true" />
+                <IconCheck className="h-4 w-4 text-sage-500" aria-hidden="true" />
                 {item}
               </li>
             ))}
@@ -64,7 +64,7 @@ export function Hero({ lang }: { lang: Lang }) {
           >
             <div className="flex items-center gap-2.5">
               <span className="flex h-9 w-9 items-center justify-center rounded-full bg-terracotta-50 text-terracotta-600">
-                <Star className="h-4 w-4 fill-current" />
+                <IconStar filled className="h-4 w-4" aria-hidden="true" />
               </span>
               <div>
                 <p className="text-[13px] font-semibold leading-none text-espresso-900">{h.floatingReviews.title}</p>
@@ -78,7 +78,7 @@ export function Hero({ lang }: { lang: Lang }) {
           >
             <div className="flex items-center gap-2.5">
               <span className="flex h-9 w-9 items-center justify-center rounded-full bg-sage-100 text-sage-500">
-                <CalendarCheck className="h-4 w-4" />
+                <IconCalendarCheck className="h-4 w-4" />
               </span>
               <div>
                 <p className="text-[13px] font-semibold leading-none text-espresso-900">{h.floatingBooking.title}</p>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Ban, CircleCheck, Trash2, UserRound, X } from "lucide-react";
+import { IconBan, IconCheck, IconClose, IconProfile, IconTrash } from "@/components/icons";
 import { moderate, setSuspended } from "./actions";
 import { SUSPEND_DAYS } from "./suspension";
 import { useConfirm, type ConfirmOptions } from "./ConfirmDialog";
@@ -172,7 +172,7 @@ export function ReportCard({ report }: { report: ReportView }) {
             href={`/admin/users/${report.authorId}`}
             className="inline-flex items-center gap-1 font-semibold text-app-ink hover:underline"
           >
-            <UserRound size={13} strokeWidth={STROKE} aria-hidden />
+            <IconProfile size={13} strokeWidth={STROKE} aria-hidden />
             Autoriaus paskyra
           </a>
         ) : null}
@@ -195,7 +195,7 @@ export function ReportCard({ report }: { report: ReportView }) {
               title="Pranešusiam: imtasi veiksmų pagal Taisykles. Spauskite, kai turinys jau pašalintas ar paskyra apribota."
               className={btn}
             >
-              <CircleCheck size={16} strokeWidth={STROKE} aria-hidden />
+              <IconCheck size={16} strokeWidth={STROKE} aria-hidden />
               Imtasi veiksmų
             </button>
             <button
@@ -205,7 +205,7 @@ export function ReportCard({ report }: { report: ReportView }) {
               title="Pranešusiam: Taisyklių pažeidimo nerasta, turinys lieka."
               className={btnQuiet}
             >
-              <X size={16} strokeWidth={STROKE} aria-hidden />
+              <IconClose size={16} strokeWidth={STROKE} aria-hidden />
               Atmesti skundą
             </button>
           </div>
@@ -234,7 +234,7 @@ export function ReportCard({ report }: { report: ReportView }) {
                 }
                 className={btnDanger}
               >
-                <Trash2 size={16} strokeWidth={STROKE} aria-hidden />
+                <IconTrash size={16} strokeWidth={STROKE} aria-hidden />
                 Ištrinti turinį
               </button>
             ) : null}
@@ -274,7 +274,7 @@ export function ReportCard({ report }: { report: ReportView }) {
                 }
                 className={btnDanger}
               >
-                <Ban size={16} strokeWidth={STROKE} aria-hidden />
+                <IconBan size={16} strokeWidth={STROKE} aria-hidden />
                 Sustabdyti autorių
               </button>
             ) : null}

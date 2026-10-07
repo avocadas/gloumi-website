@@ -1,11 +1,11 @@
-import { BadgeCheck, CalendarCheck, Receipt, Sparkles } from "lucide-react";
+import { IconCalendarCheck, IconReceipt, IconSparkles, IconVerified } from "@/components/icons";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { getCopy } from "@/content/copy";
 import { sectionId, type Lang } from "@/content/lang";
 
-const ICONS = [CalendarCheck, Sparkles, Receipt, BadgeCheck];
+const ICONS = [IconCalendarCheck, IconSparkles, IconReceipt, IconVerified];
 
 export function WhyGloumi({ lang }: { lang: Lang }) {
   const copy = getCopy(lang);
@@ -22,7 +22,7 @@ export function WhyGloumi({ lang }: { lang: Lang }) {
                 <Reveal delay={index * 0.08} className="h-full">
                   <article className="flex h-full flex-col rounded-3xl bg-cream-100 p-7 ring-1 ring-espresso-900/5 sm:p-8">
                     <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-terracotta-600 shadow-card">
-                      <Icon className="h-6 w-6" strokeWidth={1.75} aria-hidden="true" />
+                      <Icon className="h-6 w-6" aria-hidden="true" />
                     </span>
                     <h3 className="mt-6 font-serif text-2xl font-medium text-espresso-900 text-balance">{item.title}</h3>
                     <p className="mt-3 leading-relaxed text-espresso-500 text-pretty">{item.text}</p>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { IconEye, IconEyeOff } from "@/components/icons";
 import { setReviewReplyHidden } from "./actions";
 import { useConfirm } from "./ConfirmDialog";
 import type { NoticeNote } from "./moderation-email";
@@ -61,7 +61,7 @@ export function ReplyVisibility({ replyId, hiddenAt }: { replyId: string; hidden
     <div>
       {dialog}
       <button type="button" disabled={pending} onClick={toggle} className={hidden ? btn : btnDanger}>
-        {hidden ? <Eye size={16} strokeWidth={STROKE} aria-hidden /> : <EyeOff size={16} strokeWidth={STROKE} aria-hidden />}
+        {hidden ? <IconEye size={16} strokeWidth={STROKE} aria-hidden /> : <IconEyeOff size={16} strokeWidth={STROKE} aria-hidden />}
         {hidden ? "Rodyti atsakymą" : "Paslėpti atsakymą"}
       </button>
       {error ? (

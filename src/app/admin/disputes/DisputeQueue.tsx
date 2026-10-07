@@ -1,4 +1,4 @@
-import { Scale, UserRound } from "lucide-react";
+import { IconProfile, IconScale } from "@/components/icons";
 import { EmptyState, STROKE, SectionTitle, card, chip, chipActive } from "../ui";
 import { DisputeCard, type DisputeView } from "./DisputeCard";
 
@@ -58,7 +58,7 @@ export function DisputeQueue({
         {disputes.length === 0 ? (
           <EmptyState
             tone="peach"
-            icon={<Scale size={24} strokeWidth={STROKE} aria-hidden />}
+            icon={<IconScale size={24} strokeWidth={STROKE} aria-hidden />}
             title={EMPTY_TEXT[wanted] ?? "Šioje būsenoje ginčų nėra"}
           >
             Ginčas atsiranda, kai klientas per 3 dienas po vizito paspaudžia „Vizitas neįvyko?“ arba bankas praneša
@@ -92,7 +92,7 @@ export function DisputeQueue({
                     href={`/admin/users/${m.id}`}
                     className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-app-ink transition-colors hover:bg-app-surface"
                   >
-                    <UserRound size={16} strokeWidth={STROKE} aria-hidden className="text-app-faint" />
+                    <IconProfile size={16} strokeWidth={STROKE} aria-hidden className="text-app-faint" />
                     {m.name || m.id}
                   </a>
                 </li>

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { UserX } from "lucide-react";
+import { IconUserX } from "@/components/icons";
 import { checkAdmin } from "@/lib/admin-guard";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { loadCatalog, signMedia } from "@/lib/admin-data";
@@ -56,7 +56,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
   if (!overview) {
     return (
       <AdminShell section="data" tone="mint" title="Paskyra" username={username} back={back}>
-        <EmptyState tone="mint" icon={<UserX size={24} strokeWidth={STROKE} aria-hidden />} title="Tokios paskyros nėra">
+        <EmptyState tone="mint" icon={<IconUserX size={24} strokeWidth={STROKE} aria-hidden />} title="Tokios paskyros nėra">
           Gal ji jau ištrinta.
         </EmptyState>
       </AdminShell>

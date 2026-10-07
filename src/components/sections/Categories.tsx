@@ -78,7 +78,7 @@ export function CategoriesSection({ lang }: { lang: Lang }) {
                         className="flex h-[calc(100%-10px)] w-[calc(100%-10px)] items-center justify-center rounded-full transition-transform duration-300 group-hover:scale-105"
                         style={{ backgroundColor: category.tint, color: category.accent }}
                       >
-                        <Icon className="h-7 w-7 sm:h-8 sm:w-8" strokeWidth={1.6} aria-hidden="true" />
+                        <Icon className="h-7 w-7 sm:h-8 sm:w-8" aria-hidden="true" />
                       </span>
                     </span>
                   </span>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useId, useState, type FormEvent, type ReactNode } from "react";
-import { CircleCheck, LoaderCircle, Mail } from "lucide-react";
+import { IconMail, IconSpinner, IconVerified } from "@/components/icons";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { getCategories } from "@/content/categories";
 import { getCopy } from "@/content/copy";
@@ -99,7 +99,7 @@ export function WaitlistForm({ lang }: { lang: Lang }) {
       <Card>
         <div className="flex flex-col items-start gap-4">
           <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-sage-100 text-sage-500">
-            <CircleCheck className="h-6 w-6" aria-hidden="true" />
+            <IconVerified className="h-6 w-6" aria-hidden="true" />
           </span>
           <h3 className="font-serif text-3xl font-medium">{f.successTitle}</h3>
           <p className="leading-relaxed text-espresso-500">{inStores ? f.successText : f.successTextSoon}</p>
@@ -125,7 +125,7 @@ export function WaitlistForm({ lang }: { lang: Lang }) {
           href={`mailto:${site.email}?subject=${encodeURIComponent(f.mailSubject)}`}
           className="mt-4 inline-flex items-center gap-2 font-medium text-terracotta-600 hover:text-terracotta-700"
         >
-          <Mail className="h-4 w-4" aria-hidden="true" />
+          <IconMail className="h-4 w-4" aria-hidden="true" />
           {site.email}
         </a>
       </Card>
@@ -268,7 +268,7 @@ export function WaitlistForm({ lang }: { lang: Lang }) {
           <Button type="submit" size="lg" className="w-full" disabled={submitting}>
             {submitting ? (
               <>
-                <LoaderCircle className="h-5 w-5 animate-spin" aria-hidden="true" />
+                <IconSpinner className="h-5 w-5 animate-spin" aria-hidden="true" />
                 {f.submitting}
               </>
             ) : (

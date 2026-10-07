@@ -1,4 +1,4 @@
-import { ChevronRight } from "lucide-react";
+import { IconChevronRight } from "@/components/icons";
 import type { CatalogEntry, CatalogKind } from "@/lib/admin-data";
 import { STROKE, SectionTitle, btn, card } from "../ui";
 import { SearchField } from "./SearchField";
@@ -147,7 +147,7 @@ export function CatalogIndex({ catalog }: { catalog: CatalogEntry[] }) {
                             <span className="block truncate text-sm font-semibold text-app-ink">{t.label}</span>
                             <code className="block truncate text-[11px] text-app-faint">{t.tbl}</code>
                           </span>
-                          <ChevronRight
+                          <IconChevronRight
                             size={18}
                             strokeWidth={STROKE}
                             aria-hidden

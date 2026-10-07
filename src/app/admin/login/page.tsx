@@ -3,7 +3,7 @@
 import { Suspense, useState } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowRight, CircleAlert, Lock, UserRound } from "lucide-react";
+import { IconAlert, IconArrowRight, IconLock, IconProfile } from "@/components/icons";
 import { AuthShell, Brand, STROKE, btn, btnQuiet, input } from "../ui";
 import { finishAdminLogin, startAdminLogin } from "./actions";
 
@@ -158,7 +158,7 @@ function LoginForm() {
       </label>
       <button type="submit" disabled={busy || code.length !== 6} className={`${btn} h-12 w-full`}>
         Patvirtinti
-        <ArrowRight size={16} strokeWidth={STROKE} aria-hidden />
+        <IconArrowRight size={16} strokeWidth={STROKE} aria-hidden />
       </button>
       <button type="button" onClick={startOver} disabled={busy} className={`${btnQuiet} w-full`}>
         Pradėti iš naujo
@@ -201,7 +201,7 @@ function LoginForm() {
           role="alert"
           className="mt-5 flex items-start gap-2 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text"
         >
-          <CircleAlert size={18} strokeWidth={STROKE} aria-hidden className="mt-px shrink-0" />
+          <IconAlert size={18} strokeWidth={STROKE} aria-hidden className="mt-px shrink-0" />
           {error}
         </p>
       ) : null}
@@ -211,7 +211,7 @@ function LoginForm() {
           <label className="block">
             <span className="text-[13px] font-semibold text-app-ink">Administratorius</span>
             <span className="relative mt-2 block">
-              <UserRound
+              <IconProfile
                 size={18}
                 strokeWidth={STROKE}
                 aria-hidden
@@ -233,7 +233,7 @@ function LoginForm() {
           <label className="block">
             <span className="text-[13px] font-semibold text-app-ink">Slaptažodis</span>
             <span className="relative mt-2 block">
-              <Lock
+              <IconLock
                 size={18}
                 strokeWidth={STROKE}
                 aria-hidden
@@ -251,7 +251,7 @@ function LoginForm() {
           </label>
           <button type="submit" disabled={busy} className={`${btn} h-12 w-full`}>
             Toliau
-            <ArrowRight size={16} strokeWidth={STROKE} aria-hidden />
+            <IconArrowRight size={16} strokeWidth={STROKE} aria-hidden />
           </button>
         </form>
       ) : null}

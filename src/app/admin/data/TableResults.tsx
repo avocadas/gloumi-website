@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, SearchX, UserRound, X } from "lucide-react";
+import { IconChevronLeft, IconChevronRight, IconClose, IconProfile, IconSearch } from "@/components/icons";
 import { PAGE_SIZE, type CatalogEntry, type CatalogKind, type SearchResult, type SignedMedia } from "@/lib/admin-data";
 import { ownerLabel } from "../format";
 import { EmptyState, STROKE, Tag, btn, card } from "../ui";
@@ -110,12 +110,12 @@ export function TableResults({
               className="inline-flex h-8 items-center gap-1.5 rounded-full bg-white px-3 text-[13px] font-semibold text-app-ink ring-1 ring-app-border hover:ring-app-faint"
             >
               „{q}“
-              <X size={14} strokeWidth={STROKE} aria-hidden />
+              <IconClose size={14} strokeWidth={STROKE} aria-hidden />
             </a>
           ) : null}
           {owner && ownerValid ? (
             <span className="inline-flex h-8 items-center gap-2 rounded-full bg-white pr-1 pl-3 text-[13px] font-semibold text-app-ink ring-1 ring-app-border">
-              <UserRound size={14} strokeWidth={STROKE} aria-hidden />
+              <IconProfile size={14} strokeWidth={STROKE} aria-hidden />
               <a href={`/admin/users/${owner}`} className="hover:underline">
                 Tik šio naudotojo eilutės
               </a>
@@ -124,7 +124,7 @@ export function TableResults({
                 className="flex h-6 w-6 items-center justify-center rounded-full hover:bg-app-input"
                 aria-label="Nuimti naudotojo filtrą"
               >
-                <X size={14} strokeWidth={STROKE} aria-hidden />
+                <IconClose size={14} strokeWidth={STROKE} aria-hidden />
               </a>
             </span>
           ) : null}
@@ -137,7 +137,7 @@ export function TableResults({
             {res.error}
           </p>
         ) : rows.length === 0 ? (
-          <EmptyState tone="lavender" icon={<SearchX size={24} strokeWidth={STROKE} aria-hidden />} title="Nieko nerasta">
+          <EmptyState tone="lavender" icon={<IconSearch size={24} strokeWidth={STROKE} aria-hidden />} title="Nieko nerasta">
             {total === 0
               ? q || owner
                 ? "Pabandykite kitą žodį arba nuimkite filtrą."
@@ -179,7 +179,7 @@ export function TableResults({
               <nav aria-label="Puslapiai" className="mt-6 flex items-center justify-between gap-3">
                 {page > 0 ? (
                   <a href={link(page - 1)} className={btn}>
-                    <ChevronLeft size={16} strokeWidth={STROKE} aria-hidden />
+                    <IconChevronLeft size={16} strokeWidth={STROKE} aria-hidden />
                     Ankstesni
                   </a>
                 ) : (
@@ -191,7 +191,7 @@ export function TableResults({
                 {from + rows.length < total && page < MAX_PAGE ? (
                   <a href={link(page + 1)} className={btn}>
                     Kiti
-                    <ChevronRight size={16} strokeWidth={STROKE} aria-hidden />
+                    <IconChevronRight size={16} strokeWidth={STROKE} aria-hidden />
                   </a>
                 ) : (
                   <span />

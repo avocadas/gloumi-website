@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { IconArrowRight } from "@/components/icons";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
@@ -22,7 +22,7 @@ export function FinalCta({ lang }: { lang: Lang }) {
           <StoreBadges lang={lang} className="mt-10 justify-center" />
           <ButtonLink href={sectionHref(lang, "join")} variant="ghost" className="mt-4">
             {copy.finalCta.masterLink}
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            <IconArrowRight className="h-4 w-4" aria-hidden="true" />
           </ButtonLink>
         </Reveal>
       </Container>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { ChevronRight, ShieldAlert } from "lucide-react";
+import { IconChevronRight, IconWallet } from "@/components/icons";
 import { useConfirm } from "../ConfirmDialog";
 import type { NoticeNote } from "../moderation-email";
 import { ActionNote, STROKE, btn, btnDanger } from "../ui";
@@ -78,14 +78,14 @@ export function HoldBooking({ bookingId }: { bookingId: string }) {
           <p className="text-sm font-semibold text-app-ink">Ginčas atidarytas – nurašymas ir išmoka sustabdyti.</p>
           <a href="/admin/disputes" className={btn}>
             Į ginčus
-            <ChevronRight size={16} strokeWidth={STROKE} aria-hidden />
+            <IconChevronRight size={16} strokeWidth={STROKE} aria-hidden />
           </a>
         </div>
       ) : (
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-[13px] text-app-muted">Įtariate sukčiavimą? Sustabdykite nurašymą ir išmoką.</p>
           <button type="button" disabled={pending} onClick={hold} className={btnDanger}>
-            <ShieldAlert size={16} strokeWidth={STROKE} aria-hidden />
+            <IconWallet size={16} strokeWidth={STROKE} aria-hidden />
             Sulaikyti
           </button>
         </div>

@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { IconArrowRight } from "@/components/icons";
 import { signOutAdmin } from "./sign-out";
 import { AuthShell, Brand, STROKE, btn, btnQuiet } from "./ui";
 
@@ -42,7 +42,7 @@ export function MfaNotice({ reason }: { reason: "mfa-required" | "expired" }) {
       </p>
       <a href="/admin/login" className={`${btn} mt-6 h-12 w-full`}>
         Prisijungti iš naujo
-        <ArrowRight size={16} strokeWidth={STROKE} aria-hidden />
+        <IconArrowRight size={16} strokeWidth={STROKE} aria-hidden />
       </a>
       {/* Čia žmogus lieka su pasenusia ar vien slaptažodžio sesija — būtent
           tokią ir turi būti galima užbaigti, o ne tik perrašyti nauja. */}

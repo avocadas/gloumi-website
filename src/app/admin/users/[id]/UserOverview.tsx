@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { IconChevronDown, IconChevronRight } from "@/components/icons";
 import type { CatalogEntry, SignedMedia } from "@/lib/admin-data";
 import { columnLabel, formatDate, formatValue, formatWhen } from "../../format";
 import { STROKE, SectionTitle, Tag, card } from "../../ui";
@@ -189,7 +189,7 @@ export function UserOverview({
                     <span className="rounded-full bg-app-band px-2.5 py-0.5 text-xs font-bold tabular-nums text-app-ink">
                       {counts[c.tbl]}
                     </span>
-                    <ChevronRight
+                    <IconChevronRight
                       size={18}
                       strokeWidth={STROKE}
                       aria-hidden
@@ -236,7 +236,7 @@ export function UserOverview({
         <details className={`${card} group overflow-hidden`}>
           <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4 text-sm font-semibold text-app-ink [&::-webkit-details-marker]:hidden">
             Visi laukai
-            <ChevronDown
+            <IconChevronDown
               size={18}
               strokeWidth={STROKE}
               aria-hidden

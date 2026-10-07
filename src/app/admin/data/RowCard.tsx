@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useState, useTransition } from "react";
-import { ChevronDown, ChevronRight, Clock, ImageOff, Pencil, Trash2, UserRound } from "lucide-react";
+import { IconChevronDown, IconChevronRight, IconClock, IconImage, IconPencil, IconProfile, IconTrash } from "@/components/icons";
 import type { CatalogKind, DataRow, SignedMedia } from "@/lib/admin-data";
 import { editText, removeRow } from "../actions";
 import { useConfirm } from "../ConfirmDialog";
@@ -135,7 +135,7 @@ export function RowCard({
               title="Atidaryti paskyrą"
               className="inline-flex h-7 items-center gap-1.5 rounded-full bg-app-sheet px-2.5 text-xs font-semibold text-app-ink transition-colors hover:bg-app-input"
             >
-              <UserRound size={13} strokeWidth={STROKE} aria-hidden />
+              <IconProfile size={13} strokeWidth={STROKE} aria-hidden />
               {ownerLabel(c)}
             </a>
           ))}
@@ -143,7 +143,7 @@ export function RowCard({
         </div>
         {stamp ? (
           <span className="inline-flex items-center gap-1 text-xs tabular-nums text-app-muted">
-            <Clock size={13} strokeWidth={STROKE} aria-hidden />
+            <IconClock size={13} strokeWidth={STROKE} aria-hidden />
             {formatWhen(stamp)}
           </span>
         ) : null}
@@ -174,7 +174,7 @@ export function RowCard({
                         onClick={() => startEdit(c)}
                         className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold text-app-body transition-colors hover:bg-app-input disabled:opacity-40"
                       >
-                        <Pencil size={13} strokeWidth={STROKE} aria-hidden />
+                        <IconPencil size={13} strokeWidth={STROKE} aria-hidden />
                         Taisyti
                       </button>
                     ) : saved === c ? (
@@ -239,7 +239,7 @@ export function RowCard({
         <summary className="flex cursor-pointer list-none items-center gap-1.5 px-4 py-2.5 text-[13px] font-semibold text-app-body [&::-webkit-details-marker]:hidden">
           <span>Visi laukai</span>
           <span className="tabular-nums text-app-faint">({fields.length})</span>
-          <ChevronDown
+          <IconChevronDown
             size={16}
             strokeWidth={STROKE}
             aria-hidden
@@ -280,7 +280,7 @@ export function RowCard({
       {canRemove && !removed ? (
         <footer className="mt-4 flex justify-end border-t border-app-hairline pt-4">
           <button type="button" disabled={pending} onClick={remove} className={btnDanger}>
-            <Trash2 size={16} strokeWidth={STROKE} aria-hidden />
+            <IconTrash size={16} strokeWidth={STROKE} aria-hidden />
             Ištrinti
           </button>
         </footer>
@@ -294,9 +294,9 @@ export function RowCard({
         <footer className="mt-4 flex flex-col gap-3 border-t border-app-hairline pt-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-[13px] text-app-muted">Sustabdyti ir ištrinti galima paskyros puslapyje.</p>
           <a href={`/admin/users/${row[ownerLinks[0]] as string}`} className={btn}>
-            <UserRound size={16} strokeWidth={STROKE} aria-hidden />
+            <IconProfile size={16} strokeWidth={STROKE} aria-hidden />
             Atidaryti paskyrą
-            <ChevronRight size={16} strokeWidth={STROKE} aria-hidden />
+            <IconChevronRight size={16} strokeWidth={STROKE} aria-hidden />
           </a>
         </footer>
       ) : null}
@@ -310,7 +310,7 @@ function MediaPreview({ signed }: { signed: SignedMedia | undefined }) {
   if (!signed) {
     return (
       <span className={`${box} flex flex-col items-center justify-center gap-1.5 p-3 text-center text-[11px] text-app-muted`}>
-        <ImageOff size={20} strokeWidth={STROKE} aria-hidden className="text-app-faint" />
+        <IconImage size={20} strokeWidth={STROKE} aria-hidden className="text-app-faint" />
         Peržiūra nepasiekiama
       </span>
     );

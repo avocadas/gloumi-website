@@ -1,4 +1,4 @@
-import { LifeBuoy } from "lucide-react";
+import { IconMail } from "@/components/icons";
 import { EmptyState, STROKE, chip, chipActive } from "../ui";
 import { TicketCard, type TicketView } from "./TicketCard";
 
@@ -46,7 +46,7 @@ export function SupportQueue({
       {tickets.length === 0 ? (
         <EmptyState
           tone="mint"
-          icon={<LifeBuoy size={24} strokeWidth={STROKE} aria-hidden />}
+          icon={<IconMail size={24} strokeWidth={STROKE} aria-hidden />}
           title={EMPTY_TEXT[wanted] ?? "Užklausų nėra"}
         >
           Užklausa atsiranda, kai žmogus programėlėje parašo „Pagalba → Neradote atsakymo?“ arba vizite paspaudžia
