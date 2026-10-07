@@ -275,4 +275,18 @@ export const lt = {
     text: "Nuoroda galėjo pasikeisti arba puslapis buvo perkeltas.",
     cta: "Grįžti į pradžią",
   },
+  /*
+   * Puslapiai, į kuriuos veda programėlės dalinimosi nuorodos (#210), kai
+   * programėlės telefone nėra arba nuoroda atidaryta naršyklėje.
+   */
+  appLink: {
+    profileTitle: "Šis meistras – Gloumi programėlėje",
+    refTitle: "Jus pakvietė į Gloumi",
+    text: "Atidarykite nuorodą Gloumi programėlėje. Jei jos dar neturite – atsisiųskite ir atidarykite nuorodą dar kartą.",
+    open: "Atidaryti programėlėje",
+    masterCode: "Meistro kodas",
+    referralCode: "Pakvietimo kodas",
+    codeHint: "Jei nuoroda programėlės neatidarė, šį kodą galėsite įvesti programėlėje.",
+    home: "Apie Gloumi",
+  },
 };
