@@ -7,7 +7,7 @@ import { UUID_PATTERN } from "../format";
 import { vilniusEndOfDay } from "./dates";
 
 /*
- * Individualios meistro sąlygos (#179, Gloumi `20261004135403`): komisinio
+ * Individualios meistro sąlygos (#179, Gloumi `20261006203804`): komisinio
  * atsisakymas ir nemokamas Pro ar VIP, abu su terminu ir priežastimi.
  *
  * Kaip ir `../actions.ts`: kiekvienas veiksmas iš naujo tikrina administratorių
