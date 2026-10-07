@@ -122,7 +122,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-20",
           "q": "Meistras neatvyko arba vizitas neįvyko.",
-          "a": "Mokėjote programėlėje? Atidarykite vizitą ir paspauskite „Vizitas neįvyko?“ – iki 72 val. po vizito pabaigos. Išmoka meistrui sulaikoma, sprendimą priima žmogus. Vėliau ar mokėjus vietoje – rašykite mums."
+          "a": "Mokėjote programėlėje? Atidarykite vizitą ir paspauskite „Vizitas neįvyko?“ – iki 72 val. po vizito pabaigos. Kol išsiaiškinsime, rezervuota suma nenurašoma, o jau nurašytą galime grąžinti; sprendimą priima žmogus. Vėliau ar mokėjus vietoje – rašykite mums."
         },
         {
           "id": "K-21",
@@ -264,7 +264,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-47",
           "q": "Klientas pranešė, kad vizitas neįvyko.",
-          "a": "Išmoka už vizitą sulaikoma, kol išsiaiškinsime. Matote kliento žinutę – paaiškinkite ir, jei paprašysime, atsiųskite įrodymų. Sprendimą priima žmogus, apie jį pranešame programėlėje ir el. paštu."
+          "a": "Kol išsiaiškinsime, kliento mokėjimas už šį vizitą nenurašomas (jau nurašytą galime grąžinti klientui). Matote kliento žinutę – paaiškinkite ir, jei paprašysime, atsiųskite įrodymų. Sprendimą priima žmogus, apie jį pranešame programėlėje ir el. paštu."
         },
         {
           "id": "K-48",
@@ -420,7 +420,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-20",
           "q": "The master did not turn up or the visit did not happen.",
-          "a": "Paid in the app? Open the visit and tap Visit didn't happen? – up to 72 h after it ends. The master's payout is held and a person decides. Later, or if you paid on site – write to us."
+          "a": "Paid in the app? Open the visit and tap Visit didn't happen? – up to 72 h after it ends. While we look into it, the reserved amount is not charged, and an amount already charged can be refunded; a person decides. Later, or if you paid on site – write to us."
         },
         {
           "id": "K-21",
@@ -562,7 +562,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-47",
           "q": "A client reported that the visit did not happen.",
-          "a": "The payout for the visit is held while we look into it. You can see the client's message – explain and, if we ask, send evidence. A person decides, and we tell you in the app and by email."
+          "a": "While we look into it, the client's payment for this visit is not charged (an amount already charged may be refunded to the client). You can see the client's message – explain and, if we ask, send evidence. A person decides, and we tell you in the app and by email."
         },
         {
           "id": "K-48",
