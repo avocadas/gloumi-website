@@ -244,7 +244,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-43",
           "q": "Kuo skiriasi planai?",
-          "a": "Starter kainuoja 0 € per mėn., o Gloumi ima 5 % komisinį už pirmą įvykusį kiekvieno kliento vizitą (K-40); ribos – 20 aktyvių vizitų per mėn. ir 10 darbų nuotraukų. Pro (19 € per mėn. arba 199 € per metus) – be ribų, aukščiau paieškoje ir sraute, avansai ir mokėjimai programėlėje, arbatpinigiai. VIP Studio (49 € per mėn. arba 499 € per metus) – dar ir salonas iki 10 meistrų. Komisinis visuose planuose tas pats. Pirmos 30 d. – Pro nemokamai, be kortelės. Planai – šoninis meniu → Gloumi Pro."
+          "a": "Starter kainuoja 0 € per mėn., o Gloumi ima 5 % komisinį už pirmą įvykusį kiekvieno kliento vizitą (K-40); ribos – 20 aktyvių vizitų per mėn. ir 10 darbų nuotraukų. Pro (19 € per mėn. arba 199 € per metus) – be ribų, aukščiau paieškoje ir sraute, avansai ir mokėjimai programėlėje, arbatpinigiai. VIP Studio (49 € per mėn. arba 499 € per metus) – dar ir salonas iki 10 meistrų. Komisinis visuose planuose tas pats. Mėnesinei Pro prenumeratai gali būti siūloma įvadinė kaina – ji parodoma programėlėje prieš užsisakant. Planai – šoninis meniu → Gloumi Pro."
         },
         {
           "id": "K-44",
@@ -542,7 +542,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-43",
           "q": "What is the difference between the plans?",
-          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 active visits a month and 10 portfolio photos. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. First 30 days – Pro free, no card. Plans – side menu → Gloumi Pro."
+          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 active visits a month and 10 portfolio photos. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. An introductory price may be offered for monthly Pro – the app shows it before you subscribe. Plans – side menu → Gloumi Pro."
         },
         {
           "id": "K-44",
