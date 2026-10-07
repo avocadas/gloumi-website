@@ -285,7 +285,7 @@ export const lt = {
     text: "Atidarykite nuorodą Gloumi programėlėje. Jei jos dar neturite – atsisiųskite ir atidarykite nuorodą dar kartą.",
     open: "Atidaryti programėlėje",
     masterCode: "Meistro kodas",
-    referralCode: "Pakvietimo kodas",
+    referralCode: "Rekomendacijos kodas",
     codeHint: "Jei nuoroda programėlės neatidarė, šį kodą galėsite įvesti programėlėje.",
     home: "Apie Gloumi",
   },

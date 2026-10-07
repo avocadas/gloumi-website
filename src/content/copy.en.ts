@@ -260,12 +260,12 @@ export const en: typeof lt = {
 
   appLink: {
     profileTitle: "This master is on the Gloumi app",
-    refTitle: "You have been invited to Gloumi",
-    text: "Open the link in the Gloumi app. If you do not have it yet, download it and open the link again.",
+    refTitle: "You're invited to Gloumi",
+    text: "Open the link in the Gloumi app. If you don't have it yet, download it and open the link again.",
     open: "Open in the app",
     masterCode: "Master code",
-    referralCode: "Invitation code",
-    codeHint: "If the link did not open the app, you can enter this code in the app.",
+    referralCode: "Referral code",
+    codeHint: "If the link didn't open the app, you can enter this code in the app.",
     home: "About Gloumi",
   },
   notFound: {
