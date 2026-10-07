@@ -131,11 +131,11 @@ export const en: typeof lt = {
   masters: {
     eyebrow: "For masters",
     title: "More clients. Fewer empty hours.",
-    lead: "Gloumi is your front desk, your shop window and your calendar, in one app. Start on the Starter plan for €0 – Gloumi only takes a 5% commission on visits paid in the app.",
+    lead: "Gloumi is your front desk, your shop window and your calendar, in one app. Start on the Starter plan for €0 – Gloumi takes a 5% commission only on each client's first completed visit with you.",
     items: [
       {
         title: "Fewer no-shows",
-        text: "Ask for a deposit and the client confirms the time with money. If they do not turn up, the deposit stays with you.",
+        text: "Ask for a deposit – it is reserved on the client's card, and after a late cancellation or a no-show it goes to you under your cancellation terms.",
         plan: "Pro and VIP",
       },
       {

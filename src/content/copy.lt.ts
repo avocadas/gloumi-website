@@ -135,11 +135,11 @@ export const lt = {
   masters: {
     eyebrow: "Meistrams",
     title: "Daugiau klientų. Mažiau tuščių valandų.",
-    lead: "Gloumi – jūsų registratūra, vitrina ir kalendorius vienoje programėlėje. Pradėkite nuo Starter plano už 0 € – Gloumi ima tik 5 % komisinį nuo vizitų, apmokėtų programėlėje.",
+    lead: "Gloumi – jūsų registratūra, vitrina ir kalendorius vienoje programėlėje. Pradėkite nuo Starter plano už 0 € – Gloumi ima 5 % komisinį tik už pirmą įvykusį kiekvieno kliento vizitą pas jus.",
     items: [
       {
         title: "Mažiau neatvykimų",
-        text: "Prašykite avanso – klientas patvirtina laiką pinigais, o neatvykus avansas lieka jums.",
+        text: "Prašykite avanso – jis rezervuojamas kliento kortelėje, o vėlai atšaukus ar neatvykus atitenka jums pagal jūsų atšaukimo sąlygas.",
         // S-082 (Taisyklės 1.13 T-13, M-8): avansai ir mokėjimai programėlėje – tik Pro ir VIP Studio.
         plan: "Pro ir VIP",
       },
