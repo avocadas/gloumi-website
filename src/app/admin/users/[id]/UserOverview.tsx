@@ -4,6 +4,7 @@ import type { CatalogEntry, SignedMedia } from "@/lib/admin-data";
 import { columnLabel, formatDate, formatValue, formatWhen } from "../../format";
 import { STROKE, SectionTitle, Tag, card } from "../../ui";
 import { AccountActions } from "./AccountActions";
+import { BirthDateCorrection } from "./BirthDateCorrection";
 import type { GrantView } from "../../grants/GrantRows";
 import { MasterGrants } from "./MasterGrants";
 import { CopyButton } from "./CopyButton";
@@ -68,6 +69,7 @@ export function UserOverview({
   banned,
   restrictedUntil,
   terminationAt,
+  birthDate,
   grants,
   grantDays,
 }: {
@@ -80,6 +82,8 @@ export function UserOverview({
   restrictedUntil: string | null;
   /** Kada bus panaikinta meistro paskyra, jei nutraukimas suplanuotas (#169); kitaip `null`. */
   terminationAt: string | null;
+  /** `profiles.birth_date` (YYYY-MM-DD) – taisymo eilutei; `null` – nenurodyta. */
+  birthDate: string | null;
   /** Meistro individualios sąlygos (#179); `undefined` — ne meistras, `null` — gauti nepavyko. */
   grants?: GrantView[] | null;
   grantDays: { min: string; max: string };
@@ -171,6 +175,7 @@ export function UserOverview({
             isMaster={Boolean(master)}
           />
         )}
+        {user.is_admin ? null : <BirthDateCorrection userId={user.id} birthDate={birthDate} />}
       </div>
 
       <div className="space-y-6">

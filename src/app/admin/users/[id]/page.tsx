@@ -38,7 +38,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
   if (!UUID_PATTERN.test(id)) notFound();
 
   const db = createSupabaseAdminClient();
-  const [{ data, error }, catalog, restriction, termination] = await Promise.all([
+  const [{ data, error }, catalog, restriction, termination, birth] = await Promise.all([
     db.rpc("admin_user_overview", { _admin_id: check.userId, _user_id: id }),
     loadCatalog(),
     /*
@@ -59,7 +59,10 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
       .is("cancelled_at", null)
       .is("executed_at", null)
       .maybeSingle(),
+    // Gimimo data – tik taisymo eilutei (BDAR 16 str.); `admin_user_overview` jos negrąžina.
+    db.from("profiles").select("birth_date").eq("id", id).maybeSingle(),
   ]);
+  const birthDate = typeof birth.data?.birth_date === "string" ? birth.data.birth_date : null;
   const terminationAt = typeof termination.data?.scheduled_for === "string" ? termination.data.scheduled_for : null;
   const restrictedUntil = typeof restriction.data?.until === "string" ? restriction.data.until : null;
   const overview = error ? null : (data as Overview);
@@ -107,6 +110,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
         banned={isBanned(user.banned_until)}
         restrictedUntil={isBanned(restrictedUntil) ? restrictedUntil : null}
         terminationAt={terminationAt}
+        birthDate={birthDate}
         grants={grants}
         grantDays={{ min: today, max: latestDay(today) }}
       />

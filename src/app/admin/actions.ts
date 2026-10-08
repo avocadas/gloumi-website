@@ -94,6 +94,10 @@ const DB_ERRORS: Record<string, string> = {
     "Šio meistro paskyros nutraukimas jau suplanuotas. Iš karto ištrinti galima tik nurodžius skubų pagrindą, o atšaukti – mygtuku „Atšaukti nutraukimą“.",
   termination_not_scheduled: "Nutraukimas jau atšauktas arba įvykdytas – atnaujinkite puslapį.",
   bad_urgent_ground: "Netinkamas skubus pagrindas – atnaujinkite puslapį ir pasirinkite iš naujo.",
+  // Gimimo datos taisymas (`admin_correct_birth_date`, Gloumi `20261008204515`).
+  reason_too_short: "Žmogų darant vyresniu pagrindimas turi būti bent 20 ženklų: kuo remiantis taisoma.",
+  bad_birth_date: "Netinkama data: ji negali būti ateityje, o žmogui turi būti bent 14 metų.",
+  birth_date_unchanged: "Ši data jau įrašyta – nieko keisti nereikia.",
   // Skolos pranešimas (`admin_mark_debt_notice_paid`).
   already_paid: "Jau pažymėta apmokėta — gal tai ką tik padarė kitas administratorius.",
 };
@@ -559,6 +563,38 @@ export async function cancelMasterTermination(userId: string, reason: string): P
 
     revalidatePath("/admin", "layout");
     return { ok: true, note: await authorEmailNote(db, auditLogId) };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
+  }
+}
+
+/**
+ * Pataiso gimimo datą (BDAR 16 str.; Gloumi `admin_correct_birth_date`):
+ * priežastis privaloma, sena ir nauja data – žurnale. Datos ribas (ne ateitis,
+ * ne jaunesnis nei 14 m.) ir ilgesnį pagrindimą darant vyresniu tikrina bazė.
+ */
+export async function correctBirthDate(userId: string, birthDate: string, reason: string): Promise<ActionResult> {
+  try {
+    const admin = await requireAdmin();
+    if (typeof userId !== "string" || !UUID_PATTERN.test(userId)) return { ok: false, error: "Netinkamas prašymas." };
+    if (typeof birthDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(birthDate) || Number.isNaN(Date.parse(birthDate))) {
+      return { ok: false, error: "Įveskite datą." };
+    }
+    const text = reasonOrNull(reason);
+    if (!text) return { ok: false, error: DB_ERRORS.reason_required };
+    if (text.length > 500) return { ok: false, error: "Priežastis per ilga — daugiausia 500 ženklų." };
+    const db = createSupabaseAdminClient();
+
+    const { error } = await db.rpc("admin_correct_birth_date", {
+      _admin_id: admin.userId,
+      _user_id: userId,
+      _birth_date: birthDate,
+      _reason: text,
+    });
+    if (error) return { ok: false, error: dbError(error.message) };
+
+    revalidatePath("/admin", "layout");
+    return { ok: true };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
   }
