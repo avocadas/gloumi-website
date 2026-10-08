@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { checkAdmin } from "@/lib/admin-guard";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { MODERATED_TABLES } from "./moderated-tables";
-import { emailAuthorNotice, latestNoticeLogId, noticeEmailNote, type NoticeNote } from "./moderation-email";
+import { emailAuthorNotice, emailTerminatedNow, latestNoticeLogId, noticeEmailNote, type NoticeNote } from "./moderation-email";
+import { isUrgentGround } from "./termination";
 import { isSuspendDays, isSuspendSource } from "./suspension";
 import { ruleFor, type ModerationRule } from "./moderation-rules";
 import { UUID_PATTERN } from "./format";
@@ -81,6 +82,11 @@ const DB_ERRORS: Record<string, string> = {
   booking_limits_not_in_force: "Rezervavimo ribos dar neįsigaliojo — apriboti dar negalima.",
   already_restricted: "Rezervavimas jau apribotas bent iki šio termino — pratęsti galima tik ilgesniu terminu.",
   not_restricted: "Apribojimo jau nėra — gal jį atšaukė kitas administratorius ar baigėsi terminas.",
+  // Meistro paskyros nutraukimas (`admin_delete_account`, `admin_cancel_master_termination`; Gloumi `20261008173623`).
+  termination_already_scheduled:
+    "Šio meistro paskyros nutraukimas jau suplanuotas. Iš karto ištrinti galima tik nurodžius skubų pagrindą, o atšaukti – mygtuku „Atšaukti nutraukimą“.",
+  termination_not_scheduled: "Nutraukimas jau atšauktas arba įvykdytas – atnaujinkite puslapį.",
+  bad_urgent_ground: "Netinkamas skubus pagrindas – atnaujinkite puslapį ir pasirinkite iš naujo.",
   // Skolos pranešimas (`admin_mark_debt_notice_paid`).
   already_paid: "Jau pažymėta apmokėta — gal tai ką tik padarė kitas administratorius.",
 };
@@ -469,24 +475,84 @@ export async function setReviewReplyHidden(
  *
  * Punktas nebūtinas (#169, db sutartis): paskyra dažniausiai trinama paties
  * žmogaus prašymu arba testinė, o pranešimo po trynimo nebūtų kur parodyti.
+ *
+ * MEISTRAS (P2B 4 str.; Gloumi `20261008173623`, developeris 2026-10-08
+ * „Užrakinti“): be skubaus pagrindo bazė paskyros netrina – suplanuoja ją
+ * panaikinti po 30 d. ir praneša meistrui programėlėje; laišką siunčiame čia.
+ * Su skubiu pagrindu (`urgentGround`) trinama iš karto, o pranešimas lieka tik
+ * žurnale – todėl el. pašto adresas pasiimamas PRIEŠ kvietimą.
+ * `scheduled` – ar paskyra liko (suplanuota), kad puslapis jos neišmestų.
  */
-export async function deleteAccount(userId: string, reason: string, rule: string | null): Promise<ActionResult> {
+export async function deleteAccount(
+  userId: string,
+  reason: string,
+  rule: string | null,
+  urgentGround: string | null = null,
+): Promise<(ActionResult & { ok: true; scheduled: boolean }) | { ok: false; error: string }> {
   try {
     const admin = await requireAdmin();
-    if (typeof userId !== "string") return { ok: false, error: "Netinkamas prašymas." };
+    if (typeof userId !== "string" || !UUID_PATTERN.test(userId)) return { ok: false, error: "Netinkamas prašymas." };
+    if (urgentGround !== null && !isUrgentGround(urgentGround)) {
+      return { ok: false, error: DB_ERRORS.bad_urgent_ground };
+    }
     const why = justify(reason, rule, false);
     if ("error" in why) return { ok: false, error: why.error };
     const db = createSupabaseAdminClient();
 
-    const { error } = await db.rpc("admin_delete_account", {
+    const [{ data: master }, { data: account }] = await Promise.all([
+      db.from("master_profiles").select("profile_id").eq("profile_id", userId).maybeSingle(),
+      // Tik skubiam meistro trynimui: po jo adreso nebebus kur paimti.
+      urgentGround ? db.auth.admin.getUserById(userId) : Promise.resolve({ data: null }),
+    ]);
+    const isMaster = Boolean(master);
+
+    const { data: auditLogId, error } = await db.rpc("admin_delete_account", {
       _admin_id: admin.userId,
       _user_id: userId,
       _reason: why.reason,
       _rule: why.rule,
+      _urgent_ground: urgentGround,
     });
     if (error) return { ok: false, error: dbError(error.message) };
 
-    return { ok: true };
+    revalidatePath("/admin", "layout");
+    if (isMaster && !urgentGround) {
+      const note = await authorEmailNote(db, auditLogId);
+      return { ok: true, scheduled: true, note };
+    }
+    if (isMaster && urgentGround) {
+      const to = (account as { user?: { email?: string | null } } | null)?.user?.email ?? null;
+      const note = noticeEmailNote(await emailTerminatedNow(db, auditLogId, to)) ?? undefined;
+      return { ok: true, scheduled: false, note };
+    }
+    return { ok: true, scheduled: false };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
+  }
+}
+
+/**
+ * Atšaukia suplanuotą meistro paskyros nutraukimą (Gloumi
+ * `admin_cancel_master_termination`): bazė praneša meistrui programėlėje, o
+ * laišką – su tuo pačiu `auditLogId` – siunčiame čia.
+ */
+export async function cancelMasterTermination(userId: string, reason: string): Promise<ActionResult> {
+  try {
+    const admin = await requireAdmin();
+    if (typeof userId !== "string" || !UUID_PATTERN.test(userId)) return { ok: false, error: "Netinkamas prašymas." };
+    const text = reasonOrNull(reason);
+    if (text && text.length > 500) return { ok: false, error: "Priežastis per ilga — daugiausia 500 ženklų." };
+    const db = createSupabaseAdminClient();
+
+    const { data: auditLogId, error } = await db.rpc("admin_cancel_master_termination", {
+      _admin_id: admin.userId,
+      _user_id: userId,
+      _reason: text,
+    });
+    if (error) return { ok: false, error: dbError(error.message) };
+
+    revalidatePath("/admin", "layout");
+    return { ok: true, note: await authorEmailNote(db, auditLogId) };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
   }

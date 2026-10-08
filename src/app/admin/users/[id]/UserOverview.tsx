@@ -67,6 +67,7 @@ export function UserOverview({
   avatar,
   banned,
   restrictedUntil,
+  terminationAt,
   grants,
   grantDays,
 }: {
@@ -77,6 +78,8 @@ export function UserOverview({
   banned: boolean;
   /** Iki kada apribotas rezervavimas, jei apribotas dabar (#207); kitaip `null`. */
   restrictedUntil: string | null;
+  /** Kada bus panaikinta meistro paskyra, jei nutraukimas suplanuotas (#169); kitaip `null`. */
+  terminationAt: string | null;
   /** Meistro individualios sąlygos (#179); `undefined` — ne meistras, `null` — gauti nepavyko. */
   grants?: GrantView[] | null;
   grantDays: { min: string; max: string };
@@ -115,6 +118,7 @@ export function UserOverview({
                 {user.is_admin ? <Tag tone="dark">Administratorius</Tag> : null}
                 {banned ? <Tag tone="danger">Sustabdyta iki {formatWhen(user.banned_until)}</Tag> : <Tag tone="ok">Aktyvi</Tag>}
                 {restrictedUntil ? <Tag tone="warn">Rezervavimas apribotas iki {formatWhen(restrictedUntil)}</Tag> : null}
+                {terminationAt ? <Tag tone="danger">Bus panaikinta {formatWhen(terminationAt)}</Tag> : null}
                 {master ? <Tag tone="lavender">Meistras</Tag> : <Tag tone="neutral">Klientas</Tag>}
                 {profile.deletion_requested_at ? <Tag tone="warn">Paprašė ištrinti</Tag> : null}
               </div>
@@ -162,6 +166,7 @@ export function UserOverview({
             banned={banned}
             bannedUntil={banned ? user.banned_until : null}
             restrictedUntil={restrictedUntil}
+            terminationAt={terminationAt}
             confirmName={handle ?? "IŠTRINTI"}
             isMaster={Boolean(master)}
           />

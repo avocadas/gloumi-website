@@ -3,12 +3,13 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { IconBan, IconCalendar, IconReply, IconTrash } from "@/components/icons";
-import { deleteAccount, setBookingRestriction, setSuspended } from "../../actions";
+import { cancelMasterTermination, deleteAccount, setBookingRestriction, setSuspended } from "../../actions";
 import { useConfirm } from "../../ConfirmDialog";
 import { useTerminationNotice } from "../../ModerationRules";
 import { formatWhen } from "../../format";
 import type { NoticeNote } from "../../moderation-email";
 import { SUSPEND_DAYS, SUSPEND_SOURCES } from "../../suspension";
+import { TERMINATE_AFTER_NOTICE, URGENT_GROUNDS } from "../../termination";
 import { ActionNote, STROKE, SectionTitle, btn, btnDanger, card } from "../../ui";
 
 /*
@@ -21,6 +22,11 @@ import { ActionNote, STROKE, SectionTitle, btn, btnDanger, card } from "../../ui
  * įpročio niekas neįrašo. Abu prašymai — ir vardas, ir priežastis — dabar
  * viename lange, kad žmogus matytų, ką patvirtina, kol rašo.
  *
+ * Meistro trynimas (#169, P2B 4 str.; developeris 2026-10-08 „Užrakinti“):
+ * be skubaus pagrindo bazė paskyrą panaikina tik po 30 d. nuo pranešimo, o
+ * kol laukiama – „Atšaukti nutraukimą“. Skubų pagrindą (4 str. 4 d.) renkasi
+ * administratorius lange; tada trinama iš karto.
+ *
  * Rezervavimo apribojimas (#207) – to paties pavidalo, tik stabdo naujas
  * rezervacijas, ne prisijungimą; automatiniai įspėjimai jo nesukuria.
  *
@@ -32,6 +38,7 @@ export function AccountActions({
   banned,
   bannedUntil,
   restrictedUntil,
+  terminationAt,
   confirmName,
   isMaster,
 }: {
@@ -41,6 +48,8 @@ export function AccountActions({
   bannedUntil: string | null;
   /** `booking_restrictions.until`, jei rezervavimas dabar apribotas; kitaip `null`. */
   restrictedUntil: string | null;
+  /** Kada bus panaikinta meistro paskyra, jei nutraukimas suplanuotas; kitaip `null`. */
+  terminationAt: string | null;
   confirmName: string;
   isMaster: boolean;
 }) {
@@ -172,32 +181,79 @@ export function AccountActions({
 
   const remove = async () => {
     const answer = await ask({
-      title: "Ištrinti paskyrą visam laikui?",
+      title: isMaster ? (terminationAt ? "Ištrinti meistro paskyrą iš karto?" : "Nutraukti meistro paskyrą?") : "Ištrinti paskyrą visam laikui?",
       body: [
         "Kartu dings profilis ir viskas, kas duomenų bazėje priklauso šiai paskyrai, taip pat jos pateikti skundai, lojalumo taškai, rekomendacijos ir prenumeratos įrašai.",
         "Vizitai, sąskaitos ir dovanų kortelės lieka, tik be nuorodos į paskyrą. Failai iš saugyklos ištrinami naktį. Atšaukti negalima.",
-        // Meistrui trynimas = visos paslaugos nutraukimas: Sąlygos pažada įspėti iš anksto (`termination-notice.ts`).
-        isMaster && notice ? `Tai meistras. Jei trinate kaip sankciją, pirma įspėkite – ${notice.source}:` : null,
-        isMaster && notice ? `„${notice.text}“` : null,
+        // Meistrui trynimas = visos paslaugos nutraukimas: be skubaus pagrindo – tik po 30 d. (`termination-notice.ts`).
+        isMaster
+          ? terminationAt
+            ? `Nutraukimas jau suplanuotas – paskyra bus panaikinta ${formatWhen(terminationAt)}. Iš karto ištrinti galima tik dėl skubaus pagrindo.`
+            : "Tai meistras. Be skubaus pagrindo paskyra bus panaikinta tik po 30 dienų: meistras dabar gaus pranešimą su priežastimi programėlėje ir el. paštu, o iki tol dirbs kaip įprastai. Nutraukimą iki tol galima atšaukti."
+          : null,
+        isMaster && notice ? `${notice.source}: „${notice.text}“` : null,
       ],
-      confirmLabel: "Ištrinti paskyrą",
+      confirmLabel: isMaster ? "Patvirtinti" : "Ištrinti paskyrą",
       danger: true,
+      choices: isMaster
+        ? [
+            {
+              key: "ground",
+              label: "Kada",
+              hint: "skubus pagrindas – P2B 4 str. 4 d.; meistras jį matys pranešime",
+              options: [
+                ...(terminationAt ? [] : [{ value: TERMINATE_AFTER_NOTICE, label: "Po 30 dienų (įprastai)" }]),
+                ...URGENT_GROUNDS.map((g) => ({ value: g.value, label: `Iš karto: ${g.label.toLowerCase()}` })),
+              ],
+            },
+          ]
+        : undefined,
       // Punktas nebūtinas: trinama dažniausiai paties žmogaus prašymu arba testinė paskyra (#169).
       rule: "optional",
       reasonRequired: true,
       typeToConfirm: confirmName,
     });
     if (!answer) return;
+    const ground = isMaster && answer.choices.ground !== TERMINATE_AFTER_NOTICE ? (answer.choices.ground ?? null) : null;
 
     setError(null);
+    setNote(null);
     startTransition(async () => {
-      const res = await deleteAccount(userId, answer.reason, answer.rule);
-      if (res.ok) {
-        setDeleted(true);
-        router.replace("/admin/data?table=profiles");
-      } else {
+      const res = await deleteAccount(userId, answer.reason, answer.rule, ground);
+      if (!res.ok) {
         setError(res.error);
+        return;
       }
+      if (res.scheduled) {
+        // Paskyra lieka – puslapis persipiešia su „Bus panaikinta …“ ir atšaukimo mygtuku.
+        setNote(res.note ?? null);
+        router.refresh();
+        return;
+      }
+      if (res.note) setNote(res.note);
+      setDeleted(true);
+      router.replace("/admin/data?table=profiles");
+    });
+  };
+
+  const cancelTermination = async () => {
+    const answer = await ask({
+      title: "Atšaukti paskyros nutraukimą?",
+      body: [
+        `Paskyra nebus panaikinta ${formatWhen(terminationAt)}. Meistras gaus pranešimą programėlėje ir el. paštu.`,
+      ],
+      confirmLabel: "Atšaukti nutraukimą",
+      reason: true,
+    });
+    if (!answer) return;
+    setError(null);
+    setNote(null);
+    startTransition(async () => {
+      const res = await cancelMasterTermination(userId, answer.reason);
+      if (res.ok) {
+        setNote(res.note ?? null);
+        router.refresh();
+      } else setError(res.error);
     });
   };
 
@@ -268,13 +324,29 @@ export function AccountActions({
         </div>
         <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-app-ink">Ištrinti paskyrą</p>
-            <p className="mt-0.5 text-[13px] text-app-muted">Visam laikui, su viskuo, kas jai priklauso.</p>
+            <p className="text-sm font-semibold text-app-ink">
+              {terminationAt ? `Bus panaikinta ${formatWhen(terminationAt)}` : "Ištrinti paskyrą"}
+            </p>
+            <p className="mt-0.5 text-[13px] text-app-muted">
+              {terminationAt
+                ? "Meistrui pranešta; iki tol jis dirba kaip įprastai."
+                : isMaster
+                  ? "Meistrui – po 30 d. nuo pranešimo, iš karto tik dėl skubaus pagrindo."
+                  : "Visam laikui, su viskuo, kas jai priklauso."}
+            </p>
           </div>
-          <button type="button" disabled={pending} onClick={remove} className={btnDanger}>
-            <IconTrash size={16} strokeWidth={STROKE} aria-hidden />
-            Ištrinti
-          </button>
+          <div className="flex flex-wrap gap-2">
+            {terminationAt ? (
+              <button type="button" disabled={pending} onClick={cancelTermination} className={btn}>
+                <IconReply size={16} strokeWidth={STROKE} aria-hidden />
+                Atšaukti nutraukimą
+              </button>
+            ) : null}
+            <button type="button" disabled={pending} onClick={remove} className={btnDanger}>
+              <IconTrash size={16} strokeWidth={STROKE} aria-hidden />
+              {terminationAt ? "Ištrinti iš karto" : isMaster ? "Nutraukti" : "Ištrinti"}
+            </button>
+          </div>
         </div>
       </div>
       <ActionNote note={note} />

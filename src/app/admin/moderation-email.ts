@@ -41,6 +41,14 @@ import type { createSupabaseAdminClient } from "@/lib/supabase/admin";
  * pranešimams netaikomos. Jų taip pat neskaičiuoja ribos: blokavimų būna
  * mažai, o turinio laiškų ribą jie neturi suvalgyti.
  *
+ * MEISTRO PASKYROS NUTRAUKIMAS — VISADA (Gloumi `20261008173623`, #169; P2B 4 str.).
+ * Be skubaus pagrindo `admin_delete_account` meistrą tik suplanuoja panaikinti
+ * po 30 d. ir įrašo `master_termination_scheduled` pranešimą; atšaukus –
+ * `master_termination_cancelled`. Abu – tas pats `auditLogId` kelias.
+ * Su skubiu pagrindu paskyra trinama iš karto, ir pranešimas programėlėje su ja
+ * neišliktų: tekstas tada guli žurnale (`details.notice`), o laiškas –
+ * `emailTerminatedNow`, kuriam el. pašto adresą reikia pasiimti PRIEŠ trynimą.
+ *
  * Laiškas nepavyko — veiksmas vis tiek atliktas, o pranešimas programėlėje
  * liko. Todėl klaida čia niekada nemetama: grąžinama būsena, kurią portalas
  * parodo administratoriui.
@@ -70,7 +78,9 @@ const ACCOUNT_KINDS = ["account_suspended", "account_unsuspended"];
  * (Meistrų sąlygų 16 sk.: apie sulaikymą ir priežastį — programėlėje ir el. paštu).
  */
 const HOLD_KINDS = ["visit_charge_held", "visit_payout_held", "visit_hold_resolved"];
-const KINDS = [...CONTENT_KINDS, ...ACCOUNT_KINDS, ...HOLD_KINDS];
+/** Meistro paskyros nutraukimas po 30 d. ir jo atšaukimas — visada, gavėjas meistras. */
+const TERMINATION_KINDS = ["master_termination_scheduled", "master_termination_cancelled"];
+const KINDS = [...CONTENT_KINDS, ...ACCOUNT_KINDS, ...HOLD_KINDS, ...TERMINATION_KINDS];
 const BURST_MS = 60 * 60 * 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;
 const DAILY_CAP = 20;
@@ -81,13 +91,58 @@ const FRAME = {
     hello: "Sveiki,",
     reply: `Galite tiesiog atsakyti į šį laišką – jis pasieks ${site.email}.`,
     app: "Tą patį pranešimą rasite ir Gloumi programėlėje.",
-  },
+  } as { hello: string; reply: string; app: string | null },
   en: {
     hello: "Hello,",
     reply: `You can simply reply to this email – it will reach ${site.email}.`,
     app: "You will also find this notice in the Gloumi app.",
-  },
+  } as { hello: string; reply: string; app: string | null },
 };
+
+/**
+ * Vienas laiškas per Resend. Grąžina būseną, niekada nemeta (žr. viršų).
+ * `app: false` – kai programėlėje to pranešimo nėra (paskyra jau ištrinta).
+ */
+async function sendNotice(input: {
+  to: string;
+  lang: "lt" | "en";
+  title: string;
+  body: string;
+  idempotencyKey: string;
+  app: boolean;
+}): Promise<"sent" | "not_configured" | "failed"> {
+  const key = process.env.RESEND_API_KEY?.trim();
+  if (!key) return "not_configured";
+  const frame = FRAME[input.lang];
+  const title = input.title.replace(/\s+/g, " ").trim();
+  const lines = [frame.hello, "", `${title}.`, "", input.body, "", frame.reply];
+  if (input.app && frame.app) lines.push(frame.app);
+  lines.push("", site.legalName, site.url);
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    // Užstrigęs Resend neturi laikyti administratoriaus mygtuko be galo.
+    signal: AbortSignal.timeout(10_000),
+    headers: {
+      Authorization: `Bearer ${key}`,
+      "Content-Type": "application/json",
+      // Vienas pranešimas — vienas laiškas, net jei užklausa kartotųsi.
+      "Idempotency-Key": input.idempotencyKey,
+    },
+    body: JSON.stringify({
+      from: `Gloumi <no-reply@${site.sendingDomain}>`,
+      to: [input.to],
+      // Atsakymas — tai skundas, kurį pranešimas kviečia rašyti į info@.
+      reply_to: site.email,
+      subject: title,
+      text: lines.join("\n"),
+    }),
+  });
+  if (!res.ok) {
+    console.error("[moderation-email] resend answered", res.status);
+    return "failed";
+  }
+  return "sent";
+}
 
 export async function emailAuthorNotice(db: AdminDb, auditLogId: unknown): Promise<NoticeEmailResult> {
   let master = false;
@@ -133,38 +188,57 @@ export async function emailAuthorNotice(db: AdminDb, auditLogId: unknown): Promi
 
     // Ta pati taisyklė, kaip bazės `moderation_template`: šablonai yra tik LT ir EN.
     const { data: profile } = await db.from("profiles").select("language").eq("id", notice.recipient_id).maybeSingle();
-    const frame = profile?.language === "en" ? FRAME.en : FRAME.lt;
-    const title = String(notice.title).replace(/\s+/g, " ").trim();
-
-    const key = process.env.RESEND_API_KEY?.trim();
-    if (!key) return result("not_configured");
-
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      // Užstrigęs Resend neturi laikyti administratoriaus mygtuko be galo.
-      signal: AbortSignal.timeout(10_000),
-      headers: {
-        Authorization: `Bearer ${key}`,
-        "Content-Type": "application/json",
-        // Vienas pranešimas — vienas laiškas, net jei užklausa kartotųsi.
-        "Idempotency-Key": `moderation-notice/${notice.id}`,
-      },
-      body: JSON.stringify({
-        from: `Gloumi <no-reply@${site.sendingDomain}>`,
-        to: [to],
-        // Atsakymas — tai skundas, kurį pranešimas kviečia rašyti į info@.
-        reply_to: site.email,
-        subject: title,
-        text: [frame.hello, "", `${title}.`, "", notice.body, "", frame.reply, frame.app, "", site.legalName, site.url].join(
-          "\n",
-        ),
+    return result(
+      await sendNotice({
+        to,
+        lang: profile?.language === "en" ? "en" : "lt",
+        title: String(notice.title),
+        body: String(notice.body),
+        idempotencyKey: `moderation-notice/${notice.id}`,
+        app: true,
       }),
-    });
-    if (!res.ok) {
-      console.error("[moderation-email] resend answered", res.status);
-      return result("failed");
+    );
+  } catch (e) {
+    console.error("[moderation-email]", e instanceof Error ? e.message : "unknown error");
+    return result("failed");
+  }
+}
+
+/**
+ * Laiškas meistrui, kurio paskyra panaikinta iš karto dėl skubaus pagrindo
+ * (`master_terminated_now`). Tekstas – iš žurnalo įrašo `details.notice`
+ * (bazė jį įrašo meistro kalba), adresas – paimtas prieš trynimą.
+ */
+export async function emailTerminatedNow(
+  db: AdminDb,
+  auditLogId: unknown,
+  to: string | null,
+): Promise<NoticeEmailResult> {
+  const result = (status: NoticeEmail): NoticeEmailResult => ({ status, master: true });
+  if (typeof auditLogId !== "number" && typeof auditLogId !== "string") return result("lookup_failed");
+  if (!to) return result("no_address");
+  try {
+    const { data, error } = await db
+      .from("admin_audit_logs")
+      .select("notice:details->notice")
+      .eq("id", auditLogId)
+      .maybeSingle();
+    if (error) return result("lookup_failed");
+    const notice = (data as { notice?: { kind?: unknown; lang?: unknown; title?: unknown; body?: unknown } | null } | null)
+      ?.notice;
+    if (!notice || notice.kind !== "master_terminated_now" || typeof notice.title !== "string" || typeof notice.body !== "string") {
+      return result("lookup_failed");
     }
-    return result("sent");
+    return result(
+      await sendNotice({
+        to,
+        lang: notice.lang === "en" ? "en" : "lt",
+        title: notice.title,
+        body: notice.body,
+        idempotencyKey: `termination-now/${auditLogId}`,
+        app: false,
+      }),
+    );
   } catch (e) {
     console.error("[moderation-email]", e instanceof Error ? e.message : "unknown error");
     return result("failed");

@@ -38,7 +38,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
   if (!UUID_PATTERN.test(id)) notFound();
 
   const db = createSupabaseAdminClient();
-  const [{ data, error }, catalog, restriction] = await Promise.all([
+  const [{ data, error }, catalog, restriction, termination] = await Promise.all([
     db.rpc("admin_user_overview", { _admin_id: check.userId, _user_id: id }),
     loadCatalog(),
     /*
@@ -47,7 +47,20 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
      * mygtukas tada gaus bazės atsakymą (`already_restricted`).
      */
     db.from("booking_restrictions").select("until").eq("user_id", id).maybeSingle(),
+    /*
+     * Suplanuotas meistro paskyros nutraukimas (#169, Gloumi `20261008173623`;
+     * lentelė uždara klientams). Nepavykus – rodoma kaip nesuplanuota, o
+     * mygtukas gaus bazės atsakymą (`termination_already_scheduled`).
+     */
+    db
+      .from("master_terminations")
+      .select("scheduled_for")
+      .eq("profile_id", id)
+      .is("cancelled_at", null)
+      .is("executed_at", null)
+      .maybeSingle(),
   ]);
+  const terminationAt = typeof termination.data?.scheduled_for === "string" ? termination.data.scheduled_for : null;
   const restrictedUntil = typeof restriction.data?.until === "string" ? restriction.data.until : null;
   const overview = error ? null : (data as Overview);
   const username = check.username ?? check.userId;
@@ -93,6 +106,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
         avatar={avatarId ? media[avatarId] : undefined}
         banned={isBanned(user.banned_until)}
         restrictedUntil={isBanned(restrictedUntil) ? restrictedUntil : null}
+        terminationAt={terminationAt}
         grants={grants}
         grantDays={{ min: today, max: latestDay(today) }}
       />
