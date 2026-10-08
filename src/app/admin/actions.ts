@@ -4,7 +4,14 @@ import { revalidatePath } from "next/cache";
 import { checkAdmin } from "@/lib/admin-guard";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { MODERATED_TABLES } from "./moderated-tables";
-import { emailAuthorNotice, emailTerminatedNow, latestNoticeLogId, noticeEmailNote, type NoticeNote } from "./moderation-email";
+import {
+  emailAuthorNotice,
+  emailTerminatedNow,
+  latestNoticeLogId,
+  noticeEmailNote,
+  terminationRecipient,
+  type NoticeNote,
+} from "./moderation-email";
 import { isUrgentGround } from "./termination";
 import { isSuspendDays, isSuspendSource } from "./suspension";
 import { ruleFor, type ModerationRule } from "./moderation-rules";
@@ -499,10 +506,10 @@ export async function deleteAccount(
     if ("error" in why) return { ok: false, error: why.error };
     const db = createSupabaseAdminClient();
 
-    const [{ data: master }, { data: account }] = await Promise.all([
+    const [{ data: master }, recipient] = await Promise.all([
       db.from("master_profiles").select("profile_id").eq("profile_id", userId).maybeSingle(),
-      // Tik skubiam meistro trynimui: po jo adreso nebebus kur paimti.
-      urgentGround ? db.auth.admin.getUserById(userId) : Promise.resolve({ data: null }),
+      // Tik skubiam meistro trynimui: po jo adreso ir vardo nebebus kur paimti.
+      urgentGround ? terminationRecipient(db, userId) : Promise.resolve(null),
     ]);
     const isMaster = Boolean(master);
 
@@ -521,8 +528,7 @@ export async function deleteAccount(
       return { ok: true, scheduled: true, note };
     }
     if (isMaster && urgentGround) {
-      const to = (account as { user?: { email?: string | null } } | null)?.user?.email ?? null;
-      const note = noticeEmailNote(await emailTerminatedNow(db, auditLogId, to)) ?? undefined;
+      const note = noticeEmailNote(await emailTerminatedNow(db, auditLogId, recipient ?? { to: null, name: null })) ?? undefined;
       return { ok: true, scheduled: false, note };
     }
     return { ok: true, scheduled: false };

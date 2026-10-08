@@ -99,6 +99,23 @@ const FRAME = {
   } as { hello: string; reply: string; app: string | null },
 };
 
+/*
+ * Nutraukimo laiškų forma – teisininko (#169, P2B 4 str. 2 ir 5 d.; 2026-10-08),
+ * žodžių nekeisti: tema = pranešimo antraštė; „Sveiki, {vardas},“, pranešimo
+ * tekstas pažodžiui ir rekvizitai. Be įprasto „atsakykite į laišką“ rėmo.
+ */
+const TERMINATION_FRAME = {
+  lt: {
+    hello: (name: string | null) => (name ? `Sveiki, ${name},` : "Sveiki,"),
+    details: "MB Gloumi, įmonės kodas 308087857, L. Zamenhofo g. 10-36, LT-06330 Vilnius, info@gloumi.lt",
+  },
+  en: {
+    hello: (name: string | null) => (name ? `Hello ${name},` : "Hello,"),
+    details: "MB Gloumi, company code 308087857, L. Zamenhofo g. 10-36, LT-06330 Vilnius, Lithuania, info@gloumi.lt",
+  },
+};
+const TERMINATION_EMAIL_KINDS = [...TERMINATION_KINDS, "master_terminated_now"];
+
 /**
  * Vienas laiškas per Resend. Grąžina būseną, niekada nemeta (žr. viršų).
  * `app: false` – kai programėlėje to pranešimo nėra (paskyra jau ištrinta).
@@ -110,14 +127,22 @@ async function sendNotice(input: {
   body: string;
   idempotencyKey: string;
   app: boolean;
+  /** Nutraukimo pranešimams – teisininko forma su gavėjo vardu (žr. `TERMINATION_FRAME`). */
+  termination?: { name: string | null };
 }): Promise<"sent" | "not_configured" | "failed"> {
   const key = process.env.RESEND_API_KEY?.trim();
   if (!key) return "not_configured";
-  const frame = FRAME[input.lang];
   const title = input.title.replace(/\s+/g, " ").trim();
-  const lines = [frame.hello, "", `${title}.`, "", input.body, "", frame.reply];
-  if (input.app && frame.app) lines.push(frame.app);
-  lines.push("", site.legalName, site.url);
+  let lines: string[];
+  if (input.termination) {
+    const frame = TERMINATION_FRAME[input.lang];
+    lines = [frame.hello(input.termination.name), "", input.body, "", frame.details];
+  } else {
+    const frame = FRAME[input.lang];
+    lines = [frame.hello, "", `${title}.`, "", input.body, "", frame.reply];
+    if (input.app && frame.app) lines.push(frame.app);
+    lines.push("", site.legalName, site.url);
+  }
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     // Užstrigęs Resend neturi laikyti administratoriaus mygtuko be galo.
@@ -187,7 +212,14 @@ export async function emailAuthorNotice(db: AdminDb, auditLogId: unknown): Promi
     if (!to) return result("no_address");
 
     // Ta pati taisyklė, kaip bazės `moderation_template`: šablonai yra tik LT ir EN.
-    const { data: profile } = await db.from("profiles").select("language").eq("id", notice.recipient_id).maybeSingle();
+    const { data: profile } = await db
+      .from("profiles")
+      .select("language, display_name")
+      .eq("id", notice.recipient_id)
+      .maybeSingle();
+    const termination = TERMINATION_EMAIL_KINDS.includes(String(notice.kind))
+      ? { name: await masterName(db, notice.recipient_id, profile?.display_name ?? null) }
+      : undefined;
     return result(
       await sendNotice({
         to,
@@ -196,6 +228,7 @@ export async function emailAuthorNotice(db: AdminDb, auditLogId: unknown): Promi
         body: String(notice.body),
         idempotencyKey: `moderation-notice/${notice.id}`,
         app: true,
+        termination,
       }),
     );
   } catch (e) {
@@ -209,11 +242,28 @@ export async function emailAuthorNotice(db: AdminDb, auditLogId: unknown): Promi
  * (`master_terminated_now`). Tekstas – iš žurnalo įrašo `details.notice`
  * (bazė jį įrašo meistro kalba), adresas – paimtas prieš trynimą.
  */
+/** Kaip meistras vadinamas laiške: meistro vardas, jei yra, kitaip profilio. */
+async function masterName(db: AdminDb, id: string, fallback: string | null): Promise<string | null> {
+  const { data } = await db.from("master_profiles").select("display_name").eq("profile_id", id).maybeSingle();
+  const name = (data?.display_name ?? fallback ?? "").replace(/\s+/g, " ").trim();
+  return name || null;
+}
+
+/** Ko reikia laiškui po trynimo – pasiimama PRIEŠ `admin_delete_account`. */
+export async function terminationRecipient(db: AdminDb, id: string): Promise<{ to: string | null; name: string | null }> {
+  const [{ data: account }, { data: profile }] = await Promise.all([
+    db.auth.admin.getUserById(id),
+    db.from("profiles").select("display_name").eq("id", id).maybeSingle(),
+  ]);
+  return { to: account?.user?.email ?? null, name: await masterName(db, id, profile?.display_name ?? null) };
+}
+
 export async function emailTerminatedNow(
   db: AdminDb,
   auditLogId: unknown,
-  to: string | null,
+  recipient: { to: string | null; name: string | null },
 ): Promise<NoticeEmailResult> {
+  const to = recipient.to;
   const result = (status: NoticeEmail): NoticeEmailResult => ({ status, master: true });
   if (typeof auditLogId !== "number" && typeof auditLogId !== "string") return result("lookup_failed");
   if (!to) return result("no_address");
@@ -237,6 +287,7 @@ export async function emailTerminatedNow(
         body: notice.body,
         idempotencyKey: `termination-now/${auditLogId}`,
         app: false,
+        termination: { name: recipient.name },
       }),
     );
   } catch (e) {
