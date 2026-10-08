@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "../globals.css";
-import { adminFontVariables } from "@/app/fonts";
+import { adminFontVariables } from "./fonts";
 import { moderationRules } from "./moderation-rules";
 import { ModerationRulesProvider } from "./ModerationRules";
 import { masterTerminationNotice } from "./termination-notice";

@@ -1,4 +1,4 @@
-import { Cormorant_Garamond, DM_Sans, Figtree, Source_Serif_4 } from "next/font/google";
+import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 
 /*
  * Shared by both root layouts, so the two languages load the same two font
@@ -22,24 +22,3 @@ export const dmSans = DM_Sans({
 });
 
 export const fontVariables = `${cormorant.variable} ${dmSans.variable}`;
-
-/*
- * Administravimo portalui — programėlės šriftai („Šviesus" drobė,
- * `theme.js` `DISPLAY_FONT` ir `BODY_FONTS`): Source Serif 4 antraštėms,
- * Figtree tekstui. Kraunami tik portalo makete, tad rinkodaros puslapio
- * lankytojas jų nesisiunčia.
- */
-export const figtree = Figtree({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-figtree",
-  display: "swap",
-});
-
-export const sourceSerif = Source_Serif_4({
-  subsets: ["latin", "latin-ext"],
-  weight: ["600"],
-  variable: "--font-source-serif",
-  display: "swap",
-});
-
-export const adminFontVariables = `${figtree.variable} ${sourceSerif.variable}`;

@@ -20,6 +20,12 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  /*
+   * AVIF first, WebP for browsers without it: the phone screens are the only
+   * raster images on the public pages, and AVIF is about a third smaller at
+   * the same quality.
+   */
+  images: { formats: ["image/avif", "image/webp"] },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

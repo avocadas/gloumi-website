@@ -115,7 +115,10 @@ export function PhoneMockup({ lang }: { lang: Lang }) {
                   fill
                   sizes="(min-width: 640px) 280px, 252px"
                   placeholder="blur"
-                  loading="eager"
+                  // Only the first screen is the hero picture; the other three wait for
+                  // it instead of being preloaded alongside it.
+                  preload={id === "feed"}
+                  loading={id === "feed" ? "eager" : "lazy"}
                   fetchPriority={id === "feed" ? "high" : "auto"}
                   className={cn(
                     "object-cover transition-opacity duration-500 ease-out motion-reduce:transition-none",
