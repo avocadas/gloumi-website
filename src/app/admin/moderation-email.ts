@@ -66,7 +66,12 @@ export type NoticeEmail =
   | "failed"
   | "lookup_failed";
 /** `master` — gavėjas meistras: jam laiškas privalomas (žr. viršų), tad nepavykęs — rimtesnis. */
-export type NoticeEmailResult = { status: NoticeEmail; master: boolean };
+export type NoticeEmailResult = {
+  status: NoticeEmail;
+  master: boolean;
+  /** Meistro paskyros nutraukimo pranešimas (#169): laiškas – patvarioji laikmena, nuo jo skaičiuojamos 30 d. */
+  termination?: "scheduled" | "other";
+};
 
 /** Turinio sprendimai — klientams su ribomis (žr. viršų). */
 const CONTENT_KINDS = ["moderation_content_removed", "moderation_content_edited", "moderation_content_hidden"];
@@ -171,7 +176,8 @@ async function sendNotice(input: {
 
 export async function emailAuthorNotice(db: AdminDb, auditLogId: unknown): Promise<NoticeEmailResult> {
   let master = false;
-  const result = (status: NoticeEmail): NoticeEmailResult => ({ status, master });
+  let termination: NoticeEmailResult["termination"];
+  const result = (status: NoticeEmail): NoticeEmailResult => ({ status, master, termination });
   if (typeof auditLogId !== "number" && typeof auditLogId !== "string") return result("none");
   try {
     const { data: notice, error } = await db
@@ -183,6 +189,9 @@ export async function emailAuthorNotice(db: AdminDb, auditLogId: unknown): Promi
     if (error) return result("lookup_failed");
     if (!notice) return result("none");
     master = notice.recipient_role === "master";
+    if (TERMINATION_EMAIL_KINDS.includes(String(notice.kind))) {
+      termination = notice.kind === "master_termination_scheduled" ? "scheduled" : "other";
+    }
 
     if (!master && CONTENT_KINDS.includes(String(notice.kind))) {
       const now = Date.now();
@@ -217,7 +226,7 @@ export async function emailAuthorNotice(db: AdminDb, auditLogId: unknown): Promi
       .select("language, display_name")
       .eq("id", notice.recipient_id)
       .maybeSingle();
-    const termination = TERMINATION_EMAIL_KINDS.includes(String(notice.kind))
+    const frame = termination
       ? { name: await masterName(db, notice.recipient_id, profile?.display_name ?? null) }
       : undefined;
     return result(
@@ -228,7 +237,7 @@ export async function emailAuthorNotice(db: AdminDb, auditLogId: unknown): Promi
         body: String(notice.body),
         idempotencyKey: `moderation-notice/${notice.id}`,
         app: true,
-        termination,
+        termination: frame,
       }),
     );
   } catch (e) {
@@ -264,7 +273,7 @@ export async function emailTerminatedNow(
   recipient: { to: string | null; name: string | null },
 ): Promise<NoticeEmailResult> {
   const to = recipient.to;
-  const result = (status: NoticeEmail): NoticeEmailResult => ({ status, master: true });
+  const result = (status: NoticeEmail): NoticeEmailResult => ({ status, master: true, termination: "other" });
   if (typeof auditLogId !== "number" && typeof auditLogId !== "string") return result("lookup_failed");
   if (!to) return result("no_address");
   try {
@@ -318,9 +327,24 @@ export async function latestNoticeLogId(db: AdminDb, kind: string, bookingId: st
 export type NoticeNote = { text: string; tone: "info" | "warn" };
 
 /** Ką pasakyti administratoriui; `null` — nieko (laiško ir neturėjo būti). */
-export function noticeEmailNote({ status, master }: NoticeEmailResult): NoticeNote | null {
+export function noticeEmailNote({ status, master, termination }: NoticeEmailResult): NoticeNote | null {
   const info = (text: string): NoticeNote => ({ text, tone: "info" });
   const warn = (text: string): NoticeNote => ({ text, tone: "warn" });
+  /*
+   * Nutraukimas (#169): 30 d. skaičiuojamos nuo motyvų patvariojoje laikmenoje,
+   * t. y. nuo laiško (P2B 4 str. 2 d.). Tekstas – teisininko (2026-10-08);
+   * sakinys apie datą – tik suplanuotam, kitais atvejais datos nebėra.
+   */
+  if (termination && (status === "no_address" || status === "not_configured" || status === "failed" || status === "lookup_failed")) {
+    return warn(
+      [
+        "Laiško išsiųsti nepavyko. Tą pačią dieną išsiųskite tą patį tekstą iš info@gloumi.lt.",
+        termination === "scheduled" ? "Jei išsiunčiate vėliau, panaikinimo datą reikia perkelti į išsiuntimo dieną + 30 d." : null,
+      ]
+        .filter(Boolean)
+        .join(" "),
+    );
+  }
   // Meistrui laiškas privalomas: jei jo nebus, administratorius turi jį parašyti pats.
   if (master && (status === "no_address" || status === "not_configured" || status === "failed")) {
     return warn(
