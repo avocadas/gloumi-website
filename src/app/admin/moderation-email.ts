@@ -41,7 +41,7 @@ import type { createSupabaseAdminClient } from "@/lib/supabase/admin";
  * pranešimams netaikomos. Jų taip pat neskaičiuoja ribos: blokavimų būna
  * mažai, o turinio laiškų ribą jie neturi suvalgyti.
  *
- * MEISTRO PASKYROS NUTRAUKIMAS — VISADA (Gloumi `20261008173623`, #169; P2B 4 str.).
+ * MEISTRO PASKYROS NUTRAUKIMAS — VISADA (Gloumi `20261008180946`, #169; P2B 4 str.).
  * Be skubaus pagrindo `admin_delete_account` meistrą tik suplanuoja panaikinti
  * po 30 d. ir įrašo `master_termination_scheduled` pranešimą; atšaukus –
  * `master_termination_cancelled`. Abu – tas pats `auditLogId` kelias.

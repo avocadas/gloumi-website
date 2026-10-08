@@ -89,7 +89,7 @@ const DB_ERRORS: Record<string, string> = {
   booking_limits_not_in_force: "Rezervavimo ribos dar neįsigaliojo — apriboti dar negalima.",
   already_restricted: "Rezervavimas jau apribotas bent iki šio termino — pratęsti galima tik ilgesniu terminu.",
   not_restricted: "Apribojimo jau nėra — gal jį atšaukė kitas administratorius ar baigėsi terminas.",
-  // Meistro paskyros nutraukimas (`admin_delete_account`, `admin_cancel_master_termination`; Gloumi `20261008173623`).
+  // Meistro paskyros nutraukimas (`admin_delete_account`, `admin_cancel_master_termination`; Gloumi `20261008180946`).
   termination_already_scheduled:
     "Šio meistro paskyros nutraukimas jau suplanuotas. Iš karto ištrinti galima tik nurodžius skubų pagrindą, o atšaukti – mygtuku „Atšaukti nutraukimą“.",
   termination_not_scheduled: "Nutraukimas jau atšauktas arba įvykdytas – atnaujinkite puslapį.",
@@ -483,7 +483,7 @@ export async function setReviewReplyHidden(
  * Punktas nebūtinas (#169, db sutartis): paskyra dažniausiai trinama paties
  * žmogaus prašymu arba testinė, o pranešimo po trynimo nebūtų kur parodyti.
  *
- * MEISTRAS (P2B 4 str.; Gloumi `20261008173623`, developeris 2026-10-08
+ * MEISTRAS (P2B 4 str.; Gloumi `20261008180946`, developeris 2026-10-08
  * „Užrakinti“): be skubaus pagrindo bazė paskyros netrina – suplanuoja ją
  * panaikinti po 30 d. ir praneša meistrui programėlėje; laišką siunčiame čia.
  * Su skubiu pagrindu (`urgentGround`) trinama iš karto, o pranešimas lieka tik

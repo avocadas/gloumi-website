@@ -1,6 +1,6 @@
 /*
  * Skubūs pagrindai nutraukti meistro paskyrą iš karto, be 30 d. įspėjimo –
- * P2B reglamento 4 str. 4 d. (Gloumi `20261008173623` `admin_delete_account`
+ * P2B reglamento 4 str. 4 d. (Gloumi `20261008180946` `admin_delete_account`
  * `_urgent_ground`). Raktai – bazės, pavadinimai – administratoriui; meistrui
  * pranešimo tekstą su pagrindu įrašo pati bazė (teisininko žodžiai).
  */

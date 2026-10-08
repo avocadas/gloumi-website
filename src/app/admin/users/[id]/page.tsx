@@ -48,7 +48,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
      */
     db.from("booking_restrictions").select("until").eq("user_id", id).maybeSingle(),
     /*
-     * Suplanuotas meistro paskyros nutraukimas (#169, Gloumi `20261008173623`;
+     * Suplanuotas meistro paskyros nutraukimas (#169, Gloumi `20261008180946`;
      * lentelė uždara klientams). Nepavykus – rodoma kaip nesuplanuota, o
      * mygtukas gaus bazės atsakymą (`termination_already_scheduled`).
      */
