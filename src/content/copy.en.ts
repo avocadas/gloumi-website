@@ -230,6 +230,8 @@ export const en: typeof lt = {
       { key: "deletion", label: "Account deletion" },
     ],
     companyLabel: "Company number",
+    registry: "Register of Legal Entities of the Republic of Lithuania",
+    phoneLabel: "Phone",
     vatLabel: "VAT number",
     rights: "All rights reserved.",
     operator: "Platform operator and single point of contact under the EU Digital Services Act (DSA):",

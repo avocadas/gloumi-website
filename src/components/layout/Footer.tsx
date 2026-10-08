@@ -112,7 +112,7 @@ export function Footer({ lang }: { lang: Lang }) {
             <p className="mt-3 text-sm font-semibold text-espresso-900">{site.legalName}</p>
             {site.company.code ? (
               <p className="text-sm text-espresso-500">
-                {copy.footer.companyLabel} {site.company.code}
+                {copy.footer.companyLabel} {site.company.code}, {copy.footer.registry}
               </p>
             ) : null}
             {site.company.vatCode ? (
@@ -121,6 +121,12 @@ export function Footer({ lang }: { lang: Lang }) {
               </p>
             ) : null}
             {site.company.address ? <p className="text-sm text-espresso-500">{site.company.address}</p> : null}
+            <p className="text-sm text-espresso-500">
+              {copy.footer.phoneLabel}{" "}
+              <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="hover:text-espresso-900">
+                {site.phone}
+              </a>
+            </p>
             <a
               href={`mailto:${site.email}`}
               className="mt-2 inline-flex items-center gap-2 text-sm font-medium text-terracotta-600 hover:text-terracotta-700"

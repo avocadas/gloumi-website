@@ -12,6 +12,11 @@ export const site = {
   legalName: "MB „Gloumi“",
   url: (process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") || "https://gloumi.lt") as string,
   email: "info@gloumi.lt",
+  /**
+   * The same number the app's legal texts give (`legal.js` `LEGAL_CONTROLLER`)
+   * and Apple shows as the trader contact (#93): change all three together.
+   */
+  phone: "+370 601 12244",
   locale: "lt_LT",
   language: "lt",
   country: "Lietuva",

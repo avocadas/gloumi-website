@@ -241,6 +241,9 @@ export const lt = {
       { key: "deletion", label: "Paskyros trynimas" },
     ] as { key: LegalKey; label: string }[],
     companyLabel: "Įmonės kodas",
+    /* IVPĮ 11 str. (S-075): kuriame registre įmonė įregistruota. */
+    registry: "Juridinių asmenų registras",
+    phoneLabel: "Tel.",
     vatLabel: "PVM kodas",
     rights: "Visos teisės saugomos.",
     operator: "Platformos operatorius ir kontaktinis punktas pagal ES Skaitmeninių paslaugų aktą (DSA):",
