@@ -10,7 +10,7 @@ export const metadata: Metadata = buildMetadata(
   { kind: "legal", key: "refunds" },
   {
     title: LEGAL_TITLES.lt.refunds,
-    description: "Kada ir kaip Gloumi grąžina avansą ar užstatą už vizitą, kaip veikia meistro prenumeratos grąžinimai ir kur kreiptis kilus nesutarimui.",
+    description: "Kada ir kaip Gloumi grąžina avansą už vizitą, kaip veikia meistro prenumeratos grąžinimai ir kur kreiptis kilus nesutarimui.",
   }
 );
 
