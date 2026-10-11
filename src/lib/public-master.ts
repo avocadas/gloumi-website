@@ -29,7 +29,8 @@ export type PublicWork = { id: string; mediaId: string | null; title: string | n
 
 export type PublicMaster = {
   name: string;
-  title: string | null;
+  /** `female` → „Meistrė“, kita → „Meistras“ (`master_title_gender`); tekstas – svetainės. */
+  titleGender: "female" | "male";
   specialty: string | null;
   bio: string | null;
   styleTags: string[];
@@ -60,7 +61,7 @@ export function toPublicMaster(raw: Raw): PublicMaster | null {
   if (!name) return null;
   return {
     name,
-    title: str(raw.title),
+    titleGender: raw.title_gender === "female" ? "female" : "male",
     specialty: str(raw.specialty),
     bio: str(raw.bio),
     styleTags: strings(raw.style_tags),

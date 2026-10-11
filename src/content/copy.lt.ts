@@ -296,6 +296,8 @@ export const lt = {
 
   /** Viešas meistro puslapis (#210, U-22; developeris K-W1, K-W2). */
   masterPage: {
+    titleFemale: "Meistrė",
+    titleMale: "Meistras",
     services: "Paslaugos",
     otherServices: "Kitos paslaugos",
     minutes: "min.",

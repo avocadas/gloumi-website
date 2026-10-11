@@ -116,7 +116,7 @@ export function MasterPage({
           )}
           <h1 className="mt-6 font-serif text-4xl font-medium text-espresso-900 text-balance sm:text-5xl">{master.name}</h1>
           <p className="mt-2 text-espresso-500">
-            {[master.title, master.specialty].filter(Boolean).join(" · ")}
+            {[master.titleGender === "female" ? copy.titleFemale : copy.titleMale, master.specialty].filter(Boolean).join(" · ")}
             {place ? <span className="block text-sm">{place}</span> : null}
           </p>
 
