@@ -4,7 +4,8 @@ import type { NextConfig } from "next";
  * Baseline hardening for a static marketing site. No CSP here on purpose:
  * a useful one needs per-request nonces (proxy.ts + dynamic rendering), and
  * a permissive one is theatre. Add it deliberately if the site ever embeds
- * third-party scripts.
+ * third-party scripts. The admin portal, which is dynamic anyway, gets its
+ * nonce-based policy from the middleware (`src/lib/csp.ts`).
  */
 const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },

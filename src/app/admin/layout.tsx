@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { connection } from "next/server";
 import type { ReactNode } from "react";
 import "../globals.css";
 import { adminFontVariables } from "./fonts";
@@ -35,7 +36,13 @@ export const viewport: Viewport = {
   colorScheme: "light",
 };
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
+export default async function AdminLayout({ children }: { children: ReactNode }) {
+  /*
+   * Visas portalas atvaizduojamas užklausos metu: nonce'ą skriptams Next
+   * prideda tik tada (`src/lib/csp.ts`). Be to `/admin/login`, klientinis
+   * puslapis be duomenų, būtų sugeneruotas build'e ir liktų be nonce'o.
+   */
+  await connection();
   return (
     <html lang="lt" className={`${adminFontVariables} h-full antialiased`}>
       <body className="flex min-h-full flex-col bg-app-sheet font-app-sans text-app-ink [&_:focus-visible]:outline-app-accent">

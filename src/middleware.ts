@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { SESSION_COOKIE_OPTIONS } from '@/lib/supabase/cookie-options';
+import { adminCsp, newNonce } from '@/lib/csp';
 
 /**
  * Middleware: sesijos atnaujinimas ir `/admin` uždarymas.
@@ -30,9 +31,28 @@ import { SESSION_COOKIE_OPTIONS } from '@/lib/supabase/cookie-options';
  * Visa kita svetainė yra statiniai rinkodaros ir teisiniai puslapiai be
  * jokios sesijos. Paleidus middleware ant jų, kiekvienas lankytojas gautų
  * Supabase kvietimą už nieką, o puslapiai nustotų būti visiškai statiniai.
+ *
+ * CSP (`src/lib/csp.ts`)
+ * ----------------------
+ * Nonce'as kuriamas čia, nes Next jį ima iš UŽKLAUSOS antraštės
+ * `Content-Security-Policy` ir pats prideda savo skriptams; naršyklėje
+ * užklausos antraštė nieko neblokuoja. Ji perrašoma visada, kad kliento
+ * atsiųsta reikšmė nepadiktuotų nonce'o.
  */
 export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({ request });
+  const nonce = newNonce();
+  const csp = adminCsp(nonce, process.env.NODE_ENV === 'development');
+
+  // Antraštės kopijuojamos kiekvieną kartą iš naujo: `setAll` pakeičia
+  // `request` slapukus, ir Server Components turi gauti jau atnaujintą žetoną.
+  const forward = () => {
+    const headers = new Headers(request.headers);
+    headers.set('content-security-policy', csp);
+    headers.delete('content-security-policy-report-only');
+    return NextResponse.next({ request: { headers } });
+  };
+
+  let response = forward();
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -45,7 +65,7 @@ export async function middleware(request: NextRequest) {
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-          response = NextResponse.next({ request });
+          response = forward();
           cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, options),
           );
@@ -70,6 +90,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  response.headers.set('Content-Security-Policy-Report-Only', csp);
   return response;
 }
 
