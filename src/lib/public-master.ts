@@ -115,6 +115,16 @@ export async function loadPublicMaster(masterId: string): Promise<PublicMaster |
  * adresas galioja ~20 min. Bet kokia klaida – tuščias atsakymas, o puslapis
  * rodomas be nuotraukų; žurnale – tik būsena, ne adresai.
  */
+/** Tik R2 pasirašytas adresas: kitas serveris matytų lankytojų IP (security, gynyba gilyn). */
+function isR2Url(value: string): boolean {
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" && url.hostname.endsWith(".r2.cloudflarestorage.com");
+  } catch {
+    return false;
+  }
+}
+
 export async function loadPublicMedia(masterId: string): Promise<Record<string, string>> {
   const out: Record<string, string> = {};
   try {
@@ -130,7 +140,7 @@ export async function loadPublicMedia(masterId: string): Promise<Record<string, 
       if (
         typeof item.mediaId === "string" &&
         typeof item.url === "string" &&
-        item.url.startsWith("https://") &&
+        isR2Url(item.url) &&
         typeof item.contentType === "string" &&
         item.contentType.startsWith("image/")
       ) {
