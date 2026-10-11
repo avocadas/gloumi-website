@@ -17,6 +17,12 @@ type Props = {
   /** Shown above the first section, e.g. which language prevails in a dispute. */
   note?: string;
   sections: LegalSection[];
+  /**
+   * A translation into a language the site chrome does not speak (fr, de, …):
+   * the text, its title, anchors and controller line are in that language,
+   * the chrome stays in `lang`.
+   */
+  translation?: { lang: string; title: string; controller: string };
 };
 
 /**
@@ -24,9 +30,10 @@ type Props = {
  * sections themselves and the controller/contact card. One language per page —
  * the other one is a switcher click away, at the matching path.
  */
-export function LegalPage({ lang, docKey, updated, version, intro, note, sections }: Props) {
+export function LegalPage({ lang, docKey, updated, version, intro, note, sections, translation }: Props) {
   const copy = getCopy(lang);
-  const title = LEGAL_TITLES[lang][docKey];
+  const title = translation?.title ?? LEGAL_TITLES[lang][docKey];
+  const textLang = translation?.lang ?? lang;
   // The FAQ shares the routing, but it is not one of the documents.
   const others = LEGAL_ROUTES.filter((route) => route.key !== docKey && route.key !== "faq");
 
@@ -35,7 +42,7 @@ export function LegalPage({ lang, docKey, updated, version, intro, note, section
       <Container className="max-w-3xl">
         <header>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta-600">{copy.legal.eyebrow}</p>
-          <h1 className="mt-4 font-serif text-4xl font-medium leading-[1.05] tracking-[-0.015em] text-espresso-900 sm:text-5xl">
+          <h1 lang={textLang} className="mt-4 font-serif text-4xl font-medium leading-[1.05] tracking-[-0.015em] text-espresso-900 sm:text-5xl">
             {title}
           </h1>
           <p className="mt-4 text-sm text-espresso-500">
@@ -48,13 +55,13 @@ export function LegalPage({ lang, docKey, updated, version, intro, note, section
           <div className="mt-8 rounded-2xl bg-sand-100 px-5 py-4 text-sm leading-relaxed text-espresso-700">{intro}</div>
         ) : null}
 
-        <nav aria-label={copy.legal.toc} className="mt-10 rounded-3xl bg-white p-6 shadow-card ring-1 ring-espresso-900/5">
+        <nav aria-label={copy.legal.toc} lang={textLang} className="mt-10 rounded-3xl bg-white p-6 shadow-card ring-1 ring-espresso-900/5">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-espresso-400">{copy.legal.toc}</p>
           <ol className="mt-3 grid gap-2 sm:grid-cols-2">
             {sections.map((section, index) => (
               <li key={section.title}>
                 <a
-                  href={`#${lang}-${slugify(section.title)}`}
+                  href={`#${textLang}-${slugify(section.title)}`}
                   className="text-sm text-espresso-700 hover:text-terracotta-600"
                 >
                   <span className="mr-2 font-serif text-espresso-400">{index + 1}.</span>
@@ -65,10 +72,10 @@ export function LegalPage({ lang, docKey, updated, version, intro, note, section
           </ol>
         </nav>
 
-        <div className="mt-12">
+        <div className="mt-12" lang={textLang}>
           {note ? <p className="text-sm text-espresso-500">{note}</p> : null}
           {sections.map((section, index) => (
-            <section key={section.title} id={`${lang}-${slugify(section.title)}`} className="mt-10 scroll-mt-28">
+            <section key={section.title} id={`${textLang}-${slugify(section.title)}`} className="mt-10 scroll-mt-28">
               <h2 className="font-serif text-2xl font-medium text-espresso-900">
                 <span className="mr-2 text-espresso-400">{index + 1}.</span>
                 {section.title}
@@ -91,7 +98,9 @@ export function LegalPage({ lang, docKey, updated, version, intro, note, section
 
         <aside className="mt-14 rounded-3xl bg-white p-6 shadow-card ring-1 ring-espresso-900/5 sm:p-8">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-espresso-400">{copy.legal.controller}</p>
-          <p className="mt-2 text-espresso-900">{controllerLine(lang)}</p>
+          <p className="mt-2 text-espresso-900" lang={textLang}>
+            {translation?.controller ?? controllerLine(lang)}
+          </p>
           <p className="mt-4 text-sm text-espresso-500">
             {copy.legal.contactQuestion}{" "}
             <a href={`mailto:${site.email}`} className="font-medium text-terracotta-600 hover:underline">
