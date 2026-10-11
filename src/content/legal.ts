@@ -49,6 +49,8 @@ export function controllerLine(lang: Lang): string {
   }
   if (site.company.address) parts.push(site.company.address);
   parts.push(site.email);
+  // Telefonas – kaip programėlės LEGAL_CONTROLLER (vartotojų teisė į greitą ryšį; #223 G-17).
+  parts.push(lang === "lt" ? `tel. ${site.phone}` : `phone ${site.phone}`);
   return parts.join(", ");
 }
 
@@ -343,7 +345,7 @@ export function deletionSections(lang: Lang): LegalSection[] {
         title: "Deleting your account in the app",
         bullets: [
           "Open Gloumi and sign in.",
-          "In the side menu choose “App settings” → “Delete account” and confirm with “Request deletion”.",
+          "In the side menu choose “App settings” → “Account” → “Delete account” and confirm with “Request deletion”.",
           "Your account and its data are deleted after 30 days. Until then you can cancel the deletion in the app.",
         ],
       },
@@ -375,7 +377,7 @@ export function deletionSections(lang: Lang): LegalSection[] {
       title: "Kaip ištrinti paskyrą programėlėje",
       bullets: [
         "Atidarykite Gloumi ir prisijunkite.",
-        "Šoniniame meniu pasirinkite „Programos nustatymai“ → „Ištrinti paskyrą“ ir patvirtinkite „Prašyti ištrinti“.",
+        "Šoniniame meniu pasirinkite „Programėlės nustatymai“ → „Paskyra“ → „Ištrinti paskyrą“ ir patvirtinkite „Prašyti ištrinti“.",
         "Paskyra ir jos duomenys ištrinami po 30 dienų. Iki tol trynimą galite atšaukti programėlėje.",
       ],
     },
