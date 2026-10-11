@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { cache } from "react";
 import { getCopy } from "@/content/copy";
 import { site } from "@/content/site";
-import { loadPublicMaster } from "@/lib/public-master";
+import { loadPublicMaster, loadPublicMedia } from "@/lib/public-master";
 import { loadPublicReviews } from "@/lib/public-reviews";
 import { AppLinkPage } from "../../AppLinkPage";
 import { APP_SCHEME, masterCode, profileId } from "../../codes";
@@ -49,13 +49,15 @@ export default async function ProfileLink({ params, searchParams }: Props) {
   // Reviews only for an existing master; a missing one, or a database that did
   // not answer, leaves the page as the plain link it always was.
   const [master, reviews] = id ? await Promise.all([masterOf(rawId), loadPublicReviews(id)]) : [null, null];
+  // Nuotraukos – tik viešam meistrui ir tik tai, ką pasirašė funkcija; be jų puslapis vis tiek pilnas.
+  const media = master && id ? await loadPublicMedia(id) : {};
   const reviewsSection = reviews ? (
     <MasterReviews lang={lang} data={reviews} pageUrl={`${site.url}/profile/${id}`} />
   ) : null;
 
   if (master) {
     return (
-      <MasterPage lang={lang} master={master} appHref={appHref} code={code} media={{}}>
+      <MasterPage lang={lang} master={master} appHref={appHref} code={code} media={media}>
         {reviewsSection}
       </MasterPage>
     );

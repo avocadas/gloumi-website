@@ -107,3 +107,38 @@ export async function loadPublicMaster(masterId: string): Promise<PublicMaster |
   }
   return data && typeof data === "object" ? toPublicMaster(data as Raw) : null;
 }
+
+/*
+ * Viešo puslapio nuotraukos (`public-media-urls`, Gloumi `3a752a77`; security A).
+ * Įvestis – tik meistro id: kurias medijas pasirašyti, renkasi funkcija pati
+ * (avataras ir darbai iš `public_master_page`, tik vaizdai, ne privatus kibiras),
+ * adresas galioja ~20 min. Bet kokia klaida – tuščias atsakymas, o puslapis
+ * rodomas be nuotraukų; žurnale – tik būsena, ne adresai.
+ */
+export async function loadPublicMedia(masterId: string): Promise<Record<string, string>> {
+  const out: Record<string, string> = {};
+  try {
+    const db = createSupabaseAdminClient();
+    const { data, error } = await db.functions.invoke("public-media-urls", { body: { masterId } });
+    if (error) {
+      const status = (error as { context?: { status?: number } }).context?.status;
+      if (status !== 404) console.warn("[public-media]", status ?? "error");
+      return out;
+    }
+    const items = Array.isArray((data as { items?: unknown })?.items) ? (data as { items: unknown[] }).items : [];
+    for (const item of items as Array<{ mediaId?: unknown; url?: unknown; contentType?: unknown }>) {
+      if (
+        typeof item.mediaId === "string" &&
+        typeof item.url === "string" &&
+        item.url.startsWith("https://") &&
+        typeof item.contentType === "string" &&
+        item.contentType.startsWith("image/")
+      ) {
+        out[item.mediaId] = item.url;
+      }
+    }
+  } catch {
+    console.warn("[public-media]", "exception");
+  }
+  return out;
+}
