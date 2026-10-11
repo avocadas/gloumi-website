@@ -294,6 +294,37 @@ export const lt = {
     home: "Apie Gloumi",
   },
 
+  /** Viešas meistro puslapis (#210, U-22; developeris K-W1, K-W2). */
+  masterPage: {
+    services: "Paslaugos",
+    otherServices: "Kitos paslaugos",
+    minutes: "min.",
+    deposit: "avansas",
+    depositPercent: "avansas {n} %",
+    about: "Apie",
+    works: "Darbai",
+    hours: "Darbo laikas",
+    dayOff: "Nedirba",
+    weekdays: ["Pirmadienis", "Antradienis", "Trečiadienis", "Ketvirtadienis", "Penktadienis", "Šeštadienis", "Sekmadienis"],
+    terms: "Sąlygos",
+    cancellation: "Atšaukimas",
+    rules: "Meistro taisyklės",
+    booking: "Rezervavimas",
+    leadTime: "Rezervuoti likus ne mažiau kaip {n} val.",
+    payment: "Mokėjimas",
+    workFormat: "Kur dirba",
+    amenities: "Patogumai",
+    addressInApp: "Tikslus adresas ir žemėlapis – programėlėje.",
+    book: "Rezervuoti programėlėje",
+    paymentMethods: { cash: "Grynieji", card_onsite: "Kortele vietoje", card: "Programėlėje" } as Record<string, string>,
+    workFormats: { salon: "Salone ar studijoje", mobile: "Pas klientą", rented_chair: "Nuomojamoje vietoje" } as Record<string, string>,
+    cancellationPolicies: {
+      free_24h: "Nemokamai atšaukti galima iki 24 val. iki vizito.",
+      deposit_required: "Rezervuojant mokamas avansas; atšaukus vėliau nei prieš 24 val. ar neatvykus, jis negrąžinamas.",
+      no_deposit: "Be avanso; atšaukti galima bet kada.",
+    } as Record<string, string>,
+  },
+
   /** Viešo meistro puslapio atsiliepimai (#210, U-22, V-9). */
   masterReviews: {
     title: "Atsiliepimai",
