@@ -25,7 +25,21 @@ export type PublicService = {
 
 export type PublicHours = { weekday: number; start: string | null; end: string | null; off: boolean };
 
-export type PublicWork = { id: string; mediaId: string | null; title: string | null; price: number | null };
+export type PublicWork = { id: string; mediaId: string | null; title: string | null; price: number | null; category: string | null };
+
+/*
+ * Kurių darbų nuotraukas galima rodyti viešai (developeris 2026-10-11: „Taip,
+ * nerodyti“ – jokių odos ar kūno būklės nuotraukų). Leidžiamų sąrašas, ne
+ * draudžiamų: „other“ ir be kategorijos gali būti bet kas, o pedikiūras
+ * laikomas tarp nagų, tad jis atpažįstamas pagal pavadinimą. Pirmasis sargas –
+ * bazė (`public_master_page` ir `public-media-urls`); šis – jei ji praleistų.
+ */
+const SHOWABLE_WORK = new Set(["hair", "nails", "brows_lashes", "makeup"]);
+const FOOT_WORK = /pedik|pedic|pėd|foot|feet/i;
+
+export function isShowableWork(w: PublicWork): boolean {
+  return !!w.category && SHOWABLE_WORK.has(w.category) && !FOOT_WORK.test(w.title ?? "");
+}
 
 export type PublicMaster = {
   name: string;
@@ -92,7 +106,7 @@ export function toPublicMaster(raw: Raw): PublicMaster | null {
       .map((h) => ({ weekday: num(h.weekday) ?? -1, start: str(h.start_time), end: str(h.end_time), off: h.is_off === true }))
       .filter((h) => h.weekday >= 0 && h.weekday <= 6),
     portfolio: rows(raw.portfolio)
-      .map((p) => ({ id: String(p.id ?? ""), mediaId: str(p.media_id), title: str(p.service_title), price: num(p.price) }))
+      .map((p) => ({ id: String(p.id ?? ""), mediaId: str(p.media_id), title: str(p.service_title), price: num(p.price), category: str(p.category) }))
       .filter((p) => p.id),
   };
 }

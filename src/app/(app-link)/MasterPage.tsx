@@ -5,7 +5,7 @@ import { Container } from "@/components/ui/Container";
 import { StoreBadges } from "@/components/ui/StoreBadges";
 import { getCopy } from "@/content/copy";
 import { alternates, type Lang } from "@/content/lang";
-import type { PublicMaster, PublicService } from "@/lib/public-master";
+import { isShowableWork, type PublicMaster, type PublicService } from "@/lib/public-master";
 
 /*
  * Viešas meistro puslapis (#210, U-22): tik U-22 lentelės „Rodo“ stulpelis –
@@ -82,7 +82,7 @@ export function MasterPage({
   const copy = all.masterPage;
   const place = [master.city, master.district].filter(Boolean).join(", ");
   const avatar = master.avatarMediaId ? media[master.avatarMediaId] : undefined;
-  const works = master.portfolio.filter((w) => w.mediaId && media[w.mediaId]);
+  const works = master.portfolio.filter((w) => isShowableWork(w) && w.mediaId && media[w.mediaId]);
 
   // Paslaugos pagal kategoriją, kaip programėlėje; be kategorijos – pabaigoje.
   const groups = new Map<string, PublicService[]>();
