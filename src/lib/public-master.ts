@@ -61,8 +61,9 @@ export function toPublicMaster(raw: Raw): PublicMaster | null {
   if (!name) return null;
   return {
     name,
-    // `title_feminine` (boolean) arba `title_gender` – kurį grąžins bazė; toliau eina tik female/male.
-    titleGender: raw.title_feminine === true || raw.title_gender === "female" ? "female" : "male",
+    // Bazė (`72a7bea1`) grąžina `title` „Meistrė“ / „Meistras“; toliau eina tik female/male, tekstą renka svetainė pagal kalbą.
+    titleGender:
+      raw.title === "Meistrė" || raw.title_feminine === true || raw.title_gender === "female" ? "female" : "male",
     specialty: str(raw.specialty),
     bio: str(raw.bio),
     styleTags: strings(raw.style_tags),
