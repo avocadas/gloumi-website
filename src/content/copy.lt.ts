@@ -204,6 +204,7 @@ export const lt = {
     errorNetwork: "Nėra ryšio. Patikrinkite internetą ir pabandykite dar kartą.",
     errorValidation: "Patikrinkite pažymėtus laukus.",
     errorRateLimited: "Per daug bandymų iš eilės. Pabandykite po kelių minučių.",
+    errorDailyLimit: "Šiandien gavome labai daug užklausų. Parašykite mums info@gloumi.lt – atsakysime.",
     unconfiguredTitle: "Forma dar ruošiama",
     unconfiguredText: "Parašykite mums tiesiai – atsakysime tuo pačiu adresu:",
     mailSubject: "Noriu tapti Gloumi meistru",

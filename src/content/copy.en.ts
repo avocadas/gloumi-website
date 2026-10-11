@@ -193,6 +193,7 @@ export const en: typeof lt = {
     errorNetwork: "No connection. Check your internet and try again.",
     errorValidation: "Please check the marked fields.",
     errorRateLimited: "Too many attempts in a row. Try again in a few minutes.",
+    errorDailyLimit: "We've had a lot of requests today. Write to us at info@gloumi.lt and we'll reply.",
     unconfiguredTitle: "The form is not ready yet",
     unconfiguredText: "Write to us directly and we will answer from the same address:",
     mailSubject: "I want to join Gloumi as a master",
