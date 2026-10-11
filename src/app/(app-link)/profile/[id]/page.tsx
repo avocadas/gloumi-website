@@ -35,7 +35,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: [master.name, master.specialty].filter(Boolean).join(" – "),
     description: [master.specialty, where].filter(Boolean).join(" · ") || undefined,
     alternates: { canonical: `${site.url}/profile/${profileId(id)}` },
-    robots: { index: true, follow: true },
+    // Puslapis indeksuojamas (K-W1), nuotraukos – ne: darbuose matyti klientų veidai (teisininkas 2026-10-11).
+    robots: { index: true, follow: true, noimageindex: true, googleBot: { index: true, follow: true, noimageindex: true } },
   };
 }
 
