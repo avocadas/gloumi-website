@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { getCopy } from "@/content/copy";
+import { site } from "@/content/site";
+import { loadPublicReviews } from "@/lib/public-reviews";
 import { AppLinkPage } from "../../AppLinkPage";
 import { APP_SCHEME, masterCode, profileId } from "../../codes";
+import { MasterReviews } from "../../MasterReviews";
 import { requestLang } from "../../request-lang";
 
 /** https://gloumi.lt/profile/<id>[?mk=<master code>] – a master's shared profile link (#210). */
@@ -23,5 +26,12 @@ export default async function ProfileLink({
   const id = profileId(rawId);
   const code = masterCode(query.mk);
   const appHref = id ? `${APP_SCHEME}://profile/${id}${code ? `?mk=${code}` : ""}` : `${APP_SCHEME}://`;
-  return <AppLinkPage lang={lang} kind="profile" appHref={appHref} code={code} />;
+  // Reviews only for an existing master; a missing one, or a database that did
+  // not answer, leaves the page as the plain link it always was.
+  const reviews = id ? await loadPublicReviews(id) : null;
+  return (
+    <AppLinkPage lang={lang} kind="profile" appHref={appHref} code={code}>
+      {reviews ? <MasterReviews lang={lang} data={reviews} pageUrl={`${site.url}/profile/${id}`} /> : null}
+    </AppLinkPage>
+  );
 }

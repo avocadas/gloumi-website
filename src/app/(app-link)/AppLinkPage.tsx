@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { SiteShell } from "@/components/layout/SiteShell";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
@@ -15,18 +16,23 @@ import { alternates, homePath, type Lang } from "@/content/lang";
  * The code, when the link carries one, is shown because a freshly installed
  * app does not receive the link it was installed from: without it the
  * invitation would be lost on the way.
+ *
+ * A profile link may add what the database lets the public see about the
+ * master (`children`, #210): so far only reviews whose authors agreed (V-9).
  */
 export function AppLinkPage({
   lang,
   kind,
   appHref,
   code,
+  children,
 }: {
   lang: Lang;
   kind: "profile" | "ref";
   /** The same link in the app's scheme; built only from validated parts. */
   appHref: string;
   code: string | null;
+  children?: ReactNode;
 }) {
   const copy = getCopy(lang).appLink;
   return (
@@ -52,6 +58,8 @@ export function AppLinkPage({
         ) : null}
 
         <StoreBadges lang={lang} className="mt-10 justify-center" />
+
+        {children}
 
         <p className="mt-10">
           <a href={homePath(lang)} className="font-medium text-terracotta-600 underline-offset-2 hover:underline">

@@ -293,4 +293,20 @@ export const lt = {
     codeHint: "Jei nuoroda programėlės neatidarė, šį kodą galėsite įvesti programėlėje.",
     home: "Apie Gloumi",
   },
+
+  /** Viešo meistro puslapio atsiliepimai (#210, U-22, V-9). */
+  masterReviews: {
+    title: "Atsiliepimai",
+    outOf: "iš 5",
+    count: ["atsiliepimas", "atsiliepimai", "atsiliepimų"],
+    // V-9: privalomas, kai įvertinimas skaičiuojamas iš visų, o rodomi tik sutikusiųjų.
+    consentNote:
+      "Rodomi tik tie atsiliepimai, kurių autoriai sutiko juos rodyti svetainėje. Įvertinimas skaičiuojamas iš visų patikrintų atsiliepimų.",
+    howWeCheck: "Kaip tikriname atsiliepimus",
+    empty: "Svetainėje rodomų atsiliepimų dar nėra. Visus atsiliepimus rasite programėlėje.",
+    noName: "Vardas nenurodytas",
+    reply: "Meistro atsakymas",
+    report: "Pranešti apie turinį",
+    reportSubject: "Pranešimas apie turinį",
+  },
 };

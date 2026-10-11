@@ -1,5 +1,5 @@
 import { LEGAL_DOCS, LEGAL_META, PARTNER_META, type LegalSection } from "./legal-source";
-import { LEGAL_ROUTES, type Lang, type LegalKey } from "./lang";
+import { LEGAL_ROUTES, legalPath, type Lang, type LegalKey } from "./lang";
 import { site } from "./site";
 
 export { LEGAL_DOCS, LEGAL_META, LEGAL_ROUTES, PARTNER_META };
@@ -125,6 +125,21 @@ const RETENTION_TITLES: Record<Lang, string> = {
   lt: "Kiek laiko saugome",
   en: "How long we keep data",
 };
+
+const REVIEW_CHECK_TITLES: Record<Lang, string> = {
+  lt: "Kaip tikriname atsiliepimus",
+  en: "How we verify reviews",
+};
+
+/**
+ * Link to the Terms section on how reviews are verified – shown next to a
+ * rating (U-22). Looked up by title like the sections above, so a renamed
+ * section breaks the build instead of leaving a dead anchor.
+ */
+export function reviewCheckHref(lang: Lang): string {
+  const section = termsSection(lang, REVIEW_CHECK_TITLES[lang]);
+  return `${legalPath(lang, "terms")}#${lang}-${slugify(section.title)}`;
+}
 
 /**
  * Refund policy. The rules on deposits, on a paid visit that did not happen and

@@ -271,6 +271,20 @@ export const en: typeof lt = {
     codeHint: "If the link didn't open the app, you can enter this code in the app.",
     home: "About Gloumi",
   },
+
+  masterReviews: {
+    title: "Reviews",
+    outOf: "out of 5",
+    count: ["review", "reviews", "reviews"],
+    consentNote:
+      "Only reviews whose authors agreed to show them on the website appear here. The rating is calculated from all verified reviews.",
+    howWeCheck: "How we verify reviews",
+    empty: "There are no reviews shown on the website yet. You'll find all reviews in the app.",
+    noName: "Name not given",
+    reply: "Master's reply",
+    report: "Report content",
+    reportSubject: "Content report",
+  },
   notFound: {
     eyebrow: "404",
     title: "We cannot find this page",
