@@ -84,7 +84,7 @@ export function WaitlistForm({ lang }: { lang: Lang }) {
         setStatus("unconfigured");
         return;
       }
-      if (res.status === 429) setMessage(f.errorRateLimited);
+      if (res.status === 429) setMessage(json?.error === "daily_limited" ? f.errorDailyLimit : f.errorRateLimited);
       else if (json?.error === "validation") setMessage(f.errorValidation);
       else setMessage(f.errorGeneric);
       setStatus("error");
