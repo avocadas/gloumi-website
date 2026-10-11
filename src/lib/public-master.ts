@@ -61,7 +61,8 @@ export function toPublicMaster(raw: Raw): PublicMaster | null {
   if (!name) return null;
   return {
     name,
-    titleGender: raw.title_gender === "female" ? "female" : "male",
+    // `title_feminine` (boolean) arba `title_gender` – kurį grąžins bazė; toliau eina tik female/male.
+    titleGender: raw.title_feminine === true || raw.title_gender === "female" ? "female" : "male",
     specialty: str(raw.specialty),
     bio: str(raw.bio),
     styleTags: strings(raw.style_tags),
