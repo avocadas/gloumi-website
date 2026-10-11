@@ -9,7 +9,7 @@ import type { Lang } from "./lang";
 export type FaqItem = { id: string; q: string; a: string };
 export type FaqSection = { key: string; title: string; items: FaqItem[] };
 
-export const FAQ_UPDATED = "2026-10-07";
+export const FAQ_UPDATED = "2026-10-11";
 
 export const FAQ: Record<Lang, FaqSection[]> = {
   "lt": [
@@ -51,27 +51,27 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-6",
           "q": "Neatėjo el. pašto patvirtinimo laiškas.",
-          "a": "Patikrinkite šlamšto aplanką. Naują nuorodą išsisiųsite: šoninis meniu → Programos nustatymai → Paskyra → Patvirtinti prie el. pašto."
+          "a": "Patikrinkite šlamšto aplanką. Naują nuorodą išsisiųsite: šoninis meniu → Programėlės nustatymai → Paskyra → Patvirtinti prie el. pašto."
         },
         {
           "id": "K-7",
           "q": "Kaip pakeisti savo duomenis?",
-          "a": "Vardą ir aprašymą – Profilis → Redaguoti profilį, nuotrauką – ją paspaudę. El. paštą, vartotojo vardą ir telefoną – šoninis meniu → Programos nustatymai → Paskyra. Gimimo datą pakeisime mes – parašykite."
+          "a": "Vardą ir aprašymą – Profilis → Redaguoti profilį, nuotrauką – ją paspaudę. El. paštą, vartotojo vardą ir telefoną – šoninis meniu → Programėlės nustatymai → Paskyra. Gimimo datą pakeisime mes – parašykite."
         },
         {
           "id": "K-8",
           "q": "Kaip pakeisti kalbą ar temą?",
-          "a": "Šoninis meniu → Programos nustatymai → Kalba / Language (lietuvių ar anglų) arba „Programėlės tema“. Pakeitimas įsigalioja iš karto."
+          "a": "Šoninis meniu → Programėlės nustatymai → Kalba / Language (lietuvių ar anglų) arba „Programėlės tema“. Pakeitimas įsigalioja iš karto."
         },
         {
           "id": "K-10",
           "q": "Kaip gauti savo duomenų kopiją?",
-          "a": "Šoninis meniu → Programos nustatymai → Paskyra → Atsisiųsti mano duomenis – JSON failas be nuotraukų ir balso įrašų. Visų duomenų prašykite info@gloumi.lt iš paskyros el. pašto – atsakysime per mėnesį."
+          "a": "Šoninis meniu → Programėlės nustatymai → Paskyra → Atsisiųsti mano duomenis – JSON failas be nuotraukų ir balso įrašų. Visų duomenų prašykite info@gloumi.lt iš paskyros el. pašto – atsakysime per mėnesį."
         },
         {
           "id": "K-11",
           "q": "Kažkas prisijungė prie mano paskyros.",
-          "a": "Šoninis meniu → Programos nustatymai → Paskyra → Atsijungti visur, tada prisijungimo lange – „Pamiršau slaptažodį“. Parašykite mums, ko nedarėte. Gloumi niekada neprašo slaptažodžio ar kodo."
+          "a": "Šoninis meniu → Programėlės nustatymai → Paskyra → Atsijungti visur, tada prisijungimo lange – „Pamiršau slaptažodį“. Parašykite mums, ko nedarėte. Gloumi niekada neprašo slaptažodžio ar kodo."
         }
       ]
     },
@@ -87,7 +87,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-13",
           "q": "Kaip rezervuoti vizitą?",
-          "a": "Meistro profilyje – „Rezervuoti laiką“: pasirinkite paslaugas, datą ir laiką, mokėjimo būdą ir paspauskite „Patvirtinti rezervaciją“. Kai meistras patvirtins, gausite pranešimą."
+          "a": "Meistro profilyje – „Rezervuoti laiką“: pasirinkite paslaugas, datą ir laiką, mokėjimo būdą ir paspauskite „Patvirtinti vizitą“. Kai meistras patvirtins, gausite pranešimą."
         },
         {
           "id": "K-14",
@@ -107,7 +107,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-17",
           "q": "Kaip atšaukti ar perkelti vizitą?",
-          "a": "Užsakymai → Atšaukti rezervaciją arba Perkelti. Atšaukiama iš karto, neklausiant. Likus mažiau nei 24 val. iki patvirtinto vizito perkelti gali tik meistras – parašykite jam."
+          "a": "Vizitai → Atšaukti vizitą arba Perkelti. Atšaukiama iš karto, neklausiant. Likus mažiau nei 24 val. iki patvirtinto vizito perkelti gali tik meistras – parašykite jam."
         },
         {
           "id": "K-18",
@@ -132,7 +132,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-22",
           "q": "Kaip palikti atsiliepimą?",
-          "a": "Kai vizitas pažymėtas įvykusiu: Užsakymai → Atliktos procedūros → Įvertinti meistrą. Galima per 48 val. nuo pažymėjimo. Jei vizitą įvykusiu pažymėjo sistema, patvirtinsite, kad jis įvyko. Paskelbto pakeisti negalite – parašykite mums."
+          "a": "Kai vizitas pažymėtas įvykusiu: Vizitai → Įvykę vizitai → Įvertinti meistrą. Galima per 48 val. nuo pažymėjimo. Jei vizitą įvykusiu pažymėjo sistema, patvirtinsite, kad jis įvyko. Paskelbto pakeisti negalite – parašykite mums."
         }
       ]
     },
@@ -158,7 +158,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-26",
           "q": "Kaip palikti arbatpinigių?",
-          "a": "Po atsiliepimo su 3 ar daugiau žvaigždučių, jei meistras juos priima: 5, 10, 15 % ar 1–100 €, per 7 d. po vizito. Vėliau – Užsakymai → Atliktos procedūros → Palikti arbatpinigių. Gloumi iš jų nieko neima."
+          "a": "Po atsiliepimo su 3 ar daugiau žvaigždučių, jei meistras juos priima: 5, 10, 15 % ar 1–100 €, per 7 d. po vizito. Vėliau – Vizitai → Įvykę vizitai → Palikti arbatpinigių. Gloumi iš jų nieko neima."
         },
         {
           "id": "K-27",
@@ -189,7 +189,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-32",
           "q": "Ką užpildyti, kad klientai galėtų rezervuoti?",
-          "a": "Paspauskite „Pridėti paslaugas“ ir pereikite vedlį iki „Aktyvuoti profilį“. Reikia paslaugų, darbo laiko, sričių ir (jei dirbate savo vietoje) adreso; „Priima rezervacijas“ turi būti įjungta."
+          "a": "Paspauskite „Pridėti paslaugas“ ir pereikite vedlį iki „Aktyvuoti profilį“. Reikia paslaugų, darbo laiko, sričių ir (jei dirbate savo vietoje) adreso; „Leisti rezervuoti“ turi būti įjungta."
         },
         {
           "id": "K-33",
@@ -199,7 +199,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-34",
           "q": "Kaip nustatyti darbo laiką ir poilsio dienas?",
-          "a": "Profilis → Paslaugos ir laikas → Darbo laikas → Savaitės grafikas. Atskirą dieną ar atostogas pažymėkite paspaudę datą kalendoriuje („Poilsio diena“). Laikinai – išjunkite „Priima rezervacijas“."
+          "a": "Profilis → Paslaugos ir laikas → Darbo laikas → Savaitės grafikas. Atskirą dieną ar atostogas pažymėkite paspaudę datą kalendoriuje („Poilsio diena“). Laikinai – išjunkite „Leisti rezervuoti“."
         },
         {
           "id": "K-35",
@@ -239,7 +239,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-42",
           "q": "Kodėl prašoma asmens ar įmonės kodo ir IBAN?",
-          "a": "To reikalauja ES taisyklė DAC7: apie per platformą uždirbtas pajamas pranešama VMI. Įveskite juos šoniniame meniu → Programos nustatymai → Veiklos duomenys. Klientai jų nemato. Nepateikus po prašymo ir dviejų priminimų, ne anksčiau kaip po 60 d. nuo pirmojo priminimo, išmokos sustabdomos."
+          "a": "To reikalauja ES taisyklė DAC7: apie per platformą uždirbtas pajamas pranešama VMI. Įveskite juos šoniniame meniu → Programėlės nustatymai → Veiklos duomenys. Klientai jų nemato. Nepateikus po prašymo ir dviejų priminimų, ne anksčiau kaip po 60 d. nuo pirmojo priminimo, išmokos sustabdomos."
         },
         {
           "id": "K-43",
@@ -295,7 +295,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-52",
           "q": "Kaip užblokuoti žmogų?",
-          "a": "Pranešimo lange – „Blokuoti vartotoją“: nebematysite jo įrašų, Story ir žinučių. Atblokuoti – šoninis meniu → Programos nustatymai → Užblokuoti žmonės."
+          "a": "Pranešimo lange – „Blokuoti vartotoją“: nebematysite jo įrašų, Story ir žinučių. Atblokuoti – šoninis meniu → Programėlės nustatymai → Užblokuoti žmonės."
         },
         {
           "id": "K-53",
@@ -430,7 +430,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-22",
           "q": "How do I leave a review?",
-          "a": "Once the visit is marked as having taken place: Bookings → Completed procedures → Review professional. You have 48 h from that mark. If the system marked it, you confirm that the visit took place. A posted review cannot be edited – write to us."
+          "a": "Once the visit is marked as having taken place: Bookings → Completed visits → Review professional. You have 48 h from that mark. If the system marked it, you confirm that the visit took place. A posted review cannot be edited – write to us."
         }
       ]
     },
@@ -456,7 +456,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-26",
           "q": "How do I leave a tip?",
-          "a": "After a review of 3 stars or more, if the master accepts tips: 5, 10, 15% or €1–100, within 7 days of the visit. Later – Bookings → Completed procedures → Leave a tip. Gloumi takes nothing from tips."
+          "a": "After a review of 3 stars or more, if the master accepts tips: 5, 10, 15% or €1–100, within 7 days of the visit. Later – Bookings → Completed visits → Leave a tip. Gloumi takes nothing from tips."
         },
         {
           "id": "K-27",

@@ -70,6 +70,32 @@ function block(heading) {
 
 const heldRef = new RegExp(`\\b(${HOLD.join("|")})\\b`);
 
+/*
+ * Labels the draft marks as "old {→ new}" and the app has since shipped under
+ * the new name (app `origin/main`, renamed in `fd7afcea`, checked 2026-10-12
+ * for #223 G-13: the old labels are gone from lt.js and en.js). These are
+ * swapped to the new label; any other "{→ …}" note is still dropped with the
+ * old label kept, and named on the console so it is not forgotten.
+ */
+const SHIPPED_RENAMES = [
+  ["Programos nustatymai", "Programėlės nustatymai"],
+  ["Atliktos procedūros", "Įvykę vizitai"],
+  ["Atšaukti rezervaciją", "Atšaukti vizitą"],
+  ["Patvirtinti rezervaciją", "Patvirtinti vizitą"],
+  ["Priima rezervacijas", "Leisti rezervuoti"],
+  ["Užsakymai", "Vizitai"],
+  ["Completed procedures", "Completed visits"],
+  ["Invite specialists", "Invite masters"],
+];
+
+function applyShippedRenames(a) {
+  for (const [from, to] of SHIPPED_RENAMES) {
+    a = a.split(`„${from}“ {→ ${to}}`).join(`„${to}“`).split(`${from} {→ ${to}}`).join(to);
+  }
+  for (const m of a.matchAll(/\{→\s*([^}]*)\}/g)) console.warn(`unapplied rename note: {→ ${m[1]}}`);
+  return a;
+}
+
 function clean(answer, item, lang) {
   let a = answer;
   // A cutting marker drops itself and everything after it.
@@ -79,6 +105,7 @@ function clean(answer, item, lang) {
   const short = QUESTION_WHILE_CUT[item.id];
   if (short && !cut) throw new Error(`${item.id} is no longer cut: drop it from QUESTION_WHILE_CUT`);
   if (short) item.q = short[lang];
+  a = applyShippedRenames(a);
   a = a.replace(/\*\*\[.*?\]\*\*/g, ""); // "change later" markers
   a = a.replace(/\s*\{[^}]*\}/g, ""); // editor notes, incl. {→ new label}
   a = a.replace(/\s*\((K-\d+)\)/g, (m, k) => (HOLD.includes(k) ? "" : m)); // "(K-40)"
