@@ -3,7 +3,12 @@
  * share links (#210) in the app instead of the browser: /profile/<id> and
  * /ref, the paths app.config.js claims (`intentFilters`, `autoVerify`).
  *
- * WAITING FOR THE FINGERPRINTS. Android verifies the app by the SHA-256 of
+ * Store app fingerprints read from Play Console → App integrity → App signing
+ * by the store role on 2026-10-12: the Google app signing key (what an app
+ * installed from Play is signed with) and the EAS upload key (what a build
+ * installed straight from EAS is signed with). The dev variant still waits.
+ *
+ * Android verifies the app by the SHA-256 of
  * the certificate the installed APK is signed with, so each list needs:
  *  - the EAS upload key: `npx eas-cli credentials -p android`, per variant
  *    (only the developer can run it - it is interactive);
@@ -18,7 +23,15 @@
  * mark the domain as failed until its next check, a missing one does not.
  */
 const PACKAGES: { name: string; fingerprints: string[] }[] = [
-  { name: "com.ringaudas.gloumi", fingerprints: [] },
+  {
+    name: "com.ringaudas.gloumi",
+    fingerprints: [
+      // Google Play app signing key
+      "E3:60:1C:08:59:35:27:B9:2F:37:EF:7A:91:9E:1C:D7:CD:55:0C:0A:CA:42:12:BA:3A:5A:72:13:51:54:EE:FB",
+      // EAS upload key
+      "DD:48:11:29:4A:69:85:EC:57:74:77:70:02:35:9B:E3:A0:A2:02:FC:0A:9D:C3:48:1C:8C:39:83:5B:3C:B7:D8",
+    ],
+  },
   { name: "com.ringaudas.gloumi.dev", fingerprints: [] },
 ];
 
