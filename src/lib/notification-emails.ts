@@ -39,10 +39,36 @@ export type ClaimedEmail = {
 };
 
 type Outcome = { outcome: "sent" | "retry" | "skip"; resendId?: string; error?: string };
-export type RunSummary = { claimed: number; sent: number; retried: number; skipped: number; finishErrors: number };
+export type RunSummary = {
+  /** `false` – eilės bazėje dar nėra (migracija nepritaikyta), nieko nedaryta. */
+  queue: boolean;
+  claimed: number;
+  sent: number;
+  retried: number;
+  skipped: number;
+  finishErrors: number;
+};
 
-/** Vienam paleidimui: cron eina kas 10 min., o nemokama Resend para – 100 laiškų visam projektui. */
+/** Vienam paleidimui: cron eina kas 5 min., o nemokama Resend para – 100 laiškų visam projektui. */
 export const BATCH = 20;
+
+/*
+ * Kol `20261005224404` nepritaikyta, `claim_notification_emails` nėra:
+ * PostgREST atsako `PGRST202` (funkcija nerasta schemos podėlyje), o pati
+ * bazė – `42883` (nėra funkcijos) ar `42P01` (nėra lentelės). Tai ne klaida, o
+ * laukimas: paleidimas baigiasi tyliai, kad cron'as kas 5 min. nekeltų
+ * triukšmo žurnale ir Vercel'yje.
+ */
+const QUEUE_MISSING = new Set(["PGRST202", "42883", "42P01"]);
+export const isQueueMissing = (code: string | undefined) => !!code && QUEUE_MISSING.has(code);
+
+/*
+ * Rūšys, kurių programėlės pranešimas sukuriamas tik PO laiško: mokėjimo
+ * vietoje išjungimas įvyksta ir pranešimas atsiranda tik
+ * `finish_notification_email(…, 'sent')` metu, o skolą spėjus sumokėti – visai
+ * ne. Tokiame laiške nerašome, kad tą patį jau išsiuntėme į programėlę.
+ */
+const APP_COPY_AFTER_EMAIL = new Set(["onsite_payments_blocked"]);
 
 /** Laiško rėmas aplink bazės tekstą – ta pačia kalba, kaip pranešimas. */
 const FRAME = {
@@ -96,7 +122,19 @@ async function deliver(db: AdminDb, key: string, row: ClaimedEmail): Promise<Out
         to: [to],
         reply_to: site.email,
         subject: title,
-        text: [frame.hello, "", heading, "", row.body, "", frame.reply, frame.app, "", site.legalName, site.url].join("\n"),
+        text: [
+          frame.hello,
+          "",
+          heading,
+          "",
+          row.body,
+          "",
+          frame.reply,
+          ...(APP_COPY_AFTER_EMAIL.has(row.kind) ? [] : [frame.app]),
+          "",
+          site.legalName,
+          site.url,
+        ].join("\n"),
       }),
     });
     if (!res.ok) return { outcome: outcomeForStatus(res.status), error: `resend_${res.status}` };
@@ -109,8 +147,9 @@ async function deliver(db: AdminDb, key: string, row: ClaimedEmail): Promise<Out
 
 /** Vienas paleidimas: išsiimti eilę, išsiųsti, pranešti bazei. Klaida metama tik nepavykus išsiimti. */
 export async function processNotificationEmails(db: AdminDb, key: string): Promise<RunSummary> {
-  const summary: RunSummary = { claimed: 0, sent: 0, retried: 0, skipped: 0, finishErrors: 0 };
+  const summary: RunSummary = { queue: true, claimed: 0, sent: 0, retried: 0, skipped: 0, finishErrors: 0 };
   const { data, error } = await db.rpc("claim_notification_emails", { _limit: BATCH });
+  if (error && isQueueMissing(error.code)) return { ...summary, queue: false };
   if (error) throw new Error(`claim_notification_emails: ${error.code ?? "error"}`);
   const rows = (data ?? []) as ClaimedEmail[];
   summary.claimed = rows.length;

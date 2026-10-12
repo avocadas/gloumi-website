@@ -4,7 +4,7 @@ import { processNotificationEmails } from "@/lib/notification-emails";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 /*
- * Vercel cron (`vercel.json`, kas 10 min.): išsiunčia bazės eilės
+ * Vercel cron (`vercel.json`, kas 5 min.): išsiunčia bazės eilės
  * `notification_emails` laiškus (`src/lib/notification-emails.ts`).
  *
  * Vercel cron'ui siunčia `Authorization: Bearer <CRON_SECRET>`; be teisingos
@@ -33,7 +33,8 @@ export async function GET(request: Request) {
 
   try {
     const summary = await processNotificationEmails(createSupabaseAdminClient(), key);
-    console.info("[notification-emails]", JSON.stringify(summary));
+    // Kol eilės nėra – be įrašo: kas 5 min. tas pats „nieko“ tik užgožtų žurnalą.
+    if (summary.queue) console.info("[notification-emails]", JSON.stringify(summary));
     return NextResponse.json({ ok: true, ...summary });
   } catch (e) {
     console.error("[notification-emails]", e instanceof Error ? e.message : "unknown error");
