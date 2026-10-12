@@ -11,7 +11,8 @@ import { DISPUTE_FILTERS, DisputeQueue, type HeldMaster } from "./DisputeQueue";
  * Ginčai (#147, Gloumi `20261001233134`). Išmoka meistrui laukia 3 dienas po
  * vizito; per tą laiką klientas gali pranešti „Vizitas neįvyko?", o bankas —
  * atsiųsti kortelės ginčą. Kol ginčas `open`, naktinis `stripe-settle`
- * išmokos neperveda. Kliento pranešimą sprendžia administratorius čia.
+ * išmokos neperveda — kliento ar administratoriaus ginčo ne ilgiau 30 d.
+ * (`autoReleaseDays`). Kliento pranešimą sprendžia administratorius čia.
  *
  * Skaitoma VIENU kvietimu su `_status = null` (iki 200 eilučių): iš jo ir
  * skaičiai prie būsenų, ir filtruotas sąrašas. Ginčų mažai, o penki
@@ -39,6 +40,24 @@ type Row = {
   /* Sąrašą su šiuo stulpeliu grąžina Gloumi `20261004191736` (#164); iki jos — `undefined`. */
   chargeback_bearer?: string | null;
 };
+
+/*
+ * Sulaikymas ne ilgiau 30 d. (#223 P0-12; developeris 2026-10-11, K-P2: „A – po
+ * 30 d. išmokama automatiškai"): atviras kliento ar administratoriaus ginčas,
+ * kurio niekas neišsprendė per 30 d. nuo atidarymo, naktinis `stripe-settle`
+ * išsprendžia kaip `release` (Gloumi `055c3f3a`). Kortelės ginčo — ne, jį
+ * sprendžia bankas, tad jam `null`. Grąžina likusias dienas, suapvalintas į
+ * viršų; 0 — riba praėjo, išmokės artimiausią naktį. Laikrodis čia, ne
+ * komponente (react-hooks/purity).
+ */
+const DISPUTE_HOLD_MAX_MS = 30 * 24 * 60 * 60 * 1000;
+const DAY_MS = 24 * 60 * 60 * 1000;
+function autoReleaseDays(r: Row): number | null {
+  if (r.status !== "open" || (r.source !== "client" && r.source !== "admin")) return null;
+  const openedMs = Date.parse(r.created_at);
+  if (!Number.isFinite(openedMs)) return null;
+  return Math.max(0, Math.ceil((openedMs + DISPUTE_HOLD_MAX_MS - Date.now()) / DAY_MS));
+}
 
 export default async function DisputesPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const check = await checkAdmin();
@@ -86,6 +105,7 @@ export default async function DisputesPage({ searchParams }: { searchParams: Pro
       transferredAt: r.transferred_at,
       stripeDisputeId: r.stripe_dispute_id,
       chargebackBearer: r.chargeback_bearer === "gloumi" || r.chargeback_bearer === "master" ? r.chargeback_bearer : null,
+      autoReleaseDays: autoReleaseDays(r),
     }));
 
   /*
@@ -112,7 +132,7 @@ export default async function DisputesPage({ searchParams }: { searchParams: Pro
     <AdminShell
       section="disputes"
       title="Ginčai"
-      subtitle="Klientų pranešimai „Vizitas neįvyko?“ ir kortelių ginčai. Kol ginčas atviras, išmoka meistrui laukia."
+      subtitle="Klientų pranešimai „Vizitas neįvyko?“ ir kortelių ginčai. Kol ginčas atviras, išmoka meistrui laukia; nenusprendus kliento ar administratoriaus ginčo per 30 d., ji pervedama automatiškai."
       username={check.username ?? check.userId}
     >
       {/* Mokėjimo prašymai (K-U24-3) įsijungia su `20261005214547`; iki tol nuorodos nerodome — puslapis būtų tuščias su klaida. */}

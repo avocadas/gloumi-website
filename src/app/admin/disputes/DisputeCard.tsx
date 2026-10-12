@@ -25,6 +25,8 @@ export type DisputeView = {
   stripeDisputeId: string | null;
   /* Kas nešė pralaimėto kortelės ginčo nuostolį (#164); `null` — dar nenuspręsta arba ne kortelės ginčas. */
   chargebackBearer: "gloumi" | "master" | null;
+  /* Kiek dienų liko iki automatinio išmokėjimo meistrui (30 d. riba, #223 P0-12); `null` — ne atviras arba kortelės ginčas. */
+  autoReleaseDays: number | null;
 };
 
 type Decision = "refund" | "release" | "gloumi_bears" | "master_bears";
@@ -254,7 +256,10 @@ export function DisputeCard({ dispute }: { dispute: DisputeView }) {
 
       {canDecide ? (
         <footer className="mt-5 flex flex-col gap-3 border-t border-app-hairline pt-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-[13px] text-app-muted">Pinigai pajudės kitą naktį.</p>
+          <div className="flex flex-col gap-1.5">
+            {dispute.autoReleaseDays !== null ? <AutoRelease days={dispute.autoReleaseDays} /> : null}
+            <p className="text-[13px] text-app-muted">Pinigai pajudės kitą naktį.</p>
+          </div>
           <div className="flex flex-wrap gap-2">
             <button type="button" disabled={pending} onClick={() => decide("refund")} className={btn}>
               <IconReply size={16} strokeWidth={STROKE} aria-hidden />
@@ -332,6 +337,31 @@ export function DisputeCard({ dispute }: { dispute: DisputeView }) {
         </p>
       ) : null}
     </article>
+  );
+}
+
+/*
+ * Nenusprendus per 30 d. nuo ginčo atidarymo, naktinis `stripe-settle` išmoką
+ * perveda meistrui pats (#223 P0-12). Paskutines 3 dienas — ryškiau.
+ */
+function AutoRelease({ days }: { days: number }) {
+  if (days === 0) {
+    return (
+      <p className="rounded-[10px] bg-app-warn-bg px-3 py-1.5 text-[13px] font-semibold text-app-warn">
+        30 d. praėjo: artimiausią naktį išmoka bus pervesta meistrui automatiškai.
+      </p>
+    );
+  }
+  return (
+    <p
+      className={
+        days <= 3
+          ? "rounded-[10px] bg-app-warn-bg px-3 py-1.5 text-[13px] font-semibold text-app-warn"
+          : "text-[13px] font-semibold text-app-ink"
+      }
+    >
+      Liko {days} d. iki automatinio išmokėjimo meistrui.
+    </p>
   );
 }
 
