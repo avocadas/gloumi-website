@@ -53,6 +53,13 @@ export type RunSummary = {
 export const BATCH = 20;
 
 /*
+ * Maršruto `maxDuration` – 60 s, o vienas laiškas gali užtrukti iki ~15 s
+ * (paskyra, kalba, Resend su 10 s riba). Po 40 s naujų nebepradedame, kad
+ * Vercel nenutrauktų paleidimo vidury ir eilutės nekabotų iki nuomos pabaigos.
+ */
+const TIME_BUDGET_MS = 40_000;
+
+/*
  * Kol `20261005224404` nepritaikyta, `claim_notification_emails` nėra:
  * PostgREST atsako `PGRST202` (funkcija nerasta schemos podėlyje), o pati
  * bazė – `42883` (nėra funkcijos) ar `42P01` (nėra lentelės). Tai ne klaida, o
@@ -147,6 +154,7 @@ async function deliver(db: AdminDb, key: string, row: ClaimedEmail): Promise<Out
 
 /** Vienas paleidimas: išsiimti eilę, išsiųsti, pranešti bazei. Klaida metama tik nepavykus išsiimti. */
 export async function processNotificationEmails(db: AdminDb, key: string): Promise<RunSummary> {
+  const started = Date.now();
   const summary: RunSummary = { queue: true, claimed: 0, sent: 0, retried: 0, skipped: 0, finishErrors: 0 };
   const { data, error } = await db.rpc("claim_notification_emails", { _limit: BATCH });
   if (error && isQueueMissing(error.code)) return { ...summary, queue: false };
@@ -155,7 +163,9 @@ export async function processNotificationEmails(db: AdminDb, key: string): Promi
   summary.claimed = rows.length;
 
   for (const row of rows) {
-    const result = await deliver(db, key, row);
+    // Praėjus biudžetui likusios grąžinamos į eilę iš karto, o ne paliekamos 10 min. nuomai.
+    const result: Outcome =
+      Date.now() - started > TIME_BUDGET_MS ? { outcome: "retry", error: "time_budget" } : await deliver(db, key, row);
     const { error: finishError } = await db.rpc("finish_notification_email", {
       _email_id: row.email_id,
       _outcome: result.outcome,
