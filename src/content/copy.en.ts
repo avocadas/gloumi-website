@@ -191,7 +191,7 @@ export const en: typeof lt = {
     another: "Send another enquiry",
     errorGeneric: "That did not send. Try again, or write to us by email.",
     errorNetwork: "No connection. Check your internet and try again.",
-    errorValidation: "Please check the marked fields.",
+    errorValidation: "Check the marked fields.",
     errorRateLimited: "Too many attempts in a row. Try again in a few minutes.",
     errorDailyLimit: "We've had a lot of requests today. Write to us at info@gloumi.lt and we'll reply.",
     unconfiguredTitle: "The form is not ready yet",

@@ -9,7 +9,7 @@ import type { Lang } from "./lang";
 export type FaqItem = { id: string; q: string; a: string };
 export type FaqSection = { key: string; title: string; items: FaqItem[] };
 
-export const FAQ_UPDATED = "2026-10-11";
+export const FAQ_UPDATED = "2026-10-12";
 
 export const FAQ: Record<Lang, FaqSection[]> = {
   "lt": [
@@ -87,7 +87,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-13",
           "q": "Kaip rezervuoti vizitą?",
-          "a": "Meistro profilyje – „Rezervuoti laiką“: pasirinkite paslaugas, datą ir laiką, mokėjimo būdą ir paspauskite „Patvirtinti vizitą“. Kai meistras patvirtins, gausite pranešimą."
+          "a": "Meistro profilyje – „Rezervuoti laiką“: pasirinkite paslaugas, datą ir laiką, mokėjimo būdą ir paspauskite „Rezervuoti ir sumokėti…“ – mygtuke parašyta, kaip ir kiek mokėsite. Kai meistras patvirtins, gausite pranešimą."
         },
         {
           "id": "K-14",
@@ -107,7 +107,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-17",
           "q": "Kaip atšaukti ar perkelti vizitą?",
-          "a": "Vizitai → Atšaukti vizitą arba Perkelti. Atšaukiama iš karto, neklausiant. Likus mažiau nei 24 val. iki patvirtinto vizito perkelti gali tik meistras – parašykite jam."
+          "a": "„Vizitai“ → atidarykite vizitą → „Atšaukti vizitą“ arba „Perkelti“. Atšaukiama iš karto, neklausiant. Likus mažiau nei 24 val. iki patvirtinto vizito perkelti gali tik meistras – parašykite jam."
         },
         {
           "id": "K-18",
@@ -132,7 +132,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-22",
           "q": "Kaip palikti atsiliepimą?",
-          "a": "Kai vizitas pažymėtas įvykusiu: Vizitai → Įvykę vizitai → Įvertinti meistrą. Galima per 48 val. nuo pažymėjimo. Jei vizitą įvykusiu pažymėjo sistema, patvirtinsite, kad jis įvyko. Paskelbto pakeisti negalite – parašykite mums."
+          "a": "Kai vizitas pažymėtas įvykusiu: „Vizitai“ → „Įvykę vizitai“ → Įvertinti meistrą. Galima per 48 val. nuo pažymėjimo. Jei vizitą įvykusiu pažymėjo sistema, patvirtinsite, kad jis įvyko. Paskelbto pakeisti negalite – parašykite mums."
         }
       ]
     },
@@ -158,7 +158,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-26",
           "q": "Kaip palikti arbatpinigių?",
-          "a": "Po atsiliepimo su 3 ar daugiau žvaigždučių, jei meistras juos priima: 5, 10, 15 % ar 1–100 €, per 7 d. po vizito. Vėliau – Vizitai → Įvykę vizitai → Palikti arbatpinigių. Gloumi iš jų nieko neima."
+          "a": "Po atsiliepimo su 3 ar daugiau žvaigždučių, jei meistras juos priima: 5, 10, 15 % ar 1–100 €, per 7 d. po vizito. Vėliau – „Vizitai“ → „Įvykę vizitai“ → Palikti arbatpinigių. Gloumi iš jų nieko neima."
         },
         {
           "id": "K-27",
@@ -385,7 +385,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-13",
           "q": "How do I book a visit?",
-          "a": "On the master's profile tap Book a time, choose services, a date and time and how to pay, then tap Confirm Booking. You will be notified when the master confirms."
+          "a": "On the master's profile tap Book a time, choose services, a date and time and how to pay, then tap \"Book and pay…\" – the button says how and how much you pay. You will be notified when the master confirms."
         },
         {
           "id": "K-14",
@@ -405,7 +405,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-17",
           "q": "How do I cancel or move a visit?",
-          "a": "Bookings → Cancel booking or Reschedule. Cancelling happens at once, with no second question. With less than 24 h to go before a confirmed visit, only the master can move it – message them."
+          "a": "Bookings → open the visit → Cancel booking or Reschedule. Cancelling happens at once, with no second question. With less than 24 h to go before a confirmed visit, only the master can move it – message them."
         },
         {
           "id": "K-18",
@@ -430,7 +430,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-22",
           "q": "How do I leave a review?",
-          "a": "Once the visit is marked as having taken place: Bookings → Completed visits → Review professional. You have 48 h from that mark. If the system marked it, you confirm that the visit took place. A posted review cannot be edited – write to us."
+          "a": "Once the visit is marked as having taken place: Bookings → Completed visits → Review the master. You have 48 h from that mark. If the system marked it, you confirm that the visit took place. A posted review cannot be edited – write to us."
         }
       ]
     },
