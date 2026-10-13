@@ -4,7 +4,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { StoreBadges } from "@/components/ui/StoreBadges";
 import { getCopy } from "@/content/copy";
-import { alternates, homePath, type Lang } from "@/content/lang";
+import { alternates, homePath, type LegalLang } from "@/content/lang";
 
 /*
  * What a share link shows when the app did not open it: no app on the phone,
@@ -27,7 +27,7 @@ export function AppLinkPage({
   code,
   children,
 }: {
-  lang: Lang;
+  lang: LegalLang;
   kind: "profile" | "ref";
   /** The same link in the app's scheme; built only from validated parts. */
   appHref: string;

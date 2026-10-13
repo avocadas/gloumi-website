@@ -5,7 +5,7 @@ import Image, { type StaticImageData } from "next/image";
 import { useReducedMotion } from "framer-motion";
 import { IconPause, IconPlay } from "@/components/icons";
 import { getCopy } from "@/content/copy";
-import type { Lang } from "@/content/lang";
+import { legalLangOf, type Lang, type LegalLang } from "@/content/lang";
 import { cn } from "@/lib/cn";
 import feedEn from "@/assets/app-screens/en/feed.webp";
 import searchEn from "@/assets/app-screens/en/search.webp";
@@ -25,9 +25,10 @@ const AUTO_MS = 4800;
 /**
  * Real screenshots of the app, taken in its own language. The people in them
  * are invented (avocadas/Gloumi#136): the app has no real professionals yet,
- * and the team's test accounts are not for public pages.
+ * and the team's test accounts are not for public pages. The six extra
+ * languages show the English screens until their own are taken.
  */
-const SCREENS: Record<Lang, Record<ScreenId, StaticImageData>> = {
+const SCREENS: Record<LegalLang, Record<ScreenId, StaticImageData>> = {
   lt: { feed: feedLt, search: searchLt, profile: profileLt, booking: bookingLt },
   en: { feed: feedEn, search: searchEn, profile: profileEn, booking: bookingEn },
 };
@@ -120,7 +121,7 @@ export function PhoneMockup({ lang }: { lang: Lang }) {
               return (
                 <Image
                   key={id}
-                  src={SCREENS[lang][id]}
+                  src={SCREENS[legalLangOf(lang)][id]}
                   alt={on ? (activeTab?.alt ?? "") : ""}
                   aria-hidden={on ? undefined : true}
                   fill

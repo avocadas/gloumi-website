@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useTransition, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useConfirm } from "../../ConfirmDialog";
@@ -36,9 +37,9 @@ export function MasterGrants({
         title="Individualios sąlygos"
         note="Komisinio atsisakymas ir nemokamas planas – su terminu ir priežastimi."
         aside={
-          <a href="/admin/grants" className="text-xs font-semibold text-app-ink hover:underline">
+          <Link href="/admin/grants" className="text-xs font-semibold text-app-ink hover:underline">
             Visų sąrašas
-          </a>
+          </Link>
         }
       />
 

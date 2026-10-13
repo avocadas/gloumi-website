@@ -1,21 +1,22 @@
 import type { Metadata } from "next";
 import { getCopy } from "./copy";
-import { alternates, LANG_LABELS, LANGS, type Lang, type LegalKey } from "./lang";
+import { alternates, LANG_LABELS, LANGS, type Lang, type Page } from "./lang";
 import { site } from "./site";
-
-type Page = { kind: "home" } | { kind: "legal"; key: LegalKey };
 
 /**
  * Metadata shared by every page, in one place.
  *
- * The `alternates` block is the part that matters for two languages: it tells
- * a search engine that the Lithuanian and English pages are the same document,
- * so they compete with each other in neither index. `x-default` points at the
+ * The `alternates` block is the part that matters for several languages: it
+ * tells a search engine that the language versions are the same document, so
+ * they compete with each other in no index. `x-default` points at the
  * Lithuanian one, which is the home market.
  */
 export function buildMetadata(lang: Lang, page: Page, extra?: Metadata): Metadata {
   const paths = alternates(page);
-  const languages = Object.fromEntries(LANGS.map((code) => [code, paths[code]]));
+  // Only the languages the page is written in: a legal document lists LT and EN, the home page and the FAQ all eight.
+  const languages = Object.fromEntries(LANGS.filter((code) => paths[code]).map((code) => [code, paths[code]]));
+  const canonical = paths[lang];
+  if (!canonical) throw new Error(`No ${lang} version of this page`);
 
   /*
    * Deliberately no `openGraph` here, only `alternates`.
@@ -29,7 +30,7 @@ export function buildMetadata(lang: Lang, page: Page, extra?: Metadata): Metadat
    */
   return {
     alternates: {
-      canonical: paths[lang],
+      canonical,
       languages: { ...languages, "x-default": paths.lt },
     },
     ...extra,

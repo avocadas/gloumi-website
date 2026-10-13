@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { checkAdmin } from "@/lib/admin-guard";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -117,9 +118,9 @@ export default async function DebtsPage({ searchParams }: { searchParams: Promis
             <p role="alert" className="mb-5 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
               Reikia dėmesio: {attention}. Pradelstų prašymų laiškai meistrams neišėjo, todėl mokėjimas vietoje jiems
               neišjungtas. Jie pažymėti sąraše{" "}
-              <a href="/admin/debts?status=overdue" className="underline">
+              <Link href="/admin/debts?status=overdue" className="underline">
                 „Pradelsti“
-              </a>
+              </Link>
               .
             </p>
           ) : null}

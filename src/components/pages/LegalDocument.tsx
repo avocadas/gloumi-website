@@ -1,7 +1,7 @@
 import { Blocks, LegalPage } from "@/components/legal/LegalPage";
 import { STATEMENT_DATE, STATEMENTS } from "@/content/statements";
 import { getCopy } from "@/content/copy";
-import type { Lang, LegalKey } from "@/content/lang";
+import type { LegalKey, LegalLang } from "@/content/lang";
 import { dac7Sections, deletionSections, LEGAL_DOCS, LEGAL_META, PARTNER_META, refundSections } from "@/content/legal";
 
 /**
@@ -14,7 +14,7 @@ import { dac7Sections, deletionSections, LEGAL_DOCS, LEGAL_META, PARTNER_META, r
  * the page twice as long and left its table of contents describing only the top
  * half of it.
  */
-export function LegalDocument({ lang, docKey }: { lang: Lang; docKey: LegalKey }) {
+export function LegalDocument({ lang, docKey }: { lang: LegalLang; docKey: LegalKey }) {
   const copy = getCopy(lang);
 
   if (docKey === "terms" || docKey === "privacy") {

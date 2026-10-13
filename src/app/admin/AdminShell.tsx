@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
 import { IconChevronLeft, IconDatabase, IconFlag, IconLogOut, IconMail, IconScale, type IconComponent } from "@/components/icons";
 import { signOutAdmin } from "./sign-out";
@@ -61,9 +62,9 @@ export function AdminShell({
         <Bubbles tone={field} />
         <div className="relative mx-auto w-full max-w-5xl px-4 pt-5 pb-12 sm:px-6">
           <div className="flex items-center justify-between gap-3">
-            <a href="/admin" className="shrink-0" aria-label="Gloumi administravimas — pradžia">
+            <Link href="/admin" className="shrink-0" aria-label="Gloumi administravimas — pradžia">
               <Brand />
-            </a>
+            </Link>
 
             <nav
               aria-label="Skydelio skyriai"

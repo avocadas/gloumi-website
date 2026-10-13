@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Container } from "@/components/ui/Container";
 import { getCopy } from "@/content/copy";
-import { legalPath, LEGAL_ROUTES, type Lang, type LegalKey } from "@/content/lang";
+import { legalPath, LEGAL_ROUTES, type LegalKey, type LegalLang } from "@/content/lang";
 import { controllerLine, LEGAL_TITLES, slugify, type LegalSection } from "@/content/legal";
 import { site } from "@/content/site";
 import type { StatementBlock } from "@/content/statements";
@@ -49,7 +49,7 @@ export function Blocks({ blocks }: { blocks: StatementBlock[] }) {
 
 type Props = {
   /** Language of the page: its chrome and its text, which are never different. */
-  lang: Lang;
+  lang: LegalLang;
   /** Which of the five documents this is. Decides the title and the "other documents" list. */
   docKey: LegalKey;
   updated: string;

@@ -1,5 +1,5 @@
 import { LEGAL_DOCS, LEGAL_META, PARTNER_META, type LegalSection } from "./legal-source";
-import { LEGAL_ROUTES, legalPath, type Lang, type LegalKey } from "./lang";
+import { LEGAL_ROUTES, legalPath, type LegalKey, type LegalLang } from "./lang";
 import { site } from "./site";
 
 export { LEGAL_DOCS, LEGAL_META, LEGAL_ROUTES, PARTNER_META };
@@ -20,7 +20,7 @@ export function slugify(input: string): string {
 }
 
 /** Document titles in both languages, for the page heading and the footer. */
-export const LEGAL_TITLES: Record<Lang, Record<LegalKey, string>> = {
+export const LEGAL_TITLES: Record<LegalLang, Record<LegalKey, string>> = {
   lt: {
     terms: "Naudojimosi taisyklės",
     privacy: "Privatumo politika",
@@ -46,7 +46,7 @@ export const LEGAL_TITLES: Record<Lang, Record<LegalKey, string>> = {
 };
 
 /** The controller line shown under every document, built from what is actually known. */
-export function controllerLine(lang: Lang): string {
+export function controllerLine(lang: LegalLang): string {
   const parts: string[] = [site.legalName];
   if (site.company.code) {
     parts.push(lang === "lt" ? `įmonės kodas ${site.company.code}` : `company number ${site.company.code}`);
@@ -66,11 +66,11 @@ export function controllerLine(lang: Lang): string {
  * reworded in the app, this throws at build time instead of silently dropping
  * the section.
  */
-function termsSection(lang: Lang, title: string): LegalSection {
+function termsSection(lang: LegalLang, title: string): LegalSection {
   return docSection(lang, "terms", title);
 }
 
-function docSection(lang: Lang, doc: "terms" | "partner" | "privacy", title: string): LegalSection {
+function docSection(lang: LegalLang, doc: "terms" | "partner" | "privacy", title: string): LegalSection {
   const found = LEGAL_DOCS[lang][doc].find((s) => s.title === title);
   if (!found) {
     throw new Error(`Section "${title}" of "${doc}" (${lang}) not found in legal-source.ts – regenerate it and update this title.`);
@@ -85,54 +85,54 @@ const quote = (section: LegalSection): LegalSection => ({
   bullets: section.bullets,
 });
 
-const DEPOSIT_TITLES: Record<Lang, string> = {
+const DEPOSIT_TITLES: Record<LegalLang, string> = {
   lt: "Rezervavimas ir avansas",
   en: "Bookings and deposits",
 };
 
-const SUBSCRIPTION_TITLES: Record<Lang, string> = {
+const SUBSCRIPTION_TITLES: Record<LegalLang, string> = {
   lt: "Meistro prenumerata (Pro ir VIP Studio)",
   en: "Master subscription (Pro and VIP Studio)",
 };
 
-const WITHDRAWAL_TITLES: Record<Lang, string> = {
+const WITHDRAWAL_TITLES: Record<LegalLang, string> = {
   lt: "Teisė atsisakyti sutarties",
   en: "Right of withdrawal",
 };
 
-const VISIT_NOT_HAPPENED_TITLES: Record<Lang, string> = {
+const VISIT_NOT_HAPPENED_TITLES: Record<LegalLang, string> = {
   lt: "Kai apmokėtas vizitas neįvyko",
   en: "When a paid visit did not happen",
 };
 
 /** From the Terms for Masters and Salons, not the Terms: DAC7 binds the master, not the client. */
-const PARTNER_DAC7_TITLES: Record<Lang, string> = {
+const PARTNER_DAC7_TITLES: Record<LegalLang, string> = {
   lt: "Mokestiniai duomenys (DAC7)",
   en: "Tax information (DAC7)",
 };
 
-const RANKING_TITLES: Record<Lang, string> = {
+const RANKING_TITLES: Record<LegalLang, string> = {
   lt: "Kaip rikiuojami rezultatai",
   en: "Ranking of results",
 };
 
-const ILLEGAL_CONTENT_TITLES: Record<Lang, string> = {
+const ILLEGAL_CONTENT_TITLES: Record<LegalLang, string> = {
   lt: "Neteisėto turinio pranešimas ir sprendimų apskundimas",
   en: "Reporting illegal content and appealing our decisions",
 };
 
-const P2B_TITLES: Record<Lang, string> = {
+const P2B_TITLES: Record<LegalLang, string> = {
   lt: "Meistrams: sąlygų keitimas, ribojimas ir skundai",
   en: "For masters: changes, restrictions and complaints",
 };
 
 /** The Privacy Policy section the account deletion page quotes (#171). */
-const RETENTION_TITLES: Record<Lang, string> = {
+const RETENTION_TITLES: Record<LegalLang, string> = {
   lt: "Kiek laiko saugome",
   en: "How long we keep data",
 };
 
-const REVIEW_CHECK_TITLES: Record<Lang, string> = {
+const REVIEW_CHECK_TITLES: Record<LegalLang, string> = {
   lt: "Kaip tikriname atsiliepimus",
   en: "How we verify reviews",
 };
@@ -142,7 +142,7 @@ const REVIEW_CHECK_TITLES: Record<Lang, string> = {
  * rating (U-22). Looked up by title like the sections above, so a renamed
  * section breaks the build instead of leaving a dead anchor.
  */
-export function reviewCheckHref(lang: Lang): string {
+export function reviewCheckHref(lang: LegalLang): string {
   const section = termsSection(lang, REVIEW_CHECK_TITLES[lang]);
   return `${legalPath(lang, "terms")}#${lang}-${slugify(section.title)}`;
 }
@@ -152,7 +152,7 @@ export function reviewCheckHref(lang: Lang): string {
  * on the master subscription are lifted from the Terms by title; only the
  * framing and the mechanics of a refund are written here.
  */
-export function refundSections(lang: Lang): LegalSection[] {
+export function refundSections(lang: LegalLang): LegalSection[] {
   const deposits = termsSection(lang, DEPOSIT_TITLES[lang]);
   const notHappened = termsSection(lang, VISIT_NOT_HAPPENED_TITLES[lang]);
   const subscription = termsSection(lang, SUBSCRIPTION_TITLES[lang]);
@@ -227,7 +227,7 @@ export function refundSections(lang: Lang): LegalSection[] {
  * DAC7 and platform-transparency notice (DAC7, DSA, P2B). Informational: the
  * binding documents remain the Terms and the Privacy Policy.
  */
-export function dac7Sections(lang: Lang): LegalSection[] {
+export function dac7Sections(lang: LegalLang): LegalSection[] {
   /*
    * Ranking, notice-and-action and the P2B section are lifted from the Terms
    * rather than restated. Restating them once put a wrong ranking on this page:
@@ -334,7 +334,7 @@ export function dac7Sections(lang: Lang): LegalSection[] {
  * signing in cancels it, and #171 is changing that to an explicit button, so
  * the page only says it can be cancelled in the app — true either way.
  */
-export function deletionSections(lang: Lang): LegalSection[] {
+export function deletionSections(lang: LegalLang): LegalSection[] {
   const retention = docSection(lang, "privacy", RETENTION_TITLES[lang]);
 
   if (lang === "en") {

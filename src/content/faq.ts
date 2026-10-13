@@ -7,7 +7,8 @@
 // Answers may refer to another item as "K-n"; the page turns that into a link.
 import type { Lang } from "./lang";
 
-export type FaqItem = { id: string; q: string; a: string };
+/** `lang` is set when an extra language shows the English item (untranslated or waiting). */
+export type FaqItem = { id: string; q: string; a: string; lang?: "en" };
 export type FaqSection = { key: string; title: string; items: FaqItem[] };
 
 export const FAQ_UPDATED = "2026-10-19";
@@ -615,6 +616,1896 @@ export const FAQ: Record<Lang, FaqSection[]> = {
           "id": "K-56",
           "q": "How do I turn off the personalised feed and delete the collected data?",
           "a": "Side menu → App settings → Privacy and legal → Personalised feed. With it off, Discover is ordered without your activity and location, and the app offers to delete the data already collected about your interests and what you have seen."
+        }
+      ]
+    }
+  ],
+  "pl": [
+    {
+      "key": "about",
+      "title": "O Gloumi",
+      "items": [
+        {
+          "id": "K-1",
+          "q": "Czym jest Gloumi?",
+          "a": "Aplikacją, w której znajdziesz specjalistów od urody, zobaczysz ich prace, ceny i wolne terminy i od razu zarezerwujesz wizytę. Specjaliści świadczą usługi we własnym imieniu; Gloumi odpowiada za aplikację i płatności w niej."
+        },
+        {
+          "id": "K-2",
+          "q": "Czy Gloumi jest bezpłatne?",
+          "a": "Dla klientów tak: płacisz tylko cenę ustaloną przez specjalistę, a Gloumi nic do niej nie dolicza. Dla specjalistów plan Starter kosztuje 0 € miesięcznie, a Gloumi pobiera prowizję (K-40); Pro i VIP Studio to plany płatne (K-43)."
+        },
+        {
+          "id": "K-3",
+          "q": "Jak skontaktować się z pomocą?",
+          "a": "Menu boczne → Pomoc → Nie ma odpowiedzi? albo info@gloumi.lt. W sprawie konkretnej wizyty – Zgłoś problem w tej wizycie. Otrzymanie wiadomości potwierdzamy w ciągu 2 dni roboczych, a merytorycznie odpowiadamy w ciągu 14 dni kalendarzowych, zwykle szybciej."
+        }
+      ]
+    },
+    {
+      "key": "account",
+      "title": "Konto",
+      "items": [
+        {
+          "id": "K-4",
+          "q": "Jak się zarejestrować i zalogować?",
+          "a": "Na ekranie logowania naciśnij Zarejestruj się: pięć kroków i potwierdzenie e-maila. Możesz też użyć Google, a na iPhonie – Apple. Logujesz się e-mailem lub nazwą użytkownika i hasłem albo przez Google lub Apple. Musisz mieć co najmniej 14 lat."
+        },
+        {
+          "id": "K-5",
+          "q": "Nie pamiętam hasła.",
+          "a": "Na ekranie logowania naciśnij Nie pamiętam hasła, wpisz e-mail i otwórz link, który wyślemy. Sprawdź też folder spam. Konto założone przez Google lub Apple? Zaloguj się tym samym przyciskiem."
+        },
+        {
+          "id": "K-6",
+          "q": "Nie dotarł e-mail z potwierdzeniem.",
+          "a": "Sprawdź folder spam. Nowy link: menu boczne → Ustawienia aplikacji → Konto → Potwierdź obok adresu e-mail."
+        },
+        {
+          "id": "K-7",
+          "q": "Jak zmienić swoje dane?",
+          "a": "Imię i opis – Profil → Edytuj profil; zdjęcie – naciśnij je. E-mail, nazwę użytkownika i telefon – menu boczne → Ustawienia aplikacji → Konto. Datę urodzenia możemy zmienić my – napisz do nas."
+        },
+        {
+          "id": "K-8",
+          "q": "How do I change the language or theme?",
+          "a": "Side menu → App settings → Language / Kalba (Lithuanian or English) or App Theme. The change takes effect at once.",
+          "lang": "en"
+        },
+        {
+          "id": "K-10",
+          "q": "Jak pobrać kopię swoich danych?",
+          "a": "Menu boczne → Ustawienia aplikacji → Konto → Pobierz moje dane – plik JSON bez plików zdjęć i nagrań głosowych; możesz wybrać wszystko albo tylko niektóre części (profil, wizyty, posty, wiadomości, pieniądze, pomoc i ograniczenia). Aby dostać wszystko, co przechowujemy, napisz na info@gloumi.lt z adresu e-mail konta – odpowiemy w ciągu miesiąca."
+        },
+        {
+          "id": "K-11",
+          "q": "Ktoś dostał się na moje konto.",
+          "a": "Menu boczne → Ustawienia aplikacji → Konto → Wyloguj wszędzie, a potem Nie pamiętam hasła na ekranie logowania. Napisz nam, co zostało zrobione bez twojej wiedzy. Gloumi nigdy nie prosi o hasło ani kod."
+        }
+      ]
+    },
+    {
+      "key": "visits",
+      "title": "Wizyty",
+      "items": [
+        {
+          "id": "K-12",
+          "q": "Jak znaleźć specjalistę?",
+          "a": "Szukaj: wyszukaj usługę, specjalistę lub salon i użyj opcji Filtry lub Mapa. Odkrywaj to aktualności z pracami specjalistów. Jak układane są wyniki – K-54."
+        },
+        {
+          "id": "K-13",
+          "q": "Jak zarezerwować wizytę?",
+          "a": "Na profilu specjalisty naciśnij Zarezerwuj termin, wybierz usługi, datę, godzinę i sposób płatności, a potem naciśnij „Zarezerwuj i zapłać…” – przycisk pokazuje, jak i ile płacisz. Dostaniesz powiadomienie, gdy specjalista potwierdzi wizytę."
+        },
+        {
+          "id": "K-14",
+          "q": "Kiedy wizyta jest naprawdę zarezerwowana?",
+          "a": "Gdy specjalista ją potwierdzi: status Czeka na potwierdzenie zmienia się na Potwierdzona. Do tego czasu możesz ją w każdej chwili odwołać i dostać pełny zwrot. Tak samo, jeśli specjalista odrzuci wizytę."
+        },
+        {
+          "id": "K-15",
+          "q": "Wszystkie terminy zajęte – czy mogę zapisać się do kolejki?",
+          "a": "Tak. Wybierz zajęty dzień i naciśnij Zapisz się na listę. Jeśli ktoś odwoła wizytę w tym dniu, pierwsza osoba w kolejce dostanie powiadomienie i będzie mogła zarezerwować termin."
+        },
+        {
+          "id": "K-16",
+          "q": "Co wpisać w uwagach do wizyty?",
+          "a": "To, co specjalista powinien wiedzieć z góry: wcześniejsze formuły, kolory, życzenia. Możesz dodać zdjęcie (Dodaj inspirację). O alergiach lub nadwrażliwości powiedz specjaliście bezpośrednio."
+        },
+        {
+          "id": "K-17",
+          "q": "Jak odwołać lub przełożyć wizytę?",
+          "a": "Wizyty → otwórz wizytę → Odwołaj wizytę lub Przełóż. Odwołanie działa od razu, bez dodatkowego pytania. Gdy do potwierdzonej wizyty zostało mniej niż 24 godz., przełożyć ją może tylko specjalista – napisz do specjalisty wiadomość."
+        },
+        {
+          "id": "K-18",
+          "q": "Will I get my money back if I cancel?",
+          "a": "If you cancel more than 24 hours ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit later or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
+          "lang": "en"
+        },
+        {
+          "id": "K-19",
+          "q": "Kiedy dostanę zwrot?",
+          "a": "Zwrot zlecamy od razu, na ten sam sposób płatności, którym płacono. Kiedy pieniądze się pojawią, zależy od twojego banku. Po pewnym czasie nadal ich nie ma? Napisz do nas."
+        },
+        {
+          "id": "K-20",
+          "q": "The master did not turn up or the visit did not happen.",
+          "a": "Paid in the app? Open the visit and tap Visit didn't happen? – up to 72 h after it ends. While we look into it, the reserved amount is not charged, and an amount already charged can be refunded; a person decides. Later, or if you paid on site – write to us.",
+          "lang": "en"
+        },
+        {
+          "id": "K-21",
+          "q": "Usługa nie spełniła moich oczekiwań.",
+          "a": "Najpierw napisz do specjalisty – to specjalista świadczy usługę. Pomagamy zebrać fakty i decydujemy o płatności dokonanej w aplikacji. Jeśli nie dojdziecie do porozumienia, możesz bezpłatnie zwrócić się do Państwowej Służby Ochrony Praw Konsumentów Litwy (vvtat.lt)."
+        },
+        {
+          "id": "K-22",
+          "q": "Jak wystawić opinię?",
+          "a": "Gdy wizyta zostanie oznaczona jako odbyta: Wizyty → Odbyte wizyty → Oceń specjalistę. Masz na to 48 godz. od tego oznaczenia. Jeśli wizytę oznaczyła aplikacja, potwierdzasz, że się odbyła. Opublikowanej opinii nie można edytować – napisz do nas."
+        }
+      ]
+    },
+    {
+      "key": "payments",
+      "title": "Płatności",
+      "items": [
+        {
+          "id": "K-23",
+          "q": "Jak płaci się za wizytę?",
+          "a": "Specjalista wybiera, jakie formy płatności przyjmuje: Gotówka, Kartą na miejscu lub W aplikacji. W aplikacji płacisz kartą lub Apple Pay: kwota jest blokowana na karcie (jeśli do wizyty zostało więcej niż 5 dni, karta jest zapisywana, a kwota blokowana 3 dni przed wizytą) i pobierana dopiero po wizycie. Jeśli blokada się nie uda, poprosimy cię o potwierdzenie płatności; jeśli płatność nie zostanie potwierdzona na 24 godz. przed wizytą, wizyta zostanie odwołana. Jeśli płatność przy rezerwacji się nie powiedzie lub zostanie przerwana, potwierdź ją w ciągu 30 minut w sekcji Wizyty – inaczej wizyta zostanie odwołana."
+        },
+        {
+          "id": "K-24",
+          "q": "Czy płacenie w aplikacji jest bezpieczne?",
+          "a": "Płatności obsługuje Stripe – Gloumi nigdy nie widzi ani nie przechowuje danych twojej karty. Nigdy nie prosimy o numer karty, kody ani hasła e-mailem ani w wiadomościach."
+        },
+        {
+          "id": "K-25",
+          "q": "What is a deposit?",
+          "a": "A set part of the visit price – an amount or a percentage – that the master asks to have reserved on your card. It counts towards the price and is charged after the visit; you pay the rest on site. A deposit is not earnest money. What happens if you cancel – K-18.",
+          "lang": "en"
+        },
+        {
+          "id": "K-26",
+          "q": "Jak zostawić napiwek?",
+          "a": "Po opinii na 3 gwiazdki lub więcej, jeśli specjalista przyjmuje napiwki: 5, 10, 15% albo 1–100 €, w ciągu 7 dni od wizyty. Później – Wizyty → Odbyte wizyty → Zostaw napiwek. Gloumi nic nie pobiera z napiwków."
+        },
+        {
+          "id": "K-27",
+          "q": "Jak działają karty podarunkowe?",
+          "a": "Menu boczne → Karta podarunkowa: kup kartę (40–1000 €) albo naciśnij Mam kod, aby ją zrealizować. Kwota zamienia się w środki, które możesz wykorzystać na wizytę opłaconą w całości w aplikacji (nie na zaliczkę i nie na miejscu). Dopóki karta nie została zamieniona na środki, możesz ją anulować w ciągu 14 dni od zakupu – napisz do nas."
+        },
+        {
+          "id": "K-29",
+          "q": "Specjalista dał mi swój kod – co zrobić?",
+          "a": "Przy rezerwacji naciśnij Mam kod specjalisty, wpisz go i naciśnij Zastosuj albo otwórz link specjalisty. Twoja cena się nie zmienia."
+        },
+        {
+          "id": "K-30",
+          "q": "Bank pokazuje tę samą kwotę dwa razy.",
+          "a": "Często to tymczasowa blokada, która znika w ciągu kilku dni. Jeśli kwota została pobrana dwa razy, napisz nam, kiedy i ile pobrano. Nie wysyłaj numeru karty."
+        }
+      ]
+    },
+    {
+      "key": "masters",
+      "title": "Dla specjalistów",
+      "items": [
+        {
+          "id": "K-31",
+          "q": "Jak zostać specjalistą?",
+          "a": "Profil → Zostań specjalistą: zdjęcie, imię i miasto, opis, dziedzina i akceptacja warunków. Musisz mieć co najmniej 18 lat. Między trybem klienta a trybem specjalisty przełączasz się u góry profilu."
+        },
+        {
+          "id": "K-32",
+          "q": "Czego potrzebuję, żeby klienci mogli u mnie rezerwować?",
+          "a": "Naciśnij Dodaj usługi i przejdź kreator aż do Aktywuj profil. Potrzebujesz usług, godzin pracy, dziedzin i (jeśli pracujesz w stałym miejscu) adresu; opcja Przyjmuj rezerwacje musi być włączona."
+        },
+        {
+          "id": "K-33",
+          "q": "Jak dodać lub zmienić usługi?",
+          "a": "Profil → Usługi i godziny → Usługi i ceny → Nowa usługa. Zaliczka – Profil → Biznes → Płatności → Wymagaj zaliczki. Nie edytuj usług przez „Jakie usługi świadczysz?” – to zastępuje cały cennik. Oznaczenia wiekowe znajdziesz w edytorze usługi, w części Ograniczenia wiekowe."
+        },
+        {
+          "id": "K-34",
+          "q": "Jak ustawić godziny pracy i dni wolne?",
+          "a": "Profil → Usługi i godziny → Godziny pracy → Grafik tygodniowy. Pojedynczy dzień lub urlop oznaczysz, naciskając datę w kalendarzu (Dzień wolny). Aby zrobić przerwę od rezerwacji, wyłącz Przyjmuj rezerwacje."
+        },
+        {
+          "id": "K-35",
+          "q": "Jak zablokować czas lub samodzielnie dodać klienta?",
+          "a": "Kalendarz → Zablokuj czas – na jeden dzień albo co tydzień (przerwa). Dodaj wizytę – dla własnego klienta: wizyta jest od razu potwierdzona, bez zaliczki, a klient dostaje powiadomienie."
+        },
+        {
+          "id": "K-36",
+          "q": "Jak potwierdzić, odrzucić, odwołać lub przełożyć wizytę?",
+          "a": "Kalendarz → Prośby → Potwierdź lub Odrzuć – odpowiadaj szybko. Wizytę odwołasz lub przełożysz, otwierając ją. Jeśli odwołasz wizytę, klient dostaje zwrot całej kwoty; przekładaj wizytę tylko po uzgodnieniu z klientem. Jeśli klient nie zapłaci w aplikacji w ciągu 30 minut, wizyta zostanie automatycznie odwołana, dostaniesz powiadomienie, a termin znów będzie wolny."
+        },
+        {
+          "id": "K-37",
+          "q": "Jak oznaczyć wizytę jako wykonaną?",
+          "a": "Otwórz wizytę → Zakończ wizytę (od godziny jej rozpoczęcia). Potem odpowiedz na pytanie „Czy klient przyszedł?” – inaczej po 24 godz. wizyta zostanie automatycznie oznaczona jako odbyta, a klient, wystawiając opinię, potwierdzi, że się odbyła. Opinię można wystawić w ciągu 48 godz. od oznaczenia wizyty. Jeśli nieobecność oznaczysz dopiero po opinii, sprawę sprawdzi pracownik Gloumi. Więcej w Regulaminie, „Jak weryfikujemy opinie”."
+        },
+        {
+          "id": "K-38",
+          "q": "How do I take payments in the app?",
+          "a": "From 7 October 2026 (Terms 1.13), taking payments in the app and setting a deposit come only with the Pro or VIP Studio plan (including the trial or through a salon); on Starter, clients pay on site. Profile → Business → Payments → Stripe payment settings → Turn on online payments; verify your identity in Stripe's window. Until the Stripe check is finished, clients pay you on site.",
+          "lang": "en"
+        },
+        {
+          "id": "K-39",
+          "q": "Kiedy dostanę pieniądze?",
+          "a": "Nie wcześniej niż 72 godz. po zakończeniu wizyty, zwykle w ciągu 7 dni, chyba że klient zgłosił, że wizyta się nie odbyła. Na konto bankowe – według harmonogramu wypłat w Stripe. Wypłaty znajdziesz w Profil → Biznes → Płatności."
+        },
+        {
+          "id": "K-40",
+          "q": "How much does Gloumi take?",
+          "a": "The commission is 5% on each client's first completed visit with you booked through Gloumi, whether paid in the app or on site (on site it becomes an amount you owe: deducted from later in-app payments, and the rest paid against the monthly invoice); it also applies to visits you enter yourself. Nothing on that client's later visits, clients with your master code, or tips. In-app payments also have the Stripe fee deducted (for a standard EEA card, 1.5% + €0.25).",
+          "lang": "en"
+        },
+        {
+          "id": "K-41",
+          "q": "Czym jest kod specjalisty?",
+          "a": "Profil → Biznes → Płatności → Kod dla twoich klientów. Daj go klientom sprzed Gloumi – od nich nie ma prowizji. Do 50 klientów, ważny 3 miesiące. Nie możesz go dawać klientom, którzy znaleźli cię przez Gloumi."
+        },
+        {
+          "id": "K-42",
+          "q": "Why am I asked for my personal or company code and IBAN?",
+          "a": "An EU rule, DAC7, requires platforms to report their sellers' income to the tax authority (VMI). Enter them in side menu → App settings → Business details. Clients never see them. If they are not provided after a request and two reminders, payouts are paused no earlier than 60 days after the first reminder.",
+          "lang": "en"
+        },
+        {
+          "id": "K-43",
+          "q": "What is the difference between the plans?",
+          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 active visits a month and 10 portfolio photos. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. An introductory price may be offered for monthly Pro – the app shows it before you subscribe. Plans – side menu → Gloumi Pro.",
+          "lang": "en"
+        },
+        {
+          "id": "K-44",
+          "q": "How do I cancel a subscription or get a refund?",
+          "a": "In the store: iPhone – Settings → your name → Subscriptions; Android – Google Play → Payments & subscriptions → Subscriptions. On the App Store, at least 24 h before the period ends. Refunds are decided by Apple or Google. Deleting your account does not end the subscription.",
+          "lang": "en"
+        },
+        {
+          "id": "K-45",
+          "q": "Jak utworzyć salon?",
+          "a": "Profil → Biznes → Salon → Utwórz salon (wymaga VIP Studio). Zaproś do 10 specjalistów po nazwie użytkownika. Członkowie pozostają niezależni i dostają funkcje Pro, a ty widzisz ich wizyty."
+        },
+        {
+          "id": "K-46",
+          "q": "Can a review be removed?",
+          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report those to info@gloumi.lt.",
+          "lang": "en"
+        },
+        {
+          "id": "K-47",
+          "q": "A client reported that the visit did not happen.",
+          "a": "While we look into it, the client's payment for this visit is not charged (an amount already charged may be refunded to the client). You can see the client's message – explain and, if we ask, send evidence. A person decides, and we tell you in the app and by email.",
+          "lang": "en"
+        },
+        {
+          "id": "K-48",
+          "q": "Moje konto zostało ograniczone.",
+          "a": "W naszym powiadomieniu podajemy powód i zasadę. Możesz bezpłatnie złożyć wyjaśnienie lub odwołanie – przez Pomoc albo info@gloumi.lt. Sprawę rozpatruje człowiek, a odpowiadamy na piśmie; nieuzasadnione ograniczenie znosimy od razu."
+        },
+        {
+          "id": "K-49",
+          "q": "Czy mogę ocenić klienta?",
+          "a": "Tak – po zakończeniu wizyty aplikacja zaproponuje Oceń klienta. Ocenę widzą inni specjaliści; tylko oni widzą też tekst. Oceniaj uczciwie i tylko na podstawie tej wizyty."
+        }
+      ]
+    },
+    {
+      "key": "content",
+      "title": "Treści, powiadomienia i bezpieczeństwo",
+      "items": [
+        {
+          "id": "K-50",
+          "q": "Jak dodać Story lub zdjęcie pracy?",
+          "a": "W aktualnościach wybierz nową Story lub post. Wideo, które jest tylko w iCloud, najpierw pobierz na telefon. Jeden plik – do 60 MB, wideo w Story – do 1 min."
+        },
+        {
+          "id": "K-51",
+          "q": "Jak zgłosić nieodpowiednią treść lub osobę?",
+          "a": "Naciśnij i przytrzymaj wiadomość → Zgłoś; na profilu specjalisty – ikona u góry. Wybierz powód → Wyślij zgłoszenie. Zgłoszenia są anonimowe i sprawdza je nasz zespół. Jeśli komuś grozi niebezpieczeństwo, dzwoń pod 112."
+        },
+        {
+          "id": "K-52",
+          "q": "Jak kogoś zablokować?",
+          "a": "W oknie zgłoszenia – Zablokuj użytkownika: nie zobaczysz już postów, Story ani wiadomości tej osoby. Aby odblokować: menu boczne → Ustawienia aplikacji → Zablokowane osoby."
+        },
+        {
+          "id": "K-53",
+          "q": "Jak zarządzać powiadomieniami? Dlaczego nie przychodzą?",
+          "a": "Dzwonek u góry: przesuń w lewo, aby usunąć, Zarządzaj – aby zaznaczyć kilka naraz. Nie przychodzą? Zezwól na powiadomienia Gloumi w ustawieniach telefonu i nie wylogowuj się – po wylogowaniu przestają przychodzić."
+        },
+        {
+          "id": "K-54",
+          "q": "How are masters ranked?",
+          "a": "In search, your filters decide. Masters with a rating (at least 3 reviews) come first, higher averages higher; among masters not yet rated, Pro and VIP Studio masters come first. Pro and VIP Studio masters appear a little higher – this is placement that comes with the plan (usually a paid one), not a mark of quality or of any check: in search their average is raised by 5% for ranking (the average shown does not change), in the feed their posts' score by 15%. The feed also depends on freshness, people's reactions, the masters you follow, your interests and distance. Full details: the Terms, “Ranking of results”.",
+          "lang": "en"
+        },
+        {
+          "id": "K-56",
+          "q": "Jak wyłączyć spersonalizowane treści i usunąć zebrane dane?",
+          "a": "Menu boczne → Ustawienia aplikacji → Prywatność i kwestie prawne → Spersonalizowane treści. Po wyłączeniu sekcja Odkrywaj jest układana bez twojej aktywności i lokalizacji, a aplikacja zaproponuje usunięcie już zebranych danych o twoich zainteresowaniach i obejrzanych treściach."
+        }
+      ]
+    }
+  ],
+  "lv": [
+    {
+      "key": "about",
+      "title": "Par Gloumi",
+      "items": [
+        {
+          "id": "K-1",
+          "q": "Kas ir Gloumi?",
+          "a": "Lietotne, kurā atrodat skaistumkopšanas meistarus, redzat viņu darbus, cenas un brīvos laikus un uzreiz rezervējat vizīti. Pakalpojumus meistari sniedz savā vārdā, bet Gloumi atbild par lietotni un maksājumiem tajā."
+        },
+        {
+          "id": "K-2",
+          "q": "Vai Gloumi ir bez maksas?",
+          "a": "Klientiem – jā: maksājat tikai meistara noteikto cenu, Gloumi neko nepieliek. Meistariem Starter maksā 0 € mēnesī, un Gloumi ņem komisijas maksu (K-40); Pro un VIP Studio ir maksas plāni (K-43)."
+        },
+        {
+          "id": "K-3",
+          "q": "Kā sazināties ar palīdzības dienestu?",
+          "a": "Sānu izvēlne → Palīdzība → Neatradāt atbildi? vai info@gloumi.lt. Par konkrētu vizīti – tajā „Ziņot par problēmu”. Saņemšanu apstiprinām 2 darba dienu laikā, pēc būtības atbildam 14 kalendāro dienu laikā, parasti ātrāk."
+        }
+      ]
+    },
+    {
+      "key": "account",
+      "title": "Konts",
+      "items": [
+        {
+          "id": "K-4",
+          "q": "Kā reģistrēties un pieteikties?",
+          "a": "Pieteikšanās ekrānā – „Reģistrējieties”: pieci soļi un e-pasta apstiprināšana. Var arī ar Google, iPhone – arī ar Apple. Piesakieties ar e-pastu vai lietotājvārdu un paroli vai ar Google vai Apple. No 14 gadu vecuma."
+        },
+        {
+          "id": "K-5",
+          "q": "Aizmirsu paroli.",
+          "a": "Pieteikšanās ekrānā – „Aizmirsu paroli”: ievadiet e-pastu un atveriet saiti vēstulē. Vēstuli meklējiet arī surogātpasta mapē. Reģistrējāties ar Google vai Apple? Piesakieties ar to pašu pogu."
+        },
+        {
+          "id": "K-6",
+          "q": "Nepienāca e-pasta apstiprinājuma vēstule.",
+          "a": "Pārbaudiet surogātpasta mapi. Jaunu saiti saņemsiet: Sānu izvēlne → Lietotnes iestatījumi → Konts → Apstiprināt pie e-pasta."
+        },
+        {
+          "id": "K-7",
+          "q": "Kā mainīt savus datus?",
+          "a": "Vārdu un aprakstu – Profils → Rediģēt profilu, fotoattēlu – pieskarieties tam. E-pastu, lietotājvārdu un tālruni – Sānu izvēlne → Lietotnes iestatījumi → Konts. Dzimšanas datumu nomainīsim mēs – rakstiet mums."
+        },
+        {
+          "id": "K-8",
+          "q": "How do I change the language or theme?",
+          "a": "Side menu → App settings → Language / Kalba (Lithuanian or English) or App Theme. The change takes effect at once.",
+          "lang": "en"
+        },
+        {
+          "id": "K-10",
+          "q": "Kā saņemt savu datu kopiju?",
+          "a": "Sānu izvēlne → Lietotnes iestatījumi → Konts → Lejupielādēt manus datus – JSON fails bez fotoattēliem un balss ierakstiem; varat izvēlēties visus datus vai tikai daļu (profils, vizītes, ieraksti, sarakste, nauda, palīdzība un ierobežojumi). Visus datus, kas mums ir, pieprasiet, rakstot uz info@gloumi.lt no konta e-pasta – atbildēsim mēneša laikā."
+        },
+        {
+          "id": "K-11",
+          "q": "Kāds ir piekļuvis manam kontam.",
+          "a": "Sānu izvēlne → Lietotnes iestatījumi → Konts → Izrakstīties visur, pēc tam pieteikšanās ekrānā – „Aizmirsu paroli”. Uzrakstiet mums, kuras darbības nav jūsu. Gloumi nekad neprasa paroli vai kodu."
+        }
+      ]
+    },
+    {
+      "key": "visits",
+      "title": "Vizītes",
+      "items": [
+        {
+          "id": "K-12",
+          "q": "Kā atrast meistaru?",
+          "a": "„Meklēšana”: meklējiet pēc pakalpojuma, meistara vai salona, izmantojiet „Filtri” vai „Karte”. „Atklāt” – meistaru darbu plūsma. Kā tiek kārtoti rezultāti – K-54."
+        },
+        {
+          "id": "K-13",
+          "q": "Kā rezervēt vizīti?",
+          "a": "Meistara profilā – „Rezervēt laiku”: izvēlieties pakalpojumus, datumu un laiku, maksājuma veidu un pieskarieties „Rezervēt un…” – uz pogas rakstīts, kā un cik maksāsiet. Kad meistars vizīti apstiprinās, saņemsiet paziņojumu."
+        },
+        {
+          "id": "K-14",
+          "q": "Kad vizīte ir patiešām rezervēta?",
+          "a": "Kad meistars to apstiprina: „Gaida apstiprinājumu” nomainās uz „Apstiprināta”. Līdz tam atcelt varat jebkurā laikā, un samaksātā summa tiek atmaksāta pilnībā. Tāpat, ja meistars vizīti noraida."
+        },
+        {
+          "id": "K-15",
+          "q": "Visi laiki aizņemti – vai varu gaidīt rindā?",
+          "a": "Jā. Izvēlieties aizņemto dienu un pieskarieties „Pievienoties rindai”. Ja kāds tajā dienā atcels vizīti, persona, kas rindā ir pirmā, saņems paziņojumu un varēs rezervēt šo laiku."
+        },
+        {
+          "id": "K-16",
+          "q": "Ko rakstīt vizītes piezīmēs?",
+          "a": "To, kas meistaram jāzina iepriekš: iepriekšējās formulas, krāsas, vēlmes. Varat pievienot fotoattēlu („Pievienot ideju”). Par alerģijām vai jutīgumu pastāstiet meistaram tieši."
+        },
+        {
+          "id": "K-17",
+          "q": "Kā atcelt vai pārcelt vizīti?",
+          "a": "Vizītes → atveriet vizīti → Atcelt vizīti vai Pārcelt. Atcelšana notiek uzreiz, bez papildu jautājuma. Ja līdz apstiprinātai vizītei atlicis mazāk nekā 24 stundas, pārcelt to var tikai meistars – uzrakstiet meistaram."
+        },
+        {
+          "id": "K-18",
+          "q": "Will I get my money back if I cancel?",
+          "a": "If you cancel more than 24 hours ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit later or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
+          "lang": "en"
+        },
+        {
+          "id": "K-19",
+          "q": "Kad atgriezīsies atmaksātā nauda?",
+          "a": "Atmaksu sākam uzreiz, nauda atgriežas tādā pašā veidā, kādā maksājāt. Kad tā parādīsies kontā, ir atkarīgs no bankas. Ilgi neredzat? Rakstiet mums."
+        },
+        {
+          "id": "K-20",
+          "q": "The master did not turn up or the visit did not happen.",
+          "a": "Paid in the app? Open the visit and tap Visit didn't happen? – up to 72 h after it ends. While we look into it, the reserved amount is not charged, and an amount already charged can be refunded; a person decides. Later, or if you paid on site – write to us.",
+          "lang": "en"
+        },
+        {
+          "id": "K-21",
+          "q": "Pakalpojums nepatika.",
+          "a": "Vispirms uzrakstiet meistaram – pakalpojumu sniedz meistars. Mēs palīdzam apkopot faktus un lemjam par maksājumu lietotnē. Ja vienoties neizdodas, bez maksas varat vērsties Lietuvas Valsts patērētāju tiesību aizsardzības dienestā (vvtat.lt)."
+        },
+        {
+          "id": "K-22",
+          "q": "Kā atstāt atsauksmi?",
+          "a": "Kad vizīte atzīmēta kā notikusi: Vizītes → Notikušās vizītes → Novērtēt meistaru. To var izdarīt 48 stundu laikā no atzīmēšanas. Ja vizīti kā notikušu atzīmēja sistēma, jūs apstiprināsiet, ka tā notika. Publicētu atsauksmi mainīt nevar – rakstiet mums."
+        }
+      ]
+    },
+    {
+      "key": "payments",
+      "title": "Maksājumi",
+      "items": [
+        {
+          "id": "K-23",
+          "q": "Kā tiek apmaksāta vizīte?",
+          "a": "Kādus maksājuma veidus pieņemt, izvēlas meistars: „Skaidra nauda”, „Ar karti uz vietas” vai „Lietotnē”. Lietotnē maksā ar karti vai Apple Pay: summa tiek rezervēta jūsu kartē (ja vizīte ir vēlāk nekā pēc 5 dienām, karte tiek saglabāta un summa tiek rezervēta 3 dienas iepriekš) un noņemta tikai pēc vizītes. Ja rezervēt neizdodas, lūgsim apstiprināt maksājumu; ja tas netiek apstiprināts līdz 24 stundām pirms vizītes, vizīte tiek atcelta. Ja, rezervējot vizīti, maksājums neizdodas vai tiek pārtraukts, apstipriniet to 30 minūšu laikā sadaļā „Vizītes” – citādi vizīte tiek atcelta."
+        },
+        {
+          "id": "K-24",
+          "q": "Vai maksāt lietotnē ir droši?",
+          "a": "Maksājumus apstrādā Stripe – Gloumi jūsu kartes datus neredz un neglabā. Kartes numuru, kodus vai paroles e-pastā vai ziņā mēs nekad neprasām."
+        },
+        {
+          "id": "K-25",
+          "q": "What is a deposit?",
+          "a": "A set part of the visit price – an amount or a percentage – that the master asks to have reserved on your card. It counts towards the price and is charged after the visit; you pay the rest on site. A deposit is not earnest money. What happens if you cancel – K-18.",
+          "lang": "en"
+        },
+        {
+          "id": "K-26",
+          "q": "Kā atstāt dzeramnaudu?",
+          "a": "Pēc atsauksmes ar 3 vai vairāk zvaigznēm, ja meistars pieņem dzeramnaudu: 5, 10, 15 % vai 1–100 €, 7 dienu laikā pēc vizītes. Vēlāk – Vizītes → Notikušās vizītes → Atstāt dzeramnaudu. Gloumi no dzeramnaudas neko neņem."
+        },
+        {
+          "id": "K-27",
+          "q": "Kā darbojas dāvanu kartes?",
+          "a": "Sānu izvēlne → Dāvanu karte: iegādājieties karti (40–1000 €) vai izmantojiet to, pieskaroties „Man ir kods”. Summa kļūst par bonusu, ar kuru varat samaksāt par vizīti, kas pilnībā apmaksāta lietotnē (ne par avansu un ne uz vietas). Kamēr karte nav pārvērsta bonusā, to var atcelt 14 dienu laikā no iegādes – rakstiet mums."
+        },
+        {
+          "id": "K-29",
+          "q": "Meistars iedeva savu kodu – ko ar to darīt?",
+          "a": "Rezervējot pieskarieties „Man ir meistara kods”, ievadiet kodu un pieskarieties „Piemērot” vai atveriet meistara saiti. Cena no koda nemainās."
+        },
+        {
+          "id": "K-30",
+          "q": "Banka rāda divas vienādas summas.",
+          "a": "Bieži tā ir īslaicīga summas rezervācija bankā – tā pazūd dažu dienu laikā. Ja nauda noņemta divreiz, uzrakstiet mums, kad un cik maksājāt. Kartes numuru nesūtiet."
+        }
+      ]
+    },
+    {
+      "key": "masters",
+      "title": "Meistariem",
+      "items": [
+        {
+          "id": "K-31",
+          "q": "Kā kļūt par meistaru?",
+          "a": "Profils → Kļūt par meistaru: fotoattēls, vārds un pilsēta, apraksts, joma un piekrišana nosacījumiem. Par meistaru var kļūt no 18 gadu vecuma. Klienta un meistara režīmu pārslēgsiet profila augšdaļā."
+        },
+        {
+          "id": "K-32",
+          "q": "Kas jāaizpilda, lai klienti varētu rezervēt?",
+          "a": "Pieskarieties „Pievienot pakalpojumus” un izejiet vedni līdz „Aktivizēt profilu”. Nepieciešami pakalpojumi, darba laiks, jomas un (ja strādājat savā vietā) adrese; „Atļaut rezervēt” jābūt ieslēgtam."
+        },
+        {
+          "id": "K-33",
+          "q": "Kā pievienot vai mainīt pakalpojumus?",
+          "a": "Profils → Pakalpojumi un laiks → Pakalpojumi un cenas → Jauns pakalpojums. Avanss – Profils → Bizness → Maksājumi → Prasīt avansu. Nemainiet tos caur „Kādus pakalpojumus sniedzat?” – tā tiek aizstāts viss cenrādis. Vecuma atzīmes ir pakalpojuma logā, sadaļā „Vecuma ierobežojumi”."
+        },
+        {
+          "id": "K-34",
+          "q": "Kā iestatīt darba laiku un brīvdienas?",
+          "a": "Profils → Pakalpojumi un laiks → Darba laiks → Nedēļas grafiks. Atsevišķu dienu vai atvaļinājumu atzīmējiet, pieskaroties datumam kalendārā („Brīvdiena”). Uz laiku pārtraukt rezervēšanu – izslēdziet „Atļaut rezervēt”."
+        },
+        {
+          "id": "K-35",
+          "q": "Kā bloķēt laiku vai pievienot klienta vizīti?",
+          "a": "Kalendārs → Bloķēt laiku – vienai dienai vai katru nedēļu (pārtraukums). „Pievienot vizīti” – savam klientam: vizīte uzreiz apstiprināta, bez avansa, un klients saņem paziņojumu."
+        },
+        {
+          "id": "K-36",
+          "q": "Kā apstiprināt, noraidīt, atcelt vai pārcelt vizīti?",
+          "a": "Kalendārs → Pieprasījumi → Apstiprināt vai Noraidīt – atbildiet ātri. Atcelt vai pārcelt – atverot vizīti. Ja atceļat, klientam tiek atmaksāta visa summa; pārceliet tikai pēc vienošanās ar klientu. Ja klients 30 minūšu laikā nesamaksā lietotnē, vizīte tiek atcelta automātiski, jūs saņemat paziņojumu, un laiks atkal ir brīvs."
+        },
+        {
+          "id": "K-37",
+          "q": "Kā atzīmēt vizīti kā notikušu?",
+          "a": "Atveriet vizīti → Pabeigt vizīti (no vizītes sākuma laika). Pēc vizītes atbildiet uz jautājumu „Vai klients ieradās?” – citādi pēc 24 stundām vizīte tiek automātiski atzīmēta kā notikusi, un klients, rakstot atsauksmi, apstiprina, ka vizīte notika. Atsauksmi var uzrakstīt 48 stundu laikā no atzīmēšanas. Ja neierašanos atzīmējat jau pēc atsauksmes, to izskata Gloumi darbinieks. Vairāk – Lietošanas noteikumu sadaļā „Kā mēs pārbaudām atsauksmes”."
+        },
+        {
+          "id": "K-38",
+          "q": "How do I take payments in the app?",
+          "a": "From 7 October 2026 (Terms 1.13), taking payments in the app and setting a deposit come only with the Pro or VIP Studio plan (including the trial or through a salon); on Starter, clients pay on site. Profile → Business → Payments → Stripe payment settings → Turn on online payments; verify your identity in Stripe's window. Until the Stripe check is finished, clients pay you on site.",
+          "lang": "en"
+        },
+        {
+          "id": "K-39",
+          "q": "Kad saņemšu naudu?",
+          "a": "Ne agrāk kā 72 stundas pēc vizītes beigām, parasti 7 dienu laikā, ja klients nav ziņojis, ka vizīte nenotika. Uz banku – saskaņā ar Stripe izmaksu grafiku. Izmaksas redzat: Profils → Bizness → Maksājumi."
+        },
+        {
+          "id": "K-40",
+          "q": "How much does Gloumi take?",
+          "a": "The commission is 5% on each client's first completed visit with you booked through Gloumi, whether paid in the app or on site (on site it becomes an amount you owe: deducted from later in-app payments, and the rest paid against the monthly invoice); it also applies to visits you enter yourself. Nothing on that client's later visits, clients with your master code, or tips. In-app payments also have the Stripe fee deducted (for a standard EEA card, 1.5% + €0.25).",
+          "lang": "en"
+        },
+        {
+          "id": "K-41",
+          "q": "Kas ir meistara kods?",
+          "a": "Profils → Bizness → Maksājumi → Kods jūsu klientiem. Dodiet to klientiem no laika pirms Gloumi – par viņiem komisijas maksu neņemam. Līdz 50 klientiem, derīgs 3 mēnešus. Klientiem, kuri jūs atrada caur Gloumi, to dot nedrīkst."
+        },
+        {
+          "id": "K-42",
+          "q": "Why am I asked for my personal or company code and IBAN?",
+          "a": "An EU rule, DAC7, requires platforms to report their sellers' income to the tax authority (VMI). Enter them in side menu → App settings → Business details. Clients never see them. If they are not provided after a request and two reminders, payouts are paused no earlier than 60 days after the first reminder.",
+          "lang": "en"
+        },
+        {
+          "id": "K-43",
+          "q": "What is the difference between the plans?",
+          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 active visits a month and 10 portfolio photos. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. An introductory price may be offered for monthly Pro – the app shows it before you subscribe. Plans – side menu → Gloumi Pro.",
+          "lang": "en"
+        },
+        {
+          "id": "K-44",
+          "q": "How do I cancel a subscription or get a refund?",
+          "a": "In the store: iPhone – Settings → your name → Subscriptions; Android – Google Play → Payments & subscriptions → Subscriptions. On the App Store, at least 24 h before the period ends. Refunds are decided by Apple or Google. Deleting your account does not end the subscription.",
+          "lang": "en"
+        },
+        {
+          "id": "K-45",
+          "q": "Kā izveidot salonu?",
+          "a": "Profils → Bizness → Salons → Izveidot salonu (nepieciešams VIP Studio). Uzaiciniet līdz 10 meistariem pēc lietotājvārda. Dalībnieki saglabā patstāvību un saņem Pro funkcijas, bet jūs redzat viņu vizītes."
+        },
+        {
+          "id": "K-46",
+          "q": "Can a review be removed?",
+          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report those to info@gloumi.lt.",
+          "lang": "en"
+        },
+        {
+          "id": "K-47",
+          "q": "A client reported that the visit did not happen.",
+          "a": "While we look into it, the client's payment for this visit is not charged (an amount already charged may be refunded to the client). You can see the client's message – explain and, if we ask, send evidence. A person decides, and we tell you in the app and by email.",
+          "lang": "en"
+        },
+        {
+          "id": "K-48",
+          "q": "Mans konts ir ierobežots.",
+          "a": "Paziņojumā norādām iemeslu un noteikumu. Paskaidrot vai pārsūdzēt varat bez maksas – sadaļā „Palīdzība” vai info@gloumi.lt. Sūdzību izskata cilvēks, atbildam rakstiski; nepamatotu ierobežojumu atceļam uzreiz."
+        },
+        {
+          "id": "K-49",
+          "q": "Vai varu novērtēt klientu?",
+          "a": "Jā – pēc vizītes pabeigšanas lietotne piedāvās „Novērtējiet klientu”. Vērtējumu redz citi meistari, tekstu – tikai viņi. Vērtējiet godīgi un tikai par konkrēto vizīti."
+        }
+      ]
+    },
+    {
+      "key": "content",
+      "title": "Saturs, paziņojumi un drošība",
+      "items": [
+        {
+          "id": "K-50",
+          "q": "Kā publicēt Story vai darba fotoattēlu?",
+          "a": "Plūsmā izvēlieties jaunu Story vai ierakstu. Video, kas ir tikai iCloud, vispirms lejupielādējiet tālrunī. Fails – līdz 60 MB, Story video – līdz 1 min."
+        },
+        {
+          "id": "K-51",
+          "q": "Kā ziņot par nepiemērotu saturu vai cilvēku?",
+          "a": "Ziņā – nospiediet un turiet → Ziņot; meistara profilā – ikona augšpusē. Izvēlieties iemeslu → Nosūtīt ziņojumu. Ziņojumi ir anonīmi, tos izskata mūsu komanda. Ja kādam draud briesmas, zvaniet 112."
+        },
+        {
+          "id": "K-52",
+          "q": "Kā bloķēt cilvēku?",
+          "a": "Ziņošanas logā – „Bloķēt lietotāju”: vairs neredzēsiet šī cilvēka ierakstus, Story un ziņas. Atbloķēt – Sānu izvēlne → Lietotnes iestatījumi → Bloķētie cilvēki."
+        },
+        {
+          "id": "K-53",
+          "q": "Kā pārvaldīt paziņojumus? Kāpēc tie nepienāk?",
+          "a": "Zvaniņš augšpusē: pavelciet pa kreisi – dzēst, „Pārvaldīt” – vairākus uzreiz. Nepienāk? Tālruņa iestatījumos atļaujiet Gloumi paziņojumus un neizrakstieties no lietotnes – pēc izrakstīšanās paziņojumi netiek sūtīti."
+        },
+        {
+          "id": "K-54",
+          "q": "How are masters ranked?",
+          "a": "In search, your filters decide. Masters with a rating (at least 3 reviews) come first, higher averages higher; among masters not yet rated, Pro and VIP Studio masters come first. Pro and VIP Studio masters appear a little higher – this is placement that comes with the plan (usually a paid one), not a mark of quality or of any check: in search their average is raised by 5% for ranking (the average shown does not change), in the feed their posts' score by 15%. The feed also depends on freshness, people's reactions, the masters you follow, your interests and distance. Full details: the Terms, “Ranking of results”.",
+          "lang": "en"
+        },
+        {
+          "id": "K-56",
+          "q": "Kā izslēgt personalizēto plūsmu un dzēst savāktos datus?",
+          "a": "Sānu izvēlne → Lietotnes iestatījumi → Privātums un juridiskā informācija → Personalizēta plūsma. Kad tā izslēgta, sadaļa „Atklāt” tiek kārtota bez jūsu darbībām un atrašanās vietas, un lietotne piedāvās dzēst jau savāktos datus par jūsu interesēm un skatīto saturu."
+        }
+      ]
+    }
+  ],
+  "de": [
+    {
+      "key": "about",
+      "title": "Über Gloumi",
+      "items": [
+        {
+          "id": "K-1",
+          "q": "Was ist Gloumi?",
+          "a": "Eine App, in der Sie Beauty-Profis finden, ihre Arbeiten, Preise und freien Zeiten sehen und sofort einen Termin buchen. Die Profis erbringen ihre Leistungen in eigenem Namen; Gloumi ist für die App und die Zahlungen darin verantwortlich."
+        },
+        {
+          "id": "K-2",
+          "q": "Ist Gloumi kostenlos?",
+          "a": "Für Kunden ja: Sie zahlen nur den Preis, den der Profi festlegt, und Gloumi schlägt nichts auf. Für Profis kostet Starter 0 € im Monat, und Gloumi erhält eine Provision (K-40); Pro und VIP Studio sind kostenpflichtige Pläne (K-43)."
+        },
+        {
+          "id": "K-3",
+          "q": "Wie erreiche ich den Support?",
+          "a": "Seitenmenü → Hilfe → Keine Antwort gefunden? oder info@gloumi.lt. Zu einem bestimmten Termin – Problem melden in diesem Termin. Wir bestätigen den Eingang innerhalb von 2 Werktagen und antworten in der Sache innerhalb von 14 Kalendertagen, meist schneller."
+        }
+      ]
+    },
+    {
+      "key": "account",
+      "title": "Konto",
+      "items": [
+        {
+          "id": "K-4",
+          "q": "Wie registriere ich mich und melde mich an?",
+          "a": "Tippen Sie auf dem Anmeldebildschirm auf Registrieren: fünf Schritte und eine Bestätigung per E-Mail. Sie können auch Google und auf dem iPhone Apple nutzen. Anmelden können Sie sich mit E-Mail oder Benutzername und Passwort oder mit Google oder Apple. Sie müssen mindestens 14 Jahre alt sein."
+        },
+        {
+          "id": "K-5",
+          "q": "Ich habe mein Passwort vergessen.",
+          "a": "Tippen Sie auf dem Anmeldebildschirm auf Passwort vergessen, geben Sie Ihre E-Mail-Adresse ein und öffnen Sie den Link, den wir senden. Sehen Sie auch im Spam-Ordner nach. Mit Google oder Apple registriert? Melden Sie sich mit derselben Schaltfläche an."
+        },
+        {
+          "id": "K-6",
+          "q": "Die Bestätigungs-E-Mail ist nicht angekommen.",
+          "a": "Sehen Sie im Spam-Ordner nach. Einen neuen Link erhalten Sie so: Seitenmenü → App-Einstellungen → Konto → Bestätigen neben Ihrer E-Mail-Adresse."
+        },
+        {
+          "id": "K-7",
+          "q": "Wie ändere ich meine Angaben?",
+          "a": "Name und Beschreibung – Profil → Profil bearbeiten; Foto – darauf tippen. E-Mail, Benutzername und Telefon – Seitenmenü → App-Einstellungen → Konto. Das Geburtsdatum können wir ändern – schreiben Sie uns."
+        },
+        {
+          "id": "K-8",
+          "q": "How do I change the language or theme?",
+          "a": "Side menu → App settings → Language / Kalba (Lithuanian or English) or App Theme. The change takes effect at once.",
+          "lang": "en"
+        },
+        {
+          "id": "K-10",
+          "q": "Wie erhalte ich eine Kopie meiner Daten?",
+          "a": "Seitenmenü → App-Einstellungen → Konto → Meine Daten herunterladen – eine JSON-Datei ohne Foto- und Sprachdateien; Sie können alles oder nur einzelne Teile wählen (Profil, Termine, Beiträge, Nachrichten, Geld, Hilfe und Einschränkungen). Für alles, was wir speichern, schreiben Sie von der E-Mail-Adresse Ihres Kontos an info@gloumi.lt – wir antworten innerhalb eines Monats."
+        },
+        {
+          "id": "K-11",
+          "q": "Jemand hat sich Zugang zu meinem Konto verschafft.",
+          "a": "Seitenmenü → App-Einstellungen → Konto → Überall abmelden, danach Passwort vergessen auf dem Anmeldebildschirm. Teilen Sie uns mit, was Sie nicht getan haben. Gloumi fragt nie nach Ihrem Passwort oder einem Code."
+        }
+      ]
+    },
+    {
+      "key": "visits",
+      "title": "Termine",
+      "items": [
+        {
+          "id": "K-12",
+          "q": "Wie finde ich einen Profi?",
+          "a": "Suche: Suchen Sie nach einer Leistung, einem Profi oder einem Salon und nutzen Sie Filter oder Karte. Entdecken ist ein Feed mit Arbeiten der Profis. Wie die Ergebnisse sortiert werden – K-54."
+        },
+        {
+          "id": "K-13",
+          "q": "Wie buche ich einen Termin?",
+          "a": "Tippen Sie im Profil des Profis auf Termin buchen, wählen Sie Leistungen, Datum und Uhrzeit sowie die Zahlungsart und tippen Sie dann auf „Buchen und …“ – die Schaltfläche zeigt, wie und wie viel Sie zahlen. Sie werden benachrichtigt, wenn der Profi bestätigt."
+        },
+        {
+          "id": "K-14",
+          "q": "Wann ist mein Termin wirklich gebucht?",
+          "a": "Wenn der Profi ihn bestätigt: Aus Wartet auf Bestätigung wird Bestätigt. Bis dahin können Sie jederzeit stornieren und erhalten den vollen Betrag zurück. Dasselbe gilt, wenn der Profi ablehnt."
+        },
+        {
+          "id": "K-15",
+          "q": "Alle Zeiten sind belegt – kann ich mich auf die Warteliste setzen?",
+          "a": "Ja. Wählen Sie den belegten Tag und tippen Sie auf Auf die Warteliste. Wenn an diesem Tag jemand storniert, erhält die erste Person auf der Liste eine Benachrichtigung und kann die Zeit buchen."
+        },
+        {
+          "id": "K-16",
+          "q": "Was gehört in die Terminnotizen?",
+          "a": "Alles, was der Profi vorab wissen sollte: frühere Rezepturen, Farben, Wünsche. Sie können ein Foto hinzufügen (Foto hinzufügen). Über Allergien oder Empfindlichkeiten sprechen Sie direkt mit dem Profi."
+        },
+        {
+          "id": "K-17",
+          "q": "Wie storniere oder verschiebe ich einen Termin?",
+          "a": "Termine → Termin öffnen → Termin stornieren oder Verschieben. Die Stornierung erfolgt sofort, ohne weitere Rückfrage. Weniger als 24 Std. vor einem bestätigten Termin kann nur der Profi ihn verschieben – schreiben Sie ihm eine Nachricht."
+        },
+        {
+          "id": "K-18",
+          "q": "Will I get my money back if I cancel?",
+          "a": "If you cancel more than 24 hours ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit later or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
+          "lang": "en"
+        },
+        {
+          "id": "K-19",
+          "q": "Wann kommt eine Erstattung bei mir an?",
+          "a": "Wir veranlassen die Erstattung sofort, auf dem Weg, auf dem Sie bezahlt haben. Wann sie sichtbar wird, hängt von Ihrer Bank ab. Nach einiger Zeit immer noch nicht da? Schreiben Sie uns."
+        },
+        {
+          "id": "K-20",
+          "q": "The master did not turn up or the visit did not happen.",
+          "a": "Paid in the app? Open the visit and tap Visit didn't happen? – up to 72 h after it ends. While we look into it, the reserved amount is not charged, and an amount already charged can be refunded; a person decides. Later, or if you paid on site – write to us.",
+          "lang": "en"
+        },
+        {
+          "id": "K-21",
+          "q": "Ich bin mit der Leistung nicht zufrieden.",
+          "a": "Schreiben Sie zuerst dem Profi – er erbringt die Leistung. Wir helfen, die Fakten zu klären, und entscheiden über die in der App geleistete Zahlung. Wenn Sie sich nicht einigen können, können Sie sich kostenlos an die litauische Staatliche Behörde für Verbraucherschutz (vvtat.lt) wenden."
+        },
+        {
+          "id": "K-22",
+          "q": "Wie gebe ich eine Bewertung ab?",
+          "a": "Sobald der Termin als stattgefunden markiert ist: Termine → Abgeschlossene Termine → Profi bewerten. Sie haben dafür 48 Std. ab dieser Markierung. Hat das System den Termin markiert, bestätigen Sie, dass er stattgefunden hat. Eine veröffentlichte Bewertung kann nicht bearbeitet werden – schreiben Sie uns."
+        }
+      ]
+    },
+    {
+      "key": "payments",
+      "title": "Zahlungen",
+      "items": [
+        {
+          "id": "K-23",
+          "q": "Wie wird ein Termin bezahlt?",
+          "a": "Welche Zahlungsarten angenommen werden, entscheidet der Profi: Bargeld, Mit Karte vor Ort oder In der App. In der App zahlen Sie mit Karte oder Apple Pay: Der Betrag wird auf Ihrer Karte vorgemerkt (liegt der Termin mehr als 5 Tage entfernt, wird Ihre Karte gespeichert und der Betrag 3 Tage vorher vorgemerkt) und erst nach dem Termin abgebucht. Wenn das Vormerken nicht gelingt, bitten wir Sie, die Zahlung zu bestätigen; ist sie 24 Std. vor dem Termin nicht bestätigt, wird der Termin storniert. Schlägt die Zahlung bei der Buchung fehl oder wird sie unterbrochen, bestätigen Sie sie innerhalb von 30 Minuten unter Termine – sonst wird der Termin storniert."
+        },
+        {
+          "id": "K-24",
+          "q": "Ist das Bezahlen in der App sicher?",
+          "a": "Zahlungen wickelt Stripe ab – Gloumi sieht und speichert Ihre Kartendaten nie. Wir fragen nie per E-Mail oder Nachricht nach Ihrer Kartennummer, Codes oder Passwörtern."
+        },
+        {
+          "id": "K-25",
+          "q": "What is a deposit?",
+          "a": "A set part of the visit price – an amount or a percentage – that the master asks to have reserved on your card. It counts towards the price and is charged after the visit; you pay the rest on site. A deposit is not earnest money. What happens if you cancel – K-18.",
+          "lang": "en"
+        },
+        {
+          "id": "K-26",
+          "q": "Wie gebe ich Trinkgeld?",
+          "a": "Nach einer Bewertung mit 3 oder mehr Sternen, wenn der Profi Trinkgeld annimmt: 5, 10, 15 % oder 1–100 €, innerhalb von 7 Tagen nach dem Termin. Später – Termine → Abgeschlossene Termine → Trinkgeld geben. Gloumi behält nichts vom Trinkgeld ein."
+        },
+        {
+          "id": "K-27",
+          "q": "Wie funktionieren Geschenkkarten?",
+          "a": "Seitenmenü → Geschenkkarte: Kaufen Sie eine (40–1.000 €) oder tippen Sie zum Einlösen auf Ich habe einen Code. Der Betrag wird zu Guthaben, das Sie für einen vollständig in der App bezahlten Termin verwenden können (nicht für eine Anzahlung und nicht vor Ort). Solange die Karte nicht in Guthaben umgewandelt wurde, können Sie sie innerhalb von 14 Tagen nach dem Kauf zurückgeben – schreiben Sie uns."
+        },
+        {
+          "id": "K-29",
+          "q": "Ein Profi hat mir seinen Code gegeben – was tue ich?",
+          "a": "Tippen Sie bei der Buchung auf Ich habe einen Profi-Code, geben Sie ihn ein und tippen Sie auf Anwenden, oder öffnen Sie den Link des Profis. Ihr Preis ändert sich nicht."
+        },
+        {
+          "id": "K-30",
+          "q": "Meine Bank zeigt denselben Betrag zweimal.",
+          "a": "Oft ist es eine vorübergehende Vormerkung, die innerhalb einiger Tage verschwindet. Wurde Ihnen der Betrag zweimal abgebucht, teilen Sie uns mit, wann und wie viel Sie bezahlt haben. Ihre Kartennummer senden Sie uns dabei nicht."
+        }
+      ]
+    },
+    {
+      "key": "masters",
+      "title": "Für Profis",
+      "items": [
+        {
+          "id": "K-31",
+          "q": "Wie werde ich Profi?",
+          "a": "Profil → Profi werden: Foto, Name und Stadt, Beschreibung, Bereich und Zustimmung zu den Bedingungen. Sie müssen mindestens 18 Jahre alt sein. Zwischen Kunden- und Profi-Modus wechseln Sie oben in Ihrem Profil."
+        },
+        {
+          "id": "K-32",
+          "q": "Was brauche ich, damit Kunden bei mir buchen können?",
+          "a": "Tippen Sie auf Leistungen hinzufügen und gehen Sie den Assistenten bis Profil aktivieren durch. Sie brauchen Leistungen, Arbeitszeiten, Bereiche und (wenn Sie an einem festen Ort arbeiten) eine Adresse; Buchungen erlauben muss eingeschaltet sein."
+        },
+        {
+          "id": "K-33",
+          "q": "Wie füge ich Leistungen hinzu oder ändere sie?",
+          "a": "Profil → Leistungen und Zeiten → Leistungen und Preise → Neue Leistung. Anzahlung – Profil → Geschäft → Zahlungen → Anzahlung verlangen. Ändern Sie nichts über „Welche Leistungen bieten Sie an?“ – das ersetzt Ihre gesamte Preisliste. Alterskennzeichen finden Sie im Leistungsfenster unter Altersbeschränkungen."
+        },
+        {
+          "id": "K-34",
+          "q": "Wie lege ich Arbeitszeiten und freie Tage fest?",
+          "a": "Profil → Leistungen und Zeiten → Arbeitszeiten → Wochenplan. Einen einzelnen Tag oder Urlaub markieren Sie, indem Sie im Kalender auf das Datum tippen (Freier Tag). Für eine Buchungspause schalten Sie Buchungen erlauben aus."
+        },
+        {
+          "id": "K-35",
+          "q": "Wie blockiere ich Zeit oder trage selbst Kunden ein?",
+          "a": "Kalender → Zeit blockieren – für einen Tag oder jede Woche (eine Pause). Termin hinzufügen – für Ihre eigenen Kunden: sofort bestätigt, ohne Anzahlung, und der Kunde erhält eine Benachrichtigung."
+        },
+        {
+          "id": "K-36",
+          "q": "Wie bestätige, lehne ab, storniere oder verschiebe ich einen Termin?",
+          "a": "Kalender → Anfragen → Bestätigen oder Ablehnen – antworten Sie zügig. Stornieren oder verschieben können Sie im geöffneten Termin. Wenn Sie stornieren, erhält der Kunde alles zurück; verschieben Sie einen Termin nur nach Absprache mit dem Kunden. Zahlt der Kunde nicht innerhalb von 30 Minuten in der App, wird der Termin automatisch storniert, Sie erhalten eine Mitteilung und die Zeit ist wieder frei."
+        },
+        {
+          "id": "K-37",
+          "q": "Wie markiere ich einen Termin als erledigt?",
+          "a": "Termin öffnen → Termin abschließen (ab Terminbeginn). Beantworten Sie danach „Ist der Kunde erschienen?“ – sonst wird der Termin nach 24 Std. automatisch als stattgefunden markiert, und der Kunde bestätigt beim Schreiben einer Bewertung, dass er stattgefunden hat. Eine Bewertung kann innerhalb von 48 Std. nach der Markierung geschrieben werden. Markieren Sie ein Nichterscheinen erst nach der Bewertung, prüft ein Mitarbeiter von Gloumi den Fall. Mehr dazu in den Nutzungsbedingungen, „Wie wir Bewertungen prüfen“."
+        },
+        {
+          "id": "K-38",
+          "q": "How do I take payments in the app?",
+          "a": "From 7 October 2026 (Terms 1.13), taking payments in the app and setting a deposit come only with the Pro or VIP Studio plan (including the trial or through a salon); on Starter, clients pay on site. Profile → Business → Payments → Stripe payment settings → Turn on online payments; verify your identity in Stripe's window. Until the Stripe check is finished, clients pay you on site.",
+          "lang": "en"
+        },
+        {
+          "id": "K-39",
+          "q": "Wann bekomme ich das Geld?",
+          "a": "Frühestens 72 Std. nach dem Ende des Termins, meist innerhalb von 7 Tagen, sofern der Kunde nicht gemeldet hat, dass der Termin nicht stattgefunden hat. Auf Ihr Bankkonto nach Ihrem Stripe-Auszahlungsplan. Auszahlungen finden Sie unter Profil → Geschäft → Zahlungen."
+        },
+        {
+          "id": "K-40",
+          "q": "How much does Gloumi take?",
+          "a": "The commission is 5% on each client's first completed visit with you booked through Gloumi, whether paid in the app or on site (on site it becomes an amount you owe: deducted from later in-app payments, and the rest paid against the monthly invoice); it also applies to visits you enter yourself. Nothing on that client's later visits, clients with your master code, or tips. In-app payments also have the Stripe fee deducted (for a standard EEA card, 1.5% + €0.25).",
+          "lang": "en"
+        },
+        {
+          "id": "K-41",
+          "q": "Was ist der Profi-Code?",
+          "a": "Profil → Geschäft → Zahlungen → Code für Ihre Kunden. Geben Sie ihn Kunden, die Sie schon vor Gloumi hatten – für sie fällt keine Provision an. Bis zu 50 Kunden, 3 Monate gültig. Kunden, die Sie über Gloumi gefunden haben, dürfen Sie ihn nicht geben."
+        },
+        {
+          "id": "K-42",
+          "q": "Why am I asked for my personal or company code and IBAN?",
+          "a": "An EU rule, DAC7, requires platforms to report their sellers' income to the tax authority (VMI). Enter them in side menu → App settings → Business details. Clients never see them. If they are not provided after a request and two reminders, payouts are paused no earlier than 60 days after the first reminder.",
+          "lang": "en"
+        },
+        {
+          "id": "K-43",
+          "q": "What is the difference between the plans?",
+          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 active visits a month and 10 portfolio photos. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. An introductory price may be offered for monthly Pro – the app shows it before you subscribe. Plans – side menu → Gloumi Pro.",
+          "lang": "en"
+        },
+        {
+          "id": "K-44",
+          "q": "How do I cancel a subscription or get a refund?",
+          "a": "In the store: iPhone – Settings → your name → Subscriptions; Android – Google Play → Payments & subscriptions → Subscriptions. On the App Store, at least 24 h before the period ends. Refunds are decided by Apple or Google. Deleting your account does not end the subscription.",
+          "lang": "en"
+        },
+        {
+          "id": "K-45",
+          "q": "Wie erstelle ich einen Salon?",
+          "a": "Profil → Geschäft → Salon → Salon erstellen (erfordert VIP Studio). Laden Sie bis zu 10 Profis über ihren Benutzernamen ein. Die Mitglieder bleiben selbstständig und erhalten die Pro-Funktionen, und Sie sehen ihre Termine."
+        },
+        {
+          "id": "K-46",
+          "q": "Can a review be removed?",
+          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report those to info@gloumi.lt.",
+          "lang": "en"
+        },
+        {
+          "id": "K-47",
+          "q": "A client reported that the visit did not happen.",
+          "a": "While we look into it, the client's payment for this visit is not charged (an amount already charged may be refunded to the client). You can see the client's message – explain and, if we ask, send evidence. A person decides, and we tell you in the app and by email.",
+          "lang": "en"
+        },
+        {
+          "id": "K-48",
+          "q": "Mein Konto wurde eingeschränkt.",
+          "a": "In unserer Mitteilung stehen der Grund und die Regel. Sie können kostenlos Stellung nehmen oder Einspruch einlegen – über Hilfe oder info@gloumi.lt. Ein Mensch prüft den Fall, und wir antworten schriftlich; eine ungerechtfertigte Einschränkung wird sofort aufgehoben."
+        },
+        {
+          "id": "K-49",
+          "q": "Kann ich einen Kunden bewerten?",
+          "a": "Ja – nachdem Sie einen Termin abgeschlossen haben, bietet die App Kunden bewerten an. Andere Profis sehen die Bewertung; den Text sehen nur sie. Bewerten Sie ehrlich und nur diesen Termin."
+        }
+      ]
+    },
+    {
+      "key": "content",
+      "title": "Inhalte, Benachrichtigungen und Sicherheit",
+      "items": [
+        {
+          "id": "K-50",
+          "q": "Wie lade ich eine Story oder ein Arbeitsfoto hoch?",
+          "a": "Wählen Sie im Feed eine neue Story oder einen Beitrag. Ein Video, das nur in iCloud liegt, laden Sie zuerst auf das Telefon. Eine Datei – bis 60 MB, ein Story-Video – bis 1 Min."
+        },
+        {
+          "id": "K-51",
+          "q": "Wie melde ich unangemessene Inhalte oder eine Person?",
+          "a": "Halten Sie eine Nachricht gedrückt → Melden; im Profil eines Profis – das Symbol oben. Wählen Sie einen Grund → Meldung senden. Meldungen sind anonym, und unser Team prüft sie. Wenn jemand in Gefahr ist, rufen Sie 112 an."
+        },
+        {
+          "id": "K-52",
+          "q": "Wie blockiere ich jemanden?",
+          "a": "Im Meldefenster – Nutzer blockieren: Sie sehen dann keine Beiträge, Storys oder Nachrichten dieser Person mehr. Blockierung aufheben: Seitenmenü → App-Einstellungen → Blockierte Personen."
+        },
+        {
+          "id": "K-53",
+          "q": "Wie verwalte ich Benachrichtigungen? Warum kommen sie nicht an?",
+          "a": "Die Glocke oben: nach links wischen zum Löschen, Bearbeiten für mehrere auf einmal. Kommen keine an? Erlauben Sie Gloumi-Benachrichtigungen in den Telefoneinstellungen und bleiben Sie angemeldet – nach dem Abmelden kommen keine mehr."
+        },
+        {
+          "id": "K-54",
+          "q": "How are masters ranked?",
+          "a": "In search, your filters decide. Masters with a rating (at least 3 reviews) come first, higher averages higher; among masters not yet rated, Pro and VIP Studio masters come first. Pro and VIP Studio masters appear a little higher – this is placement that comes with the plan (usually a paid one), not a mark of quality or of any check: in search their average is raised by 5% for ranking (the average shown does not change), in the feed their posts' score by 15%. The feed also depends on freshness, people's reactions, the masters you follow, your interests and distance. Full details: the Terms, “Ranking of results”.",
+          "lang": "en"
+        },
+        {
+          "id": "K-56",
+          "q": "Wie schalte ich den persönlichen Feed aus und lösche die gesammelten Daten?",
+          "a": "Seitenmenü → App-Einstellungen → Datenschutz und Rechtliches → Persönlicher Feed. Ist er ausgeschaltet, wird Entdecken ohne Ihre Aktivität und Ihren Standort sortiert, und die App bietet an, die bereits gesammelten Daten zu Ihren Interessen und zu dem, was Sie gesehen haben, zu löschen."
+        }
+      ]
+    }
+  ],
+  "fr": [
+    {
+      "key": "about",
+      "title": "À propos de Gloumi",
+      "items": [
+        {
+          "id": "K-1",
+          "q": "Qu'est-ce que Gloumi ?",
+          "a": "Une application pour trouver des professionnels de la beauté, voir leurs réalisations, leurs prix et leurs créneaux libres, et réserver un rendez-vous tout de suite. Les professionnels fournissent les prestations en leur propre nom ; Gloumi est responsable de l'application et des paiements qui y sont effectués."
+        },
+        {
+          "id": "K-2",
+          "q": "Gloumi est-il gratuit ?",
+          "a": "Pour les clients, oui : vous payez seulement le prix fixé par le professionnel, et Gloumi n'y ajoute rien. Pour les professionnels, la formule Starter coûte 0 € par mois et Gloumi prend une commission (K-40) ; Pro et VIP Studio sont des formules payantes (K-43)."
+        },
+        {
+          "id": "K-3",
+          "q": "Comment contacter l'assistance ?",
+          "a": "Menu latéral → Aide → Pas de réponse ici ?, ou info@gloumi.lt. Pour un rendez-vous précis – « Signaler un problème » dans ce rendez-vous. Nous accusons réception sous 2 jours ouvrés et répondons sur le fond sous 14 jours calendaires, généralement plus tôt."
+        }
+      ]
+    },
+    {
+      "key": "account",
+      "title": "Compte",
+      "items": [
+        {
+          "id": "K-4",
+          "q": "Comment s'inscrire et se connecter ?",
+          "a": "Sur l'écran de connexion, appuyez sur « Inscrivez-vous » : cinq étapes et une confirmation par e-mail. Vous pouvez aussi utiliser Google, et Apple sur iPhone. Connectez-vous avec votre e-mail ou votre nom d'utilisateur et votre mot de passe, ou avec Google ou Apple. Il faut avoir 14 ans ou plus."
+        },
+        {
+          "id": "K-5",
+          "q": "J'ai oublié mon mot de passe.",
+          "a": "Sur l'écran de connexion, appuyez sur « Mot de passe oublié », saisissez votre e-mail et ouvrez le lien que nous envoyons. Vérifiez aussi vos spams. Inscription faite avec Google ou Apple ? Connectez-vous avec le même bouton."
+        },
+        {
+          "id": "K-6",
+          "q": "L'e-mail de confirmation n'est pas arrivé.",
+          "a": "Vérifiez vos spams. Pour recevoir un nouveau lien : Menu latéral → Paramètres de l'application → Compte → « Vérifier » à côté de votre e-mail."
+        },
+        {
+          "id": "K-7",
+          "q": "Comment modifier mes informations ?",
+          "a": "Nom et description – Profil → Modifier le profil ; photo – appuyez dessus. E-mail, nom d'utilisateur et téléphone – Menu latéral → Paramètres de l'application → Compte. Nous pouvons modifier votre date de naissance – écrivez-nous."
+        },
+        {
+          "id": "K-8",
+          "q": "How do I change the language or theme?",
+          "a": "Side menu → App settings → Language / Kalba (Lithuanian or English) or App Theme. The change takes effect at once.",
+          "lang": "en"
+        },
+        {
+          "id": "K-10",
+          "q": "Comment obtenir une copie de mes données ?",
+          "a": "Menu latéral → Paramètres de l'application → Compte → Télécharger mes données – un fichier JSON sans les fichiers photo ni audio ; vous pouvez tout choisir ou seulement certaines parties (profil, rendez-vous, publications, messages, argent, aide et restrictions). Pour tout ce que nous détenons, écrivez à info@gloumi.lt depuis l'adresse e-mail de votre compte – nous répondons dans un délai d'un mois."
+        },
+        {
+          "id": "K-11",
+          "q": "Quelqu'un a accédé à mon compte.",
+          "a": "Menu latéral → Paramètres de l'application → Compte → Se déconnecter partout, puis « Mot de passe oublié » sur l'écran de connexion. Dites-nous ce que vous n'avez pas fait. Gloumi ne demande jamais votre mot de passe ni un code."
+        }
+      ]
+    },
+    {
+      "key": "visits",
+      "title": "Rendez-vous",
+      "items": [
+        {
+          "id": "K-12",
+          "q": "Comment trouver un professionnel ?",
+          "a": "Recherche : cherchez une prestation, un professionnel ou un salon, et utilisez Filtres ou Carte. Découvrir est un fil de réalisations des professionnels. Comment les résultats sont classés – K-54."
+        },
+        {
+          "id": "K-13",
+          "q": "Comment réserver un rendez-vous ?",
+          "a": "Sur le profil du professionnel, appuyez sur « Réserver un créneau », choisissez les prestations, une date, une heure et le mode de paiement, puis appuyez sur « Réserver et payer… » – le bouton indique comment et combien vous payez. Vous recevez une notification quand le professionnel confirme."
+        },
+        {
+          "id": "K-14",
+          "q": "Quand mon rendez-vous est-il vraiment réservé ?",
+          "a": "Quand le professionnel le confirme : « En attente de confirmation » devient « Confirmé ». D'ici là, vous pouvez annuler à tout moment et obtenir un remboursement intégral. Il en va de même si le professionnel refuse."
+        },
+        {
+          "id": "K-15",
+          "q": "Tous les créneaux sont pris – puis-je m'inscrire sur une liste d'attente ?",
+          "a": "Oui. Choisissez le jour complet et appuyez sur « Rejoindre la liste d'attente ». Si quelqu'un annule ce jour-là, la première personne de la liste reçoit une notification et peut réserver le créneau."
+        },
+        {
+          "id": "K-16",
+          "q": "Que mettre dans les notes du rendez-vous ?",
+          "a": "Ce que le professionnel doit savoir à l'avance : formules précédentes, couleurs, souhaits. Vous pouvez ajouter une photo (« Ajouter une photo »). Parlez de vos allergies ou sensibilités directement au professionnel."
+        },
+        {
+          "id": "K-17",
+          "q": "Comment annuler ou déplacer un rendez-vous ?",
+          "a": "Rendez-vous → ouvrez le rendez-vous → Annuler le rendez-vous ou Déplacer. L'annulation est immédiate, sans seconde confirmation. À moins de 24 h d'un rendez-vous confirmé, seul le professionnel peut le déplacer – envoyez-lui un message."
+        },
+        {
+          "id": "K-18",
+          "q": "Will I get my money back if I cancel?",
+          "a": "If you cancel more than 24 hours ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit later or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
+          "lang": "en"
+        },
+        {
+          "id": "K-19",
+          "q": "Quand le remboursement arrive-t-il ?",
+          "a": "Nous lançons le remboursement immédiatement, vers le moyen de paiement utilisé. Le moment où il apparaît dépend de votre banque. Toujours rien après un certain temps ? Écrivez-nous."
+        },
+        {
+          "id": "K-20",
+          "q": "The master did not turn up or the visit did not happen.",
+          "a": "Paid in the app? Open the visit and tap Visit didn't happen? – up to 72 h after it ends. While we look into it, the reserved amount is not charged, and an amount already charged can be refunded; a person decides. Later, or if you paid on site – write to us.",
+          "lang": "en"
+        },
+        {
+          "id": "K-21",
+          "q": "La prestation ne me convient pas.",
+          "a": "Écrivez d'abord au professionnel, qui fournit la prestation. Nous aidons à rassembler les faits et prenons la décision concernant le paiement effectué dans l'application. Faute d'accord, vous pouvez vous adresser gratuitement à l'Autorité nationale de protection des droits des consommateurs de Lituanie (vvtat.lt)."
+        },
+        {
+          "id": "K-22",
+          "q": "Comment laisser un avis ?",
+          "a": "Une fois le rendez-vous marqué comme ayant eu lieu : Rendez-vous → Rendez-vous effectués → Noter le professionnel. Vous disposez de 48 h à compter de ce marquage. Si le système l'a marqué, vous confirmez que le rendez-vous a eu lieu. Un avis publié ne peut pas être modifié – écrivez-nous."
+        }
+      ]
+    },
+    {
+      "key": "payments",
+      "title": "Paiements",
+      "items": [
+        {
+          "id": "K-23",
+          "q": "Comment une prestation est-elle payée ?",
+          "a": "Le professionnel choisit les moyens de paiement acceptés : Espèces, Carte sur place ou Dans l'application. Dans l'application, vous payez par carte ou Apple Pay : le montant est bloqué sur votre carte (si le rendez-vous a lieu dans plus de 5 jours, votre carte est enregistrée et le montant est bloqué 3 jours avant) et débité seulement après le rendez-vous. Si le blocage échoue, nous vous demanderons de confirmer le paiement ; s'il n'est pas confirmé 24 h avant le rendez-vous, le rendez-vous est annulé. Si le paiement échoue ou est interrompu au moment de la réservation, confirmez-le dans les 30 minutes dans Rendez-vous – sinon le rendez-vous est annulé."
+        },
+        {
+          "id": "K-24",
+          "q": "Payer dans l'application est-il sûr ?",
+          "a": "Les paiements sont traités par Stripe – Gloumi ne voit ni ne conserve jamais les données de votre carte. Nous ne demandons jamais votre numéro de carte, vos codes ou vos mots de passe par e-mail ou par message."
+        },
+        {
+          "id": "K-25",
+          "q": "What is a deposit?",
+          "a": "A set part of the visit price – an amount or a percentage – that the master asks to have reserved on your card. It counts towards the price and is charged after the visit; you pay the rest on site. A deposit is not earnest money. What happens if you cancel – K-18.",
+          "lang": "en"
+        },
+        {
+          "id": "K-26",
+          "q": "Comment laisser un pourboire ?",
+          "a": "Après un avis de 3 étoiles ou plus, si le professionnel accepte les pourboires : 5, 10, 15 % ou de 1 à 100 €, dans les 7 jours suivant le rendez-vous. Plus tard – Rendez-vous → Rendez-vous effectués → Laisser un pourboire. Gloumi ne prend rien sur les pourboires."
+        },
+        {
+          "id": "K-27",
+          "q": "Comment fonctionnent les cartes cadeaux ?",
+          "a": "Menu latéral → Carte cadeau : achetez-en une (de 40 à 1 000 €) ou appuyez sur « J'ai un code » pour l'utiliser. Le montant devient un crédit utilisable pour un rendez-vous payé intégralement dans l'application (ni pour un acompte, ni sur place). Tant que la carte n'a pas été convertie en crédit, vous pouvez l'annuler dans les 14 jours suivant l'achat – écrivez-nous."
+        },
+        {
+          "id": "K-29",
+          "q": "Un professionnel m'a donné son code – que faire ?",
+          "a": "Lors de la réservation, appuyez sur « J'ai un code professionnel », saisissez-le et appuyez sur « Appliquer », ou ouvrez le lien du professionnel. Votre prix ne change pas."
+        },
+        {
+          "id": "K-30",
+          "q": "Ma banque affiche deux fois le même montant.",
+          "a": "Il s'agit souvent d'un blocage temporaire qui disparaît en quelques jours. Si le montant a été débité deux fois, indiquez-nous quand et combien vous avez payé. N'envoyez pas votre numéro de carte."
+        }
+      ]
+    },
+    {
+      "key": "masters",
+      "title": "Pour les professionnels",
+      "items": [
+        {
+          "id": "K-31",
+          "q": "Comment ouvrir un compte professionnel ?",
+          "a": "Profil → Ouvrir un compte pro : photo, nom et ville, description, domaine et acceptation des conditions. Il faut avoir 18 ans ou plus. Passez du mode client au mode professionnel en haut de votre profil."
+        },
+        {
+          "id": "K-32",
+          "q": "De quoi ai-je besoin pour que les clients puissent me réserver ?",
+          "a": "Appuyez sur « Ajouter des prestations » et suivez l'assistant jusqu'à « Activer le profil ». Il vous faut des prestations, des horaires, des domaines et (si vous travaillez dans un lieu fixe) une adresse ; « Accepter les réservations » doit être activé."
+        },
+        {
+          "id": "K-33",
+          "q": "Comment ajouter ou modifier des prestations ?",
+          "a": "Profil → Prestations et horaires → Prestations et tarifs → Nouvelle prestation. Acompte – Profil → Activité → Paiements → Demander un acompte. Ne passez pas par « Quelles prestations proposez-vous ? » – cela remplace toute votre liste de prix. Les mentions d'âge se trouvent dans l'éditeur de prestation, sous Restrictions d'âge."
+        },
+        {
+          "id": "K-34",
+          "q": "Comment définir mes horaires et mes jours de repos ?",
+          "a": "Profil → Prestations et horaires → Horaires → Planning hebdomadaire. Pour un jour isolé ou un jour férié, appuyez sur la date dans le calendrier (Jour de repos). Pour faire une pause dans les réservations, désactivez « Accepter les réservations »."
+        },
+        {
+          "id": "K-35",
+          "q": "Comment bloquer un créneau ou ajouter un client moi-même ?",
+          "a": "Calendrier → Bloquer un créneau – pour un jour ou chaque semaine (une pause). Ajouter un rendez-vous – pour votre propre client : confirmé immédiatement, sans acompte, et le client reçoit une notification."
+        },
+        {
+          "id": "K-36",
+          "q": "Comment confirmer, refuser, annuler ou déplacer un rendez-vous ?",
+          "a": "Calendrier → Demandes → Confirmer ou Refuser – répondez rapidement. Pour annuler ou déplacer, ouvrez le rendez-vous. Si vous annulez, le client récupère la totalité de son paiement ; ne déplacez un rendez-vous qu'après accord avec le client. Si le client ne paie pas dans l'application dans les 30 minutes, le rendez-vous est annulé automatiquement, vous recevez une notification et le créneau redevient libre."
+        },
+        {
+          "id": "K-37",
+          "q": "Comment marquer un rendez-vous comme effectué ?",
+          "a": "Ouvrez le rendez-vous → Terminer le rendez-vous (à partir de son heure de début). Répondez ensuite à « Présence au rendez-vous ? » – sinon, au bout de 24 h, le rendez-vous est automatiquement marqué comme ayant eu lieu, et le client confirme qu'il a eu lieu en rédigeant son avis. Un avis peut être rédigé dans les 48 h suivant le marquage du rendez-vous. Si vous signalez une absence seulement après l'avis, un membre de l'équipe Gloumi examine la situation. Plus de détails dans les Conditions d'utilisation, « Comment nous vérifions les avis »."
+        },
+        {
+          "id": "K-38",
+          "q": "How do I take payments in the app?",
+          "a": "From 7 October 2026 (Terms 1.13), taking payments in the app and setting a deposit come only with the Pro or VIP Studio plan (including the trial or through a salon); on Starter, clients pay on site. Profile → Business → Payments → Stripe payment settings → Turn on online payments; verify your identity in Stripe's window. Until the Stripe check is finished, clients pay you on site.",
+          "lang": "en"
+        },
+        {
+          "id": "K-39",
+          "q": "Quand est-ce que je reçois l'argent ?",
+          "a": "Au plus tôt 72 h après la fin du rendez-vous, généralement sous 7 jours, sauf si le client a signalé qu'il n'a pas eu lieu. Sur votre compte bancaire, selon votre calendrier de virements Stripe. Les virements se trouvent dans Profil → Activité → Paiements."
+        },
+        {
+          "id": "K-40",
+          "q": "How much does Gloumi take?",
+          "a": "The commission is 5% on each client's first completed visit with you booked through Gloumi, whether paid in the app or on site (on site it becomes an amount you owe: deducted from later in-app payments, and the rest paid against the monthly invoice); it also applies to visits you enter yourself. Nothing on that client's later visits, clients with your master code, or tips. In-app payments also have the Stripe fee deducted (for a standard EEA card, 1.5% + €0.25).",
+          "lang": "en"
+        },
+        {
+          "id": "K-41",
+          "q": "Qu'est-ce que le code professionnel ?",
+          "a": "Profil → Activité → Paiements → Code pour vos clients. Donnez-le aux clients que vous aviez avant Gloumi – aucune commission sur eux. Jusqu'à 50 clients, valable 3 mois. Vous ne pouvez pas le donner aux clients arrivés chez vous par Gloumi."
+        },
+        {
+          "id": "K-42",
+          "q": "Why am I asked for my personal or company code and IBAN?",
+          "a": "An EU rule, DAC7, requires platforms to report their sellers' income to the tax authority (VMI). Enter them in side menu → App settings → Business details. Clients never see them. If they are not provided after a request and two reminders, payouts are paused no earlier than 60 days after the first reminder.",
+          "lang": "en"
+        },
+        {
+          "id": "K-43",
+          "q": "What is the difference between the plans?",
+          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 active visits a month and 10 portfolio photos. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. An introductory price may be offered for monthly Pro – the app shows it before you subscribe. Plans – side menu → Gloumi Pro.",
+          "lang": "en"
+        },
+        {
+          "id": "K-44",
+          "q": "How do I cancel a subscription or get a refund?",
+          "a": "In the store: iPhone – Settings → your name → Subscriptions; Android – Google Play → Payments & subscriptions → Subscriptions. On the App Store, at least 24 h before the period ends. Refunds are decided by Apple or Google. Deleting your account does not end the subscription.",
+          "lang": "en"
+        },
+        {
+          "id": "K-45",
+          "q": "Comment créer un salon ?",
+          "a": "Profil → Activité → Salon → Créer un salon (nécessite VIP Studio). Invitez jusqu'à 10 professionnels par leur nom d'utilisateur. Les membres restent indépendants et bénéficient des fonctionnalités Pro, et vous voyez leurs rendez-vous."
+        },
+        {
+          "id": "K-46",
+          "q": "Can a review be removed?",
+          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report those to info@gloumi.lt.",
+          "lang": "en"
+        },
+        {
+          "id": "K-47",
+          "q": "A client reported that the visit did not happen.",
+          "a": "While we look into it, the client's payment for this visit is not charged (an amount already charged may be refunded to the client). You can see the client's message – explain and, if we ask, send evidence. A person decides, and we tell you in the app and by email.",
+          "lang": "en"
+        },
+        {
+          "id": "K-48",
+          "q": "Mon compte a été restreint.",
+          "a": "Notre notification indique la raison et la règle concernée. Vous pouvez vous expliquer ou faire appel gratuitement – via Aide ou info@gloumi.lt. Une personne examine la demande et nous répondons par écrit ; une restriction injustifiée est levée immédiatement."
+        },
+        {
+          "id": "K-49",
+          "q": "Puis-je noter un client ?",
+          "a": "Oui – après un rendez-vous terminé, l'application propose « Notez le client ». Les autres professionnels voient la note ; le texte n'est visible que par eux. Notez honnêtement et uniquement sur ce rendez-vous."
+        }
+      ]
+    },
+    {
+      "key": "content",
+      "title": "Contenu, notifications et sécurité",
+      "items": [
+        {
+          "id": "K-50",
+          "q": "Comment publier une Story ou une photo de mon travail ?",
+          "a": "Dans le fil, choisissez une nouvelle Story ou une publication. Une vidéo stockée uniquement sur iCloud doit d'abord être téléchargée sur le téléphone. Un fichier – jusqu'à 60 Mo, une vidéo de Story – jusqu'à 1 min."
+        },
+        {
+          "id": "K-51",
+          "q": "Comment signaler un contenu ou une personne qui pose problème ?",
+          "a": "Appuyez longuement sur un message → Signaler ; sur le profil d'un professionnel – l'icône en haut. Choisissez un motif → Envoyer le signalement. Les signalements sont anonymes et notre équipe les examine. Si quelqu'un est en danger, appelez le 112."
+        },
+        {
+          "id": "K-52",
+          "q": "Comment bloquer quelqu'un ?",
+          "a": "Dans la fenêtre de signalement – Bloquer l'utilisateur : vous ne verrez plus ses publications, ses Story ni ses messages. Pour débloquer : Menu latéral → Paramètres de l'application → Personnes bloquées."
+        },
+        {
+          "id": "K-53",
+          "q": "Comment gérer les notifications ? Pourquoi n'arrivent-elles pas ?",
+          "a": "La cloche en haut : balayez vers la gauche pour supprimer, « Gérer » pour en traiter plusieurs à la fois. Elles n'arrivent pas ? Autorisez les notifications de Gloumi dans les réglages du téléphone et ne vous déconnectez pas – après une déconnexion, elles s'arrêtent."
+        },
+        {
+          "id": "K-54",
+          "q": "How are masters ranked?",
+          "a": "In search, your filters decide. Masters with a rating (at least 3 reviews) come first, higher averages higher; among masters not yet rated, Pro and VIP Studio masters come first. Pro and VIP Studio masters appear a little higher – this is placement that comes with the plan (usually a paid one), not a mark of quality or of any check: in search their average is raised by 5% for ranking (the average shown does not change), in the feed their posts' score by 15%. The feed also depends on freshness, people's reactions, the masters you follow, your interests and distance. Full details: the Terms, “Ranking of results”.",
+          "lang": "en"
+        },
+        {
+          "id": "K-56",
+          "q": "Comment désactiver le fil personnalisé et supprimer les données collectées ?",
+          "a": "Menu latéral → Paramètres de l'application → Confidentialité et mentions légales → Fil personnalisé. Une fois désactivé, Découvrir est classé sans tenir compte de votre activité ni de votre localisation, et l'application propose de supprimer les données déjà collectées sur vos centres d'intérêt et sur ce que vous avez vu."
+        }
+      ]
+    }
+  ],
+  "es": [
+    {
+      "key": "about",
+      "title": "Sobre Gloumi",
+      "items": [
+        {
+          "id": "K-1",
+          "q": "¿Qué es Gloumi?",
+          "a": "Una app en la que encuentras profesionales de belleza, ves sus trabajos, precios y horas libres, y reservas una cita al momento. Los profesionales prestan los servicios en su propio nombre; Gloumi es responsable de la app y de los pagos que se hacen en ella."
+        },
+        {
+          "id": "K-2",
+          "q": "¿Gloumi es gratis?",
+          "a": "Para los clientes, sí: solo pagas el precio que fija el profesional y Gloumi no añade nada. Para los profesionales, Starter cuesta 0 € al mes y Gloumi cobra una comisión (K-40); Pro y VIP Studio son planes de pago (K-43)."
+        },
+        {
+          "id": "K-3",
+          "q": "¿Cómo contacto con el servicio de ayuda?",
+          "a": "Menú lateral → Ayuda → ¿No encuentras la respuesta?, o info@gloumi.lt. Sobre una cita concreta – Informar de un problema en esa cita. Confirmamos la recepción en 2 días laborables y respondemos sobre el fondo en 14 días naturales, normalmente antes."
+        }
+      ]
+    },
+    {
+      "key": "account",
+      "title": "Cuenta",
+      "items": [
+        {
+          "id": "K-4",
+          "q": "¿Cómo me registro e inicio sesión?",
+          "a": "En la pantalla de inicio de sesión pulsa Regístrate: cinco pasos y una confirmación por correo electrónico. También puedes usar Google y, en iPhone, Apple. Inicia sesión con tu correo electrónico o nombre de usuario y contraseña, o con Google o Apple. Debes tener 14 años o más."
+        },
+        {
+          "id": "K-5",
+          "q": "He olvidado la contraseña.",
+          "a": "En la pantalla de inicio de sesión pulsa He olvidado la contraseña, introduce tu correo electrónico y abre el enlace que te enviamos. Revisa también la carpeta de spam. ¿Te registraste con Google o Apple? Inicia sesión con el mismo botón."
+        },
+        {
+          "id": "K-6",
+          "q": "No me ha llegado el correo de confirmación.",
+          "a": "Revisa la carpeta de spam. Para recibir un enlace nuevo: menú lateral → Ajustes de la app → Cuenta → Verificar junto a tu correo electrónico."
+        },
+        {
+          "id": "K-7",
+          "q": "¿Cómo cambio mis datos?",
+          "a": "Nombre y descripción – Perfil → Editar perfil; foto – púlsala. Correo electrónico, nombre de usuario y teléfono – menú lateral → Ajustes de la app → Cuenta. La fecha de nacimiento la cambiamos nosotros – escríbenos."
+        },
+        {
+          "id": "K-8",
+          "q": "How do I change the language or theme?",
+          "a": "Side menu → App settings → Language / Kalba (Lithuanian or English) or App Theme. The change takes effect at once.",
+          "lang": "en"
+        },
+        {
+          "id": "K-10",
+          "q": "¿Cómo obtengo una copia de mis datos?",
+          "a": "Menú lateral → Ajustes de la app → Cuenta → Descargar mis datos – un archivo JSON sin archivos de fotos ni de voz; puedes elegirlo todo o solo algunas partes (perfil, citas, publicaciones, mensajes, dinero, ayuda y restricciones). Para todo lo que guardamos, escribe a info@gloumi.lt desde el correo de tu cuenta – respondemos en un mes."
+        },
+        {
+          "id": "K-11",
+          "q": "Alguien ha entrado en mi cuenta.",
+          "a": "Menú lateral → Ajustes de la app → Cuenta → Cerrar todas las sesiones y, después, He olvidado la contraseña en la pantalla de inicio de sesión. Cuéntanos qué no has hecho tú. Gloumi nunca te pide la contraseña ni ningún código."
+        }
+      ]
+    },
+    {
+      "key": "visits",
+      "title": "Citas",
+      "items": [
+        {
+          "id": "K-12",
+          "q": "¿Cómo encuentro un profesional?",
+          "a": "Buscar: busca un servicio, profesional o salón, y usa Filtros o Mapa. Descubrir es un feed con trabajos de profesionales. Cómo se ordenan los resultados – K-54."
+        },
+        {
+          "id": "K-13",
+          "q": "¿Cómo reservo una cita?",
+          "a": "En el perfil del profesional pulsa Reservar hora, elige los servicios, la fecha, la hora y cómo pagar, y pulsa «Reservar y pagar…» – el botón indica cómo y cuánto pagas. Recibirás un aviso cuando el profesional la confirme."
+        },
+        {
+          "id": "K-14",
+          "q": "¿Cuándo queda reservada de verdad mi cita?",
+          "a": "Cuando el profesional la confirma: Pendiente de confirmación pasa a Confirmada. Hasta entonces puedes cancelarla cuando quieras y recibir el reembolso completo. Lo mismo si el profesional la rechaza."
+        },
+        {
+          "id": "K-15",
+          "q": "Todas las horas están ocupadas – ¿puedo apuntarme a una lista de espera?",
+          "a": "Sí. Elige el día completo y pulsa Unirse a la lista de espera. Si alguien cancela ese día, la primera persona de la lista recibe un aviso y puede reservar la hora."
+        },
+        {
+          "id": "K-16",
+          "q": "¿Qué pongo en las notas de la cita?",
+          "a": "Lo que el profesional debe saber de antemano: fórmulas anteriores, colores, preferencias. Puedes añadir una foto (Añadir referencia). Las alergias o sensibilidades coméntalas directamente con el profesional."
+        },
+        {
+          "id": "K-17",
+          "q": "¿Cómo cancelo o cambio una cita?",
+          "a": "Citas → abre la cita → Cancelar cita o Cambiar fecha. La cancelación es inmediata, sin una segunda pregunta. Si faltan menos de 24 h para una cita confirmada, solo el profesional puede cambiarla – escríbele."
+        },
+        {
+          "id": "K-18",
+          "q": "Will I get my money back if I cancel?",
+          "a": "If you cancel more than 24 hours ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit later or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
+          "lang": "en"
+        },
+        {
+          "id": "K-19",
+          "q": "¿Cuándo me llegará el reembolso?",
+          "a": "Iniciamos el reembolso al momento, al mismo medio con el que pagaste. Cuándo lo verás depende de tu banco. ¿Ha pasado un tiempo y aún no ha llegado? Escríbenos."
+        },
+        {
+          "id": "K-20",
+          "q": "The master did not turn up or the visit did not happen.",
+          "a": "Paid in the app? Open the visit and tap Visit didn't happen? – up to 72 h after it ends. While we look into it, the reserved amount is not charged, and an amount already charged can be refunded; a person decides. Later, or if you paid on site – write to us.",
+          "lang": "en"
+        },
+        {
+          "id": "K-21",
+          "q": "El servicio no me ha convencido.",
+          "a": "Escribe primero al profesional – es quien presta el servicio. Te ayudamos a reunir los hechos y decidimos sobre el pago hecho en la app. Si no llegáis a un acuerdo, puedes acudir gratis a la Autoridad Estatal de Protección de los Derechos del Consumidor de Lituania (vvtat.lt)."
+        },
+        {
+          "id": "K-22",
+          "q": "¿Cómo dejo una reseña?",
+          "a": "Cuando la cita esté marcada como realizada: Citas → Citas realizadas → Valorar al profesional. Tienes 48 h desde esa marca. Si la marcó el sistema, confirmas que la cita se realizó. Una reseña publicada no se puede editar – escríbenos."
+        }
+      ]
+    },
+    {
+      "key": "payments",
+      "title": "Pagos",
+      "items": [
+        {
+          "id": "K-23",
+          "q": "¿Cómo se paga una cita?",
+          "a": "El profesional elige qué formas de pago acepta: Efectivo, Con tarjeta en persona o En la app. En la app pagas con tarjeta o Apple Pay: el importe se retiene en tu tarjeta (si faltan más de 5 días para la cita, la tarjeta se guarda y el importe se retiene 3 días antes) y se cobra solo después de la cita. Si no se puede retener, te pediremos que confirmes el pago; si no se confirma 24 h antes de la cita, la cita se cancela. Si el pago falla o se interrumpe al reservar, confírmalo en 30 minutos en Citas; si no, la cita se cancela."
+        },
+        {
+          "id": "K-24",
+          "q": "¿Es seguro pagar en la app?",
+          "a": "Los pagos los gestiona Stripe – Gloumi nunca ve ni guarda los datos de tu tarjeta. Nunca te pedimos el número de tarjeta, códigos ni contraseñas por correo electrónico o mensaje."
+        },
+        {
+          "id": "K-25",
+          "q": "What is a deposit?",
+          "a": "A set part of the visit price – an amount or a percentage – that the master asks to have reserved on your card. It counts towards the price and is charged after the visit; you pay the rest on site. A deposit is not earnest money. What happens if you cancel – K-18.",
+          "lang": "en"
+        },
+        {
+          "id": "K-26",
+          "q": "¿Cómo dejo propina?",
+          "a": "Después de una reseña de 3 estrellas o más, si el profesional acepta propinas: 5, 10 o 15 %, o de 1 a 100 €, en los 7 días siguientes a la cita. Más tarde – Citas → Citas realizadas → Dejar propina. Gloumi no se queda nada de las propinas."
+        },
+        {
+          "id": "K-27",
+          "q": "¿Cómo funcionan las tarjetas regalo?",
+          "a": "Menú lateral → Tarjeta regalo: compra una (de 40 a 1000 €) o pulsa Tengo un código para canjearla. El importe se convierte en saldo que puedes usar en una cita pagada por completo en la app (no para un anticipo ni para pagar en persona). Mientras la tarjeta no se haya convertido en saldo, puedes cancelarla en los 14 días siguientes a la compra – escríbenos."
+        },
+        {
+          "id": "K-29",
+          "q": "Un profesional me ha dado su código – ¿qué hago?",
+          "a": "Al reservar, pulsa Tengo un código de profesional, introdúcelo y pulsa Aplicar, o abre el enlace del profesional. Tu precio no cambia."
+        },
+        {
+          "id": "K-30",
+          "q": "Mi banco muestra el mismo importe dos veces.",
+          "a": "A menudo es una retención temporal que desaparece en unos días. Si se te ha cobrado dos veces, dinos cuándo y cuánto pagaste. No nos envíes el número de tarjeta."
+        }
+      ]
+    },
+    {
+      "key": "masters",
+      "title": "Para profesionales",
+      "items": [
+        {
+          "id": "K-31",
+          "q": "¿Cómo me hago profesional?",
+          "a": "Perfil → Hacerme profesional: foto, nombre y ciudad, descripción, especialidad y aceptación de las condiciones. Debes tener 18 años o más. Cambia entre el modo cliente y el modo profesional en la parte superior de tu perfil."
+        },
+        {
+          "id": "K-32",
+          "q": "¿Qué necesito para que los clientes puedan reservar conmigo?",
+          "a": "Pulsa Añadir servicios y sigue el asistente hasta Activar perfil. Necesitas servicios, horario, especialidades y (si trabajas en un lugar fijo) una dirección; Permitir reservas debe estar activado."
+        },
+        {
+          "id": "K-33",
+          "q": "¿Cómo añado o cambio servicios?",
+          "a": "Perfil → Servicios y horario → Servicios y precios → Nuevo servicio. Anticipo – Perfil → Negocio → Pagos → Pedir anticipo. No edites desde «¿Qué servicios ofreces?» – sustituye toda tu lista de precios. Las etiquetas de edad están en el editor del servicio, en Restricciones de edad."
+        },
+        {
+          "id": "K-34",
+          "q": "¿Cómo indico el horario y los días libres?",
+          "a": "Perfil → Servicios y horario → Horario → Horario semanal. Para marcar un solo día o unas vacaciones, pulsa la fecha en el calendario (Día libre). Para hacer una pausa en las reservas, desactiva Permitir reservas."
+        },
+        {
+          "id": "K-35",
+          "q": "¿Cómo bloqueo horario o añado yo la cita de un cliente?",
+          "a": "Calendario → Bloquear horario – para un día o para todas las semanas (una pausa). Añadir cita – para tus propios clientes: se confirma al momento, sin anticipo, y el cliente recibe un aviso."
+        },
+        {
+          "id": "K-36",
+          "q": "¿Cómo confirmo, rechazo, cancelo o cambio una cita?",
+          "a": "Calendario → Solicitudes → Confirmar o Rechazar – responde rápido. Para cancelar o cambiar, abre la cita. Si cancelas, el cliente lo recupera todo; cambia una cita solo después de acordarlo con el cliente. Si el cliente no paga en la app en 30 minutos, la cita se cancela automáticamente, recibes un aviso y la hora vuelve a quedar libre."
+        },
+        {
+          "id": "K-37",
+          "q": "¿Cómo marco una cita como realizada?",
+          "a": "Abre la cita → Finalizar cita (desde su hora de inicio). Después responde a «¿Ha venido el cliente?»; si no, a las 24 h la cita se marca como realizada automáticamente, y el cliente confirma que se realizó al escribir la reseña. La reseña puede escribirse en las 48 h siguientes a la marca de la cita. Si marcas una ausencia solo después de la reseña, lo revisa una persona del equipo de Gloumi. Más información en las Condiciones, «Cómo verificamos las reseñas»."
+        },
+        {
+          "id": "K-38",
+          "q": "How do I take payments in the app?",
+          "a": "From 7 October 2026 (Terms 1.13), taking payments in the app and setting a deposit come only with the Pro or VIP Studio plan (including the trial or through a salon); on Starter, clients pay on site. Profile → Business → Payments → Stripe payment settings → Turn on online payments; verify your identity in Stripe's window. Until the Stripe check is finished, clients pay you on site.",
+          "lang": "en"
+        },
+        {
+          "id": "K-39",
+          "q": "¿Cuándo recibo el dinero?",
+          "a": "No antes de 72 h después de que termine la cita, normalmente en 7 días, salvo que el cliente haya avisado de que no se realizó. A tu banco, según tu calendario de transferencias de Stripe. Las transferencias están en Perfil → Negocio → Pagos."
+        },
+        {
+          "id": "K-40",
+          "q": "How much does Gloumi take?",
+          "a": "The commission is 5% on each client's first completed visit with you booked through Gloumi, whether paid in the app or on site (on site it becomes an amount you owe: deducted from later in-app payments, and the rest paid against the monthly invoice); it also applies to visits you enter yourself. Nothing on that client's later visits, clients with your master code, or tips. In-app payments also have the Stripe fee deducted (for a standard EEA card, 1.5% + €0.25).",
+          "lang": "en"
+        },
+        {
+          "id": "K-41",
+          "q": "¿Qué es el código de profesional?",
+          "a": "Perfil → Negocio → Pagos → Código para tus clientes. Dáselo a los clientes que ya tenías antes de Gloumi – por ellos no hay comisión. Hasta 50 clientes, válido durante 3 meses. No puedes dárselo a clientes que te encontraron a través de Gloumi."
+        },
+        {
+          "id": "K-42",
+          "q": "Why am I asked for my personal or company code and IBAN?",
+          "a": "An EU rule, DAC7, requires platforms to report their sellers' income to the tax authority (VMI). Enter them in side menu → App settings → Business details. Clients never see them. If they are not provided after a request and two reminders, payouts are paused no earlier than 60 days after the first reminder.",
+          "lang": "en"
+        },
+        {
+          "id": "K-43",
+          "q": "What is the difference between the plans?",
+          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 active visits a month and 10 portfolio photos. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. An introductory price may be offered for monthly Pro – the app shows it before you subscribe. Plans – side menu → Gloumi Pro.",
+          "lang": "en"
+        },
+        {
+          "id": "K-44",
+          "q": "How do I cancel a subscription or get a refund?",
+          "a": "In the store: iPhone – Settings → your name → Subscriptions; Android – Google Play → Payments & subscriptions → Subscriptions. On the App Store, at least 24 h before the period ends. Refunds are decided by Apple or Google. Deleting your account does not end the subscription.",
+          "lang": "en"
+        },
+        {
+          "id": "K-45",
+          "q": "¿Cómo creo un salón?",
+          "a": "Perfil → Negocio → Salón → Crear un salón (requiere VIP Studio). Invita a hasta 10 profesionales por su nombre de usuario. Los miembros siguen siendo independientes y obtienen las funciones de Pro, y tú ves sus citas."
+        },
+        {
+          "id": "K-46",
+          "q": "Can a review be removed?",
+          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report those to info@gloumi.lt.",
+          "lang": "en"
+        },
+        {
+          "id": "K-47",
+          "q": "A client reported that the visit did not happen.",
+          "a": "While we look into it, the client's payment for this visit is not charged (an amount already charged may be refunded to the client). You can see the client's message – explain and, if we ask, send evidence. A person decides, and we tell you in the app and by email.",
+          "lang": "en"
+        },
+        {
+          "id": "K-48",
+          "q": "Mi cuenta tiene restricciones.",
+          "a": "Nuestro aviso indica el motivo y la norma. Puedes dar explicaciones o recurrir gratis – en Ayuda o en info@gloumi.lt. Lo revisa una persona y te respondemos por escrito; una restricción injustificada se levanta al momento."
+        },
+        {
+          "id": "K-49",
+          "q": "¿Puedo valorar a un cliente?",
+          "a": "Sí – después de finalizar una cita, la app te ofrece Valora al cliente. Los demás profesionales ven la valoración; solo ellos ven el texto. Valora con honestidad y solo sobre esa cita."
+        }
+      ]
+    },
+    {
+      "key": "content",
+      "title": "Contenido, notificaciones y seguridad",
+      "items": [
+        {
+          "id": "K-50",
+          "q": "¿Cómo publico una Story o una foto de mi trabajo?",
+          "a": "Elige Nueva Story o Nueva publicación en el feed. Si un vídeo solo está en iCloud, descárgalo antes al teléfono. Un archivo – hasta 60 MB; un vídeo de Story – hasta 1 min."
+        },
+        {
+          "id": "K-51",
+          "q": "¿Cómo denuncio contenido inapropiado o a una persona?",
+          "a": "Mantén pulsado un mensaje → Denunciar; en el perfil de un profesional – el icono de arriba. Elige un motivo → Enviar denuncia. Las denuncias son anónimas y las revisa nuestro equipo. Si alguien está en peligro, llama al 112."
+        },
+        {
+          "id": "K-52",
+          "q": "¿Cómo bloqueo a alguien?",
+          "a": "En la ventana de denuncia – Bloquear usuario: dejarás de ver sus publicaciones, Story y mensajes. Para desbloquear: menú lateral → Ajustes de la app → Personas bloqueadas."
+        },
+        {
+          "id": "K-53",
+          "q": "¿Cómo gestiono las notificaciones? ¿Por qué no me llegan?",
+          "a": "La campana de arriba: desliza a la izquierda para eliminar, Gestionar para varias a la vez. ¿No te llegan? Permite las notificaciones de Gloumi en los ajustes del teléfono y mantén la sesión iniciada – al cerrar sesión dejan de llegar."
+        },
+        {
+          "id": "K-54",
+          "q": "How are masters ranked?",
+          "a": "In search, your filters decide. Masters with a rating (at least 3 reviews) come first, higher averages higher; among masters not yet rated, Pro and VIP Studio masters come first. Pro and VIP Studio masters appear a little higher – this is placement that comes with the plan (usually a paid one), not a mark of quality or of any check: in search their average is raised by 5% for ranking (the average shown does not change), in the feed their posts' score by 15%. The feed also depends on freshness, people's reactions, the masters you follow, your interests and distance. Full details: the Terms, “Ranking of results”.",
+          "lang": "en"
+        },
+        {
+          "id": "K-56",
+          "q": "¿Cómo desactivo el feed personalizado y elimino los datos recopilados?",
+          "a": "Menú lateral → Ajustes de la app → Privacidad y aspectos legales → Feed personalizado. Si está desactivado, Descubrir se ordena sin tu actividad ni tu ubicación, y la app te ofrece eliminar los datos ya recopilados sobre tus intereses y lo que has visto."
+        }
+      ]
+    }
+  ],
+  "it": [
+    {
+      "key": "about",
+      "title": "Su Gloumi",
+      "items": [
+        {
+          "id": "K-1",
+          "q": "Che cos'è Gloumi?",
+          "a": "Un'app in cui trovi professionisti della bellezza, vedi i loro lavori, i prezzi e gli orari liberi e prenoti subito un appuntamento. I servizi li offrono i professionisti a proprio nome; Gloumi risponde dell'app e dei pagamenti al suo interno."
+        },
+        {
+          "id": "K-2",
+          "q": "Gloumi è gratuita?",
+          "a": "Per i clienti sì: paghi solo il prezzo fissato dal professionista, Gloumi non aggiunge nulla. Per i professionisti Starter costa 0 € al mese e Gloumi trattiene una commissione (K-40); Pro e VIP Studio sono piani a pagamento (K-43)."
+        },
+        {
+          "id": "K-3",
+          "q": "Come contatto l'assistenza?",
+          "a": "Menu laterale → Assistenza → Non hai trovato la risposta? oppure info@gloumi.lt. Per un appuntamento specifico – Segnala un problema dentro l'appuntamento. Confermiamo la ricezione entro 2 giorni lavorativi e rispondiamo nel merito entro 14 giorni di calendario, di solito prima."
+        }
+      ]
+    },
+    {
+      "key": "account",
+      "title": "Account",
+      "items": [
+        {
+          "id": "K-4",
+          "q": "Come mi registro e accedo?",
+          "a": "Nella schermata di accesso tocca Registrati: cinque passaggi e una conferma via email. Puoi usare anche Google e, su iPhone, Apple. Accedi con email o nome utente e password, oppure con Google o Apple. Serve avere almeno 14 anni."
+        },
+        {
+          "id": "K-5",
+          "q": "Ho dimenticato la password.",
+          "a": "Nella schermata di accesso tocca Password dimenticata, inserisci la tua email e apri il link che ti mandiamo. Controlla anche la cartella spam. Hai usato Google o Apple per la registrazione? Accedi con lo stesso pulsante."
+        },
+        {
+          "id": "K-6",
+          "q": "L'email di conferma non è arrivata.",
+          "a": "Controlla la cartella spam. Per ricevere un nuovo link: menu laterale → Impostazioni dell'app → Account → Verifica accanto alla tua email."
+        },
+        {
+          "id": "K-7",
+          "q": "Come modifico i miei dati?",
+          "a": "Nome e descrizione – Profilo → Modifica profilo; la foto – toccala. Email, nome utente e telefono – menu laterale → Impostazioni dell'app → Account. La data di nascita la modifichiamo noi – scrivici."
+        },
+        {
+          "id": "K-8",
+          "q": "How do I change the language or theme?",
+          "a": "Side menu → App settings → Language / Kalba (Lithuanian or English) or App Theme. The change takes effect at once.",
+          "lang": "en"
+        },
+        {
+          "id": "K-10",
+          "q": "Come ottengo una copia dei miei dati?",
+          "a": "Menu laterale → Impostazioni dell'app → Account → Scarica i miei dati – un file JSON senza foto né registrazioni vocali; puoi scegliere tutti i dati o solo una parte (profilo, appuntamenti, post, messaggi, denaro, assistenza e limitazioni). Per tutti i dati che conserviamo scrivi a info@gloumi.lt dall'email del tuo account – rispondiamo entro un mese."
+        },
+        {
+          "id": "K-11",
+          "q": "Qualcuno è entrato nel mio account.",
+          "a": "Menu laterale → Impostazioni dell'app → Account → Esci da tutti i dispositivi, poi Password dimenticata nella schermata di accesso. Scrivici cosa non hai fatto tu. Gloumi non chiede mai la tua password o un codice."
+        }
+      ]
+    },
+    {
+      "key": "visits",
+      "title": "Appuntamenti",
+      "items": [
+        {
+          "id": "K-12",
+          "q": "Come trovo un professionista?",
+          "a": "Cerca: cerca per servizio, professionista o salone e usa Filtri o Mappa. Scopri è un feed dei lavori dei professionisti. Come vengono ordinati i risultati – K-54."
+        },
+        {
+          "id": "K-13",
+          "q": "Come prenoto un appuntamento?",
+          "a": "Nel profilo del professionista tocca Prenota un orario, scegli i servizi, la data e l'ora e come pagare, poi tocca «Prenota e paga…» – il pulsante dice come e quanto paghi. Quando il professionista conferma, ricevi una notifica."
+        },
+        {
+          "id": "K-14",
+          "q": "Quando l'appuntamento è davvero prenotato?",
+          "a": "Quando il professionista lo conferma: In attesa di conferma diventa Confermato. Fino ad allora puoi annullare in qualsiasi momento e l'importo pagato ti viene restituito per intero. Lo stesso vale se il professionista rifiuta."
+        },
+        {
+          "id": "K-15",
+          "q": "Tutti gli orari sono occupati – posso mettermi in lista d'attesa?",
+          "a": "Sì. Scegli il giorno pieno e tocca Entra in lista d'attesa. Se qualcuno annulla un appuntamento quel giorno, il primo della lista riceve una notifica e può prenotare l'orario."
+        },
+        {
+          "id": "K-16",
+          "q": "Cosa scrivo nelle note dell'appuntamento?",
+          "a": "Ciò che è utile far sapere al professionista in anticipo: formule precedenti, colori, preferenze. Puoi aggiungere una foto (Aggiungi un'idea). Di allergie o sensibilità parla direttamente con il professionista."
+        },
+        {
+          "id": "K-17",
+          "q": "Come annullo o sposto un appuntamento?",
+          "a": "Appuntamenti → apri l'appuntamento → Annulla appuntamento oppure Sposta. L'annullamento è immediato, senza altre domande. A meno di 24 ore da un appuntamento confermato, scrivi al professionista: solo chi offre il servizio può spostarlo."
+        },
+        {
+          "id": "K-18",
+          "q": "Will I get my money back if I cancel?",
+          "a": "If you cancel more than 24 hours ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit later or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
+          "lang": "en"
+        },
+        {
+          "id": "K-19",
+          "q": "Quando arriva un rimborso?",
+          "a": "Avviamo il rimborso subito, con lo stesso metodo con cui hai pagato. Quando lo vedi sul conto dipende dalla banca. Non arriva dopo un po' di tempo? Scrivici."
+        },
+        {
+          "id": "K-20",
+          "q": "The master did not turn up or the visit did not happen.",
+          "a": "Paid in the app? Open the visit and tap Visit didn't happen? – up to 72 h after it ends. While we look into it, the reserved amount is not charged, and an amount already charged can be refunded; a person decides. Later, or if you paid on site – write to us.",
+          "lang": "en"
+        },
+        {
+          "id": "K-21",
+          "q": "Il servizio non mi è piaciuto.",
+          "a": "Scrivi prima al professionista – è il professionista a offrire il servizio. Noi aiutiamo a raccogliere i fatti e decidiamo sul pagamento fatto nell'app. Se non trovate un accordo, puoi rivolgerti gratuitamente all'Autorità statale per la tutela dei diritti dei consumatori della Lituania (vvtat.lt)."
+        },
+        {
+          "id": "K-22",
+          "q": "Come lascio una recensione?",
+          "a": "Quando l'appuntamento è segnato come avvenuto: Appuntamenti → Appuntamenti completati → Valuta il professionista. Hai 48 ore da quando è stato segnato. Se l'ha segnato il sistema, confermi che l'appuntamento si è svolto. Una recensione pubblicata non si può modificare – scrivici."
+        }
+      ]
+    },
+    {
+      "key": "payments",
+      "title": "Pagamenti",
+      "items": [
+        {
+          "id": "K-23",
+          "q": "Come si paga un appuntamento?",
+          "a": "I metodi di pagamento accettati li sceglie il professionista: Contanti, Carta sul posto o Nell'app. Nell'app paghi con carta o Apple Pay: l'importo viene bloccato sulla carta (se l'appuntamento è tra più di 5 giorni, la carta viene salvata e l'importo bloccato 3 giorni prima) e addebitato solo dopo l'appuntamento. Se il blocco non riesce, ti chiederemo di confermare il pagamento; se non lo confermi entro 24 ore prima dell'appuntamento, l'appuntamento viene annullato. Se al momento della prenotazione il pagamento non riesce o si interrompe, confermalo entro 30 minuti in Appuntamenti – altrimenti l'appuntamento viene annullato."
+        },
+        {
+          "id": "K-24",
+          "q": "Pagare nell'app è sicuro?",
+          "a": "I pagamenti li gestisce Stripe – Gloumi non vede né conserva i dati della tua carta. Non chiediamo mai il numero della carta, codici o password via email o messaggio."
+        },
+        {
+          "id": "K-25",
+          "q": "What is a deposit?",
+          "a": "A set part of the visit price – an amount or a percentage – that the master asks to have reserved on your card. It counts towards the price and is charged after the visit; you pay the rest on site. A deposit is not earnest money. What happens if you cancel – K-18.",
+          "lang": "en"
+        },
+        {
+          "id": "K-26",
+          "q": "Come lascio una mancia?",
+          "a": "Dopo una recensione da 3 stelle in su, se il professionista accetta le mance: 5, 10, 15% oppure 1–100 €, entro 7 giorni dall'appuntamento. Più tardi – Appuntamenti → Appuntamenti completati → Lascia una mancia. Gloumi non trattiene nulla dalle mance."
+        },
+        {
+          "id": "K-27",
+          "q": "Come funzionano le carte regalo?",
+          "a": "Menu laterale → Carta regalo: acquistane una (40–1000 €) oppure tocca Ho un codice per usarla. L'importo diventa credito che puoi usare per un appuntamento pagato per intero nell'app (non per un acconto e non sul posto). Finché la carta non è stata trasformata in credito, puoi annullarla entro 14 giorni dall'acquisto – scrivici."
+        },
+        {
+          "id": "K-29",
+          "q": "Un professionista mi ha dato il suo codice – cosa ne faccio?",
+          "a": "Quando prenoti, tocca Ho un codice del professionista, inseriscilo e tocca Applica, oppure apri il link del professionista. Il prezzo non cambia."
+        },
+        {
+          "id": "K-30",
+          "q": "La banca mostra due volte lo stesso importo.",
+          "a": "Spesso è un blocco temporaneo che sparisce in pochi giorni. Se l'addebito è stato fatto due volte, scrivici quando e quanto hai pagato. Non mandarci il numero della carta."
+        }
+      ]
+    },
+    {
+      "key": "masters",
+      "title": "Per i professionisti",
+      "items": [
+        {
+          "id": "K-31",
+          "q": "Come divento professionista?",
+          "a": "Profilo → Diventa professionista: foto, nome e città, descrizione, settore e accettazione delle condizioni. Serve avere almeno 18 anni. Passi dalla modalità cliente a quella professionista in cima al profilo."
+        },
+        {
+          "id": "K-32",
+          "q": "Cosa serve perché i clienti possano prenotare?",
+          "a": "Tocca Aggiungi servizi e segui la procedura guidata fino ad Attiva profilo. Servono servizi, orari di lavoro, settori e (se lavori in un luogo fisso) un indirizzo; Accetta prenotazioni deve essere attivo."
+        },
+        {
+          "id": "K-33",
+          "q": "Come aggiungo o modifico i servizi?",
+          "a": "Profilo → Servizi e orari → Servizi e prezzi → Nuovo servizio. Acconto – Profilo → Attività → Pagamenti → Richiedi acconto. Non modificarli da «Quali servizi offri?» – sostituirebbe l'intero listino. Le etichette di età sono nella finestra del servizio, in Limiti di età."
+        },
+        {
+          "id": "K-34",
+          "q": "Come imposto orari di lavoro e giorni liberi?",
+          "a": "Profilo → Servizi e orari → Orari di lavoro → Orario settimanale. Un singolo giorno o le ferie li segni toccando la data nel calendario (Giorno libero). Per una pausa dalle prenotazioni, disattiva Accetta prenotazioni."
+        },
+        {
+          "id": "K-35",
+          "q": "Come blocco un orario o aggiungo un mio cliente?",
+          "a": "Calendario → Blocca un orario – per un giorno o ogni settimana (una pausa). Aggiungi appuntamento – per un tuo cliente: l'appuntamento è confermato subito, senza acconto, e il cliente riceve una notifica."
+        },
+        {
+          "id": "K-36",
+          "q": "Come confermo, rifiuto, annullo o sposto un appuntamento?",
+          "a": "Calendario → Richieste → Conferma oppure Rifiuta – rispondi in fretta. Per annullare o spostare, apri l'appuntamento. Se annulli, al cliente viene restituito tutto; sposta un appuntamento solo dopo un accordo con il cliente. Se il cliente non paga nell'app entro 30 minuti, l'appuntamento viene annullato in automatico, ricevi un avviso e l'orario torna libero."
+        },
+        {
+          "id": "K-37",
+          "q": "Come segno un appuntamento come concluso?",
+          "a": "Apri l'appuntamento → Concludi appuntamento (dall'ora di inizio). Dopo, rispondi a «Il cliente era presente?» – altrimenti dopo 24 ore l'appuntamento viene segnato in automatico come avvenuto, e il cliente lo conferma quando scrive la recensione. La recensione si può scrivere entro 48 ore da quando l'appuntamento è stato segnato. Se segni Cliente assente solo dopo la recensione, la verifica un membro del team Gloumi. Maggiori dettagli nei Termini, «Come verifichiamo le recensioni»."
+        },
+        {
+          "id": "K-38",
+          "q": "How do I take payments in the app?",
+          "a": "From 7 October 2026 (Terms 1.13), taking payments in the app and setting a deposit come only with the Pro or VIP Studio plan (including the trial or through a salon); on Starter, clients pay on site. Profile → Business → Payments → Stripe payment settings → Turn on online payments; verify your identity in Stripe's window. Until the Stripe check is finished, clients pay you on site.",
+          "lang": "en"
+        },
+        {
+          "id": "K-39",
+          "q": "Quando ricevo i soldi?",
+          "a": "Non prima di 72 ore dalla fine dell'appuntamento, di solito entro 7 giorni, se il cliente non ha segnalato che non c'è stato. Sulla tua banca secondo il calendario dei bonifici di Stripe. I bonifici li vedi in Profilo → Attività → Pagamenti."
+        },
+        {
+          "id": "K-40",
+          "q": "How much does Gloumi take?",
+          "a": "The commission is 5% on each client's first completed visit with you booked through Gloumi, whether paid in the app or on site (on site it becomes an amount you owe: deducted from later in-app payments, and the rest paid against the monthly invoice); it also applies to visits you enter yourself. Nothing on that client's later visits, clients with your master code, or tips. In-app payments also have the Stripe fee deducted (for a standard EEA card, 1.5% + €0.25).",
+          "lang": "en"
+        },
+        {
+          "id": "K-41",
+          "q": "Che cos'è il codice del professionista?",
+          "a": "Profilo → Attività → Pagamenti → Codice per i tuoi clienti. Dallo ai clienti che avevi prima di Gloumi – su di loro non tratteniamo commissioni. Fino a 50 clienti, valido 3 mesi. Non puoi darlo a chi ti ha trovato tramite Gloumi."
+        },
+        {
+          "id": "K-42",
+          "q": "Why am I asked for my personal or company code and IBAN?",
+          "a": "An EU rule, DAC7, requires platforms to report their sellers' income to the tax authority (VMI). Enter them in side menu → App settings → Business details. Clients never see them. If they are not provided after a request and two reminders, payouts are paused no earlier than 60 days after the first reminder.",
+          "lang": "en"
+        },
+        {
+          "id": "K-43",
+          "q": "What is the difference between the plans?",
+          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 active visits a month and 10 portfolio photos. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. An introductory price may be offered for monthly Pro – the app shows it before you subscribe. Plans – side menu → Gloumi Pro.",
+          "lang": "en"
+        },
+        {
+          "id": "K-44",
+          "q": "How do I cancel a subscription or get a refund?",
+          "a": "In the store: iPhone – Settings → your name → Subscriptions; Android – Google Play → Payments & subscriptions → Subscriptions. On the App Store, at least 24 h before the period ends. Refunds are decided by Apple or Google. Deleting your account does not end the subscription.",
+          "lang": "en"
+        },
+        {
+          "id": "K-45",
+          "q": "Come creo un salone?",
+          "a": "Profilo → Attività → Salone → Crea un salone (serve VIP Studio). Invita fino a 10 professionisti tramite nome utente. I membri restano indipendenti e ricevono le funzioni Pro, e tu vedi i loro appuntamenti."
+        },
+        {
+          "id": "K-46",
+          "q": "Can a review be removed?",
+          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report those to info@gloumi.lt.",
+          "lang": "en"
+        },
+        {
+          "id": "K-47",
+          "q": "A client reported that the visit did not happen.",
+          "a": "While we look into it, the client's payment for this visit is not charged (an amount already charged may be refunded to the client). You can see the client's message – explain and, if we ask, send evidence. A person decides, and we tell you in the app and by email.",
+          "lang": "en"
+        },
+        {
+          "id": "K-48",
+          "q": "Il mio account è stato limitato.",
+          "a": "Nell'avviso indichiamo il motivo e la regola. Puoi spiegare o fare ricorso gratuitamente – tramite Assistenza o info@gloumi.lt. Il ricorso lo esamina una persona e rispondiamo per iscritto; una limitazione ingiustificata viene tolta subito."
+        },
+        {
+          "id": "K-49",
+          "q": "Posso valutare un cliente?",
+          "a": "Sì – quando concludi un appuntamento, l'app ti propone Valuta il cliente. La valutazione la vedono gli altri professionisti, e solo loro vedono il testo. Valuta con onestà e solo in base a quell'appuntamento."
+        }
+      ]
+    },
+    {
+      "key": "content",
+      "title": "Contenuti, notifiche e sicurezza",
+      "items": [
+        {
+          "id": "K-50",
+          "q": "Come pubblico una Story o la foto di un lavoro?",
+          "a": "Nel feed scegli una nuova Story o un nuovo post. Un video che si trova solo su iCloud va prima scaricato sul telefono. Un file – fino a 60 MB, un video della Story – fino a 1 min."
+        },
+        {
+          "id": "K-51",
+          "q": "Come segnalo contenuti o persone inappropriati?",
+          "a": "Tieni premuto un messaggio → Segnala; nel profilo di un professionista – l'icona in alto. Scegli un motivo → Invia segnalazione. Le segnalazioni sono anonime e le esamina il nostro team. Se qualcuno è in pericolo, chiama il 112."
+        },
+        {
+          "id": "K-52",
+          "q": "Come blocco una persona?",
+          "a": "Nella finestra di segnalazione – Blocca utente: non vedrai più i suoi post, le sue Story e i suoi messaggi. Per sbloccare: menu laterale → Impostazioni dell'app → Persone bloccate."
+        },
+        {
+          "id": "K-53",
+          "q": "Come gestisco le notifiche? Perché non arrivano?",
+          "a": "La campanella in alto: scorri verso sinistra per eliminare, Gestisci per più notifiche insieme. Non arrivano? Nelle impostazioni del telefono consenti le notifiche di Gloumi e non uscire dall'account – dopo l'uscita non vengono più inviate."
+        },
+        {
+          "id": "K-54",
+          "q": "How are masters ranked?",
+          "a": "In search, your filters decide. Masters with a rating (at least 3 reviews) come first, higher averages higher; among masters not yet rated, Pro and VIP Studio masters come first. Pro and VIP Studio masters appear a little higher – this is placement that comes with the plan (usually a paid one), not a mark of quality or of any check: in search their average is raised by 5% for ranking (the average shown does not change), in the feed their posts' score by 15%. The feed also depends on freshness, people's reactions, the masters you follow, your interests and distance. Full details: the Terms, “Ranking of results”.",
+          "lang": "en"
+        },
+        {
+          "id": "K-56",
+          "q": "Come disattivo il feed personalizzato ed elimino i dati raccolti?",
+          "a": "Menu laterale → Impostazioni dell'app → Privacy e note legali → Feed personalizzato. Se lo disattivi, Scopri viene ordinato senza la tua attività e la tua posizione, e l'app ti propone di eliminare i dati già raccolti su ciò che ti interessa e su ciò che hai visto."
         }
       ]
     }

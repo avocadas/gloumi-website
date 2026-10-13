@@ -53,7 +53,7 @@ export default async function DataPage({ searchParams }: { searchParams: Promise
         username={username}
       >
         {/* #179: individualios sąlygos suteikiamos meistro paskyroje, o čia — kelias į visų sąrašą. */}
-        <a
+        <Link
           href="/admin/grants"
           className={`${card} mb-6 flex items-center justify-between gap-3 px-5 py-4 text-sm font-semibold text-app-ink transition-colors hover:bg-app-surface`}
         >
@@ -62,7 +62,7 @@ export default async function DataPage({ searchParams }: { searchParams: Promise
             <span className="font-normal text-app-muted">– kam neimamas komisinis ir kam suteiktas nemokamas planas</span>
           </span>
           <IconChevronRight size={16} strokeWidth={STROKE} aria-hidden className="shrink-0 text-app-faint" />
-        </a>
+        </Link>
         {/* Priverstinis ir švelnus atnaujinimas (2026-10-16): build'ų ribos. */}
         <Link
           href="/admin/app-builds"

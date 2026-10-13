@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { IconArrowRight } from "@/components/icons";
 import { signOutAdmin } from "./sign-out";
 import { AuthShell, Brand, STROKE, btn, btnQuiet } from "./ui";
@@ -40,10 +41,10 @@ export function MfaNotice({ reason }: { reason: "mfa-required" | "expired" }) {
           ? "Administravimo skydelis po prisijungimo atviras 12 valandų. Prisijunkite iš naujo slaptažodžiu ir kodu iš autentifikatoriaus."
           : "Jūsų paskyra yra administratorių sąraše, bet šis seansas patvirtintas tik slaptažodžiu. Administravimo skydelis atsidaro tik patvirtinus kodu iš autentifikatoriaus."}
       </p>
-      <a href="/admin/login" className={`${btn} mt-6 h-12 w-full`}>
+      <Link href="/admin/login" className={`${btn} mt-6 h-12 w-full`}>
         Prisijungti iš naujo
         <IconArrowRight size={16} strokeWidth={STROKE} aria-hidden />
-      </a>
+      </Link>
       {/* Čia žmogus lieka su pasenusia ar vien slaptažodžio sesija — būtent
           tokią ir turi būti galima užbaigti, o ne tik perrašyti nauja. */}
       <form action={signOutAdmin} className="mt-2">
