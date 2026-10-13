@@ -2,14 +2,15 @@
 // (Gloumi office pagalba/DUK.md). Do not edit by hand: change the draft or
 // the script's HOLD list, then regenerate.
 //
-// Published now: what holds under Terms 1.13 (Gloumi #209). Held back: K-9, K-28.
+// Published now: what holds under Terms 1.13 (Gloumi #209). Held back: K-9, K-28, K-55.
+// Kept as published while their new text waits: K-8, K-31.
 // Answers may refer to another item as "K-n"; the page turns that into a link.
 import type { Lang } from "./lang";
 
 export type FaqItem = { id: string; q: string; a: string };
 export type FaqSection = { key: string; title: string; items: FaqItem[] };
 
-export const FAQ_UPDATED = "2026-10-12";
+export const FAQ_UPDATED = "2026-10-13";
 
 export const FAQ: Record<Lang, FaqSection[]> = {
   "lt": [
@@ -66,7 +67,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-10",
           "q": "Kaip gauti savo duomenų kopiją?",
-          "a": "Šoninis meniu → Programėlės nustatymai → Paskyra → Atsisiųsti mano duomenis – JSON failas be nuotraukų ir balso įrašų. Visų duomenų prašykite info@gloumi.lt iš paskyros el. pašto – atsakysime per mėnesį."
+          "a": "Šoninis meniu → Programėlės nustatymai → Paskyra → Atsisiųsti mano duomenis – JSON failas be nuotraukų ir balso įrašų; galite pasirinkti visus duomenis arba tik dalį (profilis, vizitai, įrašai, pokalbiai, pinigai, pagalba ir apribojimai). Visų duomenų prašykite info@gloumi.lt iš paskyros el. pašto – atsakysime per mėnesį."
         },
         {
           "id": "K-11",
@@ -143,7 +144,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-23",
           "q": "Kaip apmokamas vizitas?",
-          "a": "Kokius mokėjimo būdus priimti, renkasi meistras: „Grynieji“, „Kortele salone“ ar „Programėlėje“. Programėlėje mokama kortele ar Apple Pay: suma rezervuojama kortelėje (jei vizitas vėliau nei po 5 dienų – kortelė išsaugoma, o suma rezervuojama likus 3 dienoms) ir nurašoma tik po vizito. Jei rezervuoti nepavyksta, paprašysime patvirtinti mokėjimą; nepatvirtinus iki 24 val. prieš vizitą, vizitas atšaukiamas."
+          "a": "Kokius mokėjimo būdus priimti, renkasi meistras: „Grynieji“, „Kortele salone“ ar „Programėlėje“. Programėlėje mokama kortele ar Apple Pay: suma rezervuojama kortelėje (jei vizitas vėliau nei po 5 dienų – kortelė išsaugoma, o suma rezervuojama likus 3 dienoms) ir nurašoma tik po vizito. Jei rezervuoti nepavyksta, paprašysime patvirtinti mokėjimą; nepatvirtinus iki 24 val. prieš vizitą, vizitas atšaukiamas. Jei rezervuojant mokėjimas nepavyksta ar nutraukiamas, patvirtinkite jį per 30 min. skiltyje „Vizitai“ – kitaip vizitas atšaukiamas."
         },
         {
           "id": "K-24",
@@ -194,7 +195,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-33",
           "q": "Kaip pridėti ar pakeisti paslaugas?",
-          "a": "Profilis → Paslaugos ir laikas → Paslaugos ir kainos → Nauja paslauga. Avansas – Profilis → Verslas → Mokėjimai → Prašyti avanso. Per „Kokias paslaugas teikiate?“ nekeiskite – pakeičiamas visas kainoraštis."
+          "a": "Profilis → Paslaugos ir laikas → Paslaugos ir kainos → Nauja paslauga. Avansas – Profilis → Verslas → Mokėjimai → Prašyti avanso. Per „Kokias paslaugas teikiate?“ nekeiskite – pakeičiamas visas kainoraštis. Amžiaus žymos – paslaugos lange, „Amžiaus apribojimai“."
         },
         {
           "id": "K-34",
@@ -209,7 +210,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-36",
           "q": "Kaip patvirtinti, atmesti, atšaukti ar perkelti vizitą?",
-          "a": "Kalendorius → Prašymai → Patvirtinti arba „Atmesti“ – atsakykite greitai. Atšaukti ar perkelti – atidarius vizitą. Atšaukus klientui grąžinama visa suma; perkelti – tik suderinus su klientu."
+          "a": "Kalendorius → Prašymai → Patvirtinti arba „Atmesti“ – atsakykite greitai. Atšaukti ar perkelti – atidarius vizitą. Atšaukus klientui grąžinama visa suma; perkelti – tik suderinus su klientu. Jei klientas per 30 min. nesumokėjo programėlėje, vizitas atšaukiamas automatiškai, gausite pranešimą, o laikas vėl laisvas."
         },
         {
           "id": "K-37",
@@ -306,6 +307,11 @@ export const FAQ: Record<Lang, FaqSection[]> = {
           "id": "K-54",
           "q": "Kaip rikiuojami meistrai?",
           "a": "Paieškoje lemia jūsų filtrai. Pirmiau – meistrai su įvertinimu (bent 3 atsiliepimai), aukštesnio vidurkio – aukščiau; tarp dar neįvertintų pirmiau – Pro ir VIP Studio meistrai. Pro ir VIP Studio meistrai rodomi kiek aukščiau – tai iškėlimas už planą (paprastai mokamą), ne kokybės ar patikros ženklas: paieškoje jų vidurkis rikiuojant padidinamas 5 % (rodomas vidurkis nesikeičia), sraute įrašų balas – 15 %. Srautą taip pat lemia naujumas, žmonių reakcijos, sekami meistrai, jūsų susidomėjimas ir atstumas. Išsamiai – Taisyklių skyrius „Kaip rikiuojami rezultatai“."
+        },
+        {
+          "id": "K-56",
+          "q": "Kaip išjungti asmeninį srautą ir ištrinti sukauptus duomenis?",
+          "a": "Šoninis meniu → Programėlės nustatymai → Privatumas ir teisė → Asmeninis srautas. Išjungus „Atrasti“ rikiuojama be jūsų veiksmų ir vietos, o programėlė pasiūlys ištrinti jau sukauptus duomenis apie tai, kas jus domina ir ką matėte."
         }
       ]
     }
@@ -364,7 +370,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-10",
           "q": "How do I get a copy of my data?",
-          "a": "Side menu → App settings → Account → Download my data – a JSON file without photo or voice files. For everything we hold, write to info@gloumi.lt from your account email – we reply within a month."
+          "a": "Side menu → App settings → Account → Download my data – a JSON file without photo or voice files; you can pick everything or only some parts (profile, visits, posts, messages, money, support and restrictions). For everything we hold, write to info@gloumi.lt from your account email – we reply within a month."
         },
         {
           "id": "K-11",
@@ -441,7 +447,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-23",
           "q": "How is a visit paid for?",
-          "a": "The master chooses which payment methods to accept: Cash, Card at the salon or In the app. In the app you pay by card or Apple Pay: the amount is reserved on your card (if the visit is more than 5 days away, your card is saved and the amount is reserved 3 days before) and charged only after the visit. If the reservation fails, we will ask you to confirm the payment; if it is not confirmed 24 h before the visit, the visit is cancelled."
+          "a": "The master chooses which payment methods to accept: Cash, Card at the salon or In the app. In the app you pay by card or Apple Pay: the amount is reserved on your card (if the visit is more than 5 days away, your card is saved and the amount is reserved 3 days before) and charged only after the visit. If the reservation fails, we will ask you to confirm the payment; if it is not confirmed 24 h before the visit, the visit is cancelled. If the payment fails or is interrupted when you book, confirm it within 30 minutes under Bookings – otherwise the visit is cancelled."
         },
         {
           "id": "K-24",
@@ -492,7 +498,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-33",
           "q": "How do I add or change services?",
-          "a": "Profile → Services and hours → Services and prices → New service. Deposit – Profile → Business → Payments → Ask for a deposit. Do not edit through “What services do you provide?” – it replaces your whole price list."
+          "a": "Profile → Services and hours → Services and prices → New service. Deposit – Profile → Business → Payments → Ask for a deposit. Do not edit through “What services do you provide?” – it replaces your whole price list. Age tags are in the service editor under Age restrictions."
         },
         {
           "id": "K-34",
@@ -507,7 +513,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-36",
           "q": "How do I confirm, reject, cancel or move a visit?",
-          "a": "Calendar → Requests → Confirm or Reject – answer quickly. Cancel or move by opening the visit. If you cancel, the client gets everything back; move a visit only after agreeing with the client."
+          "a": "Calendar → Requests → Confirm or Reject – answer quickly. Cancel or move by opening the visit. If you cancel, the client gets everything back; move a visit only after agreeing with the client. If the client does not pay in the app within 30 minutes, the visit is cancelled automatically, you get a notice and the time is free again."
         },
         {
           "id": "K-37",
@@ -604,6 +610,11 @@ export const FAQ: Record<Lang, FaqSection[]> = {
           "id": "K-54",
           "q": "How are masters ranked?",
           "a": "In search, your filters decide. Masters with a rating (at least 3 reviews) come first, higher averages higher; among masters not yet rated, Pro and VIP Studio masters come first. Pro and VIP Studio masters appear a little higher – this is placement that comes with the plan (usually a paid one), not a mark of quality or of any check: in search their average is raised by 5% for ranking (the average shown does not change), in the feed their posts' score by 15%. The feed also depends on freshness, people's reactions, the masters you follow, your interests and distance. Full details: the Terms, “Ranking of results”."
+        },
+        {
+          "id": "K-56",
+          "q": "How do I turn off the personalised feed and delete the collected data?",
+          "a": "Side menu → App settings → Privacy and legal → Personalised feed. With it off, Discover is ordered without your activity and location, and the app offers to delete the data already collected about your interests and what you have seen."
         }
       ]
     }
