@@ -17,7 +17,7 @@
  * exist, or when a held item is still referred to – a page that quietly says
  * less in one language is worse than a failed run.
  */
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 /**
@@ -64,7 +64,7 @@ const SECTION_KEYS = {
 
 const source = process.argv[2];
 if (!source) {
-  console.error("Usage: node scripts/gen-faq.mjs <path to DUK.md>");
+  console.error("Usage: node scripts/gen-faq.mjs <path to DUK.md> [<folder with <lang>/faq-<lang>.md>]");
   process.exit(1);
 }
 const text = readFileSync(resolve(source), "utf8").replace(/\r\n/g, "\n");
@@ -126,8 +126,13 @@ function clean(answer, item, lang) {
   const cut = markers.find((m) => CUT.test(m[1]));
   if (cut) a = a.slice(0, cut.index);
   const short = QUESTION_WHILE_CUT[item.id];
-  if (short && !cut) throw new Error(`${item.id} is no longer cut: drop it from QUESTION_WHILE_CUT`);
-  if (short) item.q = short[lang];
+  if (short && !short[lang]) {
+    // An extra language: until it has its own short question, its cut item cannot be shown.
+    if (cut) throw new Error(`${item.id} (${lang}) is cut: add its short question to QUESTION_WHILE_CUT`);
+  } else {
+    if (short && !cut) throw new Error(`${item.id} is no longer cut: drop it from QUESTION_WHILE_CUT`);
+    if (short) item.q = short[lang];
+  }
   a = applyShippedRenames(a);
   a = a.replace(/\*\*\[.*?\]\*\*/g, ""); // "change later" markers
   a = a.replace(/\s*\{[^}]*\}/g, ""); // editor notes, incl. {→ new label}
@@ -141,7 +146,7 @@ function clean(answer, item, lang) {
   return a;
 }
 
-function parse(heading, lang) {
+function parse(source, lang) {
   const sections = [];
   let section = null;
   let item = null;
@@ -149,7 +154,7 @@ function parse(heading, lang) {
     if (item) {
       item.a = clean(item.lines.join(" "), item, lang);
       delete item.lines;
-      if (KEEP_PUBLISHED.includes(item.id)) {
+      if (KEEP_PUBLISHED.includes(item.id) && (lang === "lt" || lang === "en")) {
         const live = current[lang]?.get(item.id);
         if (!live) throw new Error(`${item.id} is in KEEP_PUBLISHED but not on the page: put it in HOLD`);
         item.q = live.q;
@@ -159,7 +164,7 @@ function parse(heading, lang) {
       item = null;
     }
   };
-  for (const line of block(heading).split("\n")) {
+  for (const line of source.split("\n")) {
     const h2 = /^## (.+)$/.exec(line);
     const q = /^\*\*(K-\d+)\. (.+?)\*\*(\s+\*\(.*\)\*)?\s*$/.exec(line);
     if (h2) {
@@ -180,8 +185,8 @@ function parse(heading, lang) {
   return sections.filter((s) => s.items.length);
 }
 
-const lt = parse("LIETUVIŠKAI", "lt");
-const en = parse("ENGLISH", "en");
+const lt = parse(block("LIETUVIŠKAI"), "lt");
+const en = parse(block("ENGLISH"), "en");
 const ids = (doc) => doc.flatMap((s) => s.items.map((i) => i.id)).join(",");
 if (ids(lt) !== ids(en)) throw new Error(`LT and EN items differ:\n${ids(lt)}\n${ids(en)}`);
 if (lt.length !== en.length) throw new Error("LT and EN sections differ");
@@ -191,9 +196,71 @@ lt.forEach((section, index) => {
   for (const doc of [lt, en]) doc[index] = { key, ...doc[index] };
 });
 
+/*
+ * The six extra languages (content role's drafts, 2026-10-13): one file per
+ * language, `faq-<lang>.md`, in the same form as the English half of DUK.md.
+ *
+ * - They publish exactly the items LT and EN publish, in the same sections.
+ * - An item the legal role keeps untranslated says "(teisininkas – neverčiama)"
+ *   instead of an answer; the page shows the English question and answer
+ *   there, marked as English, rather than nothing.
+ * - The drafts carry no "publish later" markers. Where a part of an answer
+ *   waits (WAITS_WITHOUT_MARKER), the English published item is shown instead
+ *   until the draft marks the waiting part the way DUK.md does.
+ * - Without the folder argument the extra languages stay as the page has them,
+ *   so a routine LT/EN run does not drop them.
+ */
+const EXTRA = ["pl", "lv", "de", "fr", "es", "it"];
+const UNTRANSLATED = "(teisininkas – neverčiama)";
+/** K-8: the theme sentence waits for Android build 17; K-46: the reply sentence waits for U-19 (#207). */
+const WAITS_WITHOUT_MARKER = ["K-8", "K-46"];
+const extraDir = process.argv[3];
+
+function extraLang(lang) {
+  if (!extraDir) {
+    const kept = current[lang];
+    if (!kept) throw new Error(`${lang}: not on the page yet – pass the drafts folder`);
+    console.warn(`${lang}: no drafts folder given – kept as published`);
+    const ts = readFileSync(resolve("src/content/faq.ts"), "utf8");
+    const marker = "export const FAQ: Record<Lang, FaqSection[]> = ";
+    return JSON.parse(ts.slice(ts.indexOf(marker) + marker.length).trim().replace(/;\s*$/, ""))[lang];
+  }
+  const candidates = [resolve(extraDir, lang, `faq-${lang}.md`), resolve(extraDir, `faq-${lang}.md`)];
+  const file = candidates.find((f) => existsSync(f));
+  if (!file) throw new Error(`${lang}: faq-${lang}.md not found in ${extraDir}`);
+  const raw = readFileSync(file, "utf8").replace(/\r\n/g, "\n");
+  const start = raw.indexOf("\n## ");
+  if (start < 0) throw new Error(`${lang}: no sections in ${file}`);
+
+  // Read the answers before `clean()` drops the markers, to know which waiting items are marked.
+  const marked = new Set();
+  for (const m of raw.matchAll(/^\*\*(K-\d+)\.[^\n]*\n((?:.+\n?)*)/gm)) if (/\*\*\[/.test(m[2])) marked.add(m[1]);
+
+  const doc = parse(raw.slice(start), lang);
+  const enItems = new Map(en.flatMap((s) => s.items.map((i) => [i.id, i])));
+  if (doc.length !== en.length) throw new Error(`${lang}: ${doc.length} sections, EN has ${en.length}`);
+  if (ids(doc) !== ids(en)) throw new Error(`${lang} and EN items differ:\n${ids(doc)}\n${ids(en)}`);
+  return doc.map((section, index) => ({
+    key: en[index].key,
+    title: section.title,
+    items: section.items.map((item) => {
+      const english = enItems.get(item.id);
+      if (item.a === UNTRANSLATED) return { ...english, lang: "en" };
+      if (WAITS_WITHOUT_MARKER.includes(item.id) && !marked.has(item.id)) {
+        console.warn(`${lang} ${item.id}: no marker on the waiting part – English shown`);
+        return { ...english, lang: "en" };
+      }
+      if (item.a.includes("teisininkas")) throw new Error(`${lang} ${item.id}: an editor note reached the answer`);
+      return item;
+    }),
+  }));
+}
+
+const extra = Object.fromEntries(EXTRA.map((lang) => [lang, extraLang(lang)]));
+
 // Every reference left must point at a published item.
 const published = new Set(lt.flatMap((s) => s.items.map((i) => i.id)));
-for (const doc of [lt, en]) {
+for (const doc of [lt, en, ...Object.values(extra)]) {
   for (const i of doc.flatMap((s) => s.items)) {
     for (const [ref] of i.a.matchAll(/\bK-\d+\b/g)) {
       if (!published.has(ref)) throw new Error(`${i.id} refers to ${ref}, which is not published`);
@@ -210,12 +277,13 @@ const out = `// GENERATED by scripts/gen-faq.mjs from the support role's FAQ dra
 // Answers may refer to another item as "K-n"; the page turns that into a link.
 import type { Lang } from "./lang";
 
-export type FaqItem = { id: string; q: string; a: string };
+/** \`lang\` is set when an extra language shows the English item (untranslated or waiting). */
+export type FaqItem = { id: string; q: string; a: string; lang?: "en" };
 export type FaqSection = { key: string; title: string; items: FaqItem[] };
 
 export const FAQ_UPDATED = "${process.env.FAQ_UPDATED ?? new Date().toISOString().slice(0, 10)}";
 
-export const FAQ: Record<Lang, FaqSection[]> = ${JSON.stringify({ lt, en }, null, 2)};
+export const FAQ: Record<Lang, FaqSection[]> = ${JSON.stringify({ lt, en, ...extra }, null, 2)};
 `;
 writeFileSync(resolve("src/content/faq.ts"), out);
 const count = lt.reduce((n, s) => n + s.items.length, 0);

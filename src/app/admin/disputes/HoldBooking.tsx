@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useTransition } from "react";
 import { IconChevronRight, IconWallet } from "@/components/icons";
 import { useConfirm } from "../ConfirmDialog";
@@ -76,10 +77,10 @@ export function HoldBooking({ bookingId }: { bookingId: string }) {
       {held ? (
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm font-semibold text-app-ink">Ginčas atidarytas – nurašymas ir išmoka sustabdyti.</p>
-          <a href="/admin/disputes" className={btn}>
+          <Link href="/admin/disputes" className={btn}>
             Į ginčus
             <IconChevronRight size={16} strokeWidth={STROKE} aria-hidden />
-          </a>
+          </Link>
         </div>
       ) : (
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

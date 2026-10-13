@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { LANGS, legalPath, homePath } from "@/content/lang";
+import { LANGS, legalPath, homePath, pageLangs } from "@/content/lang";
 import { FAQ_UPDATED } from "@/content/faq";
 import { LEGAL_META, LEGAL_ROUTES, PARTNER_META } from "@/content/legal";
 import { site } from "@/content/site";
@@ -21,10 +21,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${site.url}${homePath(lang)}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
-    priority: lang === "lt" ? 1 : 0.8,
+    priority: lang === "lt" ? 1 : lang === "en" ? 0.8 : 0.6,
   }));
-  const docs = LANGS.flatMap((lang) =>
-    LEGAL_ROUTES.map((route) => ({
+  // Each page in the languages it is written in: the FAQ in all of them, a document in Lithuanian and English.
+  const docs = LEGAL_ROUTES.flatMap((route) =>
+    pageLangs({ kind: "legal", key: route.key }).map((lang) => ({
       url: `${site.url}${legalPath(lang, route.key)}`,
       lastModified: dateFor(route.key),
       changeFrequency: "yearly" as const,

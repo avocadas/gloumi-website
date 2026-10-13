@@ -2,7 +2,7 @@
 
 Marketing site for **Gloumi** – the beauty and wellness marketplace app for Lithuania. Clients find and book masters; masters run their calendar, deposits and payouts from the app. This repository is the public face at https://gloumi.lt.
 
-Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · Framer Motion · Lucide. Lithuanian at the root, English under `/en`.
+Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · Framer Motion · Lucide. Lithuanian at the root, English under `/en`; the home page and the FAQ also in Polish, Latvian, German, French, Spanish and Italian under `/<code>` (legal documents stay Lithuanian and English).
 
 ## Run it
 
@@ -20,6 +20,7 @@ npm run dev
 src/
   app/(lt)/            Lithuanian routes at the root, plus its root layout and share card
   app/(en)/en/         English routes under /en, plus its root layout and share card
+  app/(intl)/[lang]/   the six extra languages: home page, FAQ, root layout and share card
   app/                 shared metadata files (icons, sitemap, robots, manifest), /api/waitlist
   components/
     brand/             Wordmark (GENERATED) + BrandMark (renders public/brand/gloumi-mark.svg)
@@ -28,7 +29,7 @@ src/
     legal/             LegalPage – one layout for the four legal documents
     ui/                Button, Container, SectionHeading, StoreBadges, Reveal, MotionProvider
   content/
-    lang.ts            the two languages, their paths, section anchors and legal slugs
+    lang.ts            the languages, their paths, section anchors and legal slugs
     site.ts            company facts, URLs, store links, socials – the one place to fill in
     copy.lt.ts         every visible string, Lithuanian
     copy.en.ts         the same shape in English; typed against copy.lt so a missing key fails the typecheck
@@ -41,7 +42,8 @@ scripts/
   gen-from-app.mjs      regenerates the GENERATED files from ../Gloumi/gloumi-app/src
   make-icons.mjs       favicon / apple-icon / manifest icons from public/brand/gloumi-mark.svg
   check-contrast.mjs   WCAG 2.1 AA check for every text/background pairing in use
-  gen-faq.mjs          regenerates src/content/faq.ts (/duk, /en/faq) from the support role's FAQ draft
+  gen-faq.mjs          regenerates src/content/faq.ts (/duk, /en/faq, /<code>/faq) from the support role's FAQ draft
+                       and the content role's translations (second argument: folder with <code>/faq-<code>.md)
 ```
 
 ## Kept in step with the app

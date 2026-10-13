@@ -1,5 +1,5 @@
 import { getCopy } from "@/content/copy";
-import type { Lang } from "@/content/lang";
+import type { LegalLang } from "@/content/lang";
 import { reviewCheckHref } from "@/content/legal";
 import { site } from "@/content/site";
 import { MIN_REVIEWS_FOR_RATING, type PublicReviews } from "@/lib/public-reviews";
@@ -13,7 +13,7 @@ import { MIN_REVIEWS_FOR_RATING, type PublicReviews } from "@/lib/public-reviews
  */
 
 /** Lietuvių kalbos skaičiaus forma: 1 atsiliepimas, 2 atsiliepimai, 10 atsiliepimų. */
-function countForm(lang: Lang, n: number, forms: string[]): string {
+function countForm(lang: LegalLang, n: number, forms: string[]): string {
   if (lang !== "lt") return n === 1 ? forms[0] : forms[1];
   const tens = n % 100;
   const ones = n % 10;
@@ -22,9 +22,9 @@ function countForm(lang: Lang, n: number, forms: string[]): string {
   return forms[2];
 }
 
-const LOCALE: Record<Lang, string> = { lt: "lt-LT", en: "en-GB" };
+const LOCALE: Record<LegalLang, string> = { lt: "lt-LT", en: "en-GB" };
 
-function formatDate(lang: Lang, iso: string): string {
+function formatDate(lang: LegalLang, iso: string): string {
   return new Date(iso).toLocaleDateString(LOCALE[lang], {
     year: "numeric",
     month: "long",
@@ -43,7 +43,7 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-export function MasterReviews({ lang, data, pageUrl }: { lang: Lang; data: PublicReviews; pageUrl: string }) {
+export function MasterReviews({ lang, data, pageUrl }: { lang: LegalLang; data: PublicReviews; pageUrl: string }) {
   const copy = getCopy(lang).masterReviews;
   const showRating = data.ratingAvg !== null && data.ratingCount >= MIN_REVIEWS_FOR_RATING;
   const avg = data.ratingAvg?.toLocaleString(LOCALE[lang], { minimumFractionDigits: 1, maximumFractionDigits: 1 });

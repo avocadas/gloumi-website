@@ -15,7 +15,7 @@ import { cn } from "@/lib/cn";
 type HeaderProps = {
   lang: Lang;
   /** Where this same page lives in each language, for the switcher. */
-  alternates: Record<Lang, string>;
+  alternates: Partial<Record<Lang, string>>;
 };
 
 export function Header({ lang, alternates }: HeaderProps) {

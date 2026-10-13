@@ -8,7 +8,7 @@ import type { Lang } from "@/content/lang";
 type Props = {
   lang: Lang;
   /** Where this same page lives in each language, for the switcher and hreflang. */
-  alternates: Record<Lang, string>;
+  alternates: Partial<Record<Lang, string>>;
   children: ReactNode;
 };
 

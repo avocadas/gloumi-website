@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Container } from "@/components/ui/Container";
 import { getCopy } from "@/content/copy";
 import { FAQ, FAQ_UPDATED, type FaqItem } from "@/content/faq";
-import type { Lang } from "@/content/lang";
+import { LANG_LABELS, type Lang } from "@/content/lang";
 import { LEGAL_TITLES } from "@/content/legal";
 import { site } from "@/content/site";
 
@@ -20,8 +20,20 @@ import { site } from "@/content/site";
  */
 const anchor = (id: string) => id.toLowerCase(); // "K-18" → "k-18"
 
+/** How each language quotes the question a link carries. */
+const QUOTES: Record<Lang, [string, string]> = {
+  lt: ["„", "“"],
+  en: ["“", "”"],
+  pl: ["„", "”"],
+  lv: ["„", "”"],
+  de: ["„", "“"],
+  fr: ["« ", " »"],
+  es: ["«", "»"],
+  it: ["«", "»"],
+};
+
 function Answer({ text, questions, lang }: { text: string; questions: Map<string, string>; lang: Lang }) {
-  const quote = (q: string) => (lang === "lt" ? `„${q}“` : `“${q}”`);
+  const quote = (q: string) => `${QUOTES[lang][0]}${q}${QUOTES[lang][1]}`;
   const parts: ReactNode[] = text.split(/\b(K-\d+)\b/).map((part, index) => {
     const question = index % 2 === 1 ? questions.get(part) : undefined;
     if (!question) return part;
@@ -45,7 +57,7 @@ export function FaqPage({ lang }: { lang: Lang }) {
         <header>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta-600">{copy.faq.eyebrow}</p>
           <h1 className="mt-4 font-serif text-4xl font-medium leading-[1.05] tracking-[-0.015em] text-espresso-900 sm:text-5xl">
-            {LEGAL_TITLES[lang].faq}
+            {lang === "lt" || lang === "en" ? LEGAL_TITLES[lang].faq : copy.footer.faq}
           </h1>
           <p className="mt-4 text-sm text-espresso-500">
             {copy.legal.updated} <time dateTime={FAQ_UPDATED}>{FAQ_UPDATED}</time>
@@ -78,9 +90,21 @@ export function FaqPage({ lang }: { lang: Lang }) {
             <section key={section.key} id={section.key} className="mt-12 scroll-mt-28">
               <h2 className="font-serif text-2xl font-medium text-espresso-900 sm:text-3xl">{section.title}</h2>
               {section.items.map((item) => (
-                <div key={item.id} id={anchor(item.id)} className="mt-6 scroll-mt-28">
-                  <h3 className="font-semibold text-espresso-900">{item.q}</h3>
-                  <Answer text={item.a} questions={questions} lang={lang} />
+                <div
+                  key={item.id}
+                  id={anchor(item.id)}
+                  lang={item.lang ? LANG_LABELS[item.lang].htmlLang : undefined}
+                  className="mt-6 scroll-mt-28"
+                >
+                  <h3 className="font-semibold text-espresso-900">
+                    {item.q}
+                    {item.lang ? (
+                      <span className="ml-2 rounded-full bg-sand-100 px-2 py-0.5 align-middle text-[11px] font-semibold uppercase tracking-[0.06em] text-espresso-500">
+                        {LANG_LABELS[item.lang].label}
+                      </span>
+                    ) : null}
+                  </h3>
+                  <Answer text={item.a} questions={questions} lang={item.lang ?? lang} />
                 </div>
               ))}
             </section>

@@ -1,6 +1,6 @@
 import "server-only";
 import { headers } from "next/headers";
-import { DEFAULT_LANG, type Lang } from "@/content/lang";
+import type { LegalLang } from "@/content/lang";
 
 /**
  * Lithuanian unless the browser prefers English over it.
@@ -10,7 +10,7 @@ import { DEFAULT_LANG, type Lang } from "@/content/lang";
  * anywhere before English gets Lithuanian, and anything else gets the home
  * market's language.
  */
-export async function requestLang(): Promise<Lang> {
+export async function requestLang(): Promise<LegalLang> {
   const accept = (await headers()).get("accept-language") ?? "";
   const ranked = accept
     .split(",")
@@ -23,5 +23,5 @@ export async function requestLang(): Promise<Lang> {
     .filter((entry) => entry.weight > 0)
     .sort((a, b) => b.weight - a.weight || a.index - b.index);
   const first = ranked.find((entry) => entry.base === "lt" || entry.base === "en");
-  return first?.base === "en" ? "en" : DEFAULT_LANG;
+  return first?.base === "en" ? "en" : "lt";
 }
