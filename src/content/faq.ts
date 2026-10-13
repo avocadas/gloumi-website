@@ -42,7 +42,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-4",
           "q": "Kaip užsiregistruoti ir prisijungti?",
-          "a": "Prisijungimo lange – „Registruokitės“: penki žingsniai ir el. pašto patvirtinimas. Galima per Google, iPhone – ir per Apple. Prisijungiama el. paštu ar vartotojo vardu su slaptažodžiu arba per Google ar Apple. Nuo 14 metų."
+          "a": "Prisijungimo lange – „Registruokitės“: penki žingsniai ir el. pašto patvirtinimas. Galima per Google, iPhone – ir per Apple. Prisijungiama el. paštu ar naudotojo vardu su slaptažodžiu arba per Google ar Apple. Nuo 14 metų."
         },
         {
           "id": "K-5",
@@ -57,7 +57,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-7",
           "q": "Kaip pakeisti savo duomenis?",
-          "a": "Vardą ir aprašymą – Profilis → Redaguoti profilį, nuotrauką – ją paspaudę. El. paštą, vartotojo vardą ir telefoną – šoninis meniu → Programėlės nustatymai → Paskyra. Gimimo datą pakeisime mes – parašykite."
+          "a": "Vardą ir aprašymą – Profilis → Redaguoti profilį, nuotrauką – ją paspaudę. El. paštą, naudotojo vardą ir telefoną – šoninis meniu → Programėlės nustatymai → Paskyra. Gimimo datą pakeisime mes – parašykite."
         },
         {
           "id": "K-8",
@@ -255,7 +255,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-45",
           "q": "Kaip sukurti saloną?",
-          "a": "Profilis → Verslas → Salonas → Sukurti saloną (reikia VIP Studio). Pakvieskite iki 10 meistrų pagal vartotojo vardą. Nariai lieka savarankiški ir gauna Pro funkcijas, o jūs matote jų vizitus."
+          "a": "Profilis → Verslas → Salonas → Sukurti saloną (reikia VIP Studio). Pakvieskite iki 10 meistrų pagal naudotojo vardą. Nariai lieka savarankiški ir gauna Pro funkcijas, o jūs matote jų vizitus."
         },
         {
           "id": "K-46",
@@ -296,7 +296,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-52",
           "q": "Kaip užblokuoti žmogų?",
-          "a": "Pranešimo lange – „Blokuoti vartotoją“: nebematysite jo įrašų, Story ir žinučių. Atblokuoti – šoninis meniu → Programėlės nustatymai → Užblokuoti žmonės."
+          "a": "Pranešimo lange – „Blokuoti naudotoją“: nebematysite jo įrašų, Story ir žinučių. Atblokuoti – šoninis meniu → Programėlės nustatymai → Užblokuoti žmonės."
         },
         {
           "id": "K-53",
