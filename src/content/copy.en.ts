@@ -298,12 +298,12 @@ export const en: typeof lt = {
     paymentMethods: { cash: "Cash", card_onsite: "Card on site", card: "In the app" } as Record<string, string>,
     workFormats: { salon: "At a salon or studio", mobile: "At the client's place", rented_chair: "In a rented space" } as Record<string, string>,
     cancellationPolicies: {
-      // Legal role, 2026-10-14 (word for word, `move_only` too – not the app's `policyMoveOnlyText`, which contradicts Terms B3).
+      // Legal role, 2026-10-14 (word for word). `move_only` – legal role 2026-10-15: word for word as the app's policyMoveOnlyText (b63ff56d).
       free_24h: "Free cancellation until 24 hours before the visit; if you cancel later or don’t show up, the deposit is charged.",
       deposit_required:
         "A deposit is reserved on your card when you book; if you cancel a confirmed visit less than 24 hours before or don’t show up, it is charged and goes to the master.",
       no_deposit: "You can cancel at any time – anything paid is refunded in full.",
-      move_only: "Free cancellation any time. Within 24 hours of the visit, it can only be moved to a new time the master proposes.",
+      move_only: "Free cancellation any time. Within 24 hours of a confirmed visit, it can only be moved to a new time the master proposes.",
     } as Record<string, string>,
   },
 

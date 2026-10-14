@@ -128,7 +128,7 @@ export async function loadPublicMaster(masterId: string): Promise<PublicMaster |
  * `deposit_required` vėlai atšaukus ar neatvykus sulaiko avansą, bet tik meistrui,
  * kuris priima mokėjimus programėlėje (`can_take_app_payments`, programėlės
  * `useAppPaymentsAllowed`). Kitam avanso nėra – rodoma tik perkėlimo riba
- * (`move_only`, teisininko tekstas, ne programėlės).
+ * (`move_only`, teisininko tekstas – toks pat kaip programėlės `policyMoveOnlyText`).
  */
 const FORFEITING_POLICIES = ["free_24h", "deposit_required"];
 
