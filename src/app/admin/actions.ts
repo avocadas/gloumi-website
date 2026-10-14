@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { checkAdmin } from "@/lib/admin-guard";
+import { signMedia, type SignedMedia } from "@/lib/admin-data";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { MODERATED_TABLES } from "./moderated-tables";
 import {
@@ -686,6 +687,84 @@ export async function revealPhone(
       };
     }
     return { ok: true, phone: typeof data === "string" && data.trim() ? data.trim() : null };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
+  }
+}
+
+/** Skundo kopija, kaip ją rodo portalas (`loadReportCopy`). */
+export type ReportCopyView = {
+  targetType: string;
+  targetFound: boolean;
+  copiedAt: string | null;
+  targetCreatedAt: string | null;
+  copyError: string | null;
+  /** `true` – kopija su `withheld = 'child_sexual_abuse'`: nei turinio, nei medijos. */
+  withheld: boolean;
+  /** Kiek medijos failų kopijoje (ir sulaikytoje – tik skaičius). */
+  mediaCount: number;
+  fields: { key: string; value: string }[];
+  media: SignedMedia[];
+};
+
+/** Kopijos laukas tekstu: skaičiai ir tekstas – kaip yra, sudėtingesni (Story `overlays`, `music`) – JSON, sutrumpinti. */
+function copyFieldText(value: unknown): string | null {
+  if (value === null || value === undefined || value === "") return null;
+  if (typeof value === "string") return value;
+  if (typeof value === "number" || typeof value === "boolean") return String(value);
+  const json = JSON.stringify(value);
+  return json.length > 600 ? `${json.slice(0, 600)}…` : json;
+}
+
+/**
+ * Skundžiamo turinio kopija (L-24, Gloumi `20261014210343`): kas buvo
+ * pranešta, net jei autorius vėliau turinį pakeitė ar ištrynė.
+ *
+ * Kraunama tik paspaudus, ne su visa eile: `admin_report_copy` kiekvieną
+ * peržiūrą įrašo į administratorių žurnalą (`view_report_copy`), tad šimtas
+ * kortelių neturi reikšti šimto peržiūrų, kurių niekas nedarė.
+ *
+ * Kopija su `withheld = 'child_sexual_abuse'` (security): medija nerodoma ir
+ * NEpasirašoma, jos id į naršyklę nepatenka – tik kiek failų yra. Kopija –
+ * tik portalui: pranešėjui ji nerodoma ir laiškuose nesiunčiama (teisininkas).
+ */
+export async function loadReportCopy(
+  reportId: string,
+): Promise<{ ok: true; copy: ReportCopyView | null } | { ok: false; error: string }> {
+  try {
+    const admin = await requireAdmin();
+    if (typeof reportId !== "string" || !UUID_PATTERN.test(reportId)) return { ok: false, error: "Netinkamas prašymas." };
+    const db = createSupabaseAdminClient();
+    const { data, error } = await db.rpc("admin_report_copy", { _admin_id: admin.userId, _report_id: reportId });
+    if (error) {
+      if (error.code === "PGRST202") return { ok: false, error: "Skundų kopijos bazėje dar neįjungtos." };
+      return { ok: false, error: dbError(error.message) };
+    }
+    if (!data || typeof data !== "object") return { ok: true, copy: null };
+
+    const raw = data as Record<string, unknown>;
+    const withheld = raw.withheld === "child_sexual_abuse";
+    const mediaIds = Array.isArray(raw.media_ids) ? raw.media_ids.filter((id): id is string => typeof id === "string") : [];
+    const content = !withheld && raw.content && typeof raw.content === "object" ? (raw.content as Record<string, unknown>) : {};
+    const fields = Object.entries(content)
+      .map(([key, value]) => ({ key, value: copyFieldText(value) }))
+      .filter((f): f is { key: string; value: string } => f.value !== null);
+    const signed = withheld ? {} : await signMedia(admin.userId, mediaIds);
+
+    return {
+      ok: true,
+      copy: {
+        targetType: typeof raw.target_type === "string" ? raw.target_type : "",
+        targetFound: raw.target_found === true,
+        copiedAt: typeof raw.copied_at === "string" ? raw.copied_at : null,
+        targetCreatedAt: typeof raw.target_created_at === "string" ? raw.target_created_at : null,
+        copyError: typeof raw.copy_error === "string" ? raw.copy_error : null,
+        withheld,
+        mediaCount: mediaIds.length,
+        fields,
+        media: withheld ? [] : mediaIds.map((id) => signed[id]).filter((m): m is SignedMedia => Boolean(m)),
+      },
+    };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
   }

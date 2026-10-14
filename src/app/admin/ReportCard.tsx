@@ -8,6 +8,7 @@ import { useConfirm, type ConfirmOptions } from "./ConfirmDialog";
 import { formatWhen } from "./format";
 import type { NoticeNote } from "./moderation-email";
 import { ReplyVisibility } from "./ReplyVisibility";
+import { ReportCopy } from "./ReportCopy";
 import { ActionNote, STROKE, Tag, btn, btnDanger, btnQuiet, card, eyebrow } from "./ui";
 
 export type ReportView = {
@@ -152,6 +153,7 @@ export function ReportCard({ report }: { report: ReportView }) {
               : "Turinio nebėra — jis jau ištrintas."}
           </p>
         )}
+        <ReportCopy reportId={report.id} />
       </div>
 
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-app-muted">

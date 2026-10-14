@@ -305,7 +305,7 @@ export function RowCard({
 }
 
 /** Įrašo kadras 4:5 (`theme.js` `POST_ASPECT`) — tas pats, kurį mato programėlė. */
-function MediaPreview({ signed }: { signed: SignedMedia | undefined }) {
+export function MediaPreview({ signed }: { signed: SignedMedia | undefined }) {
   const box = "aspect-[4/5] w-[136px] rounded-[14px] bg-app-input";
   if (!signed) {
     return (
