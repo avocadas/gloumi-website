@@ -11,7 +11,7 @@ import type { Lang } from "./lang";
 export type FaqItem = { id: string; q: string; a: string; lang?: "en" };
 export type FaqSection = { key: string; title: string; items: FaqItem[] };
 
-export const FAQ_UPDATED = "2026-10-13";
+export const FAQ_UPDATED = "2026-10-14";
 
 export const FAQ: Record<Lang, FaqSection[]> = {
   "lt": [
@@ -668,9 +668,8 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         },
         {
           "id": "K-8",
-          "q": "How do I change the language or theme?",
-          "a": "Side menu → App settings → Language / Kalba (Lithuanian or English) or App Theme. The change takes effect at once.",
-          "lang": "en"
+          "q": "Jak zmienić język lub motyw?",
+          "a": "Menu boczne → Ustawienia aplikacji → Język / Language lub Motyw aplikacji. Zmiana działa od razu."
         },
         {
           "id": "K-10",
@@ -983,9 +982,8 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         },
         {
           "id": "K-8",
-          "q": "How do I change the language or theme?",
-          "a": "Side menu → App settings → Language / Kalba (Lithuanian or English) or App Theme. The change takes effect at once.",
-          "lang": "en"
+          "q": "Kā mainīt valodu vai motīvu?",
+          "a": "Sānu izvēlne → Lietotnes iestatījumi → Valoda / Language vai „Lietotnes motīvs”. Izmaiņas stājas spēkā uzreiz."
         },
         {
           "id": "K-10",
@@ -1298,9 +1296,8 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         },
         {
           "id": "K-8",
-          "q": "How do I change the language or theme?",
-          "a": "Side menu → App settings → Language / Kalba (Lithuanian or English) or App Theme. The change takes effect at once.",
-          "lang": "en"
+          "q": "Wie ändere ich Sprache oder Design?",
+          "a": "Seitenmenü → App-Einstellungen → Sprache / Language oder App-Design. Die Änderung gilt sofort."
         },
         {
           "id": "K-10",
@@ -1613,9 +1610,8 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         },
         {
           "id": "K-8",
-          "q": "How do I change the language or theme?",
-          "a": "Side menu → App settings → Language / Kalba (Lithuanian or English) or App Theme. The change takes effect at once.",
-          "lang": "en"
+          "q": "Comment changer la langue ou le thème ?",
+          "a": "Menu latéral → Paramètres de l'application → Langue / Language ou Thème de l'application. Le changement s'applique immédiatement."
         },
         {
           "id": "K-10",
@@ -1928,9 +1924,8 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         },
         {
           "id": "K-8",
-          "q": "How do I change the language or theme?",
-          "a": "Side menu → App settings → Language / Kalba (Lithuanian or English) or App Theme. The change takes effect at once.",
-          "lang": "en"
+          "q": "¿Cómo cambio el idioma o el tema?",
+          "a": "Menú lateral → Ajustes de la app → Idioma / Language o Tema de la app. El cambio se aplica al momento."
         },
         {
           "id": "K-10",
@@ -2243,9 +2238,8 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         },
         {
           "id": "K-8",
-          "q": "How do I change the language or theme?",
-          "a": "Side menu → App settings → Language / Kalba (Lithuanian or English) or App Theme. The change takes effect at once.",
-          "lang": "en"
+          "q": "Come cambio lingua o tema?",
+          "a": "Menu laterale → Impostazioni dell'app → Lingua / Language oppure Tema dell'app. La modifica vale subito."
         },
         {
           "id": "K-10",

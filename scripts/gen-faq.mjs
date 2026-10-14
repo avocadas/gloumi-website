@@ -36,7 +36,8 @@ const HOLD = ["K-9", "K-28", "K-55"];
  */
 const KEEP_PUBLISHED = ["K-8", "K-31"];
 /** Markers whose text starts like this cut the answer there: what follows waits for a feature. */
-const CUT = /^(Skelbti tik su|Publish only with)/;
+/** ("Skelbti tik išleidus …" is the drafts' marker for K-8: its sentence waits for Android build 17.) */
+const CUT = /^(Skelbti tik su|Skelbti tik išleidus|Publish only with)/;
 /**
  * The question to show while its answer is cut, when the full question asks
  * about the part that waits. K-46 asks about replying to a review too, which
@@ -127,8 +128,9 @@ function clean(answer, item, lang) {
   if (cut) a = a.slice(0, cut.index);
   const short = QUESTION_WHILE_CUT[item.id];
   if (short && !short[lang]) {
-    // An extra language: until it has its own short question, its cut item cannot be shown.
-    if (cut) throw new Error(`${item.id} (${lang}) is cut: add its short question to QUESTION_WHILE_CUT`);
+    // An extra language without its own short question: the question would ask about the part
+    // that waits, so the page shows the English item instead (`extraLang`).
+    if (cut) item.english = true;
   } else {
     if (short && !cut) throw new Error(`${item.id} is no longer cut: drop it from QUESTION_WHILE_CUT`);
     if (short) item.q = short[lang];
@@ -245,7 +247,7 @@ function extraLang(lang) {
     title: section.title,
     items: section.items.map((item) => {
       const english = enItems.get(item.id);
-      if (item.a === UNTRANSLATED) return { ...english, lang: "en" };
+      if (item.a === UNTRANSLATED || item.english) return { ...english, lang: "en" };
       if (WAITS_WITHOUT_MARKER.includes(item.id) && !marked.has(item.id)) {
         console.warn(`${lang} ${item.id}: no marker on the waiting part – English shown`);
         return { ...english, lang: "en" };
