@@ -10,7 +10,7 @@ import type { Lang } from "./lang";
 export type FaqItem = { id: string; q: string; a: string };
 export type FaqSection = { key: string; title: string; items: FaqItem[] };
 
-export const FAQ_UPDATED = "2026-10-13";
+export const FAQ_UPDATED = "2026-10-14";
 
 export const FAQ: Record<Lang, FaqSection[]> = {
   "lt": [
@@ -108,7 +108,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-17",
           "q": "Kaip atšaukti ar perkelti vizitą?",
-          "a": "„Vizitai“ → atidarykite vizitą → „Atšaukti vizitą“ arba „Perkelti“. Atšaukiama iš karto, neklausiant. Likus mažiau nei 24 val. iki patvirtinto vizito perkelti gali tik meistras – parašykite jam."
+          "a": "„Vizitai“ → atidarykite vizitą → „Atšaukti vizitą“ arba „Perkelti“. Atšaukiama iš karto, neklausiant. Likus mažiau nei 24 val. iki patvirtinto vizito perkelti jį galima tik priėmus meistro pasiūlytą naują laiką – parašykite meistrui."
         },
         {
           "id": "K-18",
@@ -411,7 +411,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-17",
           "q": "How do I cancel or move a visit?",
-          "a": "Bookings → open the visit → Cancel booking or Reschedule. Cancelling happens at once, with no second question. With less than 24 h to go before a confirmed visit, only the master can move it – message them."
+          "a": "Bookings → open the visit → Cancel booking or Reschedule. Cancelling happens at once, with no second question. With less than 24 h to go before a confirmed visit, it can only be moved to a new time the master proposes – message them."
         },
         {
           "id": "K-18",
