@@ -312,7 +312,7 @@ export const lt = {
     cancellation: "Atšaukimas",
     rules: "Meistro taisyklės",
     booking: "Rezervavimas",
-    leadTime: "Rezervuoti likus ne mažiau kaip {n} val.",
+    leadTime: "Rezervuokite ne vėliau kaip prieš {n} val.",
     payment: "Mokėjimas",
     workFormat: "Kur dirba",
     amenities: "Patogumai",

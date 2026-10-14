@@ -273,8 +273,8 @@ export const en: typeof lt = {
   },
 
   masterPage: {
-    titleFemale: "Beauty professional",
-    titleMale: "Beauty professional",
+    titleFemale: "Master",
+    titleMale: "Master",
     services: "Services",
     otherServices: "Other services",
     minutes: "min",
