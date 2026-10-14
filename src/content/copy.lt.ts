@@ -321,12 +321,13 @@ export const lt = {
     paymentMethods: { cash: "Grynieji", card_onsite: "Kortele vietoje", card: "Programėlėje" } as Record<string, string>,
     workFormats: { salon: "Salone ar studijoje", mobile: "Pas klientą", rented_chair: "Nuomojamoje vietoje" } as Record<string, string>,
     cancellationPolicies: {
-      // Teisininkas 2026-10-14 (pažodžiui). `move_only` – programėlės `policyMoveOnlyText`.
+      // Teisininkas 2026-10-14 (pažodžiui, ir `move_only` – ne programėlės `policyMoveOnlyText`, kuris prieštarauja Taisyklių B3).
       free_24h: "Nemokamai atšaukti galima likus ne mažiau kaip 24 val. iki vizito; atšaukus vėliau ar neatvykus, nurašomas avansas.",
       deposit_required:
         "Rezervuojant avansas rezervuojamas Jūsų kortelėje; atšaukus patvirtintą vizitą likus mažiau nei 24 val. ar neatvykus, jis nurašomas ir atitenka meistrui.",
       no_deposit: "Atšaukti galima bet kada – sumokėta suma grąžinama visa.",
-      move_only: "Atšaukti nemokamai galima bet kada. Likus mažiau nei 24 val. iki vizito, perkelti gali tik meistras.",
+      move_only:
+        "Atšaukti nemokamai galima bet kada. Likus mažiau nei 24 val. iki vizito, perkelti jį galima tik priėmus meistro pasiūlytą naują laiką.",
     } as Record<string, string>,
   },
 
