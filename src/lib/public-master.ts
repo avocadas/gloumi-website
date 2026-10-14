@@ -123,6 +123,38 @@ export async function loadPublicMaster(masterId: string): Promise<PublicMaster |
 }
 
 /*
+ * Atšaukimo sąlygos (teisininkas 2026-10-14, `notes/teisininkas-web-atsaukimo-salygos-2026-10-14.md`).
+ * Kaip programėlės `policyNoticeFor` (`utils/cancellationPolicy.js`): `free_24h` ir
+ * `deposit_required` vėlai atšaukus ar neatvykus sulaiko avansą, bet tik meistrui,
+ * kuris priima mokėjimus programėlėje (`can_take_app_payments`, programėlės
+ * `useAppPaymentsAllowed`). Kitam avanso nėra – rodoma tik perkėlimo riba
+ * (`move_only`).
+ */
+const FORFEITING_POLICIES = ["free_24h", "deposit_required"];
+
+/** Kurį `masterPage.cancellationPolicies` raktą rodyti; `null` – nieko. */
+export function cancellationTextKey(policy: string | null, appPaymentsAllowed: boolean): string | null {
+  if (!policy) return null;
+  if (FORFEITING_POLICIES.includes(policy)) return appPaymentsAllowed ? policy : "move_only";
+  return policy === "no_deposit" ? policy : null;
+}
+
+/**
+ * Ar meistras gali priimti avansą ir mokėjimą programėlėje. Programėlė, kol
+ * atsakymo nėra, laiko `true` (serveris vis tiek atmes); viešas puslapis – ne:
+ * nežinant geriau nepažadėti avanso, kurio gali nebūti.
+ */
+export async function loadAppPaymentsAllowed(masterId: string): Promise<boolean> {
+  const db = createSupabaseAdminClient();
+  const { data, error } = await db.rpc("can_take_app_payments", { _master: masterId });
+  if (error) {
+    console.error("[public-master] can_take_app_payments", error.code ?? "error");
+    return false;
+  }
+  return data === true;
+}
+
+/*
  * Viešo puslapio nuotraukos (`public-media-urls`, Gloumi `3a752a77`; security A).
  * Įvestis – tik meistro id: kurias medijas pasirašyti, renkasi funkcija pati
  * (avataras ir darbai iš `public_master_page`, tik vaizdai, ne privatus kibiras),

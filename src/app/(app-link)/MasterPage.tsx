@@ -5,7 +5,7 @@ import { Container } from "@/components/ui/Container";
 import { StoreBadges } from "@/components/ui/StoreBadges";
 import { getCopy } from "@/content/copy";
 import { alternates, type Lang } from "@/content/lang";
-import { isShowableWork, type PublicMaster, type PublicService } from "@/lib/public-master";
+import { cancellationTextKey, isShowableWork, type PublicMaster, type PublicService } from "@/lib/public-master";
 
 /*
  * Viešas meistro puslapis (#210, U-22): tik U-22 lentelės „Rodo“ stulpelis –
@@ -68,6 +68,7 @@ export function MasterPage({
   appHref,
   code,
   media,
+  appPaymentsAllowed,
   children,
 }: {
   lang: Lang;
@@ -76,6 +77,8 @@ export function MasterPage({
   code: string | null;
   /** Pasirašyti viešų medijų adresai pagal `media_id`; tuščia – be nuotraukų. */
   media: Record<string, string>;
+  /** Ar meistras priima avansą ir mokėjimą programėlėje – nuo to priklauso atšaukimo sakinys. */
+  appPaymentsAllowed: boolean;
   children?: ReactNode;
 }) {
   const all = getCopy(lang);
@@ -83,6 +86,8 @@ export function MasterPage({
   const place = [master.city, master.district].filter(Boolean).join(", ");
   const avatar = master.avatarMediaId ? media[master.avatarMediaId] : undefined;
   const works = master.portfolio.filter((w) => isShowableWork(w) && w.mediaId && media[w.mediaId]);
+  const cancellationKey = cancellationTextKey(master.cancellationPolicy, appPaymentsAllowed);
+  const cancellationText = cancellationKey ? copy.cancellationPolicies[cancellationKey] : undefined;
 
   // Paslaugos pagal kategoriją, kaip programėlėje; be kategorijos – pabaigoje.
   const groups = new Map<string, PublicService[]>();
@@ -202,10 +207,10 @@ export function MasterPage({
 
         <Section title={copy.terms}>
           <dl className="space-y-4 text-sm leading-relaxed">
-            {master.cancellationPolicy && copy.cancellationPolicies[master.cancellationPolicy] ? (
+            {cancellationText ? (
               <div>
                 <dt className="font-semibold text-espresso-900">{copy.cancellation}</dt>
-                <dd className="mt-1 text-espresso-700">{copy.cancellationPolicies[master.cancellationPolicy]}</dd>
+                <dd className="mt-1 text-espresso-700">{cancellationText}</dd>
               </div>
             ) : null}
             {master.bookingLeadHours ? (
