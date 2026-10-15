@@ -19,6 +19,13 @@ jokiu!!!".
   eilutes tarp įrankių kvietimų.
 - Draudžiama visa kirilica, ne vien rusiškos raidės. Jei raidę reikia aptarti,
   ji rašoma kodu (`U+0435`), o ne pačia raide.
+- Ukrainiečių ir bulgarų kalbų išimtis (developeris 2026-10-04 ir 2026-10-10,
+  Gloumi `AGENTS.md` X.2.1) galioja TIK programėlės repozitorijai: kirilica
+  leidžiama tik jos ukrainietiškų ir bulgariškų vertimų failuose, juos prieš
+  įliejant tikrina žmogus, mokantis tą kalbą. Svetainėje šios išimties nėra:
+  ukrainiečių ir bulgarų versijų svetainė neturi, jos failuose kirilicos nėra,
+  o `scripts/check-cyrillic.mjs` išimčių neturi. Rusų kalbai išimties nėra
+  niekur.
 - Rusiškas žodis, parašytas lotyniškomis raidėmis, vis tiek yra rusiškas.
 - Rusų kalbos versijos, lokalės ar vertimo nebus: svetainė yra lietuvių ir anglų.
 - Jei neaišku, ar kas nors patenka po šia taisykle, laikoma, kad patenka, ir
