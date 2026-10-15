@@ -32,11 +32,17 @@ export const CSP_REPORT_PATH = '/api/csp-report';
  */
 const R2 = 'https://*.r2.cloudflarestorage.com';
 
+/** Cloudflare Turnstile, admin prisijungimo CAPTCHA (2026-10-16). */
+const TURNSTILE = 'https://challenges.cloudflare.com';
+
 export function adminCsp(nonce: string, dev: boolean): string {
   return [
     "default-src 'self'",
     // `'unsafe-eval'` tik `next dev`: React juo atkuria serverio klaidų dėklus.
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${dev ? " 'unsafe-eval'" : ''}`,
+    // Turnstile (`admin/login/Turnstile.tsx`): skriptą įterpia mūsų kodas (`'strict-dynamic'`);
+    // šaltinis – senoms naršyklėms be `'strict-dynamic'`, rėmelis – `frame-src`.
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${TURNSTILE}${dev ? " 'unsafe-eval'" : ''}`,
+    `frame-src ${TURNSTILE}`,
     "style-src 'self' 'unsafe-inline'",
     `img-src 'self' data: ${R2}`,
     `media-src 'self' ${R2}`,

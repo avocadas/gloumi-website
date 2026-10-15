@@ -1,11 +1,12 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { IconAlert, IconArrowRight, IconLock, IconProfile } from "@/components/icons";
 import { AuthShell, Brand, STROKE, btn, btnQuiet, input } from "../ui";
 import { finishAdminLogin, startAdminLogin } from "./actions";
+import { TURNSTILE_SITE_KEY, Turnstile, type TurnstileHandle } from "./Turnstile";
 
 /**
  * Admin sign-in: password, then the second factor — enrolling it here if the
@@ -74,6 +75,16 @@ function LoginForm() {
   const [secret, setSecret] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Turnstile (tik su raktu): kiekvienam slaptažodžio tikrinimui – naujas vienkartinis žetonas.
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const turnstile = useRef<TurnstileHandle>(null);
+  const waitingForCaptcha = TURNSTILE_SITE_KEY !== null && !captchaToken;
+  /** Žetonas atiduodamas vieną kartą: po jo valdiklis išduoda naują kitam žingsniui. */
+  const takeCaptcha = () => {
+    const token = captchaToken ?? undefined;
+    if (TURNSTILE_SITE_KEY) turnstile.current?.reset();
+    return token;
+  };
 
   const startOver = () => {
     setStep("password");
@@ -99,7 +110,7 @@ function LoginForm() {
     }
 
     setBusy(true);
-    const result = await startAdminLogin(name, password);
+    const result = await startAdminLogin(name, password, takeCaptcha());
     setBusy(false);
 
     if (!result.ok) {
@@ -124,7 +135,7 @@ function LoginForm() {
     setError(null);
     setBusy(true);
 
-    const result = await finishAdminLogin(username, password, code, factorId);
+    const result = await finishAdminLogin(username, password, code, factorId, takeCaptcha());
     if (!result.ok) {
       setBusy(false);
       setCode("");
@@ -156,7 +167,7 @@ function LoginForm() {
           className={`${input} mt-2 h-14 text-center font-semibold text-xl tabular-nums tracking-[0.4em]`}
         />
       </label>
-      <button type="submit" disabled={busy || code.length !== 6} className={`${btn} h-12 w-full`}>
+      <button type="submit" disabled={busy || waitingForCaptcha || code.length !== 6} className={`${btn} h-12 w-full`}>
         Patvirtinti
         <IconArrowRight size={16} strokeWidth={STROKE} aria-hidden />
       </button>
@@ -249,7 +260,7 @@ function LoginForm() {
               />
             </span>
           </label>
-          <button type="submit" disabled={busy} className={`${btn} h-12 w-full`}>
+          <button type="submit" disabled={busy || waitingForCaptcha} className={`${btn} h-12 w-full`}>
             Toliau
             <IconArrowRight size={16} strokeWidth={STROKE} aria-hidden />
           </button>
@@ -285,6 +296,13 @@ function LoginForm() {
         <div className="mt-5">
           <p className="text-sm text-app-body">Įveskite kodą iš autentifikatoriaus programėlės.</p>
           {codeForm}
+        </div>
+      ) : null}
+
+      {/* Vienas valdiklis abiem žingsniams: jis lieka tas pats, tik po kiekvieno tikrinimo atsinaujina. */}
+      {TURNSTILE_SITE_KEY ? (
+        <div className="mt-4">
+          <Turnstile ref={turnstile} siteKey={TURNSTILE_SITE_KEY} onToken={setCaptchaToken} />
         </div>
       ) : null}
     </AuthShell>

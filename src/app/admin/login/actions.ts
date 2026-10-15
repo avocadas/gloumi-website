@@ -47,6 +47,18 @@ const WRONG_PASSWORD = "Neteisingas vardas arba slaptažodis.";
 const WRONG_CODE = "Neteisingas kodas.";
 const START_OVER = "Pradėkite iš naujo.";
 const UNAVAILABLE = "Prisijungimas laikinai nepasiekiamas. Bandykite po minutės.";
+const CAPTCHA_FAILED = "Patikra, kad nesate robotas, nepavyko. Palaukite, kol ji vėl pasirodys, ir bandykite dar kartą.";
+
+/*
+ * Cloudflare Turnstile (developeris 2026-10-16; db `ataskaitos/db-captcha-planas-2026-10-16.md`).
+ * Įjungus Supabase Auth CAPTCHA, `signInWithPassword` be žetono atsako
+ * `captcha_failed`. Žetonas vienkartinis, o slaptažodis čia tikrinamas abiem
+ * žingsniais, tad naršyklė kiekvienam žingsniui gauna naują. Kol CAPTCHA
+ * neįjungta, žetonas Supabase'ui nieko nereiškia; be jo – prisijungiama kaip
+ * iki šiol. Netinkamas (ne eilutė, per ilgas) neperduodamas visai.
+ */
+const captchaOrUndefined = (token: unknown) =>
+  typeof token === "string" && token.length > 0 && token.length <= 2048 ? token : undefined;
 
 type Failure = { ok: false; error: string };
 
@@ -127,6 +139,7 @@ async function passwordStep(
   name: string,
   password: string,
   ip: string | null,
+  captchaToken: string | undefined,
 ): Promise<{ ok: true; auth: SupabaseClient } | Failure> {
   const gate = await begin(db, name, ip, "password");
   if (!gate.allowed) return locked(gate.retryAfter);
@@ -138,8 +151,17 @@ async function passwordStep(
   }
 
   const auth = freshAuthClient();
-  const { error } = await auth.auth.signInWithPassword({ email: gate.email, password });
+  const { error } = await auth.auth.signInWithPassword({
+    email: gate.email,
+    password,
+    options: captchaToken ? { captchaToken } : undefined,
+  });
   if (error) {
+    // CAPTCHA nepraėjo: slaptažodis nepatikrintas, tad ir bandymas neskaičiuojamas.
+    if (error.code === "captcha_failed") {
+      await finish(db, gate.attemptId, "error");
+      return { ok: false, error: CAPTCHA_FAILED };
+    }
     const skip = unchecked(error.status);
     await finish(db, gate.attemptId, skip ? "error" : "fail");
     return { ok: false, error: skip ? UNAVAILABLE : WRONG_PASSWORD };
@@ -159,13 +181,13 @@ function validInput(name: string, password: unknown): password is string {
 }
 
 /** Pirmas žingsnis: slaptažodis. Grąžina, ar reikia kodo, ar įjungti antrą veiksnį. */
-export async function startAdminLogin(username: string, password: string): Promise<StartResult> {
+export async function startAdminLogin(username: string, password: string, captchaToken?: string): Promise<StartResult> {
   const name = normaliseName(username);
   if (!validInput(name, password)) return { ok: false, error: WRONG_PASSWORD };
 
   try {
     const db = createSupabaseAdminClient();
-    const step = await passwordStep(db, name, password, await clientIp());
+    const step = await passwordStep(db, name, password, await clientIp(), captchaOrUndefined(captchaToken));
     if (!step.ok) return step;
 
     const { auth } = step;
@@ -218,6 +240,7 @@ export async function finishAdminLogin(
   password: string,
   code: string,
   factorId: string | null,
+  captchaToken?: string,
 ): Promise<FinishResult> {
   const name = normaliseName(username);
   if (!validInput(name, password)) return { ok: false, error: WRONG_PASSWORD };
@@ -226,7 +249,7 @@ export async function finishAdminLogin(
   try {
     const db = createSupabaseAdminClient();
     const ip = await clientIp();
-    const step = await passwordStep(db, name, password, ip);
+    const step = await passwordStep(db, name, password, ip, captchaOrUndefined(captchaToken));
     if (!step.ok) return step;
 
     const { auth } = step;
