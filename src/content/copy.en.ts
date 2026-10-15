@@ -273,12 +273,18 @@ export const en: typeof lt = {
   },
 
   emailConfirm: {
+    askTitle: "Confirm your email",
+    askText: "Tap the button and the email address of your Gloumi account will be confirmed.",
+    confirm: "Confirm email",
+    confirming: "Confirming…",
     title: "Email confirmed",
     text: "Go back to the Gloumi app and sign in.",
     open: "Open the app",
     otherDevice: "Opened the email on another device? Nothing else to do – sign in in the app on the phone you signed up on.",
     errorTitle: "This link no longer works",
-    errorText: "This confirmation link has expired or has already been used. Open the app and ask for a new email.",
+    errorText:
+      "This link has expired or has already been used. If you have already confirmed your email, just sign in in the app. If not, enter the code from the email in the app or ask for a new email.",
+    failed: "Confirmation failed. Check your connection and try again.",
   },
 
   masterPage: {
