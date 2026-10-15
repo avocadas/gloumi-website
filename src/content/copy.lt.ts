@@ -294,6 +294,16 @@ export const lt = {
     home: "Apie Gloumi",
   },
 
+  /** Kur veda el. pašto patvirtinimo nuoroda (/auth/confirmed): ypač kai laiškas atidarytas kitame įrenginyje. */
+  emailConfirm: {
+    title: "El. paštas patvirtintas",
+    text: "Grįžkite į Gloumi programėlę ir prisijunkite.",
+    open: "Atidaryti programėlę",
+    otherDevice: "Laišką atidarėte kitame įrenginyje? Nieko daryti nereikia – prisijunkite programėlėje telefone, kuriame registravotės.",
+    errorTitle: "Nuoroda nebegalioja",
+    errorText: "Ši patvirtinimo nuoroda pasenusi arba jau panaudota. Atidarykite programėlę ir paprašykite naujo laiško.",
+  },
+
   /** Viešas meistro puslapis (#210, U-22; developeris K-W1, K-W2). */
   masterPage: {
     titleFemale: "Meistrė",

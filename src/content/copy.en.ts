@@ -272,6 +272,15 @@ export const en: typeof lt = {
     home: "About Gloumi",
   },
 
+  emailConfirm: {
+    title: "Email confirmed",
+    text: "Go back to the Gloumi app and sign in.",
+    open: "Open the app",
+    otherDevice: "Opened the email on another device? Nothing else to do – sign in in the app on the phone you signed up on.",
+    errorTitle: "This link no longer works",
+    errorText: "This confirmation link has expired or has already been used. Open the app and ask for a new email.",
+  },
+
   masterPage: {
     titleFemale: "Master",
     titleMale: "Master",
