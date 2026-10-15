@@ -4,7 +4,7 @@
  *
  * Source of truth: gloumi-app/src/constants/legal.js in the Gloumi app
  * repository (Terms and Privacy 1.18, 2026-10-15; Terms for Masters and
- * Salons 1.5, 2026-10-13). The app shows this same text in
+ * Salons 1.5, 2026-10-15). The app shows this same text in
  * its LegalModal and App Store Connect points at the public copy, so the two
  * must never drift: change legal.js, then regenerate this file.
  *
@@ -29,7 +29,7 @@ export const LEGAL_META = {
 /** The Terms for Masters and Salons are versioned on their own; masters already working must accept by requiredFrom. */
 export const PARTNER_META = {
   "version": "1.5",
-  "lastUpdated": "2026-10-13",
+  "lastUpdated": "2026-10-15",
   "requiredFrom": "2026-10-13"
 } as const;
 
