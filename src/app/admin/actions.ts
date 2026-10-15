@@ -769,3 +769,43 @@ export async function loadReportCopy(
     return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
   }
 }
+
+/** Programėlės build'ų ribos (`min_supported_build`): privaloma ir naujausia, abiem platformoms. */
+export type AppBuilds = { ios: number; android: number; latest_ios: number; latest_android: number };
+
+const APP_BUILD_ERRORS: Record<string, string> = {
+  bad_platform: "Netinkama platforma.",
+  bad_kind: "Netinkama reikšmės rūšis.",
+  bad_build: "Build numeris turi būti sveikasis skaičius nuo 0 iki 999999.",
+};
+
+/**
+ * Keičia privalomą (`min`) arba naujausią (`latest`) programėlės build'ą
+ * (Gloumi `20261015231733`, developeris 2026-10-16: priverstinis ir švelnus
+ * atnaujinimas). Patvirtinimą su dabartine ir nauja reikšme prašo puslapis
+ * (security); žurnale `set_app_build` su `was`, kad būtų kaip grąžinti.
+ */
+export async function setAppBuild(
+  platform: string,
+  kind: string,
+  build: number,
+): Promise<{ ok: true; builds: AppBuilds } | { ok: false; error: string }> {
+  try {
+    const admin = await requireAdmin();
+    if ((platform !== "ios" && platform !== "android") || (kind !== "min" && kind !== "latest")) {
+      return { ok: false, error: "Netinkamas prašymas." };
+    }
+    if (!Number.isInteger(build) || build < 0 || build > 999999) return { ok: false, error: APP_BUILD_ERRORS.bad_build };
+    const db = createSupabaseAdminClient();
+    const { data, error } = await db.rpc("admin_set_app_build", {
+      _admin_id: admin.userId,
+      _platform: platform,
+      _kind: kind,
+      _build: build,
+    });
+    if (error) return { ok: false, error: APP_BUILD_ERRORS[error.message] ?? dbError(error.message) };
+    return { ok: true, builds: data as AppBuilds };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
+  }
+}
