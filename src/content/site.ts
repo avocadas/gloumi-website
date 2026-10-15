@@ -13,6 +13,11 @@ export const site = {
   url: (process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") || "https://gloumi.lt") as string,
   email: "info@gloumi.lt",
   /**
+   * Help with the app (#137): the mailbox the app's „Pagalba“ screen gives.
+   * `email` stays the general and legal contact (the legal texts name it).
+   */
+  supportEmail: "support@gloumi.lt",
+  /**
    * The same number the app's legal texts give (`legal.js` `LEGAL_CONTROLLER`)
    * and Apple shows as the trader contact (#93): change all three together.
    */

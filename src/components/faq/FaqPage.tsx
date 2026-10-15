@@ -54,8 +54,8 @@ export function FaqPage({ lang }: { lang: Lang }) {
 
         <div className="mt-8 rounded-2xl bg-sand-100 px-5 py-4 text-sm leading-relaxed text-espresso-700">
           {copy.faq.intro}{" "}
-          <a href={`mailto:${site.email}`} className="font-medium text-terracotta-600 hover:underline">
-            {site.email}
+          <a href={`mailto:${site.supportEmail}`} className="font-medium text-terracotta-600 hover:underline">
+            {site.supportEmail}
           </a>
           .
         </div>
