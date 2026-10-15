@@ -4,7 +4,9 @@ import { SESSION_COOKIE_OPTIONS } from '@/lib/supabase/cookie-options';
 import { adminCsp, newNonce } from '@/lib/csp';
 
 /**
- * Middleware: sesijos atnaujinimas ir `/admin` uždarymas.
+ * Proxy (iki Next 16 – `middleware`; #121): sesijos atnaujinimas ir `/admin`
+ * uždarymas. Pervadinta be elgesio pakeitimų: tas pats `matcher`, ta pati CSP.
+ * Next 16 proxy visada vykdomas Node.js aplinkoje.
  *
  * KODĖL SESIJA ATNAUJINAMA BŪTENT ČIA
  * -----------------------------------
@@ -39,7 +41,7 @@ import { adminCsp, newNonce } from '@/lib/csp';
  * užklausos antraštė nieko neblokuoja. Ji perrašoma visada, kad kliento
  * atsiųsta reikšmė nepadiktuotų nonce'o.
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const nonce = newNonce();
   const csp = adminCsp(nonce, process.env.NODE_ENV === 'development');
 

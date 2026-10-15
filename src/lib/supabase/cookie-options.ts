@@ -2,7 +2,7 @@ import type { CookieOptionsWithName } from '@supabase/ssr';
 
 /**
  * Sesijos slapukų nustatymai abiem serverio Supabase klientams: middleware'o
- * (`src/middleware.ts`) ir Server Components (`./server.ts`).
+ * (`src/proxy.ts`) ir Server Components (`./server.ts`).
  *
  * KODĖL `httpOnly`
  * ----------------

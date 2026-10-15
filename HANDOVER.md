@@ -289,7 +289,7 @@ Dar viena riba — Vercel ugniasienės taisyklė „Admin login rate limit“
 **Sargas** `src/lib/admin-guard.ts` `checkAdmin()`: prisijungęs? →
 `admin_ids` (servisiniu raktu) → `aal2` → ne daugiau 12 val. nuo kodo
 įvedimo. Ne administratorius gauna 404, administratorius su pasenusia ar vien
-slaptažodžio sesija — `MfaNotice`. `src/middleware.ts`
+slaptažodžio sesija — `MfaNotice`. `src/proxy.ts`
 (`matcher: /admin/:path*`) atnaujina sesijos slapukus ir neprisijungusį siunčia
 į `/admin/login?next=`.
 
@@ -506,7 +506,7 @@ VII.14). Neprisijungus saugu patikrinti tik vieną dalyką, viena užklausa:
 
 - Po prisijungimo `?next=` išlaiko tik kelią: `/admin/data?table=posts` →
   `/admin/data` (middleware užklausą palieka prisijungimo adrese).
-- `middleware.ts` → `proxy.ts` (Next 16 perspėjimas).
+- ~~`middleware.ts` → `proxy.ts`~~ – padaryta 2026-10-15 (#121), elgesys tas pats.
 - Supabase Pro → nutekėjusių slaptažodžių apsauga; Vercel Spend Management
   perspėjimas.
 - Gloumi `ringaudas-prod` → `prod` su `d9c49f5` ir `012e718` (VI.1.3, prieš
