@@ -21,8 +21,19 @@ const TOKEN_HASH = /^[A-Za-z0-9_-]{20,200}$/;
  * once (`scope: "local"` – this one only, not their app's) and never reaches
  * the browser or the app (security).
  */
-export async function confirmEmail(tokenHash: unknown): Promise<ConfirmResult> {
+/*
+ * The kinds this page verifies (db `office/db-email-links`): sign-up ("email")
+ * and an email change ("email_change"). A whitelist checked here, on the
+ * server – whatever else the link says is refused. A magic link is never
+ * verified on the site: it signs in, and there is nothing to sign in to here
+ * (the page tells the person to open it in the app instead).
+ */
+const VERIFIABLE = new Set(["email", "email_change"]);
+export type ConfirmKind = "email" | "email_change";
+
+export async function confirmEmail(tokenHash: unknown, kind: unknown = "email"): Promise<ConfirmResult> {
   if (typeof tokenHash !== "string" || !TOKEN_HASH.test(tokenHash)) return "expired";
+  if (typeof kind !== "string" || !VERIFIABLE.has(kind)) return "expired";
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !key) return "failed";
@@ -31,7 +42,7 @@ export async function confirmEmail(tokenHash: unknown): Promise<ConfirmResult> {
     const db = createClient(url, key, {
       auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
     });
-    const { data, error } = await db.auth.verifyOtp({ token_hash: tokenHash, type: "email" });
+    const { data, error } = await db.auth.verifyOtp({ token_hash: tokenHash, type: kind as ConfirmKind });
     if (error) {
       // otp_expired / 403: expired or already used – GoTrue does not tell the two apart.
       const expired = error.code === "otp_expired" || error.status === 403 || error.status === 400;

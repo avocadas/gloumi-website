@@ -14,11 +14,21 @@ type Props = { copy: Copy["passwordReset"] };
  * a fragment never reaches a server, so no log holds it. Read once and kept,
  * because the address is cleared right after.
  */
-let token: string | null = null;
+let read: string | null = null;
 
-function readToken(): string {
-  if (token === null) token = new URLSearchParams(window.location.hash.replace(/^#/, "")).get("token_hash") ?? "";
-  return token;
+/*
+ * Token and kind as one string, "<kind>|<token>": "recovery" (also when the
+ * link has no type) or "invite" (db `office/db-email-links`); anything else
+ * is "unknown", shown as an expired link. The server checks the kind again.
+ */
+function readLink(): string {
+  if (read === null) {
+    const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+    const type = hash.get("type") ?? "recovery";
+    const kind = type === "recovery" || type === "invite" ? type : "unknown";
+    read = `${kind}|${hash.get("token_hash") ?? ""}`;
+  }
+  return read;
 }
 
 const subscribe = () => () => {};
@@ -27,7 +37,10 @@ const field =
   "mt-2 block h-12 w-full rounded-2xl bg-white px-4 text-base text-espresso-900 ring-1 ring-espresso-900/10 placeholder:text-espresso-400 focus:outline-none focus:ring-2 focus:ring-terracotta-500";
 
 export function ResetPassword({ copy }: Props) {
-  const tokenHash = useSyncExternalStore<string | null>(subscribe, readToken, () => null);
+  const link = useSyncExternalStore<string | null>(subscribe, readLink, () => null);
+  const kind = link === null ? "recovery" : link.slice(0, link.indexOf("|"));
+  const tokenHash = link === null ? null : link.slice(link.indexOf("|") + 1);
+  const invite = kind === "invite";
   const [password, setPassword] = useState("");
   const [repeat, setRepeat] = useState("");
   const [code, setCode] = useState("");
@@ -90,14 +103,14 @@ export function ResetPassword({ copy }: Props) {
     if (password !== repeat) return setProblem(copy.mismatch);
     if (needCode && !/^\d{6}$/.test(code)) return setProblem(copy.badCode);
     startTransition(async () => {
-      handle(step ? await finishReset(step, password, needCode ? code : null) : await resetPassword(tokenHash, password));
+      handle(step ? await finishReset(step, password, needCode ? code : null) : await resetPassword(tokenHash, password, kind));
     });
   };
 
   if (state === "done") {
     return (
       <div className="text-center">
-        <h1 className={heading}>{copy.doneTitle}</h1>
+        <h1 className={heading}>{invite ? copy.inviteDoneTitle : copy.doneTitle}</h1>
         <p className={lead}>{copy.doneText}</p>
         <ButtonLink href={`${APP_SCHEME}://`} size="lg" className="mt-8">
           {copy.open}
@@ -106,11 +119,11 @@ export function ResetPassword({ copy }: Props) {
     );
   }
 
-  if (state === "expired" || tokenHash === "") {
+  if (state === "expired" || tokenHash === "" || kind === "unknown") {
     return (
       <div className="text-center">
         <h1 className={heading}>{copy.errorTitle}</h1>
-        <p className={lead}>{copy.errorText}</p>
+        <p className={lead}>{invite ? copy.inviteErrorText : copy.errorText}</p>
         <ButtonLink href={`${APP_SCHEME}://`} size="lg" className="mt-8">
           {copy.open}
         </ButtonLink>
@@ -120,8 +133,8 @@ export function ResetPassword({ copy }: Props) {
 
   return (
     <div className="mx-auto max-w-md">
-      <h1 className={`${heading} text-center`}>{copy.title}</h1>
-      <p className={`${lead} text-center`}>{needCode ? copy.codeText : copy.text}</p>
+      <h1 className={`${heading} text-center`}>{invite ? copy.inviteTitle : copy.title}</h1>
+      <p className={`${lead} text-center`}>{needCode ? copy.codeText : invite ? copy.inviteText : copy.text}</p>
       <form onSubmit={submit} className="mt-8 space-y-4 text-left">
         <label className="block">
           <span className="text-sm font-semibold text-espresso-900">{copy.password}</span>
@@ -179,7 +192,7 @@ export function ResetPassword({ copy }: Props) {
           </p>
         ) : null}
         <Button type="submit" size="lg" className="w-full" disabled={pending || tokenHash === null}>
-          {pending ? copy.submitting : copy.submit}
+          {pending ? copy.submitting : invite ? copy.inviteSubmit : copy.submit}
         </Button>
       </form>
     </div>

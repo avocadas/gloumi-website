@@ -73,14 +73,19 @@ async function setPassword(db: SupabaseClient, password: string, step: string): 
  * the browser can neither read nor use it. No cookies, no storage, nothing
  * to the app; the token, the password and the code are never logged.
  */
-export async function resetPassword(tokenHash: unknown, password: unknown): Promise<ResetAnswer> {
+/** Recovery or an invitation (db `office/db-email-links`) – a whitelist checked here, never taken as is from the link. */
+const RESET_KINDS = new Set(["recovery", "invite"]);
+export type ResetKind = "recovery" | "invite";
+
+export async function resetPassword(tokenHash: unknown, password: unknown, kind: unknown = "recovery"): Promise<ResetAnswer> {
   if (typeof tokenHash !== "string" || !TOKEN_HASH.test(tokenHash)) return { result: "expired" };
+  if (typeof kind !== "string" || !RESET_KINDS.has(kind)) return { result: "expired" };
   if (typeof password !== "string" || tooLong(password) || !isStrongPassword(password)) return { result: "weak" };
   const db = freshClient();
   if (!db) return { result: "failed" };
 
   try {
-    const { data, error } = await db.auth.verifyOtp({ token_hash: tokenHash, type: "recovery" });
+    const { data, error } = await db.auth.verifyOtp({ token_hash: tokenHash, type: kind as ResetKind });
     if (error || !data.session) {
       const expired = !error || error.code === "otp_expired" || error.status === 403 || error.status === 400;
       if (!expired) console.warn("[reset-password] verify", error?.code ?? error?.status ?? "error");

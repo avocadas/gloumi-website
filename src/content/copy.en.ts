@@ -285,6 +285,16 @@ export const en: typeof lt = {
     errorText:
       "This link has expired (it works for 10 minutes) or has already been used. If you have already confirmed your email, just sign in in the app. If not, enter the code from the email in the app or ask for a new email.",
     failed: "Confirmation failed. Check your connection and try again.",
+    changeAskTitle: "Confirm the email change",
+    changeAskText: "Tap the button to confirm the new email address of your Gloumi account.",
+    changeConfirm: "Confirm the change",
+    changeTitle: "Confirmed",
+    changeText: "If you also received this email at your other address, confirm it there too – then your email will change.",
+    changeErrorText:
+      "This link has expired (it works for 10 minutes) or has already been used. If you have already confirmed the change, there is nothing else to do. If not, change your email again in the app's settings.",
+    magicTitle: "Open it in the app",
+    magicText:
+      "This sign-in link works only in the Gloumi app. Open the email on the phone where the app is installed, or enter the code from the email in the app.",
   },
 
   passwordReset: {
@@ -312,6 +322,11 @@ export const en: typeof lt = {
     errorText:
       "This link has expired (it works for 10 minutes) or has already been used. Ask for a new one in the app or enter the code from the email.",
     failed: "The change failed. Check your connection and try again.",
+    inviteTitle: "Create your password",
+    inviteText: "You have been invited to Gloumi. Create a password for your account.",
+    inviteSubmit: "Create password",
+    inviteDoneTitle: "Password created",
+    inviteErrorText: "This invitation link has expired or has already been used. Ask the person who invited you to send a new one.",
   },
 
   masterPage: {

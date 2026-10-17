@@ -317,6 +317,18 @@ export const lt = {
     errorText:
       "Ši nuoroda pasenusi (galioja 10 min.) arba jau panaudota. Jei paštą jau patvirtinote – tiesiog prisijunkite programėlėje. Jei ne – įveskite kodą iš laiško programėlėje arba užsisakykite naują laišką.",
     failed: "Patvirtinti nepavyko. Patikrinkite ryšį ir bandykite dar kartą.",
+    // El. pašto keitimas (type=email_change): Supabase laišką siunčia abiem adresams.
+    changeAskTitle: "Patvirtinkite el. pašto keitimą",
+    changeAskText: "Paspauskite mygtuką, kad patvirtintumėte naują Gloumi paskyros el. paštą.",
+    changeConfirm: "Patvirtinti keitimą",
+    changeTitle: "Patvirtinta",
+    changeText: "Jei laišką gavote ir kitu adresu, patvirtinkite ir ten – tada el. paštas pasikeis.",
+    changeErrorText:
+      "Ši nuoroda pasenusi (galioja 10 min.) arba jau panaudota. Jei el. pašto keitimą jau patvirtinote – nieko daryti nereikia. Jei ne – programėlės nustatymuose pakeiskite el. paštą dar kartą.",
+    // Prisijungimo nuoroda (type=magiclink): svetainėje netikrinama – prisijungti galima tik programėlėje.
+    magicTitle: "Atidarykite programėlėje",
+    magicText:
+      "Ši prisijungimo nuoroda veikia tik Gloumi programėlėje. Atidarykite laišką telefone, kuriame įdiegta programėlė, arba įveskite kodą iš laiško programėlėje.",
   },
 
   /** Slaptažodžio atkūrimo nuoroda (/auth/reset): naujas slaptažodis naršyklėje. */
@@ -345,6 +357,12 @@ export const lt = {
     errorText:
       "Ši nuoroda pasenusi (galioja 10 min.) arba jau panaudota. Programėlėje paprašykite naujos arba įveskite kodą iš laiško.",
     failed: "Pakeisti nepavyko. Patikrinkite ryšį ir bandykite dar kartą.",
+    // Kvietimas (type=invite): ta pati forma, kitas pavadinimas.
+    inviteTitle: "Susikurkite slaptažodį",
+    inviteText: "Jus pakvietė į Gloumi. Susikurkite paskyros slaptažodį.",
+    inviteSubmit: "Sukurti slaptažodį",
+    inviteDoneTitle: "Slaptažodis sukurtas",
+    inviteErrorText: "Ši kvietimo nuoroda pasenusi arba jau panaudota. Paprašykite kvietusio žmogaus atsiųsti naują.",
   },
 
   /** Viešas meistro puslapis (#210, U-22; developeris K-W1, K-W2). */
