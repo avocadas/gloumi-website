@@ -42,7 +42,8 @@ export const site = {
 
   /** Social profiles – rendered in the footer only when set. */
   social: {
-    instagram: null as string | null,
+    // Developer, 2026-10-18: Instagram only, no Facebook. Also in the JSON-LD sameAs.
+    instagram: "https://www.instagram.com/gloumi.lt/" as string | null,
     facebook: null as string | null,
     tiktok: null as string | null,
   },
