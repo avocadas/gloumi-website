@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { LANGS, legalPath, homePath } from "@/content/lang";
 import { FAQ_UPDATED } from "@/content/faq";
 import { LEGAL_META, LEGAL_ROUTES, PARTNER_META } from "@/content/legal";
+import { LEGAL_TRANSLATIONS } from "@/content/legal-translations";
 import { site } from "@/content/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -31,5 +32,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.4,
     }))
   );
-  return [...homes, ...docs];
+  // The Terms and Privacy Policy translations (K-ES2): /legal/<lang>/terms and /privacy, same date as the originals.
+  const translations = LEGAL_TRANSLATIONS.flatMap((t) =>
+    (["terms", "privacy"] as const).map((doc) => ({
+      url: `${site.url}/legal/${t.lang}/${doc}`,
+      lastModified: legalDate,
+      changeFrequency: "yearly" as const,
+      priority: 0.3,
+    }))
+  );
+  return [...homes, ...docs, ...translations];
 }
