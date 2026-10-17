@@ -341,4 +341,12 @@ export const en: typeof lt = {
     text: "The link may have changed, or the page was moved.",
     cta: "Back to the home page",
   },
+
+  errorPage: {
+    eyebrow: "Error",
+    title: "Something went wrong",
+    text: "We could not show this page. Try again in a moment – if it keeps happening, write to us.",
+    retry: "Try again",
+    home: "Back to the home page",
+  },
 };

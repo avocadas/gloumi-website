@@ -27,6 +27,11 @@ const nextConfig: NextConfig = {
    * the same quality.
    */
   images: { formats: ["image/avif", "image/webp"] },
+  /*
+   * Savas 404 adresams, kurių neatitinka joks maršrutas (`src/app/global-not-found.tsx`):
+   * su keliais šakniniais išdėstymais kitaip rodomas Next numatytasis.
+   */
+  experimental: { globalNotFound: true },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

@@ -279,6 +279,15 @@ export const lt = {
     text: "Nuoroda galėjo pasikeisti arba puslapis buvo perkeltas.",
     cta: "Grįžti į pradžią",
   },
+
+  /** Kai puslapis nulūžta (error.tsx): savas Gloumi langas, ne naršyklės ar Next numatytasis. */
+  errorPage: {
+    eyebrow: "Klaida",
+    title: "Kažkas nepavyko",
+    text: "Puslapio nepavyko parodyti. Bandykite dar kartą po akimirkos – jei kartojasi, parašykite mums.",
+    retry: "Bandyti dar kartą",
+    home: "Grįžti į pradžią",
+  },
   /*
    * Puslapiai, į kuriuos veda programėlės dalinimosi nuorodos (#210), kai
    * programėlės telefone nėra arba nuoroda atidaryta naršyklėje.
