@@ -9,19 +9,16 @@ import { confirmEmail, type ConfirmResult } from "./actions";
 type Props = { copy: Copy["emailConfirm"] };
 
 /*
- * The token is read in the browser only, from after `#` (never sent to any
- * server, so no log holds it) or, for a template that puts it in the query,
- * from there. Read once and kept: the address is cleared right after, and a
- * later render must not lose it. `""` – the link carries no token.
+ * The token is read in the browser only, and only from after `#` (security):
+ * a fragment never reaches a server, so no log holds it. The db template has
+ * put it there since 01fd1c03; a token in the query is ignored. Read once and
+ * kept: the address is cleared right after, and a later render must not lose
+ * it. `""` – the link carries no token.
  */
 let token: string | null = null;
 
 function readToken(): string {
-  if (token === null) {
-    const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-    const query = new URLSearchParams(window.location.search);
-    token = hash.get("token_hash") ?? query.get("token_hash") ?? "";
-  }
+  if (token === null) token = new URLSearchParams(window.location.hash.replace(/^#/, "")).get("token_hash") ?? "";
   return token;
 }
 
