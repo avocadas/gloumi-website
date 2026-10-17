@@ -10,7 +10,7 @@
  * Team ID 633UGQQGS4 – measured by the release role from the EAS production
  * iOS build log (2026-10-07). The paths are the ones the app claims in
  * app.config.js (`ios.associatedDomains`, Android `intentFilters`):
- * /profile/<id> and /ref. Both store and dev builds are listed, so the dev
+ * /profile/<id>, /ref and /auth/reset. Both store and dev builds are listed, so the dev
  * client can be tested against the live site.
  */
 const APP_IDS = ["633UGQQGS4.com.ringaudas.gloumi", "633UGQQGS4.com.ringaudas.gloumi.dev"];
@@ -20,7 +20,13 @@ const ASSOCIATION = {
     details: [
       {
         appIDs: APP_IDS,
-        components: [{ "/": "/profile/*" }, { "/": "/ref" }],
+        /*
+         * /auth/reset (security, 2026-10-17): the password recovery link opens
+         * the app's reset screen instead of a scheme link carrying the token –
+         * a universal link is tied to gloumi.lt, which no other app can claim.
+         * The #token_hash fragment reaches the app with the URL.
+         */
+        components: [{ "/": "/profile/*" }, { "/": "/ref" }, { "/": "/auth/reset" }],
       },
     ],
   },
