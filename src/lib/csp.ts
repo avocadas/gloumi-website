@@ -56,6 +56,27 @@ export function adminCsp(nonce: string, dev: boolean): string {
   ].join('; ');
 }
 
+/**
+ * Pašto patvirtinimo ir slaptažodžio atkūrimo puslapiai (`/auth/*`,
+ * `/patvirtinta`; security 2026-10-17): griežta ir PRIVALOMA, ne tik stebima –
+ * tik savi skriptai su nonce'u, jokių trečiųjų šalių, jokio įrėminimo.
+ * Paveikslėliai – tik savi (be R2), formos – tik į save.
+ */
+export function authCsp(nonce: string, dev: boolean): string {
+  return [
+    "default-src 'self'",
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${dev ? " 'unsafe-eval'" : ''}`,
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data:",
+    "font-src 'self'",
+    "connect-src 'self'",
+    "object-src 'none'",
+    "base-uri 'none'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+  ].join('; ');
+}
+
 /** 128 bitų, kiekvienai užklausai naujas: atspėtas nonce'as atidarytų skriptus. */
 export function newNonce(): string {
   const bytes = new Uint8Array(16);

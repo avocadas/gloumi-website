@@ -4,24 +4,20 @@ import { useEffect, useState, useSyncExternalStore, useTransition } from "react"
 import { Button, ButtonLink } from "@/components/ui/Button";
 import type { Copy } from "@/content/copy";
 import { APP_SCHEME } from "../../codes";
-import { resetPassword, type ResetResult } from "./actions";
+import { finishReset, resetPassword, type ResetAnswer } from "./actions";
 import { isStrongPassword } from "./password";
 
 type Props = { copy: Copy["passwordReset"] };
 
 /*
- * The token is read in the browser only, from after `#` (never sent to a
- * server, so no log holds it) or, for an older template, from the query.
- * Read once and kept: the address is cleared right after.
+ * The token is read in the browser only, and only from after `#` (security):
+ * a fragment never reaches a server, so no log holds it. Read once and kept,
+ * because the address is cleared right after.
  */
 let token: string | null = null;
 
 function readToken(): string {
-  if (token === null) {
-    const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-    const query = new URLSearchParams(window.location.search);
-    token = hash.get("token_hash") ?? query.get("token_hash") ?? "";
-  }
+  if (token === null) token = new URLSearchParams(window.location.hash.replace(/^#/, "")).get("token_hash") ?? "";
   return token;
 }
 
@@ -34,9 +30,13 @@ export function ResetPassword({ copy }: Props) {
   const tokenHash = useSyncExternalStore<string | null>(subscribe, readToken, () => null);
   const [password, setPassword] = useState("");
   const [repeat, setRepeat] = useState("");
+  const [code, setCode] = useState("");
   const [visible, setVisible] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
-  const [result, setResult] = useState<ResetResult | null>(null);
+  // After the first POST: the sealed step (opaque to the browser) and whether a TOTP code is needed.
+  const [step, setStep] = useState<string | null>(null);
+  const [needCode, setNeedCode] = useState(false);
+  const [state, setState] = useState<"form" | "done" | "expired">("form");
   const [pending, startTransition] = useTransition();
 
   // Keep the token out of the browser history and out of any referrer.
@@ -47,27 +47,52 @@ export function ResetPassword({ copy }: Props) {
   const heading = "mx-auto max-w-xl font-serif text-4xl font-medium text-espresso-900 text-balance sm:text-5xl";
   const lead = "mx-auto mt-4 max-w-md leading-relaxed text-espresso-500 text-pretty";
 
+  const handle = (answer: ResetAnswer) => {
+    if (answer.step) setStep(answer.step);
+    switch (answer.result) {
+      case "done":
+        setPassword("");
+        setRepeat("");
+        setCode("");
+        setState("done");
+        return;
+      case "expired":
+        setState("expired");
+        return;
+      case "need_code":
+        setNeedCode(true);
+        setProblem(null);
+        return;
+      case "bad_code":
+        setCode("");
+        setProblem(copy.badCode);
+        return;
+      case "pwned":
+        setProblem(copy.pwned);
+        return;
+      case "same":
+        setProblem(copy.same);
+        return;
+      case "weak":
+        setProblem(copy.weak);
+        return;
+      default:
+        setProblem(copy.failed);
+    }
+  };
+
   const submit = (event: React.FormEvent) => {
     event.preventDefault();
     setProblem(null);
     if (!isStrongPassword(password)) return setProblem(copy.weak);
     if (password !== repeat) return setProblem(copy.mismatch);
+    if (needCode && !/^\d{6}$/.test(code)) return setProblem(copy.badCode);
     startTransition(async () => {
-      const res = await resetPassword(tokenHash, password);
-      setPassword("");
-      setRepeat("");
-      if (res === "weak" || res === "same") {
-        // GoTrue refused it after the link was verified: the link is used up now.
-        setProblem(`${res === "weak" ? copy.weak : copy.same} ${copy.usedNote}`);
-        setResult("expired");
-        return;
-      }
-      if (res === "failed") return setProblem(copy.failed);
-      setResult(res);
+      handle(step ? await finishReset(step, password, needCode ? code : null) : await resetPassword(tokenHash, password));
     });
   };
 
-  if (result === "done") {
+  if (state === "done") {
     return (
       <div className="text-center">
         <h1 className={heading}>{copy.doneTitle}</h1>
@@ -79,11 +104,11 @@ export function ResetPassword({ copy }: Props) {
     );
   }
 
-  if (result === "expired" || tokenHash === "") {
+  if (state === "expired" || tokenHash === "") {
     return (
       <div className="text-center">
         <h1 className={heading}>{copy.errorTitle}</h1>
-        <p className={lead}>{problem ?? copy.errorText}</p>
+        <p className={lead}>{copy.errorText}</p>
         <ButtonLink href={`${APP_SCHEME}://`} size="lg" className="mt-8">
           {copy.open}
         </ButtonLink>
@@ -94,7 +119,7 @@ export function ResetPassword({ copy }: Props) {
   return (
     <div className="mx-auto max-w-md">
       <h1 className={`${heading} text-center`}>{copy.title}</h1>
-      <p className={`${lead} text-center`}>{copy.text}</p>
+      <p className={`${lead} text-center`}>{needCode ? copy.codeText : copy.text}</p>
       <form onSubmit={submit} className="mt-8 space-y-4 text-left">
         <label className="block">
           <span className="text-sm font-semibold text-espresso-900">{copy.password}</span>
@@ -130,6 +155,22 @@ export function ResetPassword({ copy }: Props) {
             {visible ? copy.hide : copy.show}
           </button>
         </div>
+        {needCode ? (
+          <label className="block">
+            <span className="text-sm font-semibold text-espresso-900">{copy.code}</span>
+            <input
+              type="text"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              required
+              maxLength={6}
+              placeholder="000000"
+              value={code}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+              className={`${field} text-center tabular-nums tracking-[0.4em]`}
+            />
+          </label>
+        ) : null}
         {problem ? (
           <p role="alert" className="text-sm font-medium text-terracotta-700">
             {problem}

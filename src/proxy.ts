@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { SESSION_COOKIE_OPTIONS } from '@/lib/supabase/cookie-options';
-import { adminCsp, newNonce } from '@/lib/csp';
+import { adminCsp, authCsp, newNonce } from '@/lib/csp';
 
 /**
  * Proxy (iki Next 16 – `middleware`; #121): sesijos atnaujinimas ir `/admin`
@@ -33,6 +33,8 @@ import { adminCsp, newNonce } from '@/lib/csp';
  * Visa kita svetainė yra statiniai rinkodaros ir teisiniai puslapiai be
  * jokios sesijos. Paleidus middleware ant jų, kiekvienas lankytojas gautų
  * Supabase kvietimą už nieką, o puslapiai nustotų būti visiškai statiniai.
+ * Išimtis – `/auth/*` ir `/patvirtinta` (pašto patvirtinimas, slaptažodžio
+ * atkūrimas): ten Supabase nekviečiamas, tik uždedama griežta CSP su nonce'u.
  *
  * CSP (`src/lib/csp.ts`)
  * ----------------------
@@ -43,7 +45,20 @@ import { adminCsp, newNonce } from '@/lib/csp';
  */
 export async function proxy(request: NextRequest) {
   const nonce = newNonce();
-  const csp = adminCsp(nonce, process.env.NODE_ENV === 'development');
+  const dev = process.env.NODE_ENV === 'development';
+
+  // Pašto patvirtinimas ir slaptažodžio atkūrimas: be sesijos, tik griežta CSP (privaloma).
+  const { pathname: path } = request.nextUrl;
+  if (path.startsWith('/auth/') || path === '/patvirtinta') {
+    const policy = authCsp(nonce, dev);
+    const headers = new Headers(request.headers);
+    headers.set('content-security-policy', policy);
+    const res = NextResponse.next({ request: { headers } });
+    res.headers.set('Content-Security-Policy', policy);
+    return res;
+  }
+
+  const csp = adminCsp(nonce, dev);
 
   // Antraštės kopijuojamos kiekvieną kartą iš naujo: `setAll` pakeičia
   // `request` slapukus, ir Server Components turi gauti jau atnaujintą žetoną.
@@ -97,5 +112,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin/:path*', '/auth/:path*', '/patvirtinta'],
 };
