@@ -24,6 +24,13 @@ const ASSOCIATION = {
       },
     ],
   },
+  /*
+   * Passwords and passkeys: iOS offers to save and fill the Gloumi account's
+   * password in the app, tied to gloumi.lt (developer through qa, 2026-10-17:
+   * Apple did not offer to save the password). The app adds
+   * `webcredentials:gloumi.lt` to its associated domains.
+   */
+  webcredentials: { apps: APP_IDS },
 };
 
 export const dynamic = "force-static";
