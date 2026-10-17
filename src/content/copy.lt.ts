@@ -306,7 +306,7 @@ export const lt = {
   /** El. pašto patvirtinimo nuoroda (/patvirtinta): patvirtinama paspaudus, ypač kai laiškas atidarytas kitame įrenginyje. */
   emailConfirm: {
     askTitle: "Patvirtinkite el. paštą",
-    askText: "Paspauskite mygtuką – ir Jūsų Gloumi paskyros el. paštas bus patvirtintas.",
+    askText: "Paspauskite mygtuką – ir jūsų Gloumi paskyros el. paštas bus patvirtintas.",
     confirm: "Patvirtinti el. paštą",
     confirming: "Tvirtinama…",
     title: "El. paštas patvirtintas",
@@ -347,9 +347,9 @@ export const lt = {
     same: "Naujas slaptažodis turi skirtis nuo ankstesnio.",
     tooLong: "Slaptažodis per ilgas – sutrumpinkite jį.",
     pwned: "Šis slaptažodis rastas tarp nutekėjusių slaptažodžių – pasirinkite kitą.",
-    code: "Dviejų veiksnių kodas",
-    codeText: "Jūsų paskyroje įjungtas antras veiksnys. Įveskite šešių skaitmenų kodą iš autentifikatoriaus programėlės.",
-    badCode: "Kodas netinka. Įveskite naują kodą iš autentifikatoriaus.",
+    code: "Kodas iš autentifikavimo programėlės",
+    codeText: "Jūsų paskyrą saugo dviejų veiksnių autentifikacija. Įveskite šešių skaitmenų kodą iš autentifikavimo programėlės.",
+    badCode: "Kodas netinka. Įveskite naują kodą iš autentifikavimo programėlės.",
     doneTitle: "Slaptažodis pakeistas",
     doneText: "Grįžkite į Gloumi programėlę ir prisijunkite nauju slaptažodžiu.",
     open: "Atidaryti programėlę",
@@ -358,8 +358,8 @@ export const lt = {
       "Ši nuoroda pasenusi (galioja 10 min.) arba jau panaudota. Programėlėje paprašykite naujos arba įveskite kodą iš laiško.",
     failed: "Pakeisti nepavyko. Patikrinkite ryšį ir bandykite dar kartą.",
     // Kvietimas (type=invite): ta pati forma, kitas pavadinimas.
-    inviteTitle: "Susikurkite slaptažodį",
-    inviteText: "Jus pakvietė į Gloumi. Susikurkite paskyros slaptažodį.",
+    inviteTitle: "Sukurkite slaptažodį",
+    inviteText: "Jus pakvietė į Gloumi. Sukurkite paskyros slaptažodį.",
     inviteSubmit: "Sukurti slaptažodį",
     inviteDoneTitle: "Slaptažodis sukurtas",
     inviteErrorText: "Ši kvietimo nuoroda pasenusi arba jau panaudota. Paprašykite kvietusio žmogaus atsiųsti naują.",
