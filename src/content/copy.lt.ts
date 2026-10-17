@@ -315,8 +315,32 @@ export const lt = {
     otherDevice: "Laišką atidarėte kitame įrenginyje? Nieko daryti nereikia – prisijunkite programėlėje telefone, kuriame registravotės.",
     errorTitle: "Nuoroda nebegalioja",
     errorText:
-      "Ši nuoroda pasenusi arba jau panaudota. Jei paštą jau patvirtinote – tiesiog prisijunkite programėlėje. Jei ne – įveskite kodą iš laiško programėlėje arba užsisakykite naują laišką.",
+      "Ši nuoroda pasenusi (galioja 10 min.) arba jau panaudota. Jei paštą jau patvirtinote – tiesiog prisijunkite programėlėje. Jei ne – įveskite kodą iš laiško programėlėje arba užsisakykite naują laišką.",
     failed: "Patvirtinti nepavyko. Patikrinkite ryšį ir bandykite dar kartą.",
+  },
+
+  /** Slaptažodžio atkūrimo nuoroda (/auth/reset): naujas slaptažodis naršyklėje. */
+  passwordReset: {
+    title: "Naujas slaptažodis",
+    text: "Įveskite naują Gloumi paskyros slaptažodį.",
+    password: "Naujas slaptažodis",
+    repeat: "Pakartokite slaptažodį",
+    rules: "Bent 8 simboliai: mažoji ir didžioji raidė, skaitmuo ir simbolis.",
+    show: "Rodyti",
+    hide: "Slėpti",
+    submit: "Pakeisti slaptažodį",
+    submitting: "Keičiama…",
+    mismatch: "Slaptažodžiai nesutampa.",
+    weak: "Slaptažodis per silpnas: reikia bent 8 simbolių, mažosios ir didžiosios raidės, skaitmens ir simbolio.",
+    same: "Naujas slaptažodis turi skirtis nuo ankstesnio.",
+    usedNote: "Ši nuoroda jau panaudota – programėlėje paprašykite naujos.",
+    doneTitle: "Slaptažodis pakeistas",
+    doneText: "Grįžkite į Gloumi programėlę ir prisijunkite nauju slaptažodžiu.",
+    open: "Atidaryti programėlę",
+    errorTitle: "Nuoroda nebegalioja",
+    errorText:
+      "Ši nuoroda pasenusi (galioja 10 min.) arba jau panaudota. Programėlėje paprašykite naujos arba įveskite kodą iš laiško.",
+    failed: "Pakeisti nepavyko. Patikrinkite ryšį ir bandykite dar kartą.",
   },
 
   /** Viešas meistro puslapis (#210, U-22; developeris K-W1, K-W2). */

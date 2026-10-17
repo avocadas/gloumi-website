@@ -283,8 +283,31 @@ export const en: typeof lt = {
     otherDevice: "Opened the email on another device? Nothing else to do – sign in in the app on the phone you signed up on.",
     errorTitle: "This link no longer works",
     errorText:
-      "This link has expired or has already been used. If you have already confirmed your email, just sign in in the app. If not, enter the code from the email in the app or ask for a new email.",
+      "This link has expired (it works for 10 minutes) or has already been used. If you have already confirmed your email, just sign in in the app. If not, enter the code from the email in the app or ask for a new email.",
     failed: "Confirmation failed. Check your connection and try again.",
+  },
+
+  passwordReset: {
+    title: "New password",
+    text: "Enter a new password for your Gloumi account.",
+    password: "New password",
+    repeat: "Repeat the password",
+    rules: "At least 8 characters: a lowercase and an uppercase letter, a digit and a symbol.",
+    show: "Show",
+    hide: "Hide",
+    submit: "Change password",
+    submitting: "Changing…",
+    mismatch: "The passwords do not match.",
+    weak: "This password is too weak: it needs at least 8 characters, a lowercase and an uppercase letter, a digit and a symbol.",
+    same: "The new password must differ from the old one.",
+    usedNote: "This link has now been used – ask for a new one in the app.",
+    doneTitle: "Password changed",
+    doneText: "Go back to the Gloumi app and sign in with your new password.",
+    open: "Open the app",
+    errorTitle: "This link no longer works",
+    errorText:
+      "This link has expired (it works for 10 minutes) or has already been used. Ask for a new one in the app or enter the code from the email.",
+    failed: "The change failed. Check your connection and try again.",
   },
 
   masterPage: {
