@@ -41,7 +41,8 @@ const statements = PACKAGES.filter((p) => p.fingerprints.length > 0).map((p) => 
   const bad = p.fingerprints.find((f) => !FINGERPRINT.test(f));
   if (bad) throw new Error(`assetlinks: ${p.name} fingerprint is not 32 colon-separated hex pairs: ${bad}`);
   return {
-    relation: ["delegate_permission/common.handle_all_urls"],
+    // handle_all_urls – App Links; get_login_creds – Android shares the saved gloumi.lt password with the app (security, LV 1).
+    relation: ["delegate_permission/common.handle_all_urls", "delegate_permission/common.get_login_creds"],
     target: { namespace: "android_app", package_name: p.name, sha256_cert_fingerprints: p.fingerprints },
   };
 });

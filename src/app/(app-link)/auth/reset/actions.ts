@@ -19,7 +19,10 @@ export type ResetAnswer = { result: ResetResult; step?: string };
 /** Supabase's `token_hash`: letters, digits, `-` and `_`; nothing else is sent on. */
 const TOKEN_HASH = /^[A-Za-z0-9_-]{20,200}$/;
 const TOTP_CODE = /^\d{6}$/;
-const MAX_PASSWORD = 72;
+/** bcrypt's limit is 72 BYTES, not characters: Lithuanian letters take two each in UTF-8 (security). */
+const MAX_PASSWORD_BYTES = 72;
+const STEP_PURPOSE = "reset";
+const tooLong = (password: string) => Buffer.byteLength(password, "utf8") > MAX_PASSWORD_BYTES;
 /** How long the sealed step lives: long enough to type a code or a new password. */
 const STEP_SECONDS = 300;
 
@@ -72,7 +75,7 @@ async function setPassword(db: SupabaseClient, password: string, step: string): 
  */
 export async function resetPassword(tokenHash: unknown, password: unknown): Promise<ResetAnswer> {
   if (typeof tokenHash !== "string" || !TOKEN_HASH.test(tokenHash)) return { result: "expired" };
-  if (typeof password !== "string" || password.length > MAX_PASSWORD || !isStrongPassword(password)) return { result: "weak" };
+  if (typeof password !== "string" || tooLong(password) || !isStrongPassword(password)) return { result: "weak" };
   const db = freshClient();
   if (!db) return { result: "failed" };
 
@@ -86,7 +89,7 @@ export async function resetPassword(tokenHash: unknown, password: unknown): Prom
 
     const { data: factors } = await db.auth.mfa.listFactors();
     const totp = factors?.totp?.find((f) => f.status === "verified") ?? null;
-    const step = seal({ a: data.session.access_token, r: data.session.refresh_token, f: totp?.id ?? null }, STEP_SECONDS);
+    const step = seal(STEP_PURPOSE, { a: data.session.access_token, r: data.session.refresh_token, f: totp?.id ?? null }, STEP_SECONDS);
     if (!step) return { result: "failed" };
     if (totp) return { result: "need_code", step };
     return await setPassword(db, password, step);
@@ -101,9 +104,9 @@ export async function resetPassword(tokenHash: unknown, password: unknown): Prom
  * the session to aal2, which updateUser then needs) and/or another password.
  */
 export async function finishReset(step: unknown, password: unknown, code: unknown): Promise<ResetAnswer> {
-  const opened = unseal<Step>(step);
+  const opened = unseal<Step>(STEP_PURPOSE, step);
   if (!opened || typeof opened.a !== "string" || typeof opened.r !== "string") return { result: "expired" };
-  if (typeof password !== "string" || password.length > MAX_PASSWORD || !isStrongPassword(password)) {
+  if (typeof password !== "string" || tooLong(password) || !isStrongPassword(password)) {
     return { result: "weak", step: step as string };
   }
   const db = freshClient();

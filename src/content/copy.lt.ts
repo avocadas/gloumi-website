@@ -333,6 +333,7 @@ export const lt = {
     mismatch: "Slaptažodžiai nesutampa.",
     weak: "Slaptažodis per silpnas: reikia bent 8 simbolių, mažosios ir didžiosios raidės, skaitmens ir simbolio.",
     same: "Naujas slaptažodis turi skirtis nuo ankstesnio.",
+    tooLong: "Slaptažodis per ilgas – sutrumpinkite jį.",
     pwned: "Šis slaptažodis rastas tarp nutekėjusių slaptažodžių – pasirinkite kitą.",
     code: "Dviejų veiksnių kodas",
     codeText: "Jūsų paskyroje įjungtas antras veiksnys. Įveskite šešių skaitmenų kodą iš autentifikatoriaus programėlės.",

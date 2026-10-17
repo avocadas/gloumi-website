@@ -300,6 +300,7 @@ export const en: typeof lt = {
     mismatch: "The passwords do not match.",
     weak: "This password is too weak: it needs at least 8 characters, a lowercase and an uppercase letter, a digit and a symbol.",
     same: "The new password must differ from the old one.",
+    tooLong: "This password is too long – make it shorter.",
     pwned: "This password has appeared in a data breach – choose another one.",
     code: "Two-factor code",
     codeText: "Your account has two-factor authentication on. Enter the six-digit code from your authenticator app.",

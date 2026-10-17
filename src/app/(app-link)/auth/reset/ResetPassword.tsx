@@ -84,6 +84,8 @@ export function ResetPassword({ copy }: Props) {
   const submit = (event: React.FormEvent) => {
     event.preventDefault();
     setProblem(null);
+    // bcrypt counts bytes (72), not letters: ą, č, ę take two each.
+    if (new TextEncoder().encode(password).length > 72) return setProblem(copy.tooLong);
     if (!isStrongPassword(password)) return setProblem(copy.weak);
     if (password !== repeat) return setProblem(copy.mismatch);
     if (needCode && !/^\d{6}$/.test(code)) return setProblem(copy.badCode);
