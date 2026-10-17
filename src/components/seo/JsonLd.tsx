@@ -9,15 +9,18 @@ import { site } from "@/content/site";
 export function JsonLd({ lang }: { lang: Lang }) {
   const copy = getCopy(lang);
   const orgId = `${site.url}/#organization`;
-  const sameAs = Object.values(site.social).filter((value): value is string => Boolean(value));
   const installUrl = [site.stores.appStore, site.stores.googlePlay].filter((value): value is string => Boolean(value));
+  // The brand's own profiles and store pages: Google ties them to the brand (the knowledge panel), so each one set counts.
+  const sameAs = [...Object.values(site.social), ...installUrl].filter((value): value is string => Boolean(value));
 
   const graph = [
     {
       "@type": "Organization",
       "@id": orgId,
-      name: site.legalName,
-      alternateName: site.name,
+      // The name people search for is the brand; the registered name is legalName (developer, 2026-10-18: "Gloumi" did not find the site).
+      name: site.name,
+      legalName: site.legalName,
+      alternateName: ["Gloumi LT", "gloumi.lt"],
       url: site.url,
       logo: `${site.url}/icons/icon-512.png`,
       email: site.email,
@@ -28,6 +31,7 @@ export function JsonLd({ lang }: { lang: Lang }) {
       "@id": `${site.url}/#website`,
       url: site.url,
       name: site.name,
+      alternateName: ["Gloumi LT", "gloumi.lt"],
       inLanguage: site.language,
       publisher: { "@id": orgId },
     },
