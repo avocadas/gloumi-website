@@ -58,7 +58,7 @@ export const lt = {
 
   hero: {
     eyebrow: "Grožio ir savijautos meistrai Lietuvoje",
-    titleStart: "Raskite grožio meistrą ir",
+    titleStart: "Gloumi – raskite grožio meistrą ir",
     titleAccent: "rezervuokite",
     titleEnd: "bet kada",
     lead:

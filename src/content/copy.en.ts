@@ -54,7 +54,7 @@ export const en: typeof lt = {
 
   hero: {
     eyebrow: "Beauty and wellness masters in Lithuania",
-    titleStart: "Find a beauty master and",
+    titleStart: "Gloumi – find a beauty master and",
     titleAccent: "book",
     titleEnd: "any time",
     lead:
