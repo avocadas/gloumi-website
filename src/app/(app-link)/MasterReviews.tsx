@@ -1,3 +1,4 @@
+import { IconStar } from "@/components/icons";
 import { getCopy } from "@/content/copy";
 import type { Lang } from "@/content/lang";
 import { reviewCheckHref } from "@/content/legal";
@@ -33,12 +34,18 @@ function formatDate(lang: Lang, iso: string): string {
   });
 }
 
+/** Penkios SVG žvaigždutės (developeris 2026-10-17: jokių emoji, tik SVG ikonos), kaip programėlės įvertinimuose. */
 function Stars({ rating }: { rating: number }) {
   const full = Math.round(rating);
   return (
-    <span aria-hidden className="tracking-[0.08em] text-terracotta-600">
-      {"★".repeat(full)}
-      <span className="text-espresso-900/15">{"★".repeat(Math.max(0, 5 - full))}</span>
+    <span aria-hidden className="inline-flex items-center gap-0.5 align-[-2px]">
+      {[0, 1, 2, 3, 4].map((i) => (
+        <IconStar
+          key={i}
+          filled
+          className={i < full ? "h-3.5 w-3.5 text-terracotta-600" : "h-3.5 w-3.5 text-espresso-900/15"}
+        />
+      ))}
     </span>
   );
 }

@@ -10,7 +10,8 @@
     "typecheck": "next typegen && tsc --noEmit",
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:cyrillic": "node scripts/check-cyrillic.mjs",
-    "check": "npm run lint && npm run typecheck && npm run check:contrast && npm run check:cyrillic",
+    "check:emoji": "node scripts/check-emoji.mjs",
+    "check": "npm run lint && npm run typecheck && npm run check:contrast && npm run check:cyrillic && npm run check:emoji",
     "icons": "node scripts/make-icons.mjs",
     "gen:app": "node scripts/gen-from-app.mjs"
   },

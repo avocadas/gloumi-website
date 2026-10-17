@@ -149,7 +149,7 @@ export default async function AdminPage({
         // A story with no caption still exists; never let "" read as "gone".
         : story ? story.caption || "(Story be aprašymo)"
         : targetProfile ? targetProfile.display_name || targetProfile.username || "(Profilis be vardo)"
-        : review ? [review.rating ? `${review.rating} ★` : null, review.body].filter(Boolean).join(" · ") || "(Atsiliepimas be teksto)"
+        : review ? [review.rating ? `Įvertinimas ${review.rating}/5` : null, review.body].filter(Boolean).join(" · ") || "(Atsiliepimas be teksto)"
         : reply ? reply.body || "(Atsakymas be teksto)"
         : null,
       authorId:
