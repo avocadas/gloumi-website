@@ -31,6 +31,7 @@ const ENDPOINT = () => `${(process.env.NEXT_PUBLIC_SUPABASE_URL ?? '').replace(/
 export const MFA_RESET_STATUSES = [
   'email_sent',
   'confirmed',
+  'waiting',
   'ready',
   'done',
   'cancelled_by_owner',

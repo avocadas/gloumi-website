@@ -13,6 +13,8 @@ type TagTone = Parameters<typeof Tag>[0]["tone"];
 const STATUS: Record<string, { label: string; tone: TagTone }> = {
   email_sent: { label: "Laukiama kodo", tone: "neutral" },
   confirmed: { label: "Laukimas", tone: "warn" },
+  // db Edge būsenos pavadinimas; po termino Edge jį jau grąžina kaip `ready`.
+  waiting: { label: "Laukimas", tone: "warn" },
   ready: { label: "Galima nuimti", tone: "danger" },
   done: { label: "Nuimta", tone: "ok" },
   cancelled_by_owner: { label: "Atšaukė savininkas", tone: "lavender" },
@@ -21,7 +23,20 @@ const STATUS: Record<string, { label: string; tone: TagTone }> = {
   expired: { label: "Pasibaigė", tone: "neutral" },
 };
 
-const OPEN = new Set(["email_sent", "confirmed", "ready"]);
+const OPEN = new Set(["email_sent", "confirmed", "waiting", "ready"]);
+
+/*
+ * Ar įvestas patvirtinimas tinka mygtukui įjungti. Edge priima paskyros vardą
+ * ARBA el. paštą (4 iš 10 profilių vardo neturi) ir lygina pats; čia tik
+ * neleidžiama spausti su akivaizdžiai kitu vardu. El. pašto čia palyginti
+ * negalima – portalas jo negauna.
+ */
+function confirmable(row: MfaResetRow, typed: string): boolean {
+  const value = typed.trim();
+  if (!value) return false;
+  if (value.includes("@")) return true;
+  return row.username !== null && value.toLowerCase() === row.username.trim().toLowerCase();
+}
 
 const KIND: Record<string, string> = {
   mfa_reset: "2FA nuėmimas",
@@ -184,16 +199,18 @@ function ExecuteForm({ row, onClose }: { row: MfaResetRow; onClose: () => void }
   return (
     <form onSubmit={submit} className="mt-4 space-y-3 rounded-[14px] bg-app-sheet p-4">
       <p className="text-[13px] leading-relaxed text-app-body">
-        {action.text} Veiksmas įrašomas į administratorių žurnalą. Įveskite paskyros vardą dar kartą ir dabartinį kodą
-        iš savo autentifikavimo programėlės.
+        {action.text} Veiksmas įrašomas į administratorių žurnalą. {row.username
+          ? "Įveskite paskyros vardą (arba el. paštą) dar kartą"
+          : "Paskyra be vardo – įveskite jos el. paštą"}{" "}
+        ir dabartinį kodą iš savo autentifikavimo programėlės.
       </p>
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="block">
-          <span className={`${eyebrow} text-app-muted`}>Paskyros vardas</span>
+          <span className={`${eyebrow} text-app-muted`}>{row.username ? "Paskyros vardas" : "Paskyros el. paštas"}</span>
           <input
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            maxLength={100}
+            maxLength={254}
             autoComplete="off"
             spellCheck={false}
             required
@@ -216,7 +233,7 @@ function ExecuteForm({ row, onClose }: { row: MfaResetRow; onClose: () => void }
       <div className="flex flex-wrap gap-2">
         <button
           type="submit"
-          disabled={pending || username.trim() !== (row.username ?? "").trim() || code.length !== 6}
+          disabled={pending || !confirmable(row, username) || code.length !== 6}
           className={btnDanger}
         >
           {pending ? action.pending : action.label}
@@ -238,7 +255,9 @@ function RequestCard({ row }: { row: MfaResetRow }) {
   return (
     <li className={`${card} p-5`}>
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="font-semibold text-app-ink">{row.username ?? "—"}</p>
+        <p className="font-semibold text-app-ink">
+          {row.username ?? <span className="font-normal italic text-app-muted">paskyra be vardo</span>}
+        </p>
         <div className="flex flex-wrap gap-1.5">
           <Tag tone={recovery(row) ? "peach" : "mint"}>
             {KIND[row.kind] ?? row.kind}

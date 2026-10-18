@@ -36,7 +36,11 @@ const REFUSED: Record<string, string> = {
 
 const ERRORS: Record<string, string> = {
   not_ready: "Prašymas dar ne „Galima nuimti“ būsenos – laukimo laikas nepasibaigęs arba prašymas uždarytas.",
-  username_mismatch: "Įvestas vardas nesutampa su prašymo paskyros vardu.",
+  username_mismatch: "Įvestas vardas ar el. paštas nesutampa su prašymo paskyra.",
+  email_taken: "Naująjį el. pašto adresą jau naudoja kita paskyra – atkurti šiuo adresu negalima.",
+  ticket_invalid: "Kreipimosi ID tuščias arba ilgesnis nei 100 simbolių.",
+  email_failed: "Laiškas neišėjo, todėl prašymas uždarytas. Bandykite atidaryti dar kartą vėliau.",
+  rate_limited: "Per daug veiksmų per trumpą laiką. Palaukite ir bandykite vėl.",
   not_found: "Šio prašymo nebėra.",
   totp_stale: "Reikia šviežio kodo – įveskite naują kodą iš autentifikavimo programėlės.",
   captcha: "Saugumo patikra nepavyko.",
@@ -107,7 +111,8 @@ export async function executeMfaReset(requestId: string, username: string, code:
     await requireAdmin();
     if (typeof requestId !== "string" || !UUID_PATTERN.test(requestId)) return { ok: false, error: "Netinkamas prašymas." };
     const name = typeof username === "string" ? username.trim() : "";
-    if (!name || name.length > 100) return { ok: false, error: "Pakartokite paskyros vardą." };
+    // Vardas arba paskyros el. paštas: Edge priima abu (profiliai be vardo) ir lygina pats.
+    if (!name || name.length > 254) return { ok: false, error: "Pakartokite paskyros vardą arba el. paštą." };
     const totp = typeof code === "string" ? code.replace(/\s/g, "") : "";
     if (!TOTP_CODE.test(totp)) return { ok: false, error: "Įveskite šešių skaitmenų kodą iš autentifikavimo programėlės." };
 
