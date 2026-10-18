@@ -33,6 +33,7 @@ export const MFA_RESET_STATUSES = [
   'confirmed',
   'waiting',
   'ready',
+  'executing',
   'done',
   'cancelled_by_owner',
   'cancelled_aal2_login',

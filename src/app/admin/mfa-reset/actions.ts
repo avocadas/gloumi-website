@@ -35,7 +35,8 @@ const REFUSED: Record<string, string> = {
 };
 
 const ERRORS: Record<string, string> = {
-  not_ready: "Prašymas dar ne „Galima nuimti“ būsenos – laukimo laikas nepasibaigęs arba prašymas uždarytas.",
+  not_ready:
+    "Prašymas ne „Galima nuimti“ būsenos: laukimo laikas nepasibaigęs, prašymas uždarytas arba jau vykdomas (atnaujinkite puslapį).",
   username_mismatch: "Įvestas vardas ar el. paštas nesutampa su prašymo paskyra.",
   email_taken: "Naująjį el. pašto adresą jau naudoja kita paskyra – atkurti šiuo adresu negalima.",
   ticket_invalid: "Kreipimosi ID tuščias arba ilgesnis nei 100 simbolių.",

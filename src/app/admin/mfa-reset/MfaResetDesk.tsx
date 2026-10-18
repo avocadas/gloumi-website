@@ -16,6 +16,8 @@ const STATUS: Record<string, { label: string; tone: TagTone }> = {
   // db Edge būsenos pavadinimas; po termino Edge jį jau grąžina kaip `ready`.
   waiting: { label: "Laukimas", tone: "warn" },
   ready: { label: "Galima nuimti", tone: "danger" },
+  // Administratorius jau paspaudė, GoTrue veiksmai vyksta; nepavykus grįžta į `ready` (po 15 min. – pats).
+  executing: { label: "Vykdoma", tone: "warn" },
   done: { label: "Nuimta", tone: "ok" },
   cancelled_by_owner: { label: "Atšaukė savininkas", tone: "lavender" },
   cancelled_aal2_login: { label: "Atšaukta: prisijungė su 2FA", tone: "lavender" },
@@ -23,7 +25,7 @@ const STATUS: Record<string, { label: string; tone: TagTone }> = {
   expired: { label: "Pasibaigė", tone: "neutral" },
 };
 
-const OPEN = new Set(["email_sent", "confirmed", "waiting", "ready"]);
+const OPEN = new Set(["email_sent", "confirmed", "waiting", "ready", "executing"]);
 
 /*
  * Ar įvestas patvirtinimas tinka mygtukui įjungti. Edge priima paskyros vardą
