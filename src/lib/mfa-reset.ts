@@ -15,12 +15,14 @@ import 'server-only';
  *
  * JUNGIKLIS
  * ---------
- * `MFA_RESET_ENABLED=1` (Vercel). Be jo `/2fa-pagalba` ir portalo skiltis
- * atsako 404: puslapiai be paskelbtos Edge funkcijos tik klaidintų.
+ * `MFA_RESET_ENABLED=1` (Vercel) IR `NEXT_PUBLIC_TURNSTILE_SITE_KEY`. Be bet
+ * kurio iš jų `/2fa-pagalba` ir portalo skiltis atsako 404: puslapiai be
+ * paskelbtos Edge funkcijos tik klaidintų, o be Turnstile forma neturi būti
+ * įjungiama visai (security 2026-10-18; Edge be paslapties ir taip atsako 503).
  */
 
 export function mfaResetEnabled(): boolean {
-  return process.env.MFA_RESET_ENABLED?.trim() === '1';
+  return process.env.MFA_RESET_ENABLED?.trim() === '1' && Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim());
 }
 
 const ENDPOINT = () => `${(process.env.NEXT_PUBLIC_SUPABASE_URL ?? '').replace(/\/+$/, '')}/functions/v1/mfa-reset`;

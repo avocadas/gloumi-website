@@ -107,7 +107,9 @@ export function MfaHelp({ copy, lang }: Props) {
             ? copy.captchaFailed
             : outcome.kind === "limited"
               ? copy.tooMany
-              : copy.unavailable;
+              : outcome.kind === "down"
+                ? copy.down
+                : copy.unavailable;
   const errorId = "mfa-help-error";
   const codeBad = outcome?.kind === "invalid";
   const passwordBad = outcome?.kind === "password";

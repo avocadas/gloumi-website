@@ -345,7 +345,7 @@ export const lt = {
     code: "Kodas iš laiško",
     password: "Paskyros slaptažodis (neprivaloma)",
     passwordHint:
-      "Jei prisimenate slaptažodį, įveskite jį – tada prašymas bus įvykdytas ne anksčiau kaip po 3 dienų, o ne po 7. Mes slaptažodžio nematome ir nesaugome.",
+      "Jei prisimenate slaptažodį, įveskite jį – tada prašymas gali būti įvykdytas greičiau, ne anksčiau kaip po 3 dienų. Mes slaptažodžio nematome ir nesaugome.",
     show: "Rodyti",
     hide: "Slėpti",
     submit: "Patvirtinti",
@@ -356,6 +356,7 @@ export const lt = {
     captchaFailed: "Saugumo patikra nepavyko. Atnaujinkite puslapį ir bandykite dar kartą.",
     tooMany: "Per daug bandymų. Pabandykite vėliau.",
     unavailable: "Šiuo metu patvirtinti nepavyko. Pabandykite po kelių minučių.",
+    down: "Šis puslapis laikinai neveikia. Parašykite mums support@gloumi.lt.",
     doneTitle: "Prašymas patvirtintas",
     doneText:
       "Dviejų veiksnių autentifikacija bus nuimta ne anksčiau kaip {date}. Iki tol paskyros el. pašto adresu siųsime priminimus su nuoroda prašymą atšaukti. Kai ji bus nuimta, gausite laišką.",

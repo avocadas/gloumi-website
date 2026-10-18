@@ -9,7 +9,13 @@
  *   confirm – {ok:true, ready_at, rule} | {ok:false, retry:"password", left} |
  *             {ok:false} (kodas netinka, pasibaigęs ar prašymas ne tos būsenos – vienodai);
  *   cancel  – visada {ok:true}, neatskleidžiant, ar žetonas galiojo;
- *   klaidos – 400 {error:"captcha"}, 429 riba, 500 {error:"server"}.
+ *   klaidos – 400 {error:"captcha"}, 429 riba, 500 {error:"server"},
+ *             503 {error:"captcha_unavailable"} (Edge be Turnstile paslapties – fail closed).
+ *
+ * Kodas yra vienintelis prašymo identifikatorius, todėl „5 klaidos ->
+ * failed_checks“ vienam prašymui spėliojant neveikia. Apsauga nuo spėliojimo –
+ * 40 bitų kodas (8 simboliai iš 32), galioja 24 val., Turnstile kiekvienam
+ * bandymui ir IP riba Edge; security 2026-10-18 tai pripažino pakankamu.
  */
 
 const ENDPOINT = `${(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").replace(/\/+$/, "")}/functions/v1/mfa-reset`;
@@ -20,6 +26,7 @@ export type ConfirmOutcome =
   | { kind: "invalid" }
   | { kind: "captcha" }
   | { kind: "limited" }
+  | { kind: "down" }
   | { kind: "unavailable" };
 
 async function post(body: Record<string, unknown>): Promise<{ status: number; json: Record<string, unknown> | null }> {
@@ -47,6 +54,7 @@ export async function confirmReset(code: string, password: string, turnstile: st
     });
     if (status === 429) return { kind: "limited" };
     if (status === 400 && json?.error === "captcha") return { kind: "captcha" };
+    if (status === 503 && json?.error === "captcha_unavailable") return { kind: "down" };
     if (status !== 200 || !json) return { kind: "unavailable" };
     if (json.ok === true) return { kind: "confirmed", readyAt: typeof json.ready_at === "string" ? json.ready_at : null };
     if (json.retry === "password" && typeof json.left === "number" && json.left > 0) {

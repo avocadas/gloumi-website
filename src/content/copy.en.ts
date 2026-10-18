@@ -307,7 +307,7 @@ export const en: typeof lt = {
     code: "Code from the email",
     password: "Account password (optional)",
     passwordHint:
-      "If you remember your password, enter it – the request can then go through after 3 days rather than 7. We do not see or keep your password.",
+      "If you remember your password, enter it – the request can then go through sooner, after 3 days at the earliest. We do not see or keep your password.",
     show: "Show",
     hide: "Hide",
     submit: "Confirm",
@@ -318,6 +318,7 @@ export const en: typeof lt = {
     captchaFailed: "The security check failed. Reload the page and try again.",
     tooMany: "Too many attempts. Please try again later.",
     unavailable: "We could not confirm it right now. Please try again in a few minutes.",
+    down: "This page is temporarily not working. Please write to us at support@gloumi.lt.",
     doneTitle: "Request confirmed",
     doneText:
       "Two-factor authentication will be removed no earlier than {date}. Until then we will send reminders to your account's email address with a link to cancel the request. You will get an email once it is removed.",
