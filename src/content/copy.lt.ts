@@ -345,7 +345,7 @@ export const lt = {
     code: "Kodas iš laiško",
     password: "Paskyros slaptažodis (neprivaloma)",
     passwordHint:
-      "Jei prisimenate slaptažodį, įveskite jį – tada prašymas bus įvykdytas po 3 dienų, o ne po 7. Mes slaptažodžio nematome ir nesaugome.",
+      "Jei prisimenate slaptažodį, įveskite jį – tada prašymas bus įvykdytas ne anksčiau kaip po 3 dienų, o ne po 7. Mes slaptažodžio nematome ir nesaugome.",
     show: "Rodyti",
     hide: "Slėpti",
     submit: "Patvirtinti",

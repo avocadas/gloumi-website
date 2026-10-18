@@ -307,7 +307,7 @@ export const en: typeof lt = {
     code: "Code from the email",
     password: "Account password (optional)",
     passwordHint:
-      "If you remember your password, enter it – the request will then go through after 3 days instead of 7. We do not see or keep your password.",
+      "If you remember your password, enter it – the request can then go through after 3 days rather than 7. We do not see or keep your password.",
     show: "Show",
     hide: "Hide",
     submit: "Confirm",
