@@ -302,7 +302,7 @@ export const en: typeof lt = {
   },
 
   mfaHelp: {
-    title: "Removing two-factor authentication",
+    title: "Turning off two-factor authentication",
     text: "Enter the code from the email sent to your account's email address. The code is valid for 24 hours.",
     code: "Code from the email",
     password: "Account password (optional)",
@@ -321,9 +321,9 @@ export const en: typeof lt = {
     down: "This page is temporarily not working. Please write to us at support@gloumi.lt.",
     doneTitle: "Request confirmed",
     doneText:
-      "Two-factor authentication will be removed no earlier than {date}. Until then we will send reminders to your account's email address with a link to cancel the request. You will get an email once it is removed.",
+      "Two-factor authentication will be turned off no earlier than {date}. Until then we will send reminders to your account's email address with a link to cancel the request. You will get an email once it is turned off.",
     doneTextNoDate:
-      "You will soon get an email with the date two-factor authentication will be removed. Until then we will send reminders to your account's email address with a link to cancel the request.",
+      "You will soon get an email with the date two-factor authentication will be turned off. Until then we will send reminders to your account's email address with a link to cancel the request.",
     cancelTitle: "Cancel the request",
     cancelText: "If you did not ask for changes to your account, cancel the request. Your account will stay as it is.",
     cancel: "Cancel the request",

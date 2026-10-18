@@ -340,7 +340,7 @@ export const lt = {
    * galutinius žodžius derina support ir content. {n} – likę bandymai, {date} – data.
    */
   mfaHelp: {
-    title: "Dviejų veiksnių autentifikacijos nuėmimas",
+    title: "Dviejų veiksnių autentifikacijos išjungimas",
     text: "Įveskite kodą iš laiško, kurį gavote paskyros el. pašto adresu. Kodas galioja 24 valandas.",
     code: "Kodas iš laiško",
     password: "Paskyros slaptažodis (neprivaloma)",
@@ -359,9 +359,9 @@ export const lt = {
     down: "Šis puslapis laikinai neveikia. Parašykite mums support@gloumi.lt.",
     doneTitle: "Prašymas patvirtintas",
     doneText:
-      "Dviejų veiksnių autentifikacija bus nuimta ne anksčiau kaip {date}. Iki tol paskyros el. pašto adresu siųsime priminimus su nuoroda prašymą atšaukti. Kai ji bus nuimta, gausite laišką.",
+      "Dviejų veiksnių autentifikacija bus išjungta ne anksčiau kaip {date}. Iki tol paskyros el. pašto adresu siųsime priminimus su nuoroda prašymą atšaukti. Kai ji bus išjungta, gausite laišką.",
     doneTextNoDate:
-      "Netrukus gausite laišką su data, kada dviejų veiksnių autentifikacija bus nuimta. Iki tol paskyros el. pašto adresu siųsime priminimus su nuoroda prašymą atšaukti.",
+      "Netrukus gausite laišką su data, kada dviejų veiksnių autentifikacija bus išjungta. Iki tol paskyros el. pašto adresu siųsime priminimus su nuoroda prašymą atšaukti.",
     cancelTitle: "Atšaukti prašymą",
     // Atšaukimo puslapis bendras 2FA nuėmimui ir paskyros atkūrimui be el. pašto (security), todėl tekstas neutralus.
     cancelText: "Jei prašymo pakeisti paskyrą nepateikėte, atšaukite jį. Jūsų paskyra liks tokia, kokia yra.",
@@ -369,9 +369,9 @@ export const lt = {
     cancelling: "Atšaukiama…",
     cancelDoneTitle: "Prašymas atšauktas",
     cancelDoneText:
-      "Jei prašymas dar galiojo, jis atšauktas, ir paskyra nepakeista. Jei prašymo nepateikėte, rekomenduojame pakeisti paskyros slaptažodį.",
+      "Jei prašymas dar galiojo, jis atšauktas, ir paskyra nepakeista. Jei prašymo nepateikėte, patariame pakeisti paskyros slaptažodį.",
     cancelMissing: "Nuoroda neišsami. Atidarykite ją iš laiško dar kartą.",
-    support: "Klausimų turite? Rašykite support@gloumi.lt.",
+    support: "Turite klausimų? Rašykite support@gloumi.lt.",
   },
 
   /** Slaptažodžio atkūrimo nuoroda (/auth/reset): naujas slaptažodis naršyklėje. */
