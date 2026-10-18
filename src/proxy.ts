@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { SESSION_COOKIE_OPTIONS } from '@/lib/supabase/cookie-options';
-import { adminCsp, authCsp, newNonce } from '@/lib/csp';
+import { adminCsp, authCsp, mfaHelpCsp, newNonce, originOf } from '@/lib/csp';
 
 /**
  * Proxy (iki Next 16 – `middleware`; #121): sesijos atnaujinimas ir `/admin`
@@ -35,6 +35,8 @@ import { adminCsp, authCsp, newNonce } from '@/lib/csp';
  * Supabase kvietimą už nieką, o puslapiai nustotų būti visiškai statiniai.
  * Išimtis – `/auth/*` ir `/patvirtinta` (pašto patvirtinimas, slaptažodžio
  * atkūrimas): ten Supabase nekviečiamas, tik uždedama griežta CSP su nonce'u.
+ * Taip pat `/2fa-pagalba` (2FA nuėmimas per pagalbą): griežta CSP su Turnstile
+ * ir Edge adresu, `Referrer-Policy: no-referrer`, `noindex`, `no-store`.
  *
  * CSP (`src/lib/csp.ts`)
  * ----------------------
@@ -49,6 +51,19 @@ export async function proxy(request: NextRequest) {
 
   // Pašto patvirtinimas ir slaptažodžio atkūrimas: be sesijos, tik griežta CSP (privaloma).
   const { pathname: path } = request.nextUrl;
+
+  // 2FA nuėmimas per pagalbą: be sesijos, griežta CSP su Turnstile ir Edge adresu, jokio Referer.
+  if (path === '/2fa-pagalba' || path.startsWith('/2fa-pagalba/')) {
+    const policy = mfaHelpCsp(nonce, dev, originOf(process.env.NEXT_PUBLIC_SUPABASE_URL));
+    const headers = new Headers(request.headers);
+    headers.set('content-security-policy', policy);
+    const res = NextResponse.next({ request: { headers } });
+    res.headers.set('Content-Security-Policy', policy);
+    res.headers.set('Referrer-Policy', 'no-referrer');
+    res.headers.set('X-Robots-Tag', 'noindex, nofollow');
+    res.headers.set('Cache-Control', 'no-store');
+    return res;
+  }
   if (path.startsWith('/auth/') || path === '/patvirtinta') {
     const policy = authCsp(nonce, dev);
     const headers = new Headers(request.headers);
@@ -112,5 +127,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/auth/:path*', '/patvirtinta'],
+  matcher: ['/admin/:path*', '/auth/:path*', '/patvirtinta', '/2fa-pagalba', '/2fa-pagalba/:path*'],
 };

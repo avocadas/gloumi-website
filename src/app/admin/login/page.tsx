@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { IconAlert, IconArrowRight, IconLock, IconProfile } from "@/components/icons";
 import { AuthShell, Brand, STROKE, btn, btnQuiet, input } from "../ui";
 import { finishAdminLogin, startAdminLogin } from "./actions";
-import { TURNSTILE_SITE_KEY, Turnstile, type TurnstileHandle } from "./Turnstile";
+import { TURNSTILE_SITE_KEY, Turnstile, type TurnstileHandle } from "@/components/Turnstile";
 
 /**
  * Admin sign-in: password, then the second factor — enrolling it here if the
@@ -302,7 +302,7 @@ function LoginForm() {
       {/* Vienas valdiklis abiem žingsniams: jis lieka tas pats, tik po kiekvieno tikrinimo atsinaujina. */}
       {TURNSTILE_SITE_KEY ? (
         <div className="mt-4">
-          <Turnstile ref={turnstile} siteKey={TURNSTILE_SITE_KEY} onToken={setCaptchaToken} />
+          <Turnstile ref={turnstile} siteKey={TURNSTILE_SITE_KEY} action="admin-login" onToken={setCaptchaToken} />
         </div>
       ) : null}
     </AuthShell>

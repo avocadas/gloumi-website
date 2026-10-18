@@ -39,7 +39,7 @@ export function adminCsp(nonce: string, dev: boolean): string {
   return [
     "default-src 'self'",
     // `'unsafe-eval'` tik `next dev`: React juo atkuria serverio klaidų dėklus.
-    // Turnstile (`admin/login/Turnstile.tsx`): skriptą įterpia mūsų kodas (`'strict-dynamic'`);
+    // Turnstile (`components/Turnstile.tsx`): skriptą įterpia mūsų kodas (`'strict-dynamic'`);
     // šaltinis – senoms naršyklėms be `'strict-dynamic'`, rėmelis – `frame-src`.
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${TURNSTILE}${dev ? " 'unsafe-eval'" : ''}`,
     `frame-src ${TURNSTILE}`,
@@ -81,6 +81,39 @@ export function authCsp(nonce: string, dev: boolean): string {
     "form-action 'self'",
     "frame-ancestors 'none'",
   ].join('; ');
+}
+
+/**
+ * 2FA nuėmimo per pagalbą puslapiai (`/2fa-pagalba`, `/2fa-pagalba/atsaukti`;
+ * security 2026-10-18): tokia pati griežta ir privaloma kaip `authCsp`, plius
+ * tai, ko jiems reikia – Turnstile valdiklis ir vienas `connect-src` adresas,
+ * Supabase Edge `mfa-reset`, kuriam naršyklė pati siunčia kodą (ir
+ * slaptažodį). `supabaseOrigin` – tik kilmė (schema ir domenas), be kelio.
+ */
+export function mfaHelpCsp(nonce: string, dev: boolean, supabaseOrigin: string | null): string {
+  return [
+    "default-src 'self'",
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${TURNSTILE}${dev ? " 'unsafe-eval'" : ''}`,
+    `frame-src ${TURNSTILE}`,
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data:",
+    "font-src 'self'",
+    `connect-src 'self'${supabaseOrigin ? ` ${supabaseOrigin}` : ''}`,
+    "object-src 'none'",
+    "base-uri 'none'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+  ].join('; ');
+}
+
+/** `NEXT_PUBLIC_SUPABASE_URL` kilmė CSP eilutei; netinkamas adresas – `null` (tada `connect-src` lieka tik `'self'`). */
+export function originOf(url: string | undefined): string | null {
+  try {
+    const parsed = new URL(url ?? '');
+    return parsed.protocol === 'https:' || parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1' ? parsed.origin : null;
+  } catch {
+    return null;
+  }
 }
 
 /** 128 bitų, kiekvienai užklausai naujas: atspėtas nonce'as atidarytų skriptus. */

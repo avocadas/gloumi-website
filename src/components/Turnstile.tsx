@@ -3,13 +3,14 @@
 import { useEffect, useImperativeHandle, useRef, type Ref } from "react";
 
 /*
- * Cloudflare Turnstile valdiklis admin prisijungimui (developeris 2026-10-16).
+ * Cloudflare Turnstile valdiklis: admin prisijungimas (developeris 2026-10-16)
+ * ir viešas `/2fa-pagalba` (security 2026-10-18).
  *
  * Įsijungia tik su `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (viešas raktas – valdiklio
  * adresas, ne paslaptis). Be jo valdiklio nėra ir prisijungimas lieka toks,
  * koks buvo: kol Supabase CAPTCHA neįjungta, žetono niekas netikrina.
  *
- * Skriptas kraunamas tik šiame puslapyje ir tik iš `challenges.cloudflare.com`.
+ * Skriptas kraunamas tik puslapyje su valdikliu ir tik iš `challenges.cloudflare.com`.
  * Jį įterpia mūsų (nonce'u pažymėtas) kodas, tad griežta CSP su
  * `'strict-dynamic'` jį praleidžia; valdiklio rėmeliui – `frame-src` (`csp.ts`).
  */
@@ -58,10 +59,13 @@ export type TurnstileHandle = { reset: () => void };
  */
 export function Turnstile({
   siteKey,
+  action,
   onToken,
   ref,
 }: {
   siteKey: string;
+  /** Cloudflare `action` – kuriam veiksmui žetonas (matomas Cloudflare analitikoje ir tikrinant). */
+  action: string;
   onToken: (token: string | null) => void;
   ref?: Ref<TurnstileHandle>;
 }) {
@@ -87,7 +91,7 @@ export function Turnstile({
         if (cancelled || !box.current) return;
         widget.current = api.render(box.current, {
           sitekey: siteKey,
-          action: "admin-login",
+          action,
           theme: "light",
           size: "flexible",
           callback: (token: string) => tokenCallback.current(token),
@@ -101,7 +105,7 @@ export function Turnstile({
       if (widget.current && window.turnstile) window.turnstile.remove(widget.current);
       widget.current = null;
     };
-  }, [siteKey]);
+  }, [siteKey, action]);
 
   return <div ref={box} className="min-h-[65px]" />;
 }

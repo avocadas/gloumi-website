@@ -301,6 +301,40 @@ export const en: typeof lt = {
       "This sign-in link works only in the Gloumi app. Open the email on the phone where the app is installed, or enter the code from the email in the app.",
   },
 
+  mfaHelp: {
+    title: "Removing two-factor authentication",
+    text: "Enter the code from the email sent to your account's email address. The code is valid for 24 hours.",
+    code: "Code from the email",
+    password: "Account password (optional)",
+    passwordHint:
+      "If you remember your password, enter it – the request will then go through after 3 days instead of 7. We do not see or keep your password.",
+    show: "Show",
+    hide: "Hide",
+    submit: "Confirm",
+    submitting: "Checking…",
+    captchaWait: "Please wait for the security check to finish.",
+    codeInvalid: "This code does not work. Check that you entered it exactly as in the email and that it is still valid.",
+    passwordWrong: "The password is not right. Attempts left: {n}. If you do not remember it, leave the field empty.",
+    captchaFailed: "The security check failed. Reload the page and try again.",
+    tooMany: "Too many attempts. Please try again later.",
+    unavailable: "We could not confirm it right now. Please try again in a few minutes.",
+    doneTitle: "Request confirmed",
+    doneText:
+      "Two-factor authentication will be removed no earlier than {date}. Until then we will send reminders to your account's email address with a link to cancel the request. You will get an email once it is removed.",
+    doneTextNoDate:
+      "You will soon get an email with the date two-factor authentication will be removed. Until then we will send reminders to your account's email address with a link to cancel the request.",
+    cancelTitle: "Cancel the request",
+    cancelText:
+      "If you did not ask for two-factor authentication to be removed, cancel the request. Your account will stay as it is.",
+    cancel: "Cancel the request",
+    cancelling: "Cancelling…",
+    cancelDoneTitle: "Request cancelled",
+    cancelDoneText:
+      "If the request was still open, it has been cancelled and two-factor authentication stays on. If you did not make the request, we recommend changing your account password.",
+    cancelMissing: "This link is incomplete. Open it from the email again.",
+    support: "Questions? Write to support@gloumi.lt.",
+  },
+
   passwordReset: {
     title: "New password",
     text: "Enter a new password for your Gloumi account.",

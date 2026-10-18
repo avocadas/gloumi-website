@@ -1,8 +1,12 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { IconChevronRight } from "@/components/icons";
+import { mfaResetEnabled } from "@/lib/mfa-reset";
 import { checkAdmin } from "@/lib/admin-guard";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { AdminShell } from "../AdminShell";
 import { MfaNotice } from "../MfaNotice";
+import { STROKE, card } from "../ui";
 import { SUPPORT_FILTERS, SupportQueue } from "./SupportQueue";
 import type { TicketView } from "./TicketCard";
 
@@ -115,6 +119,19 @@ export default async function SupportPage({ searchParams }: { searchParams: Prom
         <p role="alert" className="mb-6 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
           Užklausų gauti nepavyko: {error.message}
         </p>
+      ) : null}
+      {/* 2FA nuėmimas per pagalbą (security 2026-10-18): savas puslapis, kelias – iš čia. */}
+      {mfaResetEnabled() ? (
+        <Link
+          href="/admin/mfa-reset"
+          className={`${card} mb-6 flex items-center justify-between gap-3 px-5 py-4 text-sm font-semibold text-app-ink transition-colors hover:bg-app-surface`}
+        >
+          <span>
+            2FA pagalba{" "}
+            <span className="font-normal text-app-muted">– žmogui be telefono ir be atkūrimo kodų</span>
+          </span>
+          <IconChevronRight size={16} strokeWidth={STROKE} aria-hidden className="shrink-0 text-app-faint" />
+        </Link>
       ) : null}
       <SupportQueue wanted={wanted} counts={counts} tickets={tickets} />
     </AdminShell>

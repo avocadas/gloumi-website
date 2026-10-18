@@ -335,6 +335,44 @@ export const lt = {
       "Ši prisijungimo nuoroda veikia tik Gloumi programėlėje. Atidarykite laišką telefone, kuriame įdiegta programėlė, arba įveskite kodą iš laiško programėlėje.",
   },
 
+  /**
+   * 2FA nuėmimas per pagalbą (/2fa-pagalba, security 2026-10-18). JUODRAŠTIS:
+   * galutinius žodžius derina support ir content. {n} – likę bandymai, {date} – data.
+   */
+  mfaHelp: {
+    title: "Dviejų veiksnių autentifikacijos nuėmimas",
+    text: "Įveskite kodą iš laiško, kurį gavote paskyros el. pašto adresu. Kodas galioja 24 valandas.",
+    code: "Kodas iš laiško",
+    password: "Paskyros slaptažodis (neprivaloma)",
+    passwordHint:
+      "Jei prisimenate slaptažodį, įveskite jį – tada prašymas bus įvykdytas po 3 dienų, o ne po 7. Mes slaptažodžio nematome ir nesaugome.",
+    show: "Rodyti",
+    hide: "Slėpti",
+    submit: "Patvirtinti",
+    submitting: "Tikrinama…",
+    captchaWait: "Palaukite, kol baigsis saugumo patikra.",
+    codeInvalid: "Kodas netinka. Patikrinkite, ar įvedėte jį tiksliai kaip laiške ir ar jis dar galioja.",
+    passwordWrong: "Slaptažodis netinka. Liko bandymų: {n}. Jei slaptažodžio neprisimenate, palikite lauką tuščią.",
+    captchaFailed: "Saugumo patikra nepavyko. Atnaujinkite puslapį ir bandykite dar kartą.",
+    tooMany: "Per daug bandymų. Pabandykite vėliau.",
+    unavailable: "Šiuo metu patvirtinti nepavyko. Pabandykite po kelių minučių.",
+    doneTitle: "Prašymas patvirtintas",
+    doneText:
+      "Dviejų veiksnių autentifikacija bus nuimta ne anksčiau kaip {date}. Iki tol paskyros el. pašto adresu siųsime priminimus su nuoroda prašymą atšaukti. Kai ji bus nuimta, gausite laišką.",
+    doneTextNoDate:
+      "Netrukus gausite laišką su data, kada dviejų veiksnių autentifikacija bus nuimta. Iki tol paskyros el. pašto adresu siųsime priminimus su nuoroda prašymą atšaukti.",
+    cancelTitle: "Atšaukti prašymą",
+    cancelText:
+      "Jei prašymo nuimti dviejų veiksnių autentifikaciją nepateikėte, atšaukite jį. Jūsų paskyra liks tokia, kokia yra.",
+    cancel: "Atšaukti prašymą",
+    cancelling: "Atšaukiama…",
+    cancelDoneTitle: "Prašymas atšauktas",
+    cancelDoneText:
+      "Jei prašymas dar galiojo, jis atšauktas, o dviejų veiksnių autentifikacija lieka įjungta. Jei prašymo nepateikėte, rekomenduojame pakeisti paskyros slaptažodį.",
+    cancelMissing: "Nuoroda neišsami. Atidarykite ją iš laiško dar kartą.",
+    support: "Klausimų turite? Rašykite support@gloumi.lt.",
+  },
+
   /** Slaptažodžio atkūrimo nuoroda (/auth/reset): naujas slaptažodis naršyklėje. */
   passwordReset: {
     title: "Naujas slaptažodis",
