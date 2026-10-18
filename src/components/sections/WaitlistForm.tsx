@@ -46,6 +46,12 @@ export function WaitlistForm({ lang }: { lang: Lang }) {
   const f = copy.form;
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState<string | null>(null);
+  // Fields the server refused (`fields` in a validation answer), tied to the message for screen readers (accessibility statement).
+  const [invalid, setInvalid] = useState<string[]>([]);
+  const errorId = `${id}-error`;
+  /** Props that mark a refused field and point it at the message. */
+  const flag = (name: string) =>
+    invalid.includes(name) ? { "aria-invalid": true as const, "aria-describedby": errorId } : {};
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -68,6 +74,7 @@ export function WaitlistForm({ lang }: { lang: Lang }) {
 
     setStatus("submitting");
     setMessage(null);
+    setInvalid([]);
     try {
       const res = await fetch("/api/waitlist", {
         method: "POST",
@@ -85,7 +92,14 @@ export function WaitlistForm({ lang }: { lang: Lang }) {
         return;
       }
       if (res.status === 429) setMessage(json?.error === "daily_limited" ? f.errorDailyLimit : f.errorRateLimited);
-      else if (json?.error === "validation") setMessage(f.errorValidation);
+      else if (json?.error === "validation") {
+        setMessage(f.errorValidation);
+        const fields = Array.isArray(json.fields) ? json.fields : [];
+        setInvalid(fields);
+        // Focus the first refused field, so a keyboard or screen-reader user lands where the problem is.
+        const first = fields.map((name) => form.elements.namedItem(name)).find((el): el is HTMLElement => el instanceof HTMLElement);
+        first?.focus();
+      }
       else setMessage(f.errorGeneric);
       setStatus("error");
     } catch {
@@ -148,6 +162,7 @@ export function WaitlistForm({ lang }: { lang: Lang }) {
           <input
             id={`${id}-name`}
             name="name"
+            {...flag("name")}
             required
             minLength={2}
             maxLength={80}
@@ -162,6 +177,7 @@ export function WaitlistForm({ lang }: { lang: Lang }) {
           <input
             id={`${id}-email`}
             name="email"
+            {...flag("email")}
             type="email"
             required
             maxLength={120}
@@ -178,6 +194,7 @@ export function WaitlistForm({ lang }: { lang: Lang }) {
           <input
             id={`${id}-phone`}
             name="phone"
+            {...flag("phone")}
             type="tel"
             maxLength={40}
             autoComplete="tel"
@@ -193,6 +210,7 @@ export function WaitlistForm({ lang }: { lang: Lang }) {
           <input
             id={`${id}-city`}
             name="city"
+            {...flag("city")}
             maxLength={80}
             autoComplete="address-level2"
             className={inputClass}
@@ -203,7 +221,7 @@ export function WaitlistForm({ lang }: { lang: Lang }) {
             {f.fields.category}
             <Optional label={f.fields.optional} />
           </label>
-          <select id={`${id}-category`} name="category" defaultValue="" className={cn(inputClass, "appearance-auto")}>
+          <select id={`${id}-category`} name="category" {...flag("category")} defaultValue="" className={cn(inputClass, "appearance-auto")}>
             <option value="">{f.fields.categoryPlaceholder}</option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
@@ -218,7 +236,7 @@ export function WaitlistForm({ lang }: { lang: Lang }) {
             {f.fields.link}
             <Optional label={f.fields.optional} />
           </label>
-          <input id={`${id}-link`} name="link" maxLength={200} autoComplete="url" className={inputClass} />
+          <input id={`${id}-link`} name="link" {...flag("link")} maxLength={200} autoComplete="url" className={inputClass} />
         </div>
         <div className="sm:col-span-2">
           <label htmlFor={`${id}-message`} className={labelClass}>
@@ -228,6 +246,7 @@ export function WaitlistForm({ lang }: { lang: Lang }) {
           <textarea
             id={`${id}-message`}
             name="message"
+            {...flag("message")}
             rows={3}
             maxLength={1000}
             placeholder={f.fields.messagePlaceholder}
@@ -245,6 +264,7 @@ export function WaitlistForm({ lang }: { lang: Lang }) {
           <input
             id={`${id}-consent`}
             name="consent"
+            {...flag("consent")}
             type="checkbox"
             required
             className="mt-1 h-4 w-4 shrink-0 rounded border-espresso-900/20 accent-terracotta-600"
@@ -259,7 +279,7 @@ export function WaitlistForm({ lang }: { lang: Lang }) {
         </div>
 
         {status === "error" && message ? (
-          <p role="alert" className="rounded-xl bg-terracotta-50 px-4 py-3 text-sm text-terracotta-700 sm:col-span-2">
+          <p id={errorId} role="alert" className="rounded-xl bg-terracotta-50 px-4 py-3 text-sm text-terracotta-700 sm:col-span-2">
             {message}
           </p>
         ) : null}

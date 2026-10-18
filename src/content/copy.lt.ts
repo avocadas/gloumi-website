@@ -92,6 +92,8 @@ export const lt = {
       { id: "booking", label: "Rezervavimas", alt: "Vizito rezervavimas Gloumi programėlėje: kalendorius ir laisvi laikai" },
     ] as { id: "feed" | "search" | "profile" | "booking"; label: string; alt: string }[],
     note: "Ekranuose – pavyzdiniai meistrai ir atsiliepimai.",
+    pause: "Sustabdyti ekranų keitimą",
+    play: "Paleisti ekranų keitimą",
   },
 
   categories: {

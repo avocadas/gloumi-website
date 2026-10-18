@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import Image, { type StaticImageData } from "next/image";
 import { useReducedMotion } from "framer-motion";
+import { IconPause, IconPlay } from "@/components/icons";
 import { getCopy } from "@/content/copy";
 import type { Lang } from "@/content/lang";
 import { cn } from "@/lib/cn";
@@ -41,17 +42,27 @@ export function PhoneMockup({ lang }: { lang: Lang }) {
   const [active, setActive] = useState<ScreenId>("feed");
   const [paused, setPaused] = useState(false);
   const [manual, setManual] = useState(false);
+  // The visible pause control (WCAG 2.2.2): hover and focus only pause while they last, a touch screen has neither.
+  const [stopped, setStopped] = useState(false);
   const reduce = useReducedMotion();
   const baseId = useId();
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   useEffect(() => {
-    if (reduce || paused || manual) return;
+    if (reduce || paused || manual || stopped) return;
     const timer = window.setInterval(() => {
       setActive((current) => ORDER[(ORDER.indexOf(current) + 1) % ORDER.length]);
     }, AUTO_MS);
     return () => window.clearInterval(timer);
-  }, [reduce, paused, manual]);
+  }, [reduce, paused, manual, stopped]);
+  const running = !manual && !stopped;
+  const toggle = () => {
+    if (running) setStopped(true);
+    else {
+      setStopped(false);
+      setManual(false);
+    }
+  };
 
   const select = (id: ScreenId) => {
     setManual(true);
@@ -131,11 +142,12 @@ export function PhoneMockup({ lang }: { lang: Lang }) {
         </div>
       </div>
 
+      <div className="mt-7 flex items-center gap-2">
       <div
         role="tablist"
         aria-label={copy.phone.tabsLabel}
         onKeyDown={onTabKey}
-        className="mt-7 inline-flex rounded-full bg-white/80 p-1 shadow-card ring-1 ring-espresso-900/5 backdrop-blur"
+        className="inline-flex rounded-full bg-white/80 p-1 shadow-card ring-1 ring-espresso-900/5 backdrop-blur"
       >
         {copy.phone.tabs.map((tab, index) => {
           const selected = tab.id === active;
@@ -161,6 +173,19 @@ export function PhoneMockup({ lang }: { lang: Lang }) {
             </button>
           );
         })}
+      </div>
+      {/* No control when the screens never change on their own ("Reduce motion"). */}
+      {reduce ? null : (
+        <button
+          type="button"
+          onClick={toggle}
+          aria-label={running ? copy.phone.pause : copy.phone.play}
+          title={running ? copy.phone.pause : copy.phone.play}
+          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/80 text-espresso-700 shadow-card ring-1 ring-espresso-900/5 backdrop-blur transition-colors hover:text-espresso-900"
+        >
+          {running ? <IconPause size={16} /> : <IconPlay size={16} />}
+        </button>
+      )}
       </div>
       <p className="mt-3 text-xs text-espresso-500">{copy.phone.note}</p>
     </div>

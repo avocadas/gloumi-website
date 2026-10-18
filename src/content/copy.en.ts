@@ -88,6 +88,8 @@ export const en: typeof lt = {
       { id: "booking", label: "Booking", alt: "Booking a visit in the Gloumi app: calendar and free times" },
     ],
     note: "The screens show sample masters and reviews.",
+    pause: "Pause the screen slideshow",
+    play: "Play the screen slideshow",
   },
 
   categories: {

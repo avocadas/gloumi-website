@@ -65,6 +65,18 @@ function make(
   };
 }
 
+/** Not in the app: two bars, drawn here for the phone carousel's pause button (WCAG 2.2.2). */
+export const IconPause = make(
+  "0 0 24 24",
+  <>
+    <rect x="7" y="5" width="3.5" height="14" rx="1" />
+    <rect x="13.5" y="5" width="3.5" height="14" rx="1" />
+  </>,
+);
+
+/** Not in the app: a triangle, the pause button's other state. */
+export const IconPlay = make("0 0 24 24", <path d="M8 5.5v13a.75.75 0 0 0 1.13.65l10.4-6.5a.75.75 0 0 0 0-1.3L9.13 4.85A.75.75 0 0 0 8 5.5z" />);
+
 /** `IconClose` `Icons.js:263` */
 export const IconClose = make(
   VIEWBOX_LARGE,
