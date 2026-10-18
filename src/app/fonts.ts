@@ -10,9 +10,23 @@ import { Cormorant_Garamond, DM_Sans } from "next/font/google";
  */
 export const cormorant = Cormorant_Garamond({
   subsets: ["latin", "latin-ext"],
-  style: ["normal", "italic"],
+  style: "normal",
   variable: "--font-cormorant",
   display: "swap",
+});
+
+/*
+ * The italic carries one word, the accent in the home page's H1, yet its two
+ * files were 72 KB of the 196 KB preloaded on every page. Not preloaded now
+ * (developer 2026-10-18, "del svetaines tinka, darom"): it arrives with the
+ * page's CSS, and until then the word shows in the upright face.
+ */
+export const cormorantItalic = Cormorant_Garamond({
+  subsets: ["latin", "latin-ext"],
+  style: "italic",
+  variable: "--font-cormorant-italic",
+  display: "swap",
+  preload: false,
 });
 
 export const dmSans = DM_Sans({
@@ -21,4 +35,4 @@ export const dmSans = DM_Sans({
   display: "swap",
 });
 
-export const fontVariables = `${cormorant.variable} ${dmSans.variable}`;
+export const fontVariables = `${cormorant.variable} ${cormorantItalic.variable} ${dmSans.variable}`;

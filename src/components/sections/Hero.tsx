@@ -25,7 +25,9 @@ export function Hero({ lang }: { lang: Lang }) {
             id="hero-title"
             className="mt-5 font-serif text-[2.75rem] font-medium leading-[1.02] tracking-[-0.02em] text-espresso-900 text-balance sm:text-6xl lg:text-[4.1rem]"
           >
-            {h.titleStart} <em className="text-terracotta-600">{h.titleAccent}</em> {h.titleEnd}
+            {h.titleStart} <em className="text-terracotta-600" style={{ fontFamily: "var(--font-cormorant-italic), var(--font-cormorant), serif" }}>
+              {h.titleAccent}
+            </em> {h.titleEnd}
           </h1>
           <p className="mt-6 max-w-lg text-lg leading-relaxed text-espresso-500 text-pretty">{h.lead}</p>
 
