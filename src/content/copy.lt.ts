@@ -364,7 +364,7 @@ export const lt = {
       "Netrukus gausite laišką su data, kada dviejų veiksnių autentifikacija bus išjungta. Iki tol paskyros el. pašto adresu siųsime priminimus su nuoroda prašymą atšaukti.",
     cancelTitle: "Atšaukti prašymą",
     // Atšaukimo puslapis bendras 2FA nuėmimui ir paskyros atkūrimui be el. pašto (security), todėl tekstas neutralus.
-    cancelText: "Jei prašymo pakeisti paskyrą nepateikėte, atšaukite jį. Jūsų paskyra liks tokia, kokia yra.",
+    cancelText: "Jei šio prašymo nepateikėte, atšaukite jį. Jūsų paskyra liks tokia, kokia yra.",
     cancel: "Atšaukti prašymą",
     cancelling: "Atšaukiama…",
     cancelDoneTitle: "Prašymas atšauktas",

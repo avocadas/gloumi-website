@@ -325,7 +325,7 @@ export const en: typeof lt = {
     doneTextNoDate:
       "You will soon get an email with the date two-factor authentication will be turned off. Until then we will send reminders to your account's email address with a link to cancel the request.",
     cancelTitle: "Cancel the request",
-    cancelText: "If you did not ask for changes to your account, cancel the request. Your account will stay as it is.",
+    cancelText: "If you did not make this request, cancel it. Your account will stay as it is.",
     cancel: "Cancel the request",
     cancelling: "Cancelling…",
     cancelDoneTitle: "Request cancelled",
