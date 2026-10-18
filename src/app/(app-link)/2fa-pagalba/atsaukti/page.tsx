@@ -10,7 +10,9 @@ import { CancelReset } from "./CancelReset";
 
 /**
  * https://gloumi.lt/2fa-pagalba/atsaukti#t=… – the "It was not me – cancel"
- * link in every email of a pending 2FA removal (procedure step D). One button,
+ * link in every warning of a pending 2FA removal (procedure 5.3, step D) or
+ * account recovery without the account's email (variant A, step 3); the
+ * texts are neutral, as they serve both. One button,
  * so a mail scanner opening the link cancels nothing; the token stays after
  * `#` and goes only to the Edge function. Same headers as /2fa-pagalba.
  */

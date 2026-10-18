@@ -17,7 +17,7 @@ const heading = "mx-auto max-w-xl font-serif text-4xl font-medium text-espresso-
 const lead = "mx-auto mt-4 max-w-md leading-relaxed text-espresso-500 text-pretty";
 
 /**
- * No Turnstile on purpose: an owner who did not ask for the removal must be
+ * No Turnstile on purpose: an owner who did not ask for the change must be
  * able to stop it in one press, and the Edge function answers the same to
  * every token, valid or not, behind an IP limit.
  */

@@ -13,7 +13,10 @@ import { UUID_PATTERN } from "../format";
  * žetonu: kas atidarė ar nuėmė, Edge ima iš žetono, ne iš šių argumentų.
  * `checkAdmin()` čia – ankstyvas ir aiškesnis atmetimas, ne vienintelė patikra.
  *
- * „Nuimti 2FA“ reikalauja šviežio TOTP (security 3 p.): administratorius
+ * Tas pats `execute` vykdo ir paskyros atkūrimą be el. pašto (variantas A,
+ * `kind = email_recovery`): ką daryti, Edge sprendžia pagal prašymo rūšį.
+ *
+ * „Nuimti 2FA“ ir „Atkurti paskyrą“ reikalauja šviežio TOTP (security 3 p.): administratorius
  * kodą įveda iš naujo, sesija patvirtinama dar kartą (`challengeAndVerify`),
  * ir Edge gauna žetoną, kurio `amr` totp laikas – ką tik. Edge atmeta
  * senesnį nei 10 min. (`totp_stale`).

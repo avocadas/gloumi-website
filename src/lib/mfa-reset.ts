@@ -40,10 +40,21 @@ export const MFA_RESET_STATUSES = [
 ] as const;
 export type MfaResetStatus = (typeof MFA_RESET_STATUSES)[number];
 
-/** Eilutė portalo eilėje: tik vardas, būsena ir laikai – jokio el. pašto ar kitų paskyros duomenų. */
+/**
+ * Eilutė portalo eilėje: tik vardas, rūšis, būdas, būsena ir laikai. Paskyros
+ * el. pašto nėra; naujas el. paštas (atkūrimo prašymui) – tik paslėptas
+ * (`maskEmail`), ir slepiamas serveryje, kad visas adresas nepatektų į naršyklę.
+ */
 export type MfaResetRow = {
   id: string;
   username: string | null;
+  /** `mfa_reset` – 2FA nuėmimas (5.3); `email_recovery` – atkūrimas be paskyros el. pašto (variantas A). */
+  kind: string;
+  /** `email_code` (5.3), `oauth` (A1), `device_password` (A2). */
+  method: string | null;
+  /** Atkūrimo prašymui: ar kartu nuimama ir 2FA. */
+  remove_mfa: boolean;
+  new_email_masked: string | null;
   status: string;
   opened_by: string | null;
   created_at: string | null;
@@ -53,6 +64,21 @@ export type MfaResetRow = {
   cancelled_at: string | null;
   done_at: string | null;
 };
+
+/**
+ * `jonas@gmail.com` -> `j***@g***.com`: pirmoji vardo ir domeno raidė ir
+ * paskutinė domeno dalis. Ar adresas tas, kurį žmogus nurodė, administratorius
+ * gali patikrinti, bet perskaityti ir užrašyti jo – ne.
+ */
+export function maskEmail(email: string | null | undefined): string | null {
+  if (typeof email !== 'string') return null;
+  const at = email.lastIndexOf('@');
+  if (at < 1) return null;
+  const local = email.slice(0, at);
+  const labels = email.slice(at + 1).split('.');
+  if (labels.length < 2 || !labels[0]) return null;
+  return `${local[0]}***@${labels[0][0]}***.${labels[labels.length - 1]}`;
+}
 
 export type EdgeAnswer = { status: number; json: Record<string, unknown> | null };
 

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { checkAdmin } from "@/lib/admin-guard";
-import { callMfaResetAdmin, mfaResetEnabled, type MfaResetRow } from "@/lib/mfa-reset";
+import { callMfaResetAdmin, maskEmail, mfaResetEnabled, type MfaResetRow } from "@/lib/mfa-reset";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { AdminShell } from "../AdminShell";
 import { MfaNotice } from "../MfaNotice";
@@ -12,8 +12,14 @@ import { MfaResetDesk } from "./MfaResetDesk";
  * patvirtina kodą iš laiško gloumi.lt/2fa-pagalba, o praėjus laukimui (72 val.
  * arba 7 d.) čia paspaudžiamas „Nuimti 2FA“.
  *
- * Eilė ateina iš Edge `mfa-reset` („list“, paskutinės 90 d.): tik vardas,
- * būsena ir laikai. El. pašto ir kitų paskyros duomenų portalas negauna.
+ * Toje pačioje eilėje – ir paskyros atkūrimas be el. pašto (variantas A,
+ * security 2026-10-18): jį pradeda pats žmogus programėlėje, čia jis tik
+ * įvykdomas („Atkurti paskyrą“).
+ *
+ * Eilė ateina iš Edge `mfa-reset` („list“, paskutinės 90 d.): vardas, rūšis,
+ * būdas, būsena ir laikai. Paskyros el. pašto portalas negauna; naujas
+ * atkūrimo adresas slepiamas čia, serveryje (`maskEmail`), jei Edge atsiuntė
+ * visą, todėl į naršyklę jis nepatenka.
  */
 export const dynamic = "force-dynamic";
 
@@ -27,6 +33,10 @@ function toRow(raw: unknown): MfaResetRow | null {
   return {
     id,
     username: str(r.username),
+    kind: str(r.kind) ?? "mfa_reset",
+    method: str(r.method),
+    remove_mfa: r.remove_mfa === true,
+    new_email_masked: str(r.new_email_masked) ?? maskEmail(str(r.new_email)),
     status: str(r.status) ?? "unknown",
     opened_by: str(r.opened_by),
     created_at: str(r.created_at),
@@ -66,7 +76,7 @@ export default async function MfaResetPage() {
     <AdminShell
       section="support"
       title="2FA pagalba"
-      subtitle="Dviejų veiksnių autentifikacijos nuėmimas žmogui be telefono ir be atkūrimo kodų. Tapatybę tikrina serveris, ne mes."
+      subtitle="2FA nuėmimas ir paskyros atkūrimas be el. pašto. Tapatybę tikrina serveris, ne mes; el. pašto ranka niekas nekeičia."
       username={check.username ?? check.userId}
       back={{ href: "/admin/support", label: "Pagalba" }}
     >

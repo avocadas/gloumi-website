@@ -325,13 +325,12 @@ export const en: typeof lt = {
     doneTextNoDate:
       "You will soon get an email with the date two-factor authentication will be removed. Until then we will send reminders to your account's email address with a link to cancel the request.",
     cancelTitle: "Cancel the request",
-    cancelText:
-      "If you did not ask for two-factor authentication to be removed, cancel the request. Your account will stay as it is.",
+    cancelText: "If you did not ask for changes to your account, cancel the request. Your account will stay as it is.",
     cancel: "Cancel the request",
     cancelling: "Cancelling…",
     cancelDoneTitle: "Request cancelled",
     cancelDoneText:
-      "If the request was still open, it has been cancelled and two-factor authentication stays on. If you did not make the request, we recommend changing your account password.",
+      "If the request was still open, it has been cancelled and your account has not been changed. If you did not make the request, we recommend changing your account password.",
     cancelMissing: "This link is incomplete. Open it from the email again.",
     support: "Questions? Write to support@gloumi.lt.",
   },

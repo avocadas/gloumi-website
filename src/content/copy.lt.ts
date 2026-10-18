@@ -363,13 +363,13 @@ export const lt = {
     doneTextNoDate:
       "Netrukus gausite laišką su data, kada dviejų veiksnių autentifikacija bus nuimta. Iki tol paskyros el. pašto adresu siųsime priminimus su nuoroda prašymą atšaukti.",
     cancelTitle: "Atšaukti prašymą",
-    cancelText:
-      "Jei prašymo nuimti dviejų veiksnių autentifikaciją nepateikėte, atšaukite jį. Jūsų paskyra liks tokia, kokia yra.",
+    // Atšaukimo puslapis bendras 2FA nuėmimui ir paskyros atkūrimui be el. pašto (security), todėl tekstas neutralus.
+    cancelText: "Jei prašymo pakeisti paskyrą nepateikėte, atšaukite jį. Jūsų paskyra liks tokia, kokia yra.",
     cancel: "Atšaukti prašymą",
     cancelling: "Atšaukiama…",
     cancelDoneTitle: "Prašymas atšauktas",
     cancelDoneText:
-      "Jei prašymas dar galiojo, jis atšauktas, o dviejų veiksnių autentifikacija lieka įjungta. Jei prašymo nepateikėte, rekomenduojame pakeisti paskyros slaptažodį.",
+      "Jei prašymas dar galiojo, jis atšauktas, ir paskyra nepakeista. Jei prašymo nepateikėte, rekomenduojame pakeisti paskyros slaptažodį.",
     cancelMissing: "Nuoroda neišsami. Atidarykite ją iš laiško dar kartą.",
     support: "Klausimų turite? Rašykite support@gloumi.lt.",
   },

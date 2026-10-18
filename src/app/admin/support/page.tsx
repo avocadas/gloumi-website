@@ -128,7 +128,7 @@ export default async function SupportPage({ searchParams }: { searchParams: Prom
         >
           <span>
             2FA pagalba{" "}
-            <span className="font-normal text-app-muted">– žmogui be telefono ir be atkūrimo kodų</span>
+            <span className="font-normal text-app-muted">– 2FA nuėmimas ir paskyros atkūrimas be el. pašto</span>
           </span>
           <IconChevronRight size={16} strokeWidth={STROKE} aria-hidden className="shrink-0 text-app-faint" />
         </Link>

@@ -23,6 +23,37 @@ const STATUS: Record<string, { label: string; tone: TagTone }> = {
 
 const OPEN = new Set(["email_sent", "confirmed", "ready"]);
 
+const KIND: Record<string, string> = {
+  mfa_reset: "2FA nuėmimas",
+  email_recovery: "El. pašto atkūrimas",
+};
+
+const METHOD: Record<string, string> = {
+  email_code: "kodas paskyros el. paštu",
+  oauth: "Apple ar Google",
+  device_password: "senas įrenginys ir slaptažodis",
+};
+
+const recovery = (row: MfaResetRow) => row.kind === "email_recovery";
+
+/** Ką „Vykdyti“ padarys: mygtukas ir paaiškinimas pagal prašymo rūšį. */
+function actionFor(row: MfaResetRow): { label: string; pending: string; text: string } {
+  if (!recovery(row)) {
+    return {
+      label: "Nuimti 2FA",
+      pending: "Nuimama…",
+      text: "Bus ištrinti visi paskyros 2FA faktoriai ir atjungti visi įrenginiai.",
+    };
+  }
+  return {
+    label: "Atkurti paskyrą",
+    pending: "Atkuriama…",
+    text: `Paskyros el. paštas bus pakeistas į ${row.new_email_masked ?? "naują, jau patvirtintą adresą"}${
+      row.remove_mfa ? ", bus ištrinti visi 2FA faktoriai" : ""
+    } ir atjungti visi įrenginiai. Laiškai išsiunčiami senuoju ir nauju adresu.`,
+  };
+}
+
 function Problem({ text }: { text: string }) {
   return (
     <p role="alert" className="flex items-start gap-2 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
@@ -106,7 +137,10 @@ function OpenForm() {
   );
 }
 
-/** „Nuimti 2FA“ (E žingsnis): tik `ready`, su paskyros vardo pakartojimu ir šviežiu TOTP kodu. */
+/**
+ * „Nuimti 2FA“ (5.3, E žingsnis) arba „Atkurti paskyrą“ (variantas A, 5 žingsnis):
+ * tik `ready`, su paskyros vardo pakartojimu ir šviežiu TOTP kodu.
+ */
 function ExecuteForm({ row, onClose }: { row: MfaResetRow; onClose: () => void }) {
   const router = useRouter();
   const [username, setUsername] = useState("");
@@ -114,6 +148,7 @@ function ExecuteForm({ row, onClose }: { row: MfaResetRow; onClose: () => void }
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const action = actionFor(row);
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
@@ -129,7 +164,11 @@ function ExecuteForm({ row, onClose }: { row: MfaResetRow; onClose: () => void }
         res.factors !== null ? `faktorių ištrinta: ${res.factors}` : null,
         res.sessions !== null ? `sesijų atjungta: ${res.sessions}` : null,
       ].filter(Boolean);
-      setDone(`2FA nuimta${parts.length ? ` (${parts.join(", ")})` : ""}. Savininkui išsiųstas laiškas.`);
+      setDone(
+        recovery(row)
+          ? `Paskyra atkurta${parts.length ? ` (${parts.join(", ")})` : ""}. Laiškai išsiųsti senuoju ir nauju adresu.`
+          : `2FA nuimta${parts.length ? ` (${parts.join(", ")})` : ""}. Savininkui išsiųstas laiškas.`,
+      );
       router.refresh();
     });
   };
@@ -145,8 +184,8 @@ function ExecuteForm({ row, onClose }: { row: MfaResetRow; onClose: () => void }
   return (
     <form onSubmit={submit} className="mt-4 space-y-3 rounded-[14px] bg-app-sheet p-4">
       <p className="text-[13px] leading-relaxed text-app-body">
-        Bus ištrinti visi paskyros 2FA faktoriai ir atjungti visi įrenginiai. Veiksmas įrašomas į administratorių
-        žurnalą. Įveskite paskyros vardą dar kartą ir dabartinį kodą iš savo autentifikavimo programėlės.
+        {action.text} Veiksmas įrašomas į administratorių žurnalą. Įveskite paskyros vardą dar kartą ir dabartinį kodą
+        iš savo autentifikavimo programėlės.
       </p>
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="block">
@@ -180,7 +219,7 @@ function ExecuteForm({ row, onClose }: { row: MfaResetRow; onClose: () => void }
           disabled={pending || username.trim() !== (row.username ?? "").trim() || code.length !== 6}
           className={btnDanger}
         >
-          {pending ? "Nuimama…" : "Nuimti 2FA"}
+          {pending ? action.pending : action.label}
         </button>
         <button type="button" onClick={onClose} className={btnQuiet}>
           Atšaukti
@@ -194,17 +233,36 @@ function RequestCard({ row }: { row: MfaResetRow }) {
   const [executing, setExecuting] = useState(false);
   const status = STATUS[row.status] ?? { label: row.status, tone: "neutral" as TagTone };
   const closedAt = row.done_at ?? row.cancelled_at;
+  const action = actionFor(row);
 
   return (
     <li className={`${card} p-5`}>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="font-semibold text-app-ink">{row.username ?? "—"}</p>
-        <Tag tone={status.tone}>{status.label}</Tag>
+        <div className="flex flex-wrap gap-1.5">
+          <Tag tone={recovery(row) ? "peach" : "mint"}>
+            {KIND[row.kind] ?? row.kind}
+            {recovery(row) && row.remove_mfa ? " + 2FA" : ""}
+          </Tag>
+          <Tag tone={status.tone}>{status.label}</Tag>
+        </div>
       </div>
       <dl className="mt-3 grid gap-x-6 gap-y-1 text-[13px] text-app-body sm:grid-cols-2">
+        {row.method ? (
+          <div className="flex gap-2">
+            <dt className="text-app-muted">Būdas:</dt>
+            <dd>{METHOD[row.method] ?? row.method}</dd>
+          </div>
+        ) : null}
+        {recovery(row) ? (
+          <div className="flex gap-2">
+            <dt className="text-app-muted">Naujas el. paštas:</dt>
+            <dd className="font-mono">{row.new_email_masked ?? "—"}</dd>
+          </div>
+        ) : null}
         <div className="flex gap-2">
           <dt className="text-app-muted">Atidarė:</dt>
-          <dd>{row.opened_by ?? "—"}</dd>
+          <dd>{row.opened_by ?? (recovery(row) ? "pats savininkas programėlėje" : "—")}</dd>
         </div>
         <div className="flex gap-2">
           <dt className="text-app-muted">Atidaryta:</dt>
@@ -231,7 +289,7 @@ function RequestCard({ row }: { row: MfaResetRow }) {
       </dl>
       {row.status === "ready" && !executing ? (
         <button type="button" onClick={() => setExecuting(true)} className={`${btnDanger} mt-4`}>
-          Nuimti 2FA
+          {action.label}
         </button>
       ) : null}
       {row.status === "ready" && executing ? <ExecuteForm row={row} onClose={() => setExecuting(false)} /> : null}
