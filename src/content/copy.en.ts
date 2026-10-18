@@ -231,6 +231,8 @@ export const en: typeof lt = {
       { key: "refunds", label: "Refund Policy" },
       { key: "transparency", label: "DAC7 and platform transparency" },
       { key: "deletion", label: "Account deletion" },
+      { key: "dsa", label: "Digital Services Act" },
+      { key: "accessibility", label: "Accessibility" },
     ],
     companyLabel: "Company number",
     registry: "Register of Legal Entities of the Republic of Lithuania",

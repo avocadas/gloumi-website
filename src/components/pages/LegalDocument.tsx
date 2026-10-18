@@ -1,4 +1,5 @@
-import { LegalPage } from "@/components/legal/LegalPage";
+import { Blocks, LegalPage } from "@/components/legal/LegalPage";
+import { STATEMENT_DATE, STATEMENTS } from "@/content/statements";
 import { getCopy } from "@/content/copy";
 import type { Lang, LegalKey } from "@/content/lang";
 import { dac7Sections, deletionSections, LEGAL_DOCS, LEGAL_META, PARTNER_META, refundSections } from "@/content/legal";
@@ -27,6 +28,20 @@ export function LegalDocument({ lang, docKey }: { lang: Lang; docKey: LegalKey }
         /* The precedence note belongs on the translation, not on the original. */
         note={lang === "en" ? copy.legal.englishNote : undefined}
         sections={LEGAL_DOCS[lang][doc]}
+      />
+    );
+  }
+
+  // DSA page and accessibility statement: the legal role's text as written (statements.ts), its intro above the sections.
+  if (docKey === "dsa" || docKey === "accessibility") {
+    const statement = STATEMENTS[docKey][lang];
+    return (
+      <LegalPage
+        lang={lang}
+        docKey={docKey}
+        updated={STATEMENT_DATE}
+        intro={<Blocks blocks={statement.intro} />}
+        sections={statement.sections}
       />
     );
   }

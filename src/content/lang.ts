@@ -75,6 +75,9 @@ export const LEGAL_ROUTES = [
   { key: "refunds", lt: "grazinimo-salygos", en: "refunds" },
   { key: "transparency", lt: "dac7", en: "dac7" },
   { key: "deletion", lt: "paskyros-trynimas", en: "account-deletion" },
+  // The legal role's DSA page and accessibility statement (2026-10-18, statements.ts).
+  { key: "dsa", lt: "dsa", en: "dsa" },
+  { key: "accessibility", lt: "prieinamumas", en: "accessibility" },
   // Not a legal document, but a page with the same routing: one path per language, alternates, sitemap (#209).
   { key: "faq", lt: "duk", en: "faq" },
 ] as const;

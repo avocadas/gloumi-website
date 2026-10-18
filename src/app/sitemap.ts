@@ -4,14 +4,18 @@ import { FAQ_UPDATED } from "@/content/faq";
 import { LEGAL_META, LEGAL_ROUTES, PARTNER_META } from "@/content/legal";
 import { LEGAL_TRANSLATIONS } from "@/content/legal-translations";
 import { site } from "@/content/site";
+import { STATEMENT_DATE } from "@/content/statements";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const legalDate = new Date(LEGAL_META.lastUpdated);
   // The Terms for Masters and Salons have their own date; the transparency page quotes them.
   const partnerDate = new Date(PARTNER_META.lastUpdated);
   const faqDate = new Date(FAQ_UPDATED);
+  const statementDate = new Date(STATEMENT_DATE);
   const dateFor = (key: (typeof LEGAL_ROUTES)[number]["key"]) =>
-    key === "faq"
+    key === "dsa" || key === "accessibility"
+      ? statementDate
+      : key === "faq"
       ? faqDate
       : key === "partner"
         ? partnerDate

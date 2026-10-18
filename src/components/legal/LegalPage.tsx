@@ -5,6 +5,47 @@ import { getCopy } from "@/content/copy";
 import { legalPath, LEGAL_ROUTES, type Lang, type LegalKey } from "@/content/lang";
 import { controllerLine, LEGAL_TITLES, slugify, type LegalSection } from "@/content/legal";
 import { site } from "@/content/site";
+import type { StatementBlock } from "@/content/statements";
+
+/** `**bold**` in the legal role's statements, the only markup they use. */
+function Inline({ text }: { text: string }) {
+  return (
+    <>
+      {text.split(/(\*\*[^*]+\*\*)/).map((part, i) =>
+        part.startsWith("**") && part.endsWith("**") ? (
+          <strong key={i} className="font-semibold text-espresso-900">
+            {part.slice(2, -2)}
+          </strong>
+        ) : (
+          part
+        ),
+      )}
+    </>
+  );
+}
+
+/** Paragraphs and lists in the order the text has them (DSA page, accessibility statement). */
+export function Blocks({ blocks }: { blocks: StatementBlock[] }) {
+  return (
+    <>
+      {blocks.map((block, i) =>
+        "p" in block ? (
+          <p key={i} className="mt-3 leading-relaxed text-espresso-700">
+            <Inline text={block.p} />
+          </p>
+        ) : (
+          <ul key={i} className="mt-3 list-disc space-y-1.5 pl-5 leading-relaxed text-espresso-700 marker:text-terracotta-400">
+            {block.ul.map((item) => (
+              <li key={item}>
+                <Inline text={item} />
+              </li>
+            ))}
+          </ul>
+        ),
+      )}
+    </>
+  );
+}
 
 type Props = {
   /** Language of the page: its chrome and its text, which are never different. */
@@ -16,7 +57,7 @@ type Props = {
   intro?: ReactNode;
   /** Shown above the first section, e.g. which language prevails in a dispute. */
   note?: string;
-  sections: LegalSection[];
+  sections: (LegalSection & { blocks?: StatementBlock[] })[];
   /**
    * A translation into a language the site chrome does not speak (fr, de, …):
    * the text, its title, anchors and controller line are in that language,
@@ -80,6 +121,7 @@ export function LegalPage({ lang, docKey, updated, version, intro, note, section
                 <span className="mr-2 text-espresso-400">{index + 1}.</span>
                 {section.title}
               </h2>
+              {section.blocks ? <Blocks blocks={section.blocks} /> : null}
               {section.paragraphs?.map((paragraph) => (
                 <p key={paragraph} className="mt-3 leading-relaxed text-espresso-700">
                   {paragraph}

@@ -242,6 +242,8 @@ export const lt = {
       { key: "refunds", label: "Grąžinimo sąlygos" },
       { key: "transparency", label: "DAC7 ir platformos skaidrumas" },
       { key: "deletion", label: "Paskyros trynimas" },
+      { key: "dsa", label: "Skaitmeninių paslaugų aktas" },
+      { key: "accessibility", label: "Prieinamumas" },
     ] as { key: LegalKey; label: string }[],
     companyLabel: "Įmonės kodas",
     /* IVPĮ 11 str. (S-075): kuriame registre įmonė įregistruota. */

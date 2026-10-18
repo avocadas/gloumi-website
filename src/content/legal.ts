@@ -28,6 +28,8 @@ export const LEGAL_TITLES: Record<Lang, Record<LegalKey, string>> = {
     refunds: "Grąžinimo sąlygos",
     transparency: "DAC7 ir platformos skaidrumas",
     deletion: "Paskyros trynimas",
+    dsa: "Skaitmeninių paslaugų aktas (DSA)",
+    accessibility: "Prieinamumo pareiškimas",
     faq: "Dažniausi klausimai",
   },
   en: {
@@ -37,6 +39,8 @@ export const LEGAL_TITLES: Record<Lang, Record<LegalKey, string>> = {
     refunds: "Refund Policy",
     transparency: "DAC7 and platform transparency",
     deletion: "Account deletion",
+    dsa: "Digital Services Act (DSA)",
+    accessibility: "Accessibility statement",
     faq: "Frequently asked questions",
   },
 };
