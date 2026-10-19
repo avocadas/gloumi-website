@@ -67,7 +67,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-10",
           "q": "Kaip gauti savo duomenų kopiją?",
-          "a": "Šoninis meniu → Programėlės nustatymai → Paskyra → Atsisiųsti mano duomenis – JSON failas be nuotraukų ir balso įrašų; galite pasirinkti visus duomenis arba tik dalį (profilis, vizitai, įrašai, pokalbiai, pinigai, pagalba ir apribojimai). Visų duomenų prašykite support@gloumi.lt iš paskyros el. pašto – atsakysime per mėnesį."
+          "a": "Šoninis meniu → Programėlės nustatymai → Paskyra → Atsisiųsti mano duomenis – JSON failas be nuotraukų ir balso įrašų; galite pasirinkti visus duomenis arba tik dalį (profilis, vizitai, įrašai, pokalbiai, pinigai, pagalba ir apribojimai). Visų duomenų prašykite privatumas@gloumi.lt iš paskyros el. pašto – atsakysime per mėnesį."
         },
         {
           "id": "K-11",
@@ -260,7 +260,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-46",
           "q": "Ar galima pašalinti atsiliepimą?",
-          "a": "Tikrų neigiamų atsiliepimų nešaliname – tik pažeidžiančius taisykles, melagingus ar nesusijusius su paslauga; tokį nurodykite support@gloumi.lt."
+          "a": "Tikrų neigiamų atsiliepimų nešaliname – tik pažeidžiančius taisykles, melagingus ar nesusijusius su paslauga; apie tokį praneškite mygtuku „Pranešti“ prie atsiliepimo arba info@gloumi.lt."
         },
         {
           "id": "K-47",
@@ -270,7 +270,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-48",
           "q": "Mano paskyra apribota.",
-          "a": "Pranešime nurodome priežastį ir taisyklę. Paaiškinti ar apskųsti galite nemokamai – per „Pagalba“ arba support@gloumi.lt. Skundą nagrinėja žmogus, atsakome raštu; nepagrįstą apribojimą panaikiname iš karto."
+          "a": "Pranešime nurodome priežastį ir taisyklę. Paaiškinti ar apskųsti galite nemokamai – per „Pagalba“ arba info@gloumi.lt. Skundą nagrinėja žmogus, atsakome raštu; nepagrįstą apribojimą panaikiname iš karto."
         },
         {
           "id": "K-49",
@@ -370,7 +370,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-10",
           "q": "How do I get a copy of my data?",
-          "a": "Side menu → App settings → Account → Download my data – a JSON file without photo or voice files; you can pick everything or only some parts (profile, visits, posts, messages, money, support and restrictions). For everything we hold, write to support@gloumi.lt from your account email – we reply within a month."
+          "a": "Side menu → App settings → Account → Download my data – a JSON file without photo or voice files; you can pick everything or only some parts (profile, visits, posts, messages, money, support and restrictions). For everything we hold, write to privatumas@gloumi.lt from your account email – we reply within a month."
         },
         {
           "id": "K-11",
@@ -563,7 +563,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-46",
           "q": "Can a review be removed?",
-          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report those to support@gloumi.lt."
+          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report them with the Report button on the review or to info@gloumi.lt."
         },
         {
           "id": "K-47",
@@ -573,7 +573,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-48",
           "q": "My account has been restricted.",
-          "a": "Our notice gives the reason and the rule. You can explain or appeal for free – via Support or support@gloumi.lt. A person reviews it and we reply in writing; an unjustified restriction is lifted at once."
+          "a": "Our notice gives the reason and the rule. You can explain or appeal for free – via Support or info@gloumi.lt. A person reviews it and we reply in writing; an unjustified restriction is lifted at once."
         },
         {
           "id": "K-49",
