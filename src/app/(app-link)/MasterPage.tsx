@@ -18,7 +18,16 @@ import { cancellationTextKey, isShowableWork, type PublicMaster, type PublicServ
  * o be adreso puslapis lieka teisingas – tik be vaizdų.
  */
 
-const LOCALE: Record<Lang, string> = { lt: "lt-LT", en: "en-GB" };
+const LOCALE: Record<Lang, string> = {
+  lt: "lt-LT",
+  en: "en-GB",
+  pl: "pl-PL",
+  lv: "lv-LV",
+  de: "de-DE",
+  fr: "fr-FR",
+  es: "es-ES",
+  it: "it-IT",
+};
 
 function money(lang: Lang, value: number): string {
   return value.toLocaleString(LOCALE[lang], { style: "currency", currency: "EUR", minimumFractionDigits: value % 1 ? 2 : 0 });
