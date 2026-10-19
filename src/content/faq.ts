@@ -154,7 +154,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-25",
           "q": "Kas yra avansas?",
-          "a": "Iš anksto nustatyta vizito kainos dalis – suma ar procentas, – kurią meistras prašo rezervuoti jūsų kortelėje. Ji įskaitoma į kainą ir nurašoma po vizito, o likusią sumą mokate vietoje. Avansas nėra rankpinigiai. Kas būna atšaukus – K-18."
+          "a": "Iš anksto nustatyta vizito kainos dalis – suma ar procentas, – kurią meistras prašo rezervuoti Jūsų kortelėje. Ji įskaitoma į kainą ir nurašoma po vizito, o likusią sumą mokate vietoje. Avansas nėra rankpinigiai. Kas būna atšaukus – K-18."
         },
         {
           "id": "K-26",
@@ -220,7 +220,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-38",
           "q": "Kaip priimti mokėjimus programėlėje?",
-          "a": "Nuo 2026-10-07 (Taisyklės 1.13) priimti mokėjimus programėlėje ir nustatyti avansą galima tik su Pro ar VIP Studio planu (ir bandomuoju laikotarpiu ar per saloną); su Starter klientai moka vietoje. Profilis → Verslas → Mokėjimai → Stripe mokėjimų nustatymai → Įjungti mokėjimus internetu; tapatybę patvirtinsite Stripe lange. Kol Stripe patikra neužbaigta, klientai pas jus moka vietoje."
+          "a": "Nuo 2026-10-07 (Taisyklės 1.13) priimti mokėjimus programėlėje ir nustatyti avansą galima tik su Pro ar VIP Studio planu (ir bandomuoju laikotarpiu ar per saloną); su Starter klientai moka vietoje. Profilis → Verslas → Mokėjimai → Stripe mokėjimų nustatymai → Įjungti mokėjimus internetu; tapatybę patvirtinsite Stripe lange. Kol Stripe patikra neužbaigta, klientai pas Jus moka vietoje."
         },
         {
           "id": "K-39",
@@ -230,12 +230,12 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-40",
           "q": "Kiek ima Gloumi?",
-          "a": "Komisinis – 5 % už pirmą įvykusį kiekvieno kliento vizitą pas jus, rezervuotą per Gloumi, nesvarbu, ar jis apmokėtas programėlėje, ar vietoje (vietoje – tampa skola: išskaičiuojama iš vėlesnių mokėjimų programėlėje, o likusi apmokama pagal mėnesio sąskaitą); skaičiuojamas ir jūsų pačių užrašytiems vizitams. Už vėlesnius to kliento vizitus, klientus su meistro kodu ir arbatpinigius – nieko. Mokant programėlėje išskaičiuojamas ir Stripe mokestis (standartinei EEE kortelei 1,5 % + 0,25 €)."
+          "a": "Komisinis – 5 % už pirmą įvykusį kiekvieno kliento vizitą pas Jus, rezervuotą per Gloumi, nesvarbu, ar jis apmokėtas programėlėje, ar vietoje (vietoje – tampa skola: išskaičiuojama iš vėlesnių mokėjimų programėlėje, o likusi apmokama pagal mėnesio sąskaitą); skaičiuojamas ir Jūsų pačių užrašytiems vizitams. Už vėlesnius to kliento vizitus, klientus su meistro kodu ir arbatpinigius – nieko. Mokant programėlėje išskaičiuojamas ir Stripe mokestis (standartinei EEE kortelei 1,5 % + 0,25 €)."
         },
         {
           "id": "K-41",
           "q": "Kas yra meistro kodas?",
-          "a": "Profilis → Verslas → Mokėjimai → Kodas jūsų klientams. Duokite jį klientams iš laikų iki Gloumi – už juos komisinio neimame. Iki 50 klientų, galioja 3 mėn. Per Gloumi jus radusiems duoti negalima."
+          "a": "Profilis → Verslas → Mokėjimai → Kodas Jūsų klientams. Duokite jį klientams iš laikų iki Gloumi – už juos komisinio neimame. Iki 50 klientų, galioja 3 mėn. Per Gloumi Jus radusiems duoti negalima."
         },
         {
           "id": "K-42",
@@ -250,12 +250,12 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-44",
           "q": "Kaip atšaukti prenumeratą ar susigrąžinti pinigus?",
-          "a": "Parduotuvėje: iPhone – Nustatymai → jūsų vardas → Prenumeratos; Android – Google Play → Mokėjimai ir prenumeratos → Prenumeratos. App Store – ne vėliau kaip likus 24 val. iki laikotarpio pabaigos. Grąžinimus sprendžia Apple ar Google. Ištrynus paskyrą prenumerata nesibaigia."
+          "a": "Parduotuvėje: iPhone – Nustatymai → Jūsų vardas → Prenumeratos; Android – Google Play → Mokėjimai ir prenumeratos → Prenumeratos. App Store – ne vėliau kaip likus 24 val. iki laikotarpio pabaigos. Grąžinimus sprendžia Apple ar Google. Ištrynus paskyrą prenumerata nesibaigia."
         },
         {
           "id": "K-45",
           "q": "Kaip sukurti saloną?",
-          "a": "Profilis → Verslas → Salonas → Sukurti saloną (reikia VIP Studio). Pakvieskite iki 10 meistrų pagal naudotojo vardą. Nariai lieka savarankiški ir gauna Pro funkcijas, o jūs matote jų vizitus."
+          "a": "Profilis → Verslas → Salonas → Sukurti saloną (reikia VIP Studio). Pakvieskite iki 10 meistrų pagal naudotojo vardą. Nariai lieka savarankiški ir gauna Pro funkcijas, o Jūs matote jų vizitus."
         },
         {
           "id": "K-46",
@@ -306,12 +306,12 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-54",
           "q": "Kaip rikiuojami meistrai?",
-          "a": "Paieškoje lemia jūsų filtrai. Pirmiau – meistrai su įvertinimu (bent 3 atsiliepimai), aukštesnio vidurkio – aukščiau; tarp dar neįvertintų pirmiau – Pro ir VIP Studio meistrai. Pro ir VIP Studio meistrai rodomi kiek aukščiau – tai iškėlimas už planą (paprastai mokamą), ne kokybės ar patikros ženklas: paieškoje jų vidurkis rikiuojant padidinamas 5 % (rodomas vidurkis nesikeičia), sraute įrašų balas – 15 %. Srautą taip pat lemia naujumas, žmonių reakcijos, sekami meistrai, jūsų susidomėjimas ir atstumas. Išsamiai – Taisyklių skyrius „Kaip rikiuojami rezultatai“."
+          "a": "Paieškoje lemia Jūsų filtrai. Pirmiau – meistrai su įvertinimu (bent 3 atsiliepimai), aukštesnio vidurkio – aukščiau; tarp dar neįvertintų pirmiau – Pro ir VIP Studio meistrai. Pro ir VIP Studio meistrai rodomi kiek aukščiau – tai iškėlimas už planą (paprastai mokamą), ne kokybės ar patikros ženklas: paieškoje jų vidurkis rikiuojant padidinamas 5 % (rodomas vidurkis nesikeičia), sraute įrašų balas – 15 %. Srautą taip pat lemia naujumas, žmonių reakcijos, sekami meistrai, Jūsų susidomėjimas ir atstumas. Išsamiai – Taisyklių skyrius „Kaip rikiuojami rezultatai“."
         },
         {
           "id": "K-56",
           "q": "Kaip išjungti asmeninį srautą ir ištrinti sukauptus duomenis?",
-          "a": "Šoninis meniu → Programėlės nustatymai → Privatumas ir teisė → Asmeninis srautas. Išjungus „Atrasti“ rikiuojama be jūsų veiksmų ir vietos, o programėlė pasiūlys ištrinti jau sukauptus duomenis apie tai, kas jus domina ir ką matėte."
+          "a": "Šoninis meniu → Programėlės nustatymai → Privatumas ir teisė → Asmeninis srautas. Išjungus „Atrasti“ rikiuojama be Jūsų veiksmų ir vietos, o programėlė pasiūlys ištrinti jau sukauptus duomenis apie tai, kas Jus domina ir ką matėte."
         }
       ]
     }

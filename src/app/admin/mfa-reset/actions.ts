@@ -121,7 +121,7 @@ export async function executeMfaReset(requestId: string, username: string, code:
     const supabase = await createSupabaseServerClient();
     const { data: factors, error: listError } = await supabase.auth.mfa.listFactors();
     const factor = factors?.totp[0];
-    if (listError || !factor) return { ok: false, error: "Nepavyko rasti jūsų 2FA faktoriaus – prisijunkite iš naujo." };
+    if (listError || !factor) return { ok: false, error: "Nepavyko rasti Jūsų 2FA faktoriaus – prisijunkite iš naujo." };
     const { error: verifyError } = await supabase.auth.mfa.challengeAndVerify({ factorId: factor.id, code: totp });
     if (verifyError) return { ok: false, error: "Kodas netinka. Įveskite dabartinį kodą iš autentifikavimo programėlės." };
     const {

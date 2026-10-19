@@ -137,11 +137,11 @@ export const lt = {
   masters: {
     eyebrow: "Meistrams",
     title: "Daugiau klientų. Mažiau tuščių valandų.",
-    lead: "Gloumi – jūsų registratūra, vitrina ir kalendorius vienoje programėlėje. Pradėkite nuo Starter plano už 0 € – Gloumi ima 5 % komisinį tik už pirmą įvykusį kiekvieno kliento vizitą pas jus.",
+    lead: "Gloumi – Jūsų registratūra, vitrina ir kalendorius vienoje programėlėje. Pradėkite nuo Starter plano už 0 € – Gloumi ima 5 % komisinį tik už pirmą įvykusį kiekvieno kliento vizitą pas Jus.",
     items: [
       {
         title: "Mažiau neatvykimų",
-        text: "Prašykite avanso – jis rezervuojamas kliento kortelėje, o vėlai atšaukus ar neatvykus atitenka jums pagal jūsų atšaukimo sąlygas.",
+        text: "Prašykite avanso – jis rezervuojamas kliento kortelėje, o vėlai atšaukus ar neatvykus atitenka Jums pagal Jūsų atšaukimo sąlygas.",
         // S-082 (Taisyklės 1.13 T-13, M-8): avansai ir mokėjimai programėlėje – tik Pro ir VIP Studio.
         plan: "Pro ir VIP",
       },
@@ -150,7 +150,7 @@ export const lt = {
         text: "Priminimas klientui prieš vizitą, o sutikusiems gauti pasiūlymus – kvietimas rezervuoti iš naujo, kai ateina laikas: kiekvienai paslaugai patys nustatote, po kiek laiko ją verta kartoti.",
       },
       {
-        title: "Profilis – jūsų vitrina",
+        title: "Profilis – Jūsų vitrina",
         text: "Lankstūs valdikliai: portfolio, paslaugos, darbo laikas, Story ir atsiliepimai. Sudėliokite profilį taip, kaip norite, kad jį matytų klientas.",
       },
       {
@@ -310,7 +310,7 @@ export const lt = {
   /** El. pašto patvirtinimo nuoroda (/patvirtinta): patvirtinama paspaudus, ypač kai laiškas atidarytas kitame įrenginyje. */
   emailConfirm: {
     askTitle: "Patvirtinkite el. paštą",
-    askText: "Paspauskite mygtuką – ir jūsų Gloumi paskyros el. paštas bus patvirtintas.",
+    askText: "Paspauskite mygtuką – ir Jūsų Gloumi paskyros el. paštas bus patvirtintas.",
     confirm: "Patvirtinti el. paštą",
     confirming: "Tvirtinama…",
     title: "El. paštas patvirtintas",

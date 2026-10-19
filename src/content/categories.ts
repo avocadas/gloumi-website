@@ -87,7 +87,7 @@ const TEXT: Record<Lang, Record<CategoryId, CategoryText>> = {
     skincare: {
       label: "Odos priežiūra",
       short: "Oda",
-      tagline: "Procedūros pagal jūsų odą, ne pagal madą.",
+      tagline: "Procedūros pagal Jūsų odą, ne pagal madą.",
       examples: ["Veido procedūros", "Pilingai", "Kosmetologija"],
     },
   },
