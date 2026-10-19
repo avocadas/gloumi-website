@@ -10,7 +10,7 @@ import type { Lang } from "./lang";
 export type FaqItem = { id: string; q: string; a: string };
 export type FaqSection = { key: string; title: string; items: FaqItem[] };
 
-export const FAQ_UPDATED = "2026-10-14";
+export const FAQ_UPDATED = "2026-10-19";
 
 export const FAQ: Record<Lang, FaqSection[]> = {
   "lt": [
@@ -31,7 +31,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-3",
           "q": "Kaip susisiekti su pagalba?",
-          "a": "Šoninis meniu → Pagalba → Neradote atsakymo? arba info@gloumi.lt. Dėl konkretaus vizito – jame „Pranešti apie problemą“. Gavimą patvirtiname per 2 darbo dienas, iš esmės atsakome per 14 kalendorinių d., dažniausiai greičiau."
+          "a": "Šoninis meniu → Pagalba → Neradote atsakymo? arba support@gloumi.lt. Dėl konkretaus vizito – jame „Pranešti apie problemą“. Gavimą patvirtiname per 2 darbo dienas, iš esmės atsakome per 14 kalendorinių d., dažniausiai greičiau."
         }
       ]
     },
@@ -47,12 +47,12 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-5",
           "q": "Pamiršau slaptažodį.",
-          "a": "Prisijungimo lange – „Pamiršau slaptažodį“: įveskite el. paštą ir paspauskite nuorodą laiške. Laiško ieškokite ir šlamšte. Registravotės per Google ar Apple? Prisijunkite tuo pačiu mygtuku."
+          "a": "Prisijungimo lange – „Pamiršau slaptažodį“: įveskite el. paštą ir programėlėje įveskite 8 simbolių kodą iš laiško (arba paspauskite nuorodą). Kodas ir nuoroda galioja 10 min. Laiško ieškokite ir šlamšte. Įjungę 2FA, papildomai įvesite kodą iš autentifikavimo programėlės. Registravotės per Google ar Apple? Prisijunkite tuo pačiu mygtuku."
         },
         {
           "id": "K-6",
           "q": "Neatėjo el. pašto patvirtinimo laiškas.",
-          "a": "Patikrinkite šlamšto aplanką. Naują nuorodą išsisiųsite: šoninis meniu → Programėlės nustatymai → Paskyra → Patvirtinti prie el. pašto."
+          "a": "Patikrinkite šlamšto aplanką. Kodas ir nuoroda galioja 10 min., naują laišką galima užsisakyti kas minutę – naudokite tik naujausią. Naują išsisiųsite: šoninis meniu → Programėlės nustatymai → Paskyra → Patvirtinti prie el. pašto."
         },
         {
           "id": "K-7",
@@ -67,12 +67,12 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-10",
           "q": "Kaip gauti savo duomenų kopiją?",
-          "a": "Šoninis meniu → Programėlės nustatymai → Paskyra → Atsisiųsti mano duomenis – JSON failas be nuotraukų ir balso įrašų; galite pasirinkti visus duomenis arba tik dalį (profilis, vizitai, įrašai, pokalbiai, pinigai, pagalba ir apribojimai). Visų duomenų prašykite info@gloumi.lt iš paskyros el. pašto – atsakysime per mėnesį."
+          "a": "Šoninis meniu → Programėlės nustatymai → Paskyra → Atsisiųsti mano duomenis – JSON failas be nuotraukų ir balso įrašų; galite pasirinkti visus duomenis arba tik dalį (profilis, vizitai, įrašai, pokalbiai, pinigai, pagalba ir apribojimai). Visų duomenų prašykite support@gloumi.lt iš paskyros el. pašto – atsakysime per mėnesį."
         },
         {
           "id": "K-11",
           "q": "Kažkas prisijungė prie mano paskyros.",
-          "a": "Šoninis meniu → Programėlės nustatymai → Paskyra → Atsijungti visur, tada prisijungimo lange – „Pamiršau slaptažodį“. Parašykite mums, ko nedarėte. Gloumi niekada neprašo slaptažodžio ar kodo."
+          "a": "Šoninis meniu → Programėlės nustatymai → Paskyra → Atsijungti visur, tada prisijungimo lange – „Pamiršau slaptažodį“ (kodas iš laiško galioja 10 min.). Parašykite mums, ko nedarėte. Gloumi niekada neprašo slaptažodžio ar kodo."
         }
       ]
     },
@@ -225,7 +225,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-39",
           "q": "Kada gaunu pinigus?",
-          "a": "Ne anksčiau kaip po 72 val. nuo vizito pabaigos, paprastai per 7 d., jei klientas nepranešė, kad vizitas neįvyko. Į banką – pagal Stripe išmokų tvarkaraštį. Išmokas matote Profilis → Verslas → Mokėjimai."
+          "a": "Ne anksčiau kaip po 72 val. nuo vizito pabaigos, jei klientas nepranešė, kad vizitas neįvyko. Į banką – pagal Stripe išmokų tvarkaraštį. Išmokas matote Profilis → Verslas → Mokėjimai."
         },
         {
           "id": "K-40",
@@ -235,7 +235,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-41",
           "q": "Kas yra meistro kodas?",
-          "a": "Profilis → Verslas → Mokėjimai → Kodas Jūsų klientams. Duokite jį klientams iš laikų iki Gloumi – už juos komisinio neimame. Iki 50 klientų, galioja 3 mėn. Per Gloumi Jus radusiems duoti negalima."
+          "a": "Profilis → Verslas → Mokėjimai → Kodas Jūsų klientams. Duokite jį klientams iš laikų iki Gloumi – už juos komisinio neimame. Iki 50 klientų; galioja 3 mėnesius nuo meistro paskyros sukūrimo – tikslią pabaigos datą ir likusius panaudojimus rodo programėlė. Per Gloumi Jus radusiems duoti negalima."
         },
         {
           "id": "K-42",
@@ -245,7 +245,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-43",
           "q": "Kuo skiriasi planai?",
-          "a": "Starter kainuoja 0 € per mėn., o Gloumi ima 5 % komisinį už pirmą įvykusį kiekvieno kliento vizitą (K-40); ribos – 20 aktyvių vizitų per mėn. ir 10 darbų nuotraukų. Pro (19 € per mėn. arba 199 € per metus) – be ribų, aukščiau paieškoje ir sraute, avansai ir mokėjimai programėlėje, arbatpinigiai. VIP Studio (49 € per mėn. arba 499 € per metus) – dar ir salonas iki 10 meistrų. Komisinis visuose planuose tas pats. Mėnesinei Pro prenumeratai gali būti siūloma įvadinė kaina – ji parodoma programėlėje prieš užsisakant. Planai – šoninis meniu → Gloumi Pro."
+          "a": "Starter kainuoja 0 € per mėn., o Gloumi ima 5 % komisinį už pirmą įvykusį kiekvieno kliento vizitą (K-40); ribos – 20 neatšauktų vizitų per kalendorinį mėnesį ir 10 portfolio įrašų. Pro (19 € per mėn. arba 199 € per metus) – be ribų, aukščiau paieškoje ir sraute, avansai ir mokėjimai programėlėje, arbatpinigiai. VIP Studio (49 € per mėn. arba 499 € per metus) – dar ir salonas iki 10 meistrų. Komisinis visuose planuose tas pats. Mėnesinei Pro prenumeratai gali būti siūloma įvadinė kaina – ji parodoma programėlėje prieš užsisakant. Planai – šoninis meniu → Gloumi Pro."
         },
         {
           "id": "K-44",
@@ -260,7 +260,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-46",
           "q": "Ar galima pašalinti atsiliepimą?",
-          "a": "Tikrų neigiamų atsiliepimų nešaliname – tik pažeidžiančius taisykles, melagingus ar nesusijusius su paslauga; tokį nurodykite info@gloumi.lt."
+          "a": "Tikrų neigiamų atsiliepimų nešaliname – tik pažeidžiančius taisykles, melagingus ar nesusijusius su paslauga; tokį nurodykite support@gloumi.lt."
         },
         {
           "id": "K-47",
@@ -270,7 +270,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-48",
           "q": "Mano paskyra apribota.",
-          "a": "Pranešime nurodome priežastį ir taisyklę. Paaiškinti ar apskųsti galite nemokamai – per „Pagalba“ arba info@gloumi.lt. Skundą nagrinėja žmogus, atsakome raštu; nepagrįstą apribojimą panaikiname iš karto."
+          "a": "Pranešime nurodome priežastį ir taisyklę. Paaiškinti ar apskųsti galite nemokamai – per „Pagalba“ arba support@gloumi.lt. Skundą nagrinėja žmogus, atsakome raštu; nepagrįstą apribojimą panaikiname iš karto."
         },
         {
           "id": "K-49",
@@ -334,7 +334,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-3",
           "q": "How do I contact support?",
-          "a": "Side menu → Support → No answer here?, or info@gloumi.lt. About a specific visit – Report an issue in that visit. We confirm receipt within 2 working days and reply in substance within 14 calendar days, usually sooner."
+          "a": "Side menu → Support → No answer here?, or support@gloumi.lt. About a specific visit – Report an issue in that visit. We confirm receipt within 2 working days and reply in substance within 14 calendar days, usually sooner."
         }
       ]
     },
@@ -350,12 +350,12 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-5",
           "q": "I forgot my password.",
-          "a": "On the sign-in screen tap Forgot password, enter your email and open the link we send. Check your spam folder too. Signed up with Google or Apple? Sign in with the same button."
+          "a": "On the sign-in screen tap Forgot password, enter your email and enter the 8-character code from the email in the app (or open the link). The code and link are valid for 10 minutes. Check your spam folder too. With 2FA on, you also enter the code from your authenticator app. Signed up with Google or Apple? Sign in with the same button."
         },
         {
           "id": "K-6",
           "q": "The confirmation email did not arrive.",
-          "a": "Check your spam folder. To get a new link: side menu → App settings → Account → Verify now next to your email."
+          "a": "Check your spam folder. The code and link are valid for 10 minutes and you can request a new email once a minute – use only the newest one. To get a new one: side menu → App settings → Account → Verify now next to your email."
         },
         {
           "id": "K-7",
@@ -370,12 +370,12 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-10",
           "q": "How do I get a copy of my data?",
-          "a": "Side menu → App settings → Account → Download my data – a JSON file without photo or voice files; you can pick everything or only some parts (profile, visits, posts, messages, money, support and restrictions). For everything we hold, write to info@gloumi.lt from your account email – we reply within a month."
+          "a": "Side menu → App settings → Account → Download my data – a JSON file without photo or voice files; you can pick everything or only some parts (profile, visits, posts, messages, money, support and restrictions). For everything we hold, write to support@gloumi.lt from your account email – we reply within a month."
         },
         {
           "id": "K-11",
           "q": "Someone has got into my account.",
-          "a": "Side menu → App settings → Account → Sign out everywhere, then Forgot password on the sign-in screen. Tell us what you did not do. Gloumi never asks for your password or a code."
+          "a": "Side menu → App settings → Account → Sign out everywhere, then Forgot password on the sign-in screen (the email code is valid for 10 minutes). Tell us what you did not do. Gloumi never asks for your password or a code."
         }
       ]
     },
@@ -528,7 +528,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-39",
           "q": "When do I get the money?",
-          "a": "No earlier than 72 h after the visit ends, usually within 7 days, unless the client reported that it did not happen. To your bank on your Stripe payout schedule. Payouts are in Profile → Business → Payments."
+          "a": "No earlier than 72 h after the visit ends, unless the client reported that it did not happen. To your bank on your Stripe payout schedule. Payouts are in Profile → Business → Payments."
         },
         {
           "id": "K-40",
@@ -538,7 +538,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-41",
           "q": "What is the master code?",
-          "a": "Profile → Business → Payments → Code for your clients. Give it to clients from before Gloumi – no commission on them. Up to 50 clients, valid for 3 months. You may not give it to clients who found you through Gloumi."
+          "a": "Profile → Business → Payments → Code for your clients. Give it to clients from before Gloumi – no commission on them. Up to 50 clients; valid for 3 months from the master account being created – the app shows the exact end date and uses left. You may not give it to clients who found you through Gloumi."
         },
         {
           "id": "K-42",
@@ -548,7 +548,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-43",
           "q": "What is the difference between the plans?",
-          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 active visits a month and 10 portfolio photos. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. An introductory price may be offered for monthly Pro – the app shows it before you subscribe. Plans – side menu → Gloumi Pro."
+          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 non-cancelled visits a calendar month and 10 portfolio posts. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. An introductory price may be offered for monthly Pro – the app shows it before you subscribe. Plans – side menu → Gloumi Pro."
         },
         {
           "id": "K-44",
@@ -563,7 +563,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-46",
           "q": "Can a review be removed?",
-          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report those to info@gloumi.lt."
+          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report those to support@gloumi.lt."
         },
         {
           "id": "K-47",
@@ -573,7 +573,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-48",
           "q": "My account has been restricted.",
-          "a": "Our notice gives the reason and the rule. You can explain or appeal for free – via Support or info@gloumi.lt. A person reviews it and we reply in writing; an unjustified restriction is lifted at once."
+          "a": "Our notice gives the reason and the rule. You can explain or appeal for free – via Support or support@gloumi.lt. A person reviews it and we reply in writing; an unjustified restriction is lifted at once."
         },
         {
           "id": "K-49",
