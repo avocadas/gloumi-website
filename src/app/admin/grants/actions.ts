@@ -52,13 +52,17 @@ function cleanReason(reason: unknown): string | null {
 
 const fail = (error: string): ActionResult => ({ ok: false, error });
 
-/** Neimti komisinio iki dienos (imtinai). Dar galiojantį — pratęsia; pradžia lieka sena. */
-export async function setCommissionWaiver(masterId: string, day: string, reason: string): Promise<ActionResult> {
+/**
+ * Neimti komisinio iki dienos (imtinai) arba, kai `day === null`, neribotai
+ * (developeris 2026-10-20: „neribotai turiu galeti suteikti ir netaikyti
+ * komisinio“). Dar galiojantį — pratęsia; pradžia lieka sena.
+ */
+export async function setCommissionWaiver(masterId: string, day: string | null, reason: string): Promise<ActionResult> {
   try {
     const admin = await requireAdmin();
     if (typeof masterId !== "string" || !UUID_PATTERN.test(masterId)) return fail("Netinkamas prašymas.");
-    const until = vilniusEndOfDay(day);
-    if (!until) return fail("Pasirinkite terminą.");
+    const until = day === null ? null : vilniusEndOfDay(day);
+    if (day !== null && !until) return fail("Pasirinkite terminą arba „Neribotai“.");
     const why = cleanReason(reason);
     if (!why) return fail(ERRORS.bad_reason);
 
@@ -69,6 +73,10 @@ export async function setCommissionWaiver(masterId: string, day: string, reason:
       _until: until,
       _reason: why,
     });
+    // Kol bazė neleidžia atsisakymo be termino, ji atsako `bad_until` ar NOT NULL klaida.
+    if (error && until === null && (error.message === "bad_until" || error.code === "23502")) {
+      return fail("Komisinio atsisakymas be termino bazėje dar neįjungtas. Pasirinkite datą (iki 5 metų).");
+    }
     if (error) return fail(rpcError(error.message));
 
     revalidatePath("/admin", "layout");

@@ -233,8 +233,8 @@ export function GrantForm({
 
   const activeWaiver = (grants ?? []).find((g) => g.kind === "commission_waiver" && g.active);
   const extending = kind === "waiver" && Boolean(activeWaiver);
-  // Komisinio atsisakymas bazėje visada su data (developeris prašė „Neribotai“ tik planui).
-  const unlimited = kind === "plan" && term === "unlimited";
+  // „Neribotai“ – ir planui, ir komisinio atsisakymui (developeris 2026-10-20).
+  const unlimited = term === "unlimited";
   const planLabel = PLAN_LABEL[plan];
   const ready = (unlimited || Boolean(until)) && reason.trim().length > 0;
 
@@ -253,8 +253,8 @@ export function GrantForm({
             title: extending ? "Pratęsti komisinio atsisakymą?" : "Neimti komisinio?",
             body: [
               extending
-                ? `Gloumi neims komisinio iki ${until} imtinai; pradžia lieka ta pati.`
-                : `Gloumi neims komisinio už šio meistro vizitus nuo dabar iki ${until} imtinai.`,
+                ? `Gloumi neims komisinio ${unlimited ? "be termino" : `iki ${until} imtinai`}; pradžia lieka ta pati.`
+                : `Gloumi neims komisinio už šio meistro vizitus nuo dabar ${termText}.`,
               "Veiksmas ir priežastis įrašomi į administratorių žurnalą.",
             ],
             confirmLabel: extending ? "Pratęsti" : "Neimti komisinio",
@@ -266,7 +266,7 @@ export function GrantForm({
     startTransition(async () => {
       const res = await (kind === "plan"
         ? grantPlan(masterId, plan, unlimited ? null : until, reason)
-        : setCommissionWaiver(masterId, until, reason)
+        : setCommissionWaiver(masterId, unlimited ? null : until, reason)
       ).catch(() => ({ ok: false as const, error: UNREACHABLE }));
       if (!res.ok) {
         setError(res.error);
@@ -329,18 +329,16 @@ export function GrantForm({
               />
             </Field>
           ) : null}
-          <Field label="Terminas" hint={extending && activeWaiver ? `Dabar galioja iki ${day(activeWaiver.until)}.` : undefined}>
-            {kind === "plan" ? (
-              <Segment<Term>
-                label="Terminas"
-                value={term}
-                onChange={setTerm}
-                options={[
-                  { value: "date", label: "Iki datos" },
-                  { value: "unlimited", label: "Neribotai" },
-                ]}
-              />
-            ) : null}
+          <Field label="Terminas" hint={extending && activeWaiver ? `Dabar galioja ${activeWaiver.until ? `iki ${day(activeWaiver.until)}` : "neribotai"}.` : undefined}>
+            <Segment<Term>
+              label="Terminas"
+              value={term}
+              onChange={setTerm}
+              options={[
+                { value: "date", label: "Iki datos" },
+                { value: "unlimited", label: "Neribotai" },
+              ]}
+            />
             {!unlimited ? (
               <input
                 type="date"
@@ -350,7 +348,7 @@ export function GrantForm({
                 max={maxDay}
                 value={until}
                 onChange={(e) => setUntil(e.target.value)}
-                className={`${dateInput} ${kind === "plan" ? "mt-2" : ""}`}
+                className={`${dateInput} mt-2`}
               />
             ) : null}
           </Field>
