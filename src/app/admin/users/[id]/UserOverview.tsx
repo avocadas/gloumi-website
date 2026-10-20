@@ -4,9 +4,7 @@ import type { CatalogEntry, SignedMedia } from "@/lib/admin-data";
 import { columnLabel, formatDate, formatValue, formatWhen } from "../../format";
 import { STROKE, SectionTitle, Tag, card } from "../../ui";
 import { AccountActions } from "./AccountActions";
-import { BirthDateCorrection } from "./BirthDateCorrection";
 import type { GrantView } from "../../grants/GrantRows";
-import { ActiveNow, GrantForm, GrantHistory, GrantsHeader } from "./MasterGrants";
 import { CopyButton } from "./CopyButton";
 import { PhoneReveal } from "./PhoneReveal";
 
@@ -99,11 +97,21 @@ export function UserOverview({
 
   return (
     <div className="space-y-6">
-      {/* „Dabar galioja“ – iškart po antrašte, per visą plotį (design 5.1): kas galioja ir kaip baigti, matosi pirmame ekrane. */}
-      {user.is_admin ? null : (
-        <ActiveNow
-          grants={master ? grants : []}
-          state={{ bannedUntil: banned ? user.banned_until : null, restrictedUntil, terminationAt }}
+      {/* „Dabar galioja“ ir veiksmai – iškart po antrašte, per visą plotį (design 5.1): matosi pirmame ekrane. */}
+      {user.is_admin ? (
+        <p className={`${card} p-5 text-sm text-app-muted`}>Administratorių paskyros portale neblokuojamos ir netrinamos.</p>
+      ) : (
+        <AccountActions
+          userId={user.id}
+          banned={banned}
+          bannedUntil={banned ? user.banned_until : null}
+          restrictedUntil={restrictedUntil}
+          terminationAt={terminationAt}
+          confirmName={handle ?? "IŠTRINTI"}
+          isMaster={Boolean(master)}
+          grants={master ? grants : undefined}
+          grantDays={grantDays}
+          birthDate={birthDate}
         />
       )}
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
@@ -178,28 +186,6 @@ export function UserOverview({
           </section>
 
 
-          {master && grants !== undefined ? (
-            <section className="space-y-3">
-              <GrantsHeader />
-              <GrantForm masterId={user.id} grants={grants} minDay={grantDays.min} maxDay={grantDays.max} />
-              <GrantHistory grants={grants} />
-            </section>
-          ) : null}
-
-          {user.is_admin ? (
-            <p className="px-1 text-sm text-app-muted">Administratorių paskyros portale neblokuojamos ir netrinamos.</p>
-          ) : (
-            <AccountActions
-              userId={user.id}
-              banned={banned}
-              bannedUntil={banned ? user.banned_until : null}
-              restrictedUntil={restrictedUntil}
-              terminationAt={terminationAt}
-              confirmName={handle ?? "IŠTRINTI"}
-              isMaster={Boolean(master)}
-            />
-          )}
-          {user.is_admin ? null : <BirthDateCorrection userId={user.id} birthDate={birthDate} />}
         </div>
 
         <div className="space-y-6">

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { IconBan, IconCalendar, IconReply, IconTrash } from "@/components/icons";
+import { IconBan, IconCalendar, IconPencil, IconPlus, IconTrash } from "@/components/icons";
 import { cancelMasterTermination, deleteAccount, setBookingRestriction, setSuspended } from "../../actions";
 import { useConfirm } from "../../ConfirmDialog";
 import { useTerminationNotice } from "../../ModerationRules";
@@ -10,7 +10,10 @@ import { formatWhen } from "../../format";
 import type { NoticeNote } from "../../moderation-email";
 import { SUSPEND_DAYS, SUSPEND_SOURCES } from "../../suspension";
 import { TERMINATE_AFTER_NOTICE, URGENT_GROUNDS } from "../../termination";
-import { ActionNote, STROKE, SectionTitle, btn, btnDanger, card } from "../../ui";
+import type { GrantView } from "../../grants/GrantRows";
+import { ActionNote, Alert, STROKE, SectionTitle, btn, btnDanger, btnQuiet, card } from "../../ui";
+import { BirthDateCorrection } from "./BirthDateCorrection";
+import { ActiveGrantRow, GrantForm, GrantHistory } from "./MasterGrants";
 
 /*
  * Paskyros sustabdymas ir trynimas (#129, developerio sprendimas: abu).
@@ -30,8 +33,12 @@ import { ActionNote, STROKE, SectionTitle, btn, btnDanger, card } from "../../ui
  * Rezervavimo apribojimas (#207) – to paties pavidalo, tik stabdo naujas
  * rezervacijas, ne prisijungimą; automatiniai įspėjimai jo nesukuria.
  *
- * Kiekvienas veiksmas — atskira eilutė su paaiškinimu, ką jis padarys:
- * mygtukas be paaiškinimo verčia spėlioti, o čia spėlioti brangu.
+ * Išdėstymas (design `admin-portalas.md` 5.1, 2026-10-20): „Dabar galioja“ –
+ * kiekvienas galiojantis sprendimas su terminu ir veiksmu jam baigti toje
+ * pačioje eilutėje (sąlygos, sustabdymas, apribojimas, suplanuotas
+ * panaikinimas); po juo – viena veiksmų eilutė naujam sprendimui, formos
+ * atsiskleidžia po ja; ankstesni sprendimai – suskleisti. Ką padarys
+ * kiekvienas veiksmas, sako jo patvirtinimo langas.
  */
 export function AccountActions({
   userId,
@@ -41,6 +48,9 @@ export function AccountActions({
   terminationAt,
   confirmName,
   isMaster,
+  grants,
+  grantDays,
+  birthDate,
 }: {
   userId: string;
   banned: boolean;
@@ -52,6 +62,11 @@ export function AccountActions({
   terminationAt: string | null;
   confirmName: string;
   isMaster: boolean;
+  /** Meistro individualios sąlygos (#179); `undefined` — ne meistras, `null` — gauti nepavyko. */
+  grants?: GrantView[] | null;
+  grantDays: { min: string; max: string };
+  /** `profiles.birth_date` (YYYY-MM-DD); `null` – nenurodyta. */
+  birthDate: string | null;
 }) {
   const router = useRouter();
   const notice = useTerminationNotice();
@@ -61,6 +76,7 @@ export function AccountActions({
   const [note, setNote] = useState<NoticeNote | null>(null);
   const [deleted, setDeleted] = useState(false);
   const [dialog, ask] = useConfirm();
+  const [form, setForm] = useState<"grant" | "birth" | null>(null);
 
   const run = (suspend: boolean, reason: string, rule: string | null, days?: number, source?: string) => {
     setError(null);
@@ -261,100 +277,148 @@ export function AccountActions({
     return <p className={`${card} p-5 text-sm font-semibold text-app-body`}>Paskyra ištrinta.</p>;
   }
 
+  const activeGrants = (grants ?? []).filter((g) => g.active);
+  const nothing = activeGrants.length === 0 && !banned && !restrictedUntil && !terminationAt;
+  const canGrant = isMaster && grants !== undefined && grants !== null;
+  const removeLabel = terminationAt ? "Ištrinti iš karto" : isMaster ? "Nutraukti meistro paskyrą" : "Ištrinti paskyrą";
+
   return (
-    <section>
+    <section className="space-y-4">
       {dialog}
-      <SectionTitle accent="system" title="Veiksmai" />
-      <div className={`${card} divide-y divide-app-hairline`}>
-        <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
-          <div className="min-w-0">
-            <p className="text-sm font-semibold text-app-ink">
-              {banned ? `Sustabdyta iki ${formatWhen(bannedUntil)}` : "Sustabdyti paskyrą"}
-            </p>
-            <p className="mt-0.5 text-[13px] text-app-muted">
-              {banned
-                ? "Pasibaigus terminui prieiga grįš automatiškai."
-                : "Iki 30 dienų; nebegalės prisijungti, gaus pranešimą."}
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
+
+      <div className={`${card} p-4 sm:p-5`}>
+        <h2 className="flex items-center gap-2 text-base font-semibold text-app-ink">
+          <span aria-hidden className="h-2 w-2 rounded-full bg-app-ok" />
+          Dabar galioja
+        </h2>
+        <p className="mt-0.5 text-[13px] text-app-muted">Kiekvieną sprendimą galima baigti čia pat.</p>
+        {grants === null ? (
+          <Alert tone="warn" className="mt-3">
+            Individualių sąlygų gauti nepavyko – sąrašas gali būti nepilnas.
+          </Alert>
+        ) : null}
+        {nothing ? (
+          <p className="mt-3 border-t border-app-hairline pt-3 text-sm text-app-muted">Nieko nesuteikta ir neapribota.</p>
+        ) : (
+          <ul className="mt-3 divide-y divide-app-hairline border-t border-app-hairline">
+            {activeGrants.map((g) => (
+              <ActiveGrantRow key={g.kind === "plan_grant" ? `p:${g.subscriptionId}` : `w:${g.masterId}`} grant={g} />
+            ))}
             {banned ? (
-              <button type="button" disabled={pending} onClick={restore} className={btn}>
-                <IconReply size={16} strokeWidth={STROKE} aria-hidden />
-                Atkurti
-              </button>
+              <StateRow
+                Icon={IconBan}
+                title="Paskyra sustabdyta"
+                meta={`iki ${formatWhen(bannedUntil)} · pasibaigus terminui prieiga grįš automatiškai`}
+              >
+                <button type="button" disabled={pending} onClick={suspend} className={btnQuiet}>
+                  Pratęsti
+                </button>
+                <button type="button" disabled={pending} onClick={restore} className={btnDanger}>
+                  Atkurti prieigą
+                </button>
+              </StateRow>
             ) : null}
-            <button type="button" disabled={pending} onClick={suspend} className={btnDanger}>
-              {banned ? (
-                <IconCalendar size={16} strokeWidth={STROKE} aria-hidden />
-              ) : (
-                <IconBan size={16} strokeWidth={STROKE} aria-hidden />
-              )}
-              {banned ? "Pratęsti" : "Sustabdyti"}
-            </button>
-          </div>
-        </div>
-        <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
-          <div className="min-w-0">
-            <p className="text-sm font-semibold text-app-ink">
-              {restrictedUntil ? `Rezervavimas apribotas iki ${formatWhen(restrictedUntil)}` : "Apriboti rezervavimą"}
-            </p>
-            <p className="mt-0.5 text-[13px] text-app-muted">
-              {restrictedUntil
-                ? "Pasibaigus terminui apribojimas nusiims automatiškai."
-                : "Iki 30 dienų negalės rezervuoti naujų vizitų; gaus pranešimą."}
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
             {restrictedUntil ? (
-              <button type="button" disabled={pending} onClick={unrestrict} className={btn}>
-                <IconReply size={16} strokeWidth={STROKE} aria-hidden />
-                Nuimti
-              </button>
+              <StateRow
+                Icon={IconCalendar}
+                title="Rezervavimas apribotas"
+                meta={`iki ${formatWhen(restrictedUntil)} · pasibaigus terminui nusiims automatiškai`}
+              >
+                <button type="button" disabled={pending} onClick={restrict} className={btnQuiet}>
+                  Pratęsti
+                </button>
+                <button type="button" disabled={pending} onClick={unrestrict} className={btnDanger}>
+                  Panaikinti apribojimą
+                </button>
+              </StateRow>
             ) : null}
-            <button type="button" disabled={pending} onClick={restrict} className={btnDanger}>
-              {restrictedUntil ? (
-                <IconCalendar size={16} strokeWidth={STROKE} aria-hidden />
-              ) : (
-                <IconBan size={16} strokeWidth={STROKE} aria-hidden />
-              )}
-              {restrictedUntil ? "Pratęsti" : "Apriboti"}
-            </button>
-          </div>
-        </div>
-        <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
-          <div className="min-w-0">
-            <p className="text-sm font-semibold text-app-ink">
-              {terminationAt ? `Bus panaikinta ${formatWhen(terminationAt)}` : isMaster ? "Nutraukti meistro paskyrą" : "Ištrinti paskyrą"}
-            </p>
-            <p className="mt-0.5 text-[13px] text-app-muted">
-              {terminationAt
-                ? "Meistrui pranešta; iki tol jis dirba kaip įprastai."
-                : isMaster
-                  ? "Meistrui – po 30 d. nuo pranešimo, iš karto tik dėl skubaus pagrindo."
-                  : "Visam laikui, su viskuo, kas jai priklauso."}
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
             {terminationAt ? (
-              <button type="button" disabled={pending} onClick={cancelTermination} className={btn}>
-                <IconReply size={16} strokeWidth={STROKE} aria-hidden />
-                Atšaukti nutraukimą
-              </button>
+              <StateRow
+                Icon={IconTrash}
+                title="Suplanuotas panaikinimas"
+                meta={`${formatWhen(terminationAt)} · meistrui pranešta, iki tol jis dirba kaip įprastai`}
+              >
+                <button type="button" disabled={pending} onClick={cancelTermination} className={btnDanger}>
+                  Atšaukti nutraukimą
+                </button>
+              </StateRow>
             ) : null}
-            <button type="button" disabled={pending} onClick={remove} className={btnDanger}>
-              <IconTrash size={16} strokeWidth={STROKE} aria-hidden />
-              {terminationAt ? "Ištrinti iš karto" : isMaster ? "Nutraukti" : "Ištrinti"}
+          </ul>
+        )}
+      </div>
+
+      <div>
+        <SectionTitle accent="system" title="Veiksmai" />
+        <div className="flex flex-wrap items-center gap-2">
+          {canGrant ? (
+            <button type="button" onClick={() => setForm(form === "grant" ? null : "grant")} aria-expanded={form === "grant"} className={btn}>
+              <IconPlus size={16} strokeWidth={STROKE} aria-hidden />
+              Suteikti sąlygą
             </button>
-          </div>
+          ) : null}
+          {restrictedUntil ? null : (
+            <button type="button" disabled={pending} onClick={restrict} className={btn}>
+              Apriboti rezervavimą
+            </button>
+          )}
+          {banned ? null : (
+            <button type="button" disabled={pending} onClick={suspend} className={btn}>
+              Sustabdyti paskyrą
+            </button>
+          )}
+          <button type="button" onClick={() => setForm(form === "birth" ? null : "birth")} aria-expanded={form === "birth"} className={btn}>
+            <IconPencil size={16} strokeWidth={STROKE} aria-hidden />
+            Pataisyti gimimo datą
+          </button>
+          <span aria-hidden className="hidden flex-1 sm:block" />
+          <button type="button" disabled={pending} onClick={remove} className={btnDanger}>
+            {removeLabel}
+          </button>
         </div>
       </div>
-      <ActionNote note={note} />
-      {error ? (
-        <p role="alert" className="mt-3 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
-          {error}
-        </p>
+
+      {canGrant ? (
+        <GrantForm
+          masterId={userId}
+          grants={grants}
+          minDay={grantDays.min}
+          maxDay={grantDays.max}
+          open={form === "grant"}
+          onClose={() => setForm(null)}
+        />
       ) : null}
+      {form === "birth" ? <BirthDateCorrection userId={userId} birthDate={birthDate} /> : null}
+
+      <ActionNote note={note} />
+      {error ? <Alert>{error}</Alert> : null}
+
+      {isMaster ? <GrantHistory grants={grants} /> : null}
     </section>
+  );
+}
+
+/** Viena „Dabar galioja“ eilutė: ikona, pavadinimas, terminas; veiksmai dešinėje (telefone – po tekstu). */
+function StateRow({
+  Icon,
+  title,
+  meta,
+  children,
+}: {
+  Icon: typeof IconBan;
+  title: string;
+  meta: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <li className="flex flex-col gap-2 py-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+      <div className="flex min-w-0 items-start gap-3">
+        <Icon size={18} strokeWidth={STROKE} aria-hidden className="mt-0.5 shrink-0 text-app-faint" />
+        <div className="min-w-0">
+          <p className="text-[15px] font-semibold text-app-ink">{title}</p>
+          <p className="mt-0.5 text-[13px] break-words text-app-muted">{meta}</p>
+        </div>
+      </div>
+      <div className="flex flex-wrap gap-1 pl-7 sm:pl-0">{children}</div>
+    </li>
   );
 }

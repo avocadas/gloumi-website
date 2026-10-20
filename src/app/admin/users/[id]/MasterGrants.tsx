@@ -1,14 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { useState, useTransition, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { IconBadgePercent, IconBan, IconCalendar, IconChevronDown, IconCrown, IconPlus, IconTrash } from "@/components/icons";
+import { IconBadgePercent, IconChevronDown, IconCrown, IconPlus } from "@/components/icons";
 import { useConfirm } from "../../ConfirmDialog";
 import type { GrantView } from "../../grants/GrantRows";
 import { clearCommissionWaiver, grantPlan, revokePlanGrant, setCommissionWaiver } from "../../grants/actions";
-import { formatWhen } from "../../format";
-import { Alert, Field, STROKE, Segment, SectionTitle, Tag, btn, btnDanger, btnPrimary, btnQuiet, card, dateInput, input } from "../../ui";
+import { Alert, Field, STROKE, Segment, Tag, btn, btnDanger, btnPrimary, btnQuiet, card, dateInput, input } from "../../ui";
 
 /*
  * „Dabar galioja“ ir „Suteikti sąlygą“ paskyros puslapyje (design
@@ -35,78 +33,12 @@ function day(value: string | null): string {
   return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString("lt-LT", { timeZone: "Europe/Vilnius" });
 }
 
-export type AccountState = {
-  bannedUntil: string | null;
-  restrictedUntil: string | null;
-  terminationAt: string | null;
-};
-
-export function ActiveNow({ grants, state }: { grants: GrantView[] | null | undefined; state: AccountState }) {
-  const active = (grants ?? []).filter((g) => g.active);
-  const stateRows = [
-    state.bannedUntil
-      ? { key: "ban", Icon: IconBan, title: "Paskyra sustabdyta", meta: `iki ${formatWhen(state.bannedUntil)} · baigti – „Veiksmai“ žemiau` }
-      : null,
-    state.restrictedUntil
-      ? {
-          key: "restrict",
-          Icon: IconCalendar,
-          title: "Rezervavimas apribotas",
-          meta: `iki ${formatWhen(state.restrictedUntil)} · nuimti – „Veiksmai“ žemiau`,
-        }
-      : null,
-    state.terminationAt
-      ? {
-          key: "terminate",
-          Icon: IconTrash,
-          title: "Suplanuotas panaikinimas",
-          meta: `${formatWhen(state.terminationAt)} · atšaukti – „Veiksmai“ žemiau`,
-        }
-      : null,
-  ].filter((r) => r !== null);
-
-  return (
-    <section className={`${card} p-4 sm:p-5`}>
-      <h2 className="flex items-center gap-2 text-base font-semibold text-app-ink">
-        <span aria-hidden className="h-2 w-2 rounded-full bg-app-ok" />
-        Dabar galioja
-      </h2>
-      <p className="mt-0.5 text-[13px] text-app-muted">Kiekvieną sprendimą galima baigti čia pat.</p>
-
-      {grants === null ? (
-        <Alert tone="warn" className="mt-3">
-          Individualių sąlygų gauti nepavyko – sąrašas gali būti nepilnas.
-        </Alert>
-      ) : null}
-
-      {active.length === 0 && stateRows.length === 0 ? (
-        <p className="mt-3 border-t border-app-hairline pt-3 text-sm text-app-muted">Nieko nesuteikta ir neapribota.</p>
-      ) : (
-        <ul className="mt-3 divide-y divide-app-hairline border-t border-app-hairline">
-          {active.map((g) => (
-            <ActiveGrantRow key={g.kind === "plan_grant" ? `p:${g.subscriptionId}` : `w:${g.masterId}`} grant={g} />
-          ))}
-          {stateRows.map((r) => (
-            <li key={r.key} className="flex items-start gap-3 py-3">
-              <r.Icon size={18} strokeWidth={STROKE} aria-hidden className="mt-0.5 shrink-0 text-app-faint" />
-              <div className="min-w-0">
-                <p className="text-[15px] font-semibold text-app-ink">{r.title}</p>
-                <p className="mt-0.5 text-[13px] text-app-muted">{r.meta}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
-  );
-}
-
 function grantMeta(g: GrantView) {
   const term = g.until ? `iki ${day(g.until)}` : "neribotai";
   return [term, g.reason || null, g.grantedAt ? `suteikta ${day(g.grantedAt)}` : null].filter(Boolean).join(" · ");
 }
 
-function ActiveGrantRow({ grant }: { grant: GrantView }) {
+export function ActiveGrantRow({ grant }: { grant: GrantView }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -211,14 +143,26 @@ export function GrantForm({
   grants,
   minDay,
   maxDay,
+  open: controlledOpen,
+  onClose,
 }: {
   masterId: string;
   grants: GrantView[] | null | undefined;
   minDay: string;
   maxDay: string;
+  /** Valdoma iš paskyros veiksmų eilutės (5.1): tada savo mygtuko forma nerodo. */
+  open?: boolean;
+  onClose?: () => void;
 }) {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const [ownOpen, setOwnOpen] = useState(false);
+  const controlled = controlledOpen !== undefined;
+  const open = controlled ? controlledOpen : ownOpen;
+  const setOpen = (v: boolean) => {
+    if (controlled) {
+      if (!v) onClose?.();
+    } else setOwnOpen(v);
+  };
   const [pending, startTransition] = useTransition();
   const [kind, setKind] = useState<Kind>("plan");
   const [plan, setPlan] = useState<"pro" | "vip">("pro");
@@ -281,6 +225,7 @@ export function GrantForm({
   };
 
   if (!open) {
+    if (controlled) return done ? <Alert tone="ok">{done}</Alert> : null;
     return (
       <div className="space-y-2">
         <button type="button" onClick={() => setOpen(true)} className={`${btn} w-full sm:w-auto`}>
@@ -378,20 +323,5 @@ export function GrantForm({
         </div>
       </form>
     </>
-  );
-}
-
-/** Nuoroda į visų meistrų sąlygų sąrašą. */
-export function GrantsHeader() {
-  return (
-    <SectionTitle
-      accent="value"
-      title="Individualios sąlygos"
-      aside={
-        <Link href="/admin/grants" className="text-xs font-semibold text-app-accent hover:underline">
-          Visų sąrašas
-        </Link>
-      }
-    />
   );
 }
