@@ -297,7 +297,7 @@ export function Segment<T extends string>({
 /** Kortelė-nuoroda: pavadinimas, paaiškinimas, ›. */
 export function LinkCard({ href, title, note, aside }: { href: string; title: string; note?: string; aside?: ReactNode }) {
   return (
-    <Link
+    <Link prefetch={false}
       href={href}
       className={`${card} flex items-center justify-between gap-3 px-5 py-4 text-sm transition-colors hover:bg-app-input`}
     >

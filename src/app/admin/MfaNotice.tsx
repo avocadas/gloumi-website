@@ -41,7 +41,7 @@ export function MfaNotice({ reason }: { reason: "mfa-required" | "expired" }) {
           ? "Administravimo skydelis po prisijungimo atviras 12 valandų. Prisijunkite iš naujo slaptažodžiu ir kodu iš autentifikatoriaus."
           : "Jūsų paskyra yra administratorių sąraše, bet šis seansas patvirtintas tik slaptažodžiu. Administravimo skydelis atsidaro tik patvirtinus kodu iš autentifikatoriaus."}
       </p>
-      <Link href="/admin/login" className={`${btnPrimary} mt-6 h-12 w-full`}>
+      <Link prefetch={false} href="/admin/login" className={`${btnPrimary} mt-6 h-12 w-full`}>
         Prisijungti iš naujo
         <IconArrowRight size={16} strokeWidth={STROKE} aria-hidden />
       </Link>

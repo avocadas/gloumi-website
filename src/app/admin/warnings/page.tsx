@@ -61,7 +61,7 @@ export default async function WarningsPage() {
           {warnings.map((w) => (
             <li key={`${w.profile_id}-${w.warned_at}`} className="flex flex-col gap-2 p-5 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0">
-                <Link href={`/admin/users/${w.profile_id}`} className="text-sm font-semibold text-app-ink hover:underline">
+                <Link prefetch={false} href={`/admin/users/${w.profile_id}`} className="text-sm font-semibold text-app-ink hover:underline">
                   {w.display_name || (w.username ? `@${w.username}` : "Be vardo")}
                 </Link>
                 <p className="mt-0.5 text-[13px] text-app-muted">

@@ -25,7 +25,7 @@ export default function AdminError({ error, reset }: { error: Error & { digest?:
       <button type="button" onClick={reset} className={`${btn} mt-6 h-12 w-full`}>
         Bandyti dar kartą
       </button>
-      <Link href="/admin" className={`${btnQuiet} mt-2 w-full`}>
+      <Link prefetch={false} href="/admin" className={`${btnQuiet} mt-2 w-full`}>
         Į portalo pradžią
       </Link>
     </AuthShell>

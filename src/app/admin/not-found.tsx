@@ -14,7 +14,7 @@ export default function AdminNotFound() {
       </p>
       <h1 className="mt-4 font-app-serif text-[26px] leading-tight text-app-ink">Šio puslapio nerandame</h1>
       <p className="mt-3 text-sm leading-relaxed text-app-body">Nuoroda galėjo pasikeisti arba puslapis buvo perkeltas.</p>
-      <Link href="/" className={`${btn} mt-6 h-12 w-full`}>
+      <Link prefetch={false} href="/" className={`${btn} mt-6 h-12 w-full`}>
         Į gloumi.lt
       </Link>
     </AuthShell>

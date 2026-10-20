@@ -59,7 +59,7 @@ export async function AdminShell({
       {/* Kompiuteris: šoninė juosta. */}
       <aside className="sticky top-0 hidden h-dvh flex-col border-r border-app-hairline bg-white lg:flex">
         <div className="px-5 pt-6 pb-2">
-          <Link href="/admin" aria-label="Gloumi administravimas — Apžvalga">
+          <Link prefetch={false} href="/admin" aria-label="Gloumi administravimas — Apžvalga">
             <Brand />
           </Link>
         </div>
@@ -74,10 +74,10 @@ export async function AdminShell({
             {sideNav}
             <AccountFooter username={username} initial={initial} section={section} />
           </NavDrawer>
-          <Link href="/admin" aria-label="Gloumi administravimas — Apžvalga" className="min-w-0">
+          <Link prefetch={false} href="/admin" aria-label="Gloumi administravimas — Apžvalga" className="min-w-0">
             <Brand />
           </Link>
-          <Link
+          <Link prefetch={false}
             href="/admin/password"
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-app-accent-soft text-sm font-bold text-app-accent"
             aria-label={`${username} – paskyra ir slaptažodis`}
@@ -90,7 +90,7 @@ export async function AdminShell({
           {hero ? <Bubbles tone="lavender" /> : null}
           <div className={`relative mx-auto w-full max-w-[1040px] px-4 sm:px-8 ${hero ? "pt-10 pb-14" : "pt-6 pb-2 lg:pt-10"}`}>
             {back ? (
-              <Link
+              <Link prefetch={false}
                 href={back.href}
                 className="mb-2 inline-flex items-center gap-1 text-sm font-semibold text-app-ink/80 hover:text-app-ink"
               >
@@ -139,7 +139,7 @@ function SideNav({ section, counts }: { section: Section; counts: QueueCounts | 
 function NavLink({ item, active, n }: { item: NavItem; active: boolean; n: number | null }) {
   const { Icon } = item;
   return (
-    <Link
+    <Link prefetch={false}
       href={item.href}
       aria-current={active ? "page" : undefined}
       className={`flex h-10 items-center gap-3 rounded-xl px-3 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-app-accent/40 focus-visible:outline-none ${
@@ -171,7 +171,7 @@ function AccountFooter({ username, initial, section }: { username: string; initi
         </span>
       </p>
       <div className="mt-2 flex items-center gap-1">
-        <Link
+        <Link prefetch={false}
           href="/admin/password"
           aria-current={section === "account" ? "page" : undefined}
           title="Keisti slaptažodį"
@@ -208,7 +208,7 @@ function BottomBar({ section, counts }: { section: Section; counts: QueueCounts 
         const n = item.count ? (counts?.[item.count] ?? 0) : 0;
         const { Icon } = item;
         return (
-          <Link
+          <Link prefetch={false}
             key={item.key}
             href={item.href}
             aria-current={active ? "page" : undefined}

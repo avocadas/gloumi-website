@@ -63,7 +63,7 @@ export default async function GrantsPage({ searchParams }: { searchParams: Promi
         <>
           <nav aria-label="Filtras" className="mb-5 flex gap-2 overflow-x-auto pb-1">
             {FILTERS.map((f) => (
-              <Link
+              <Link prefetch={false}
                 key={f.key}
                 href={f.key === "active" ? "/admin/grants" : `/admin/grants?filter=${f.key}`}
                 aria-current={filter === f.key ? "page" : undefined}

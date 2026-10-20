@@ -109,7 +109,7 @@ export default async function ContentReviewPage({ searchParams }: { searchParams
     >
       <nav aria-label="Peržiūros būsena" className="mb-6 flex flex-wrap gap-2">
         {Object.entries(STATUS_LABEL).map(([key, label]) => (
-          <Link
+          <Link prefetch={false}
             key={key}
             href={`/admin/content-review?status=${key}`}
             aria-current={key === wanted ? "page" : undefined}

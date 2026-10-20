@@ -140,7 +140,7 @@ export default async function DisputesPage({ searchParams }: { searchParams: Pro
       {debtAttention > 0 ? (
         <Alert tone="warn" className="mb-5">
           {debtAttention} mokėjimo prašymų laiškas neišėjo, todėl mokėjimas vietoje neišjungtas.{" "}
-          <Link href="/admin/debts" className="underline">
+          <Link prefetch={false} href="/admin/debts" className="underline">
             Atidaryti Skolas
           </Link>
         </Alert>

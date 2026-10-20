@@ -217,7 +217,7 @@ export function ReviewCard({ view }: { view: ReviewView }) {
         <p className="mt-3 whitespace-pre-wrap break-words rounded-[14px] bg-app-sheet px-4 py-3 text-sm text-app-ink">{view.body}</p>
       )}
       <p className="mt-3 text-[13px] text-app-muted">
-        <Link href={`/admin/users/${view.authorId}`} className="font-semibold text-app-ink hover:underline">
+        <Link prefetch={false} href={`/admin/users/${view.authorId}`} className="font-semibold text-app-ink hover:underline">
           {who}
         </Link>
         {" · "}paprašė {formatWhen(view.createdAt)}

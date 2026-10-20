@@ -81,7 +81,7 @@ export function DebtNoticeList({ notices }: { notices: DebtNoticeView[] }) {
               </p>
               <p className="mt-0.5 text-[13px] text-app-muted">
                 {n.masterId ? (
-                  <Link href={`/admin/users/${n.masterId}`} className="font-medium text-app-ink hover:underline">
+                  <Link prefetch={false} href={`/admin/users/${n.masterId}`} className="font-medium text-app-ink hover:underline">
                     {n.masterName}
                   </Link>
                 ) : (

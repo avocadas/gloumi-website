@@ -77,7 +77,7 @@ export function HoldBooking({ bookingId }: { bookingId: string }) {
       {held ? (
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm font-semibold text-app-ink">Ginčas atidarytas – nurašymas ir išmoka sustabdyti.</p>
-          <Link href="/admin/disputes" className={btn}>
+          <Link prefetch={false} href="/admin/disputes" className={btn}>
             Į ginčus
             <IconChevronRight size={16} strokeWidth={STROKE} aria-hidden />
           </Link>

@@ -65,7 +65,7 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
             const { Icon } = item;
             return (
               <li key={c.key}>
-                <Link
+                <Link prefetch={false}
                   href={item.href}
                   className={`${card} flex h-full flex-col gap-2 p-5 transition-colors hover:bg-app-input focus-visible:ring-2 focus-visible:ring-app-accent/40 focus-visible:outline-none`}
                 >
