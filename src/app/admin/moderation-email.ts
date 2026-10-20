@@ -73,8 +73,19 @@ export type NoticeEmailResult = {
   termination?: "scheduled" | "other";
 };
 
-/** Turinio sprendimai — klientams su ribomis (žr. viršų). */
-const CONTENT_KINDS = ["moderation_content_removed", "moderation_content_edited", "moderation_content_hidden"];
+/**
+ * Turinio sprendimai — klientams su ribomis (žr. viršų). Su jais ir atmesta
+ * turinio peržiūra (#230; teisininkas 2026-10-20: DSA 17 str. motyvai turi
+ * pasiekti naudotoją, o meistrui – P2B 4 str. patvarioji laikmena). Leidus
+ * peržiūrą laiško nėra – užtenka programėlės pranešimo.
+ */
+const CONTENT_KINDS = [
+  "moderation_content_removed",
+  "moderation_content_edited",
+  "moderation_content_hidden",
+  "content_review_rejected",
+  "media_review_rejected",
+];
 /** Paskyros sustabdymas ir atkūrimas (ir automatinis) — visada. */
 const ACCOUNT_KINDS = ["account_suspended", "account_unsuspended"];
 /**

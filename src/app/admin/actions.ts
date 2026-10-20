@@ -819,8 +819,8 @@ export async function setAppBuild(
  * `content_filter_allow`), pasirinktinai su vidine pastaba. Atmetant –
  * priežastis ir taisyklių punktas privalomi (DSA 17 str.; db `bad_rule`, jei
  * punktas ne iš Taisyklių ar Meistrų sąlygų), ir autorius gauna pranešimą
- * programėlėje. Laiško nesiunčiame: pranešimo rūšis `content_review_*` į
- * `moderation-email.ts` sąrašus neįtraukta – ar jos reikia, sprendžia legal.
+ * programėlėje ir el. paštu (teisininkas 2026-10-20, kaip `moderation_content_*`;
+ * `moderation-email.ts`). Leidus – tik programėlės pranešimas.
  */
 const CONTENT_REVIEW_ERRORS: Record<string, string> = {
   bad_approve: "Netinkamas prašymas.",
@@ -860,14 +860,15 @@ export async function decideContentReview(
       _rule: why?.rule ?? null,
     });
     if (error) return { ok: false, error: CONTENT_REVIEW_ERRORS[error.message] ?? dbError(error.message) };
-    const status = (data as { status?: unknown } | null)?.status;
-    if (status === "not_open") {
+    const result = data as { status?: unknown; auditLogId?: unknown } | null;
+    if (result?.status === "not_open") {
       return { ok: false, error: "Šis prašymas jau išspręstas — gal tai ką tik padarė kitas administratorius." };
     }
 
+    const emailNote = approve ? undefined : await authorEmailNote(db, result?.auditLogId);
     revalidatePath("/admin/content-review");
     revalidatePath("/admin");
-    return { ok: true };
+    return { ok: true, note: emailNote };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
   }

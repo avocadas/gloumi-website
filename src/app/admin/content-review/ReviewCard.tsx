@@ -6,7 +6,8 @@ import { IconBan, IconCheck } from "@/components/icons";
 import { decideContentReview } from "../actions";
 import { useConfirm } from "../ConfirmDialog";
 import { formatWhen } from "../format";
-import { STROKE, Tag, btn, btnDanger, card } from "../ui";
+import type { NoticeNote } from "../moderation-email";
+import { ActionNote, STROKE, Tag, btn, btnDanger, card } from "../ui";
 
 export type ReviewView = {
   id: string;
@@ -89,6 +90,7 @@ export function ReviewCard({ view }: { view: ReviewView }) {
   const [pending, startTransition] = useTransition();
   const [status, setStatus] = useState(view.status);
   const [error, setError] = useState<string | null>(null);
+  const [note, setNote] = useState<NoticeNote | null>(null);
   const [dialog, ask] = useConfirm();
   const tag = STATUS[status] ?? { label: status, tone: "neutral" as const };
   const who = view.authorName || (view.authorHandle ? `@${view.authorHandle}` : "Be vardo");
@@ -109,7 +111,7 @@ export function ReviewCard({ view }: { view: ReviewView }) {
         : {
             title: "Atmesti šį tekstą?",
             body: [
-              "Tekstas nebus paskelbtas. Autorius gaus pranešimą programėlėje su priežastimi ir taisyklių punktu, todėl rašykite jam suprantamai.",
+              "Tekstas nebus paskelbtas. Autorius gaus pranešimą programėlėje ir el. paštu su priežastimi ir taisyklių punktu, todėl rašykite jam suprantamai.",
             ],
             confirmLabel: "Atmesti",
             danger: true,
@@ -120,10 +122,13 @@ export function ReviewCard({ view }: { view: ReviewView }) {
     );
     if (!answer) return;
     setError(null);
+    setNote(null);
     startTransition(async () => {
       const res = await decideContentReview(view.id, approve, answer.reason, answer.rule);
-      if (res.ok) setStatus(approve ? "approved" : "rejected");
-      else setError(res.error);
+      if (res.ok) {
+        setStatus(approve ? "approved" : "rejected");
+        setNote(res.note ?? null);
+      } else setError(res.error);
     });
   };
 
@@ -163,6 +168,7 @@ export function ReviewCard({ view }: { view: ReviewView }) {
           {error}
         </p>
       ) : null}
+      <ActionNote note={note} />
     </li>
   );
 }
