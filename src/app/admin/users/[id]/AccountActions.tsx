@@ -264,7 +264,7 @@ export function AccountActions({
   return (
     <section>
       {dialog}
-      <SectionTitle title="Veiksmai" />
+      <SectionTitle accent="system" title="Veiksmai" />
       <div className={`${card} divide-y divide-app-hairline`}>
         <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
@@ -325,7 +325,7 @@ export function AccountActions({
         <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
             <p className="text-sm font-semibold text-app-ink">
-              {terminationAt ? `Bus panaikinta ${formatWhen(terminationAt)}` : "Ištrinti paskyrą"}
+              {terminationAt ? `Bus panaikinta ${formatWhen(terminationAt)}` : isMaster ? "Nutraukti meistro paskyrą" : "Ištrinti paskyrą"}
             </p>
             <p className="mt-0.5 text-[13px] text-app-muted">
               {terminationAt

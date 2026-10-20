@@ -119,7 +119,7 @@ export const input =
   "h-11 w-full min-w-0 rounded-[14px] bg-app-input px-4 text-sm text-app-ink outline-none placeholder:text-app-placeholder focus:ring-2 focus:ring-app-accent/30 disabled:opacity-40";
 
 /** Datos laukas: 200 px kompiuteryje, telefone – visas plotis; vietos naršyklės kalendoriaus ikonai. */
-export const dateInput = `${input} pr-10 sm:w-[200px]`;
+export const dateInput = `${input} pr-10 sm:max-w-[200px]`;
 
 export const chip =
   "inline-flex h-9 items-center gap-2 rounded-full border border-app-border bg-white px-3.5 text-sm font-semibold text-app-body transition-colors hover:border-app-faint";
