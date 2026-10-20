@@ -59,10 +59,11 @@ export function ReportCopy({ reportId }: { reportId: string }) {
   if (copy === undefined) {
     return (
       <div className="mt-3">
-        <button type="button" disabled={pending} onClick={open} className={`${btnQuiet} h-9 text-xs`}>
+        <button type="button" disabled={pending} onClick={open} className={`${btnQuiet} text-xs`}>
           <IconEye size={15} strokeWidth={STROKE} aria-hidden />
-          {pending ? "Kraunama…" : "Rodyti pranešimo metu išsaugotą kopiją (įrašoma žurnale)"}
+          {pending ? "Kraunama…" : "Rodyti kopiją"}
         </button>
+        <p className="mt-0.5 px-4 text-xs text-app-faint">Pranešimo metu išsaugota kopija; atidarymas įrašomas žurnale.</p>
         {error ? (
           <p role="alert" className="mt-2 text-xs font-semibold text-app-danger-text">
             {error}

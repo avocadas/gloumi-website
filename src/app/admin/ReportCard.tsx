@@ -9,7 +9,7 @@ import { formatWhen } from "./format";
 import type { NoticeNote } from "./moderation-email";
 import { ReplyVisibility } from "./ReplyVisibility";
 import { ReportCopy } from "./ReportCopy";
-import { ActionNote, STROKE, Tag, btn, btnDanger, btnQuiet, card, eyebrow } from "./ui";
+import { ActionNote, Alert, STROKE, Tag, btn, btnDanger, btnPrimary, card, eyebrow } from "./ui";
 
 export type ReportView = {
   id: string;
@@ -49,7 +49,8 @@ const TARGET_TONE: Record<string, "rose" | "lavender" | "mint"> = {
 
 const STATUS_TAG: Record<string, { label: string; tone: "warn" | "ok" | "neutral" }> = {
   open: { label: "Atviras", tone: "warn" },
-  reviewed: { label: "Peržiūrėtas", tone: "ok" },
+  // Tie patys žodžiai kaip filtre (design 7.1): „Imtasi veiksmų“, „Atmestas“.
+  reviewed: { label: "Imtasi veiksmų", tone: "ok" },
   dismissed: { label: "Atmestas", tone: "neutral" },
 };
 
@@ -81,6 +82,10 @@ const STATUS_TAG: Record<string, { label: string; tone: "warn" | "ok" | "neutral
  * „Atmesti skundą" — kad pažeidimo nerasta ir turinys lieka. Todėl mygtukas
  * vadinasi tuo, ką išgirs pranešęs: buvęs „Peržiūrėta" skambėjo kaip „pažiūrėjau",
  * o žmogui būtų nuėjęs „ėmėmės veiksmų", nors niekas nepadaryta.
+ *
+ * Abu klausia patvirtinimo (design 7.1, 2026-10-20): jie išsiunčia žinutę
+ * pranešusiam ir uždaro skundą, o greitai skaitant eilę spustelėti ne tą
+ * lengva. Paaiškinimas – eilutė po mygtukais, ne `title` (telefone nematyti).
  */
 export function ReportCard({ report }: { report: ReportView }) {
   const [pending, startTransition] = useTransition();
@@ -132,7 +137,7 @@ export function ReportCard({ report }: { report: ReportView }) {
             {TARGET_LABEL[report.targetType] ?? report.targetType}
           </Tag>
           {status ? <Tag tone={status.tone}>{status.label}</Tag> : null}
-          {done ? <Tag tone="dark">{done}</Tag> : null}
+          {done ? <Tag tone="info">{done}</Tag> : null}
         </div>
         <time dateTime={report.createdAt} className="text-xs tabular-nums text-app-muted">
           {formatWhen(report.createdAt)}
@@ -180,22 +185,26 @@ export function ReportCard({ report }: { report: ReportView }) {
         ) : null}
       </div>
 
-      {error ? (
-        <p role="alert" className="mt-4 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
-          {error}
-        </p>
-      ) : null}
+      {error ? <Alert className="mt-4">{error}</Alert> : null}
       <ActionNote note={note} />
 
       {!done && report.status === "open" ? (
-        <footer className="mt-5 flex flex-col gap-2 border-t border-app-hairline pt-4 sm:flex-row sm:items-center sm:justify-between">
+        <footer className="mt-5 flex flex-col gap-2 border-t border-app-hairline pt-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
               disabled={pending}
-              onClick={() => run(() => moderate("review_report", report.id), "Imtasi veiksmų")}
-              title="Pranešusiam: imtasi veiksmų pagal Taisykles. Spauskite, kai turinys jau pašalintas ar paskyra apribota."
-              className={btn}
+              onClick={() =>
+                run(() => moderate("review_report", report.id), "Imtasi veiksmų", {
+                  title: "Pažymėti, kad imtasi veiksmų?",
+                  body: [
+                    "Pranešusiam bus išsiųsta žinia, kad pagal Taisykles imtasi veiksmų, ir skundas užsidarys.",
+                    "Spauskite, kai turinys jau pašalintas ar paskyra apribota.",
+                  ],
+                  confirmLabel: "Imtasi veiksmų",
+                })
+              }
+              className={btnPrimary}
             >
               <IconCheck size={16} strokeWidth={STROKE} aria-hidden />
               Imtasi veiksmų
@@ -203,9 +212,14 @@ export function ReportCard({ report }: { report: ReportView }) {
             <button
               type="button"
               disabled={pending}
-              onClick={() => run(() => moderate("dismiss_report", report.id), "Atmesta")}
-              title="Pranešusiam: Taisyklių pažeidimo nerasta, turinys lieka."
-              className={btnQuiet}
+              onClick={() =>
+                run(() => moderate("dismiss_report", report.id), "Atmestas", {
+                  title: "Atmesti skundą?",
+                  body: ["Pranešusiam bus išsiųsta žinia, kad Taisyklių pažeidimo nerasta ir turinys lieka. Skundas užsidarys."],
+                  confirmLabel: "Atmesti skundą",
+                })
+              }
+              className={btn}
             >
               <IconClose size={16} strokeWidth={STROKE} aria-hidden />
               Atmesti skundą
@@ -281,6 +295,9 @@ export function ReportCard({ report }: { report: ReportView }) {
               </button>
             ) : null}
           </div>
+          <p className="text-[13px] text-app-muted sm:basis-full">
+            „Imtasi veiksmų“ ir „Atmesti skundą“ išsiunčia žinią pranešusiam ir uždaro skundą.
+          </p>
         </footer>
       ) : null}
     </article>

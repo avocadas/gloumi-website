@@ -4,13 +4,13 @@ import { EmptyState, STROKE, chip, chipActive } from "./ui";
 
 export const STATUS_LABEL: Record<string, string> = {
   open: "Atviri",
-  reviewed: "Peržiūrėti",
+  reviewed: "Imtasi veiksmų",
   dismissed: "Atmesti",
 };
 
 const EMPTY_TEXT: Record<string, string> = {
   open: "Atvirų skundų nėra",
-  reviewed: "Peržiūrėtų skundų nėra",
+  reviewed: "Skundų, dėl kurių imtasi veiksmų, nėra",
   dismissed: "Atmestų skundų nėra",
 };
 
