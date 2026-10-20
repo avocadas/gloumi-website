@@ -54,7 +54,7 @@ export const NAV_GROUPS: { title: string; items: NavItem[] }[] = [
       { key: "contentReview", href: "/admin/content-review", label: "Turinio peržiūra", Icon: IconEye, count: "contentReview" },
       { key: "support", href: "/admin/support", label: "Pagalba", Icon: IconMail, count: "support" },
       { key: "disputes", href: "/admin/disputes", label: "Ginčai", Icon: IconScale, count: "disputes" },
-      { key: "warnings", href: "/admin/warnings", label: "Rezervavimo įspėjimai", Icon: IconCalendar },
+      { key: "warnings", href: "/admin/warnings", label: "Rezervavimo įspėjimai", Icon: IconCalendar, count: "warnings" },
     ],
   },
   {

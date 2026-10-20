@@ -25,9 +25,10 @@ const CARDS: Card[] = [
   { key: "contentReview", label: "Turinio peržiūra", count: "contentReview" },
   { key: "support", label: "Pagalba", count: "support" },
   { key: "disputes", label: "Ginčai", count: "disputes" },
-  { key: "warnings", label: "Rezervavimo įspėjimai", note: "Automatiniai įspėjimai dėl neatvykimų" },
+  { key: "warnings", label: "Rezervavimo įspėjimai", count: "warnings", note: "Įspėjimai per 30 dienų" },
   { key: "debts", label: "Skolos", count: "debts", note: "Pradelsti mokėjimo prašymai" },
-  { key: "mfaReset", label: "2FA atstatymas", note: "Prašymai išjungti dviejų veiksnių patvirtinimą" },
+  // 2FA prašymus skaito Edge su administratoriaus sesija – skaičiaus čia nėra, rodoma „—“.
+  { key: "mfaReset", label: "2FA atstatymas", note: "Prašymus matysite atidarę eilę" },
 ];
 
 function weekday(now: Date): string {
@@ -71,18 +72,21 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
                     <Icon size={18} strokeWidth={STROKE} aria-hidden className="text-app-faint" />
                     {c.label}
                   </span>
-                  {n === undefined ? (
-                    <span className="text-[13px] text-app-muted">{c.note}</span>
-                  ) : n === null ? (
-                    <span className="text-[13px] text-app-muted">Skaičiaus gauti nepavyko – atidarykite eilę.</span>
-                  ) : (
-                    <>
-                      <span className={`text-[32px] leading-none font-bold tabular-nums ${n ? "text-app-ink" : "text-app-faint"}`}>
-                        {n}
-                      </span>
-                      <span className="text-[13px] text-app-muted">{n ? (c.note ?? "Laukia sprendimo") : "Viskas sutvarkyta"}</span>
-                    </>
-                  )}
+                  {/* Visos kortelės – to paties pavidalo: skaičius (0 ir „—“ – faint), po juo sakinys. */}
+                  <span
+                    className={`text-[32px] leading-none font-bold tabular-nums ${typeof n === "number" && n > 0 ? "text-app-ink" : "text-app-faint"}`}
+                  >
+                    {typeof n === "number" ? n : "—"}
+                  </span>
+                  <span className="text-[13px] text-app-muted">
+                    {n === null
+                      ? "Skaičiaus gauti nepavyko – atidarykite eilę."
+                      : n === undefined
+                        ? c.note
+                        : n > 0
+                          ? (c.note ?? "Laukia sprendimo")
+                          : "Viskas sutvarkyta"}
+                  </span>
                 </Link>
               </li>
             );

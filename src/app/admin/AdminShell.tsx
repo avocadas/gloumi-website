@@ -155,30 +155,37 @@ function NavLink({ item, active, n }: { item: NavItem; active: boolean; n: numbe
 
 function AccountFooter({ username, initial, section }: { username: string; initial: string; section: Section }) {
   return (
-    <div className="flex items-center gap-2 border-t border-app-hairline px-4 py-3">
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-app-accent-soft text-xs font-bold text-app-accent">
-        {initial}
-      </span>
-      <span className="min-w-0 flex-1 truncate text-[13px] text-app-muted">{username}</span>
-      <Link
-        href="/admin/password"
-        aria-current={section === "account" ? "page" : undefined}
-        title="Keisti slaptažodį"
-        className="flex h-9 w-9 items-center justify-center rounded-xl text-app-muted hover:bg-app-input hover:text-app-ink"
-      >
-        <IconLock size={17} strokeWidth={STROKE} aria-hidden />
-        <span className="sr-only">Keisti slaptažodį</span>
-      </Link>
-      <form action={signOutAdmin}>
-        <button
-          type="submit"
-          title="Atsijungti"
-          className="flex h-9 items-center gap-1.5 rounded-xl px-2 text-[13px] font-semibold text-app-ink hover:bg-app-input"
+    <div className="border-t border-app-hairline px-4 py-3">
+      {/* Vardas – atskira eilutė: šalia veiksmų jis nukirpdavo iki „ad…“ (design). */}
+      <p className="flex min-w-0 items-center gap-2">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-app-accent-soft text-xs font-bold text-app-accent">
+          {initial}
+        </span>
+        <span className="min-w-0 truncate text-[13px] font-semibold text-app-ink" title={username}>
+          {username}
+        </span>
+      </p>
+      <div className="mt-2 flex items-center gap-1">
+        <Link
+          href="/admin/password"
+          aria-current={section === "account" ? "page" : undefined}
+          title="Keisti slaptažodį"
+          className="flex h-9 items-center gap-1.5 rounded-xl px-2 text-[13px] font-semibold text-app-muted hover:bg-app-input hover:text-app-ink"
         >
-          <IconLogOut size={17} strokeWidth={STROKE} aria-hidden />
-          Atsijungti
-        </button>
-      </form>
+          <IconLock size={17} strokeWidth={STROKE} aria-hidden />
+          Slaptažodis
+        </Link>
+        <form action={signOutAdmin}>
+          <button
+            type="submit"
+            title="Atsijungti"
+            className="flex h-9 items-center gap-1.5 rounded-xl px-2 text-[13px] font-semibold text-app-ink hover:bg-app-input"
+          >
+            <IconLogOut size={17} strokeWidth={STROKE} aria-hidden />
+            Atsijungti
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
