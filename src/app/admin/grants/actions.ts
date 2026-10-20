@@ -99,19 +99,19 @@ export async function clearCommissionWaiver(masterId: string): Promise<ActionRes
   }
 }
 
-/** Nemokamas Pro ar VIP iki dienos (imtinai). */
+/** Nemokamas Pro ar VIP iki dienos (imtinai) arba, kai `day === null`, neribotai (developeris 2026-10-20). */
 export async function grantPlan(
   masterId: string,
   plan: "pro" | "vip",
-  day: string,
+  day: string | null,
   reason: string,
 ): Promise<ActionResult> {
   try {
     const admin = await requireAdmin();
     if (typeof masterId !== "string" || !UUID_PATTERN.test(masterId)) return fail("Netinkamas prašymas.");
     if (plan !== "pro" && plan !== "vip") return fail(ERRORS.bad_plan);
-    const until = vilniusEndOfDay(day);
-    if (!until) return fail("Pasirinkite terminą.");
+    const until = day === null ? null : vilniusEndOfDay(day);
+    if (day !== null && !until) return fail("Pasirinkite terminą arba „Neribotai“.");
     const why = cleanReason(reason);
     if (!why) return fail(ERRORS.bad_reason);
 
@@ -123,6 +123,10 @@ export async function grantPlan(
       _until: until,
       _reason: why,
     });
+    // Kol bazė neleidžia plano be termino, ji atsako `bad_until` – pasakome tiksliai.
+    if (error && until === null && error.message === "bad_until") {
+      return fail("Planas be termino bazėje dar neįjungtas. Pasirinkite datą (iki 5 metų).");
+    }
     if (error) return fail(rpcError(error.message));
 
     revalidatePath("/admin", "layout");

@@ -109,7 +109,8 @@ function GrantRow({ grant, showMaster }: { grant: GrantView; showMaster: boolean
         ) : (
           <IconCrown size={15} strokeWidth={STROKE} aria-hidden className="text-app-faint" />
         )}
-        Nuo {formatDay(grant.validFrom)} iki {ended ? "dabar" : formatDay(grant.until)}
+        Nuo {formatDay(grant.validFrom)}{" "}
+        {ended ? "iki dabar" : grant.until ? `iki ${formatDay(grant.until)}` : "– neribotai"}
       </p>
       {grant.reason ? <p className="mt-1 text-sm break-words text-app-body">{grant.reason}</p> : null}
 

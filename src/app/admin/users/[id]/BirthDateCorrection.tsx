@@ -59,20 +59,23 @@ export function BirthDateCorrection({ userId, birthDate }: { userId: string; bir
   return (
     <div className={`${card} p-5`}>
       {dialog}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <label className="block min-w-0">
-          <span className="text-sm font-semibold text-app-ink">Gimimo data</span>
-          <span className="mt-0.5 block text-[13px] text-app-muted">Taisoma tik žmogaus prašymu ar patikrinus (BDAR 16 str.).</span>
-          <input
-            type="date"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            className={`${input} mt-2 sm:w-56`}
-          />
-        </label>
+      {/* Aprašas viršuje, laukas ir mygtukas – po juo: anksčiau susitraukęs
+          aprašo stulpelis leido fiksuoto pločio laukui užlįsti po mygtuku. */}
+      <label htmlFor={`birth-${userId}`} className="block text-sm font-semibold text-app-ink">
+        Gimimo data
+      </label>
+      <p className="mt-0.5 text-[13px] text-app-muted">Taisoma tik žmogaus prašymu ar patikrinus (BDAR 16 str.).</p>
+      <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <input
+          id={`birth-${userId}`}
+          type="date"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          className={`${input} sm:w-56 sm:flex-none`}
+        />
         <button type="button" disabled={pending || !value || value === birthDate} onClick={submit} className={btn}>
           <IconPencil size={16} strokeWidth={STROKE} aria-hidden />
-          Pataisyti gimimo datą
+          Pataisyti
         </button>
       </div>
       {done ? <p className="mt-3 text-sm font-semibold text-app-body">Pataisyta; įrašyta žurnale.</p> : null}

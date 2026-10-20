@@ -156,19 +156,23 @@ function PlanForm({ masterId, minDay, maxDay }: { masterId: string; minDay: stri
   const [pending, startTransition] = useTransition();
   const [plan, setPlan] = useState<"pro" | "vip">("pro");
   const [day, setDay] = useState("");
+  const [unlimited, setUnlimited] = useState(false);
   const [reason, setReason] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
   const [dialog, ask] = useConfirm();
   const label = plan === "pro" ? "Pro" : "VIP";
+  const hasTerm = unlimited || Boolean(day);
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!day || !reason.trim()) return;
+    if (!hasTerm || !reason.trim()) return;
     const answer = await ask({
       title: `Suteikti nemokamą ${label}?`,
       body: [
-        `Meistras gaus ${label} nuo dabar iki ${day} imtinai, be mokėjimo parduotuvėje.`,
+        unlimited
+          ? `Meistras gaus ${label} nuo dabar be termino, be mokėjimo parduotuvėje, kol plano neatšauksite.`
+          : `Meistras gaus ${label} nuo dabar iki ${day} imtinai, be mokėjimo parduotuvėje.`,
         "Atšaukti galima bet kada. Veiksmas ir priežastis įrašomi į administratorių žurnalą.",
       ],
       confirmLabel: `Suteikti ${label}`,
@@ -177,7 +181,7 @@ function PlanForm({ masterId, minDay, maxDay }: { masterId: string; minDay: stri
     setError(null);
     setDone(false);
     startTransition(async () => {
-      const res = await grantPlan(masterId, plan, day, reason);
+      const res = await grantPlan(masterId, plan, unlimited ? null : day, reason);
       if (!res.ok) {
         setError(res.error);
         return;
@@ -200,18 +204,30 @@ function PlanForm({ masterId, minDay, maxDay }: { masterId: string; minDay: stri
             <option value="vip">VIP</option>
           </select>
         </label>
-        <label className="block">
-          <span className="text-[13px] font-semibold text-app-ink">Iki (imtinai)</span>
-          <input
-            type="date"
-            required
-            min={minDay}
-            max={maxDay}
-            value={day}
-            onChange={(e) => setDay(e.target.value)}
-            className={`${input} mt-1.5`}
-          />
-        </label>
+        <div>
+          <label className="block">
+            <span className="text-[13px] font-semibold text-app-ink">Iki (imtinai)</span>
+            <input
+              type="date"
+              required={!unlimited}
+              disabled={unlimited}
+              min={minDay}
+              max={maxDay}
+              value={unlimited ? "" : day}
+              onChange={(e) => setDay(e.target.value)}
+              className={`${input} mt-1.5 disabled:opacity-40`}
+            />
+          </label>
+          <label className="mt-2 flex items-center gap-2 text-sm text-app-ink">
+            <input
+              type="checkbox"
+              checked={unlimited}
+              onChange={(e) => setUnlimited(e.target.checked)}
+              className="h-4 w-4 accent-app-accent"
+            />
+            Neribotai
+          </label>
+        </div>
       </div>
       <label className="block">
         <span className="text-[13px] font-semibold text-app-ink">Priežastis</span>
@@ -231,7 +247,7 @@ function PlanForm({ masterId, minDay, maxDay }: { masterId: string; minDay: stri
       ) : null}
       {done ? <p className="text-sm font-semibold text-app-ink">Suteikta.</p> : null}
       <div className="flex justify-end">
-        <button type="submit" disabled={pending || !day || !reason.trim()} className={btn}>
+        <button type="submit" disabled={pending || !hasTerm || !reason.trim()} className={btn}>
           Suteikti {label}
         </button>
       </div>
