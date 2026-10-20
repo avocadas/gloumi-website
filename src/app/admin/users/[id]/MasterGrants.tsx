@@ -26,6 +26,9 @@ import { Alert, Field, STROKE, Segment, SectionTitle, Tag, btn, btnDanger, btnPr
 
 const PLAN_LABEL = { pro: "Pro", vip: "VIP" } as const;
 
+/** Serverio veiksmas nepasiekiamas (tinklas, ar puslapis senesnis už naują diegimą). */
+const UNREACHABLE = "Nepavyko susisiekti su serveriu. Perkraukite puslapį ir bandykite dar kartą.";
+
 function day(value: string | null): string {
   if (!value) return "—";
   const date = new Date(value);
@@ -137,7 +140,9 @@ function ActiveGrantRow({ grant }: { grant: GrantView }) {
     if (!answer) return;
     setError(null);
     startTransition(async () => {
-      const res = isWaiver ? await clearCommissionWaiver(grant.masterId) : await revokePlanGrant(grant.subscriptionId ?? "");
+      const res = await (isWaiver ? clearCommissionWaiver(grant.masterId) : revokePlanGrant(grant.subscriptionId ?? "")).catch(
+        () => ({ ok: false as const, error: UNREACHABLE }),
+      );
       if (res.ok) router.refresh();
       else setError(res.error);
     });
@@ -259,10 +264,10 @@ export function GrantForm({
     setError(null);
     setDone(null);
     startTransition(async () => {
-      const res =
-        kind === "plan"
-          ? await grantPlan(masterId, plan, unlimited ? null : until, reason)
-          : await setCommissionWaiver(masterId, until, reason);
+      const res = await (kind === "plan"
+        ? grantPlan(masterId, plan, unlimited ? null : until, reason)
+        : setCommissionWaiver(masterId, until, reason)
+      ).catch(() => ({ ok: false as const, error: UNREACHABLE }));
       if (!res.ok) {
         setError(res.error);
         return;
@@ -287,90 +292,94 @@ export function GrantForm({
     );
   }
 
+  // Dialogas – UŽ formos: jo paties `<form>` submit įvykis kitaip iškyla į šią
+  // formą ir vėl atidaro patvirtinimą (taip 10-20 suteikimas nepasiekė serverio).
   return (
-    <form onSubmit={submit} className={`${card} space-y-4 p-4 sm:p-5`}>
+    <>
       {dialog}
-      <h2 className="flex items-center gap-2 text-base font-semibold text-app-ink">
-        <span aria-hidden className="h-2 w-2 rounded-full bg-[#7A5AC8]" />
-        Suteikti sąlygą
-      </h2>
+      <form onSubmit={submit} className={`${card} space-y-4 p-4 sm:p-5`}>
+        <h2 className="flex items-center gap-2 text-base font-semibold text-app-ink">
+          <span aria-hidden className="h-2 w-2 rounded-full bg-[#7A5AC8]" />
+          Suteikti sąlygą
+        </h2>
 
-      <Field label="Kas">
-        <Segment<Kind>
-          label="Kas"
-          value={kind}
-          onChange={setKind}
-          options={[
-            { value: "waiver", label: "Komisinis neimamas" },
-            { value: "plan", label: "Nemokamas planas" },
-          ]}
-        />
-      </Field>
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        {kind === "plan" ? (
-          <Field label="Planas">
-            <Segment<"pro" | "vip">
-              label="Planas"
-              value={plan}
-              onChange={setPlan}
-              options={[
-                { value: "pro", label: "Pro" },
-                { value: "vip", label: "VIP" },
-              ]}
-            />
-          </Field>
-        ) : null}
-        <Field label="Terminas" hint={extending && activeWaiver ? `Dabar galioja iki ${day(activeWaiver.until)}.` : undefined}>
-          {kind === "plan" ? (
-            <Segment<Term>
-              label="Terminas"
-              value={term}
-              onChange={setTerm}
-              options={[
-                { value: "date", label: "Iki datos" },
-                { value: "unlimited", label: "Neribotai" },
-              ]}
-            />
-          ) : null}
-          {!unlimited ? (
-            <input
-              type="date"
-              required
-              aria-label="Iki (imtinai)"
-              min={minDay}
-              max={maxDay}
-              value={until}
-              onChange={(e) => setUntil(e.target.value)}
-              className={`${dateInput} ${kind === "plan" ? "mt-2" : ""}`}
-            />
-          ) : null}
+        <Field label="Kas">
+          <Segment<Kind>
+            label="Kas"
+            value={kind}
+            onChange={setKind}
+            options={[
+              { value: "waiver", label: "Komisinis neimamas" },
+              { value: "plan", label: "Nemokamas planas" },
+            ]}
+          />
         </Field>
-      </div>
 
-      <Field label="Priežastis" htmlFor={`grant-reason-${masterId}`}>
-        <input
-          id={`grant-reason-${masterId}`}
-          required
-          maxLength={500}
-          value={reason}
-          onChange={(e) => setReason(e.target.value)}
-          placeholder="Pvz. pirmieji meistrai, komandos narys"
-          className={input}
-        />
-      </Field>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {kind === "plan" ? (
+            <Field label="Planas">
+              <Segment<"pro" | "vip">
+                label="Planas"
+                value={plan}
+                onChange={setPlan}
+                options={[
+                  { value: "pro", label: "Pro" },
+                  { value: "vip", label: "VIP" },
+                ]}
+              />
+            </Field>
+          ) : null}
+          <Field label="Terminas" hint={extending && activeWaiver ? `Dabar galioja iki ${day(activeWaiver.until)}.` : undefined}>
+            {kind === "plan" ? (
+              <Segment<Term>
+                label="Terminas"
+                value={term}
+                onChange={setTerm}
+                options={[
+                  { value: "date", label: "Iki datos" },
+                  { value: "unlimited", label: "Neribotai" },
+                ]}
+              />
+            ) : null}
+            {!unlimited ? (
+              <input
+                type="date"
+                required
+                aria-label="Iki (imtinai)"
+                min={minDay}
+                max={maxDay}
+                value={until}
+                onChange={(e) => setUntil(e.target.value)}
+                className={`${dateInput} ${kind === "plan" ? "mt-2" : ""}`}
+              />
+            ) : null}
+          </Field>
+        </div>
 
-      {error ? <Alert>{error}</Alert> : null}
+        <Field label="Priežastis" htmlFor={`grant-reason-${masterId}`}>
+          <input
+            id={`grant-reason-${masterId}`}
+            required
+            maxLength={500}
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder="Pvz. pirmieji meistrai, komandos narys"
+            className={input}
+          />
+        </Field>
 
-      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-        <button type="button" onClick={() => setOpen(false)} disabled={pending} className={btnQuiet}>
-          Atšaukti
-        </button>
-        <button type="submit" disabled={pending || !ready} className={btnPrimary}>
-          {kind === "plan" ? `Suteikti ${planLabel}` : extending ? "Pratęsti" : "Neimti komisinio"}
-        </button>
-      </div>
-    </form>
+        {error ? <Alert>{error}</Alert> : null}
+
+        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <button type="button" onClick={() => setOpen(false)} disabled={pending} className={btnQuiet}>
+            Atšaukti
+          </button>
+          <button type="submit" disabled={pending || !ready} className={btnPrimary}>
+            {kind === "plan" ? `Suteikti ${planLabel}` : extending ? "Pratęsti" : "Neimti komisinio"}
+          </button>
+        </div>
+      </form>
+    </>
   );
 }
 

@@ -265,7 +265,7 @@ export function Segment<T extends string>({
   disabled?: boolean;
 }) {
   return (
-    <div role="radiogroup" aria-label={label} className="flex rounded-[14px] bg-app-input p-1">
+    <div role="radiogroup" aria-label={label} className="flex rounded-[14px] bg-app-track p-1">
       {options.map((o) => {
         const active = o.value === value;
         return (

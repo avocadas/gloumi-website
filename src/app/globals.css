@@ -66,6 +66,7 @@
   --color-app-border: #dad5e2; /* antrinio mygtuko apvadas */
   --color-app-hairline: #ece8f1; /* linijos */
   --color-app-input: #f4f2f7; /* laukai */
+  --color-app-track: #dfdae6; /* Segment takelis – ant baltos kortelės turi matytis (design, hig-228 24.4) */
   --color-app-placeholder: #8f899b;
   --color-app-ink: #0c0911; /* tekstas */
   --color-app-body: #433e50;
