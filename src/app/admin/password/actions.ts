@@ -16,7 +16,7 @@ import {
   revoke,
   unchecked,
 } from "@/lib/admin-auth";
-import { ADMIN_MAX_PASSWORD_CHARS, ADMIN_MIN_PASSWORD_CHARS, passwordChars } from "@/lib/password-rule";
+import { ADMIN_MAX_PASSWORD_CHARS, ADMIN_MIN_PASSWORD_CHARS, isStrongAdminPassword, passwordChars } from "@/lib/password-rule";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -63,6 +63,7 @@ const SIGN_IN_AGAIN = "Sesija pasibaigė. Prisijunkite iš naujo ir bandykite da
 const WEAK = "Naujas slaptažodis per silpnas. Pasirinkite ilgesnį ar sudėtingesnį.";
 const PWNED = "Šis slaptažodis yra nutekėjusių slaptažodžių sąraše. Pasirinkite kitą.";
 const SAME = "Naujas slaptažodis sutampa su dabartiniu.";
+const RULE = "Naujame slaptažodyje turi būti mažoji ir didžioji raidė, skaičius, kitas ženklas ir bent 8 skirtingi simboliai.";
 const MISMATCH = "Nauji slaptažodžiai nesutampa.";
 const LENGTH = `Naujas slaptažodis turi būti nuo ${ADMIN_MIN_PASSWORD_CHARS} iki ${ADMIN_MAX_PASSWORD_CHARS} simbolių.`;
 
@@ -93,6 +94,7 @@ export async function changeAdminPassword(
   if (next !== repeat) return { ok: false, error: MISMATCH, field: "next" };
   const chars = passwordChars(next);
   if (chars < ADMIN_MIN_PASSWORD_CHARS || chars > ADMIN_MAX_PASSWORD_CHARS) return { ok: false, error: LENGTH, field: "next" };
+  if (!isStrongAdminPassword(next)) return { ok: false, error: RULE, field: "next" };
   if (next === current) return { ok: false, error: SAME, field: "next" };
 
   const check = await checkAdmin();

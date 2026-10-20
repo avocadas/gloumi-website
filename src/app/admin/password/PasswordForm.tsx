@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { IconAlert } from "@/components/icons";
 import { TURNSTILE_SITE_KEY, Turnstile, type TurnstileHandle } from "@/components/Turnstile";
-import { ADMIN_MAX_PASSWORD_CHARS, ADMIN_MIN_PASSWORD_CHARS, passwordChars } from "@/lib/password-rule";
+import { ADMIN_MAX_PASSWORD_CHARS, ADMIN_MIN_PASSWORD_CHARS, isStrongAdminPassword, passwordChars } from "@/lib/password-rule";
 import { STROKE, btnPrimary, card, input } from "../ui";
 import { changeAdminPassword } from "./actions";
 
@@ -36,7 +36,7 @@ export function PasswordForm() {
     return token;
   };
 
-  const lengthHint = `Nuo ${ADMIN_MIN_PASSWORD_CHARS} iki ${ADMIN_MAX_PASSWORD_CHARS} simbolių; nutekėjusių slaptažodžių naudoti negalima.`;
+  const lengthHint = `Nuo ${ADMIN_MIN_PASSWORD_CHARS} iki ${ADMIN_MAX_PASSWORD_CHARS} simbolių: mažoji ir didžioji raidė, skaičius ir kitas ženklas; nutekėjusių slaptažodžių naudoti negalima.`;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,6 +44,9 @@ export function PasswordForm() {
     if (next !== repeat) return setError("Nauji slaptažodžiai nesutampa.");
     const chars = passwordChars(next);
     if (chars < ADMIN_MIN_PASSWORD_CHARS || chars > ADMIN_MAX_PASSWORD_CHARS) return setError(`Naujas slaptažodis: ${lengthHint}`);
+    if (!isStrongAdminPassword(next)) {
+      return setError("Naujame slaptažodyje turi būti mažoji ir didžioji raidė, skaičius, kitas ženklas ir bent 8 skirtingi simboliai.");
+    }
     if (next === current) return setError("Naujas slaptažodis sutampa su dabartiniu.");
 
     setBusy(true);

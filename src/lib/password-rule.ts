@@ -36,3 +36,21 @@ export function isStrongPassword(password: string): boolean {
 export function passwordBytes(password: string): number {
   return new TextEncoder().encode(password).length;
 }
+
+/*
+ * Naujas administratoriaus slaptažodis, bet kokio ilgio (security M1): ilgesnį
+ * nei 72 baitų GoTrue mato tik kaip išvestinį, kuris taisyklę tenkina visada,
+ * todėl ją tikriname patys originalui – mažoji, didžioji, skaičius, kitas
+ * ženklas ir bent 8 skirtingi simboliai.
+ */
+export function isStrongAdminPassword(password: string): boolean {
+  const chars = [...password.normalize("NFC")];
+  return (
+    chars.length >= MIN_PASSWORD &&
+    /\p{Ll}/u.test(password) &&
+    /\p{Lu}/u.test(password) &&
+    /\p{Nd}/u.test(password) &&
+    /[^\p{L}\p{Nd}]/u.test(password) &&
+    new Set(chars).size >= 8
+  );
+}
