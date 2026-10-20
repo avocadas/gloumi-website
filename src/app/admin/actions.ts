@@ -809,3 +809,66 @@ export async function setAppBuild(
     return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
   }
 }
+
+/*
+ * Turinio peržiūros sprendimas (#230, Gloumi `20261020121647`,
+ * `admin_content_review_decide`). Filtras prieš paskelbimą sulaikė tekstą,
+ * autorius paprašė peržiūros, ir čia žmogus nusprendžia.
+ *
+ * Leidžiant – autorius tą patį tekstą gali paskelbti 30 d. (db įrašo
+ * `content_filter_allow`), pasirinktinai su vidine pastaba. Atmetant –
+ * priežastis ir taisyklių punktas privalomi (DSA 17 str.; db `bad_rule`, jei
+ * punktas ne iš Taisyklių ar Meistrų sąlygų), ir autorius gauna pranešimą
+ * programėlėje. Laiško nesiunčiame: pranešimo rūšis `content_review_*` į
+ * `moderation-email.ts` sąrašus neįtraukta – ar jos reikia, sprendžia legal.
+ */
+const CONTENT_REVIEW_ERRORS: Record<string, string> = {
+  bad_approve: "Netinkamas prašymas.",
+};
+
+export async function decideContentReview(
+  id: string,
+  approve: boolean,
+  reason: string,
+  rule: string | null,
+): Promise<ActionResult> {
+  try {
+    const admin = await requireAdmin();
+    if (typeof id !== "string" || !UUID_PATTERN.test(id) || typeof approve !== "boolean") {
+      return { ok: false, error: "Netinkamas prašymas." };
+    }
+    let why: Justified | null = null;
+    let note: string | null = null;
+    if (approve) {
+      // Leidžiant priežastis neprivaloma – ji tampa vidine pastaba (iki 500 ženklų, kaip db).
+      note = reasonOrNull(reason);
+      if (note && note.length > 500) return { ok: false, error: "Pastaba per ilga — daugiausia 500 ženklų." };
+    } else {
+      const checked = justify(reason, rule, true);
+      if ("error" in checked) return { ok: false, error: checked.error };
+      if (checked.rule?.doc === "request") return { ok: false, error: "Atmetant reikia pažeisto taisyklių punkto." };
+      why = checked;
+    }
+
+    const db = createSupabaseAdminClient();
+    const { data, error } = await db.rpc("admin_content_review_decide", {
+      _admin_id: admin.userId,
+      _id: id,
+      _approve: approve,
+      _note: note,
+      _reason: why?.reason ?? null,
+      _rule: why?.rule ?? null,
+    });
+    if (error) return { ok: false, error: CONTENT_REVIEW_ERRORS[error.message] ?? dbError(error.message) };
+    const status = (data as { status?: unknown } | null)?.status;
+    if (status === "not_open") {
+      return { ok: false, error: "Šis prašymas jau išspręstas — gal tai ką tik padarė kitas administratorius." };
+    }
+
+    revalidatePath("/admin/content-review");
+    revalidatePath("/admin");
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
+  }
+}

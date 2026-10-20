@@ -158,6 +158,12 @@ export default async function AdminPage({
     };
   });
 
+  // Kiek peržiūros prašymų laukia (#230); nepavykus (migracija nepritaikyta) – tiesiog be skaičiaus.
+  const { count: reviewOpen } = await db
+    .from("content_review_requests")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "open");
+
   return (
     <AdminShell
       section="reports"
@@ -166,7 +172,11 @@ export default async function AdminPage({
       username={check.username ?? check.userId}
     >
       {/* Automatiniai rezervavimo įspėjimai (#207) – atskiras sąrašas, tas pats skirtukas. */}
-      <p className="mb-5 text-sm">
+      <p className="mb-5 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+        {/* #230: tekstai, kuriuos sulaikė filtras prieš paskelbimą, kai autorius paprašė peržiūros. */}
+        <Link href="/admin/content-review" className="font-semibold text-app-accent hover:underline">
+          Turinio peržiūra{reviewOpen ? ` (${reviewOpen} laukia)` : ""} →
+        </Link>
         <Link href="/admin/warnings" className="font-semibold text-app-accent hover:underline">
           Rezervavimo įspėjimai →
         </Link>
