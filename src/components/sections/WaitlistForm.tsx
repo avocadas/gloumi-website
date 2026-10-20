@@ -285,7 +285,13 @@ export function WaitlistForm({ lang }: { lang: Lang }) {
         ) : null}
 
         <div className="sm:col-span-2">
-          <Button type="submit" size="lg" className="w-full" disabled={submitting}>
+          {/* `max-sm:` variants, because `cn` does not merge classes: on phones the label may wrap ("Je veux rejoindre Gloumi" is wider than the card at 320 px). */}
+          <Button
+            type="submit"
+            size="lg"
+            className="w-full max-sm:h-auto max-sm:min-h-14 max-sm:whitespace-normal max-sm:py-3 max-sm:text-center"
+            disabled={submitting}
+          >
             {submitting ? (
               <>
                 <IconSpinner className="h-5 w-5 animate-spin" aria-hidden="true" />

@@ -30,7 +30,7 @@ export function ForMasters({ lang }: { lang: Lang }) {
             <div className="absolute -bottom-32 -left-20 h-[380px] w-[380px] rounded-full bg-plum-500/30 blur-3xl" />
           </div>
 
-          <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+          <div className="grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
             <div>
               <SectionHeading
                 id="meistrams-title"

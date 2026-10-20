@@ -144,12 +144,13 @@ export function PhoneMockup({ lang }: { lang: Lang }) {
       </div>
 
       {/* Wraps on narrow phones: the four tabs and the pause button (355 px) do not fit beside each other in 335 px. */}
-      <div className="mt-7 flex flex-wrap items-center justify-center gap-2">
+      <div className="mt-7 flex max-w-full flex-wrap items-center justify-center gap-2">
       <div
         role="tablist"
         aria-label={copy.phone.tabsLabel}
         onKeyDown={onTabKey}
-        className="inline-flex rounded-full bg-white/80 p-1 shadow-card ring-1 ring-espresso-900/5 backdrop-blur"
+        // On the narrowest phones some languages' four tabs are wider than the screen (French: 332 px in 280): they scroll instead of spilling over.
+        className="inline-flex max-w-full overflow-x-auto rounded-full bg-white/80 p-1 shadow-card ring-1 ring-espresso-900/5 backdrop-blur [scrollbar-width:none]"
       >
         {copy.phone.tabs.map((tab, index) => {
           const selected = tab.id === active;
@@ -167,7 +168,7 @@ export function PhoneMockup({ lang }: { lang: Lang }) {
               tabIndex={selected ? 0 : -1}
               onClick={() => select(tab.id)}
               className={cn(
-                "rounded-full px-3 py-2 text-[13px] font-medium transition-colors sm:px-4 sm:text-sm",
+                "shrink-0 whitespace-nowrap rounded-full px-3 py-2 text-[13px] font-medium transition-colors sm:px-4 sm:text-sm",
                 selected ? "bg-espresso-900 text-cream-100" : "text-espresso-600 hover:text-espresso-900"
               )}
             >
