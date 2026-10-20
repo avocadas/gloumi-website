@@ -18,7 +18,7 @@ export function Hero({ lang }: { lang: Lang }) {
         <div className="absolute right-[18%] top-[45%] h-[340px] w-[340px] rounded-full bg-mauve-100/70 blur-3xl" />
       </div>
 
-      <Container className="grid items-center gap-14 pb-16 pt-8 sm:pt-14 lg:grid-cols-[0.95fr_1.05fr] lg:gap-6 lg:pb-24 lg:pt-16">
+      <Container className="grid grid-cols-[minmax(0,1fr)] items-center gap-14 pb-16 pt-8 sm:pt-14 lg:grid-cols-[0.95fr_1.05fr] lg:gap-6 lg:pb-24 lg:pt-16">
         <div className="max-w-xl animate-fade-up">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta-600">{h.eyebrow}</p>
           <h1

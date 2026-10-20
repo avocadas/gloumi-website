@@ -142,7 +142,8 @@ export function PhoneMockup({ lang }: { lang: Lang }) {
         </div>
       </div>
 
-      <div className="mt-7 flex items-center gap-2">
+      {/* Wraps on narrow phones: the four tabs and the pause button (355 px) do not fit beside each other in 335 px. */}
+      <div className="mt-7 flex flex-wrap items-center justify-center gap-2">
       <div
         role="tablist"
         aria-label={copy.phone.tabsLabel}

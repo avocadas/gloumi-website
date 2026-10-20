@@ -76,7 +76,12 @@ export function Header({ lang, alternates }: HeaderProps) {
 
         <div className="flex items-center gap-2">
           <LanguageSwitcher lang={lang} alternates={alternates} label={copy.nav.language} />
-          <ButtonLink href={sectionHref(lang, "download")} size="sm" className="hidden sm:inline-flex">
+          {/*
+            `max-sm:hidden`, not `hidden sm:inline-flex`: `cn` does not merge classes, and the button's own
+            `inline-flex` came later in the CSS than `hidden`, so the button showed on phones too and pushed the
+            header past 320 px. On phones the same link is in the menu.
+          */}
+          <ButtonLink href={sectionHref(lang, "download")} size="sm" className="max-sm:hidden">
             {copy.nav.cta}
           </ButtonLink>
           <button
