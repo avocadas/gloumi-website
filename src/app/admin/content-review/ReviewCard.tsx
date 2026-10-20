@@ -2,9 +2,11 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { IconBan, IconCheck } from "@/components/icons";
+import { IconBan, IconCheck, IconEye } from "@/components/icons";
+import type { SignedMedia } from "@/lib/admin-data";
 import { decideContentReview } from "../actions";
 import { useConfirm } from "../ConfirmDialog";
+import { MediaPreview } from "../data/RowCard";
 import { formatWhen } from "../format";
 import type { NoticeNote } from "../moderation-email";
 import { ActionNote, STROKE, Tag, btn, btnDanger, card } from "../ui";
@@ -14,10 +16,16 @@ export type ReviewView = {
   authorId: string;
   authorName: string | null;
   authorHandle: string | null;
-  /** `lentelė.stulpelis`, kur tekstas buvo rašomas (`guard_content_filter` argumentai). */
-  context: string;
-  body: string;
-  category: string;
+  /** `text` | `media_warn` | `media_requested` (Gloumi `20261020124647`). */
+  kind: string;
+  /** `lentelė.stulpelis`, kur tekstas buvo rašomas (`guard_content_filter` argumentai); medijai – null. */
+  context: string | null;
+  body: string | null;
+  category: string | null;
+  /** Medijai: `image` | `video`, telefono modelio versija ir pasirašytas adresas (tik laukiantiems). */
+  mediaType: string | null;
+  modelVersion: string | null;
+  media: SignedMedia | null;
   status: string;
   createdAt: string;
   decidedAt: string | null;
@@ -69,6 +77,12 @@ const COLUMN: Record<string, string> = {
   note: "pastaba",
 };
 
+/* Medijos prašymo rūšis: ką telefonas padarė ir kas paprašė peržiūros. */
+const MEDIA_KIND: Record<string, string> = {
+  media_warn: "Perspėta, autorius įkėlė",
+  media_requested: "Užblokuota, autorius paprašė peržiūros",
+};
+
 function contextLabel(context: string): string {
   const [table, column] = context.split(".");
   const where = TABLE[table] ?? table;
@@ -82,7 +96,7 @@ const STATUS: Record<string, { label: string; tone: "warn" | "ok" | "danger" | "
 };
 
 /**
- * Vienas peržiūros prašymas. „Leisti skelbti“ – pasirinktinė vidinė pastaba;
+ * Vienas peržiūros prašymas – tekstas arba medija. „Leisti skelbti“ – pasirinktinė vidinė pastaba;
  * „Atmesti“ – priežastis ir taisyklių punktas privalomi (jie keliauja autoriui
  * programėlės pranešime, DSA 17 str.).
  */
@@ -94,10 +108,39 @@ export function ReviewCard({ view }: { view: ReviewView }) {
   const [dialog, ask] = useConfirm();
   const tag = STATUS[status] ?? { label: status, tone: "neutral" as const };
   const who = view.authorName || (view.authorHandle ? `@${view.authorHandle}` : "Be vardo");
+  const isMedia = view.kind !== "text";
+  const video = view.mediaType === "video";
+  const what = video ? "vaizdo įrašą" : "nuotrauką";
+  // Medija rodoma užtamsinta, kol administratorius jos neatidengia: ji gali būti atvirai seksualinė.
+  const [revealed, setRevealed] = useState(false);
 
   const decide = async (approve: boolean) => {
     const answer = await ask(
-      approve
+      isMedia
+        ? approve
+          ? {
+              title: `Leisti skelbti šį ${what}?`,
+              body: [
+                `${video ? "Vaizdo įrašas taps matomas" : "Nuotrauka taps matoma"} visiems ten, kur autorius ${video ? "jį" : "ją"} įkėlė, o autorius gaus pranešimą.`,
+                "Pastaba neprivaloma; ji lieka tik administratoriams.",
+              ],
+              confirmLabel: "Leisti skelbti",
+              reason: true,
+              reasonLabel: "Pastaba",
+            }
+          : {
+              title: `Atmesti šį ${what}?`,
+              body: [
+                `${video ? "Vaizdo įrašas bus ištrintas" : "Nuotrauka bus ištrinta"}. Jei tai vienintelė įrašo ar Story medija – bus ištrintas ir pats įrašas ar Story.`,
+                "Autorius gaus pranešimą programėlėje ir el. paštu su priežastimi ir taisyklių punktu, todėl rašykite jam suprantamai.",
+              ],
+              confirmLabel: "Atmesti",
+              danger: true,
+              reasonRequired: true,
+              rule: true,
+              ruleNoRequest: true,
+            }
+        : approve
         ? {
             title: "Leisti skelbti šį tekstą?",
             body: [
@@ -136,13 +179,43 @@ export function ReviewCard({ view }: { view: ReviewView }) {
     <li className={`${card} p-5`}>
       {dialog}
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-[13px] font-semibold text-app-ink">{contextLabel(view.context)}</p>
+        <p className="text-[13px] font-semibold text-app-ink">
+          {isMedia ? (video ? "Vaizdo įrašas" : "Nuotrauka") : contextLabel(view.context ?? "")}
+        </p>
         <div className="flex flex-wrap gap-1.5">
-          <Tag tone="rose">{CATEGORY[view.category] ?? view.category}</Tag>
+          {isMedia ? (
+            <Tag tone="rose">{MEDIA_KIND[view.kind] ?? view.kind}</Tag>
+          ) : view.category ? (
+            <Tag tone="rose">{CATEGORY[view.category] ?? view.category}</Tag>
+          ) : null}
           <Tag tone={tag.tone}>{tag.label}</Tag>
         </div>
       </div>
-      <p className="mt-3 whitespace-pre-wrap break-words rounded-[14px] bg-app-sheet px-4 py-3 text-sm text-app-ink">{view.body}</p>
+      {isMedia ? (
+        <div className="mt-3">
+          {status !== "open" ? (
+            <p className="text-[13px] text-app-muted">
+              {status === "approved"
+                ? `Paskelbta – peržiūrėti galima ten, kur autorius ${video ? "jį" : "ją"} įkėlė.`
+                : "Ištrinta."}
+            </p>
+          ) : revealed || !view.media ? (
+            <MediaPreview signed={view.media ?? undefined} />
+          ) : (
+            <button
+              type="button"
+              onClick={() => setRevealed(true)}
+              className="flex aspect-[4/5] w-[136px] flex-col items-center justify-center gap-1.5 rounded-[14px] bg-app-ink/80 p-3 text-center text-[11px] font-semibold text-white"
+            >
+              <IconEye size={20} strokeWidth={STROKE} aria-hidden />
+              Rodyti {what}
+            </button>
+          )}
+          {view.modelVersion ? <p className="mt-2 text-[11px] text-app-faint">Telefono modelis: {view.modelVersion}</p> : null}
+        </div>
+      ) : (
+        <p className="mt-3 whitespace-pre-wrap break-words rounded-[14px] bg-app-sheet px-4 py-3 text-sm text-app-ink">{view.body}</p>
+      )}
       <p className="mt-3 text-[13px] text-app-muted">
         <Link href={`/admin/users/${view.authorId}`} className="font-semibold text-app-ink hover:underline">
           {who}

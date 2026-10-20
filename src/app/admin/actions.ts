@@ -820,7 +820,10 @@ export async function setAppBuild(
  * priežastis ir taisyklių punktas privalomi (DSA 17 str.; db `bad_rule`, jei
  * punktas ne iš Taisyklių ar Meistrų sąlygų), ir autorius gauna pranešimą
  * programėlėje ir el. paštu (teisininkas 2026-10-20, kaip `moderation_content_*`;
- * `moderation-email.ts`). Leidus – tik programėlės pranešimas.
+ * `moderation-email.ts`). Leidus – tik programėlės pranešimas. Medijai
+ * (Gloumi `20261020124647`) – tas pats kvietimas: leidus db ją paskelbia
+ * (`media_publish_kick`), atmetus – ištrina (ir įrašą ar Story, jei tai jų
+ * vienintelė medija).
  */
 const CONTENT_REVIEW_ERRORS: Record<string, string> = {
   bad_approve: "Netinkamas prašymas.",

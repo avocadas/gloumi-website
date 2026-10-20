@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { IconShieldCheck } from "@/components/icons";
 import { checkAdmin } from "@/lib/admin-guard";
+import { signMedia } from "@/lib/admin-data";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { AdminShell } from "../AdminShell";
 import { MfaNotice } from "../MfaNotice";
@@ -18,8 +19,11 @@ import { ReviewCard, type ReviewView } from "./ReviewCard";
  * pirmi, iki 200). Autoriaus vardas – iš `profiles`, servisiniu raktu, kaip
  * pagalbos eilėje. Tekstas – naudotojo, rodomas kaip tekstas, ne HTML.
  *
- * Nuotraukų peržiūra (`media_warn`, `media_requested`) – kitas db etapas;
- * kol lentelėje tik tekstai, kortelė rodo tekstą.
+ * Nuotraukos ir vaizdo įrašai (Gloumi `20261020124647`): telefone modelis
+ * įspėja (`media_warn`) arba blokuoja (`media_requested`, autorius paprašė
+ * peržiūros); medija kol kas privati ir matoma tik autoriui. Ji pasirašoma
+ * per `admin-media-urls` (galioja valandą) ir kortelėje rodoma užtamsinta,
+ * kol administratorius pats jos neatidengia.
  */
 export const dynamic = "force-dynamic";
 
@@ -39,6 +43,12 @@ type Row = {
   created_at: string;
   decided_at: string | null;
   note: string | null;
+  /* 20261020124647: `text` | `media_warn` | `media_requested`; medijai `context`, `body`, `category` – null. */
+  kind?: string | null;
+  media_id?: string | null;
+  media_type?: string | null;
+  content_type?: string | null;
+  model_version?: string | null;
 };
 
 export default async function ContentReviewPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
@@ -66,15 +76,24 @@ export default async function ContentReviewPage({ searchParams }: { searchParams
     ? await db.from("profiles").select("id, display_name, username").in("id", authorIds)
     : { data: [] as { id: string; display_name: string | null; username: string | null }[] };
   const names = new Map((profiles ?? []).map((p) => [p.id, p]));
+  // Pasirašoma tik laukiančių prašymų medija: išspręstos jau arba vieša, arba ištrinta.
+  const signed = await signMedia(
+    check.userId,
+    rows.filter((r) => r.status === "open" && r.media_id).map((r) => r.media_id as string),
+  );
 
   const views: ReviewView[] = rows.map((r) => ({
     id: r.id,
     authorId: r.author_id,
     authorName: names.get(r.author_id)?.display_name ?? null,
     authorHandle: names.get(r.author_id)?.username ?? null,
+    kind: r.kind ?? "text",
     context: r.context,
     body: r.body,
     category: r.category,
+    mediaType: r.media_type ?? null,
+    modelVersion: r.model_version ?? null,
+    media: r.media_id ? (signed[r.media_id] ?? null) : null,
     status: r.status,
     createdAt: r.created_at,
     decidedAt: r.decided_at,
@@ -85,7 +104,7 @@ export default async function ContentReviewPage({ searchParams }: { searchParams
     <AdminShell
       section="reports"
       title="Turinio peržiūra"
-      subtitle="Tekstai, kuriuos sulaikė filtras prieš paskelbimą, o autorius paprašė peržiūros. Sprendžia žmogus."
+      subtitle="Tekstai, nuotraukos ir vaizdo įrašai, kuriuos sulaikė patikra prieš paskelbimą. Sprendžia žmogus."
       username={check.username ?? check.userId}
       back={{ href: "/admin", label: "Skundai" }}
     >
