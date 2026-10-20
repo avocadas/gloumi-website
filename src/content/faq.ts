@@ -638,7 +638,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-3",
           "q": "Jak skontaktować się z pomocą?",
-          "a": "Menu boczne → Pomoc → Nie ma odpowiedzi? albo info@gloumi.lt. W sprawie konkretnej wizyty – Zgłoś problem w tej wizycie. Otrzymanie wiadomości potwierdzamy w ciągu 2 dni roboczych, a merytorycznie odpowiadamy w ciągu 14 dni kalendarzowych, zwykle szybciej."
+          "a": "Menu boczne → Pomoc → Nie ma odpowiedzi? albo support@gloumi.lt. W sprawie konkretnej wizyty – Zgłoś problem w tej wizycie. Otrzymanie wiadomości potwierdzamy w ciągu 2 dni roboczych, a merytorycznie odpowiadamy w ciągu 14 dni kalendarzowych, zwykle szybciej."
         }
       ]
     },
@@ -715,7 +715,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-17",
           "q": "Jak odwołać lub przełożyć wizytę?",
-          "a": "Wizyty → otwórz wizytę → Odwołaj wizytę lub Przełóż. Odwołanie działa od razu, bez dodatkowego pytania. Gdy do potwierdzonej wizyty zostało mniej niż 24 godz., przełożyć ją może tylko specjalista – napisz do specjalisty wiadomość."
+          "a": "Wizyty → otwórz wizytę → Odwołaj wizytę lub Przełóż. Odwołanie działa od razu, bez dodatkowego pytania. Gdy do potwierdzonej wizyty zostało mniej niż 24 godz., można ją przełożyć tylko na nowy termin zaproponowany przez specjalistę – napisz do specjalisty wiadomość."
         },
         {
           "id": "K-18",
@@ -858,7 +858,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-43",
           "q": "What is the difference between the plans?",
-          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 active visits a month and 10 portfolio photos. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. An introductory price may be offered for monthly Pro – the app shows it before you subscribe. Plans – side menu → Gloumi Pro.",
+          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 non-cancelled visits a calendar month and 10 portfolio posts. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. An introductory price may be offered for monthly Pro – the app shows it before you subscribe. Plans – side menu → Gloumi Pro.",
           "lang": "en"
         },
         {
@@ -875,7 +875,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-46",
           "q": "Can a review be removed?",
-          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report those to info@gloumi.lt.",
+          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report them with the Report button on the review or to info@gloumi.lt.",
           "lang": "en"
         },
         {
@@ -952,7 +952,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-3",
           "q": "Kā sazināties ar palīdzības dienestu?",
-          "a": "Sānu izvēlne → Palīdzība → Neatradāt atbildi? vai info@gloumi.lt. Par konkrētu vizīti – tajā „Ziņot par problēmu”. Saņemšanu apstiprinām 2 darba dienu laikā, pēc būtības atbildam 14 kalendāro dienu laikā, parasti ātrāk."
+          "a": "Sānu izvēlne → Palīdzība → Neatradāt atbildi? vai support@gloumi.lt. Par konkrētu vizīti – tajā „Ziņot par problēmu”. Saņemšanu apstiprinām 2 darba dienu laikā, pēc būtības atbildam 14 kalendāro dienu laikā, parasti ātrāk."
         }
       ]
     },
@@ -1029,7 +1029,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-17",
           "q": "Kā atcelt vai pārcelt vizīti?",
-          "a": "Vizītes → atveriet vizīti → Atcelt vizīti vai Pārcelt. Atcelšana notiek uzreiz, bez papildu jautājuma. Ja līdz apstiprinātai vizītei atlicis mazāk nekā 24 stundas, pārcelt to var tikai meistars – uzrakstiet meistaram."
+          "a": "Vizītes → atveriet vizīti → Atcelt vizīti vai Pārcelt. Atcelšana notiek uzreiz, bez papildu jautājuma. Ja līdz apstiprinātai vizītei atlicis mazāk nekā 24 stundas, to var pārcelt tikai uz meistara piedāvātu jaunu laiku – uzrakstiet meistaram."
         },
         {
           "id": "K-18",
@@ -1172,7 +1172,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-43",
           "q": "What is the difference between the plans?",
-          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 active visits a month and 10 portfolio photos. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. An introductory price may be offered for monthly Pro – the app shows it before you subscribe. Plans – side menu → Gloumi Pro.",
+          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 non-cancelled visits a calendar month and 10 portfolio posts. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. An introductory price may be offered for monthly Pro – the app shows it before you subscribe. Plans – side menu → Gloumi Pro.",
           "lang": "en"
         },
         {
@@ -1189,7 +1189,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-46",
           "q": "Can a review be removed?",
-          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report those to info@gloumi.lt.",
+          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report them with the Report button on the review or to info@gloumi.lt.",
           "lang": "en"
         },
         {
@@ -1266,7 +1266,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-3",
           "q": "Wie erreiche ich den Support?",
-          "a": "Seitenmenü → Hilfe → Keine Antwort gefunden? oder info@gloumi.lt. Zu einem bestimmten Termin – Problem melden in diesem Termin. Wir bestätigen den Eingang innerhalb von 2 Werktagen und antworten in der Sache innerhalb von 14 Kalendertagen, meist schneller."
+          "a": "Seitenmenü → Hilfe → Keine Antwort gefunden? oder support@gloumi.lt. Zu einem bestimmten Termin – Problem melden in diesem Termin. Wir bestätigen den Eingang innerhalb von 2 Werktagen und antworten in der Sache innerhalb von 14 Kalendertagen, meist schneller."
         }
       ]
     },
@@ -1343,7 +1343,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-17",
           "q": "Wie storniere oder verschiebe ich einen Termin?",
-          "a": "Termine → Termin öffnen → Termin stornieren oder Verschieben. Die Stornierung erfolgt sofort, ohne weitere Rückfrage. Weniger als 24 Std. vor einem bestätigten Termin kann nur der Profi ihn verschieben – schreiben Sie ihm eine Nachricht."
+          "a": "Termine → Termin öffnen → Termin stornieren oder Verschieben. Die Stornierung erfolgt sofort, ohne weitere Rückfrage. Weniger als 24 Std. vor einem bestätigten Termin kann er nur auf eine neue Zeit verschoben werden, die der Profi vorschlägt – schreiben Sie ihm eine Nachricht."
         },
         {
           "id": "K-18",
@@ -1486,7 +1486,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-43",
           "q": "What is the difference between the plans?",
-          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 active visits a month and 10 portfolio photos. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. An introductory price may be offered for monthly Pro – the app shows it before you subscribe. Plans – side menu → Gloumi Pro.",
+          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 non-cancelled visits a calendar month and 10 portfolio posts. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. An introductory price may be offered for monthly Pro – the app shows it before you subscribe. Plans – side menu → Gloumi Pro.",
           "lang": "en"
         },
         {
@@ -1503,7 +1503,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-46",
           "q": "Can a review be removed?",
-          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report those to info@gloumi.lt.",
+          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report them with the Report button on the review or to info@gloumi.lt.",
           "lang": "en"
         },
         {
@@ -1580,7 +1580,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-3",
           "q": "Comment contacter l'assistance ?",
-          "a": "Menu latéral → Aide → Pas de réponse ici ?, ou info@gloumi.lt. Pour un rendez-vous précis – « Signaler un problème » dans ce rendez-vous. Nous accusons réception sous 2 jours ouvrés et répondons sur le fond sous 14 jours calendaires, généralement plus tôt."
+          "a": "Menu latéral → Aide → Pas de réponse ici ?, ou support@gloumi.lt. Pour un rendez-vous précis – « Signaler un problème » dans ce rendez-vous. Nous accusons réception sous 2 jours ouvrés et répondons sur le fond sous 14 jours calendaires, généralement plus tôt."
         }
       ]
     },
@@ -1657,7 +1657,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-17",
           "q": "Comment annuler ou déplacer un rendez-vous ?",
-          "a": "Rendez-vous → ouvrez le rendez-vous → Annuler le rendez-vous ou Déplacer. L'annulation est immédiate, sans seconde confirmation. À moins de 24 h d'un rendez-vous confirmé, seul le professionnel peut le déplacer – envoyez-lui un message."
+          "a": "Rendez-vous → ouvrez le rendez-vous → Annuler le rendez-vous ou Déplacer. L'annulation est immédiate, sans seconde confirmation. À moins de 24 h d'un rendez-vous confirmé, il ne peut être déplacé qu'à un nouvel horaire proposé par le professionnel – envoyez-lui un message."
         },
         {
           "id": "K-18",
@@ -1800,7 +1800,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-43",
           "q": "What is the difference between the plans?",
-          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 active visits a month and 10 portfolio photos. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. An introductory price may be offered for monthly Pro – the app shows it before you subscribe. Plans – side menu → Gloumi Pro.",
+          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 non-cancelled visits a calendar month and 10 portfolio posts. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. An introductory price may be offered for monthly Pro – the app shows it before you subscribe. Plans – side menu → Gloumi Pro.",
           "lang": "en"
         },
         {
@@ -1817,7 +1817,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-46",
           "q": "Can a review be removed?",
-          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report those to info@gloumi.lt.",
+          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report them with the Report button on the review or to info@gloumi.lt.",
           "lang": "en"
         },
         {
@@ -1894,7 +1894,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-3",
           "q": "¿Cómo contacto con el servicio de ayuda?",
-          "a": "Menú lateral → Ayuda → ¿No encuentras la respuesta?, o info@gloumi.lt. Sobre una cita concreta – Informar de un problema en esa cita. Confirmamos la recepción en 2 días laborables y respondemos sobre el fondo en 14 días naturales, normalmente antes."
+          "a": "Menú lateral → Ayuda → ¿No encuentras la respuesta?, o support@gloumi.lt. Sobre una cita concreta – Informar de un problema en esa cita. Confirmamos la recepción en 2 días laborables y respondemos sobre el fondo en 14 días naturales, normalmente antes."
         }
       ]
     },
@@ -1971,7 +1971,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-17",
           "q": "¿Cómo cancelo o cambio una cita?",
-          "a": "Citas → abre la cita → Cancelar cita o Cambiar fecha. La cancelación es inmediata, sin una segunda pregunta. Si faltan menos de 24 h para una cita confirmada, solo el profesional puede cambiarla – escríbele."
+          "a": "Citas → abre la cita → Cancelar cita o Cambiar fecha. La cancelación es inmediata, sin una segunda pregunta. Si faltan menos de 24 h para una cita confirmada, solo se puede cambiar a una nueva hora que proponga el profesional – escríbele."
         },
         {
           "id": "K-18",
@@ -2114,7 +2114,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-43",
           "q": "What is the difference between the plans?",
-          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 active visits a month and 10 portfolio photos. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. An introductory price may be offered for monthly Pro – the app shows it before you subscribe. Plans – side menu → Gloumi Pro.",
+          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 non-cancelled visits a calendar month and 10 portfolio posts. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. An introductory price may be offered for monthly Pro – the app shows it before you subscribe. Plans – side menu → Gloumi Pro.",
           "lang": "en"
         },
         {
@@ -2131,7 +2131,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-46",
           "q": "Can a review be removed?",
-          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report those to info@gloumi.lt.",
+          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report them with the Report button on the review or to info@gloumi.lt.",
           "lang": "en"
         },
         {
@@ -2208,7 +2208,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-3",
           "q": "Come contatto l'assistenza?",
-          "a": "Menu laterale → Assistenza → Non hai trovato la risposta? oppure info@gloumi.lt. Per un appuntamento specifico – Segnala un problema dentro l'appuntamento. Confermiamo la ricezione entro 2 giorni lavorativi e rispondiamo nel merito entro 14 giorni di calendario, di solito prima."
+          "a": "Menu laterale → Assistenza → Non hai trovato la risposta? oppure support@gloumi.lt. Per un appuntamento specifico – Segnala un problema dentro l'appuntamento. Confermiamo la ricezione entro 2 giorni lavorativi e rispondiamo nel merito entro 14 giorni di calendario, di solito prima."
         }
       ]
     },
@@ -2285,7 +2285,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-17",
           "q": "Come annullo o sposto un appuntamento?",
-          "a": "Appuntamenti → apri l'appuntamento → Annulla appuntamento oppure Sposta. L'annullamento è immediato, senza altre domande. A meno di 24 ore da un appuntamento confermato, scrivi al professionista: solo chi offre il servizio può spostarlo."
+          "a": "Appuntamenti → apri l'appuntamento → Annulla appuntamento oppure Sposta. L'annullamento è immediato, senza altre domande. A meno di 24 ore da un appuntamento confermato, si può spostare solo a un nuovo orario proposto dal professionista: scrivigli."
         },
         {
           "id": "K-18",
@@ -2428,7 +2428,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-43",
           "q": "What is the difference between the plans?",
-          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 active visits a month and 10 portfolio photos. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. An introductory price may be offered for monthly Pro – the app shows it before you subscribe. Plans – side menu → Gloumi Pro.",
+          "a": "Starter costs €0 a month, and Gloumi takes 5% commission on each client's first completed visit (K-40); limits – 20 non-cancelled visits a calendar month and 10 portfolio posts. Pro (€19 a month or €199 a year) – no limits, higher in search and the feed, deposits and in-app payments, tips. VIP Studio (€49 a month or €499 a year) – plus a salon of up to 10 masters. The commission is the same on every plan. An introductory price may be offered for monthly Pro – the app shows it before you subscribe. Plans – side menu → Gloumi Pro.",
           "lang": "en"
         },
         {
@@ -2445,7 +2445,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-46",
           "q": "Can a review be removed?",
-          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report those to info@gloumi.lt.",
+          "a": "We do not remove genuine negative reviews – only those that break the rules, are false or unrelated to the service; report them with the Report button on the review or to info@gloumi.lt.",
           "lang": "en"
         },
         {
