@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { IconAlert } from "@/components/icons";
 import { TURNSTILE_SITE_KEY, Turnstile, type TurnstileHandle } from "@/components/Turnstile";
 import { ADMIN_MIN_PASSWORD_BYTES, MAX_PASSWORD_BYTES, passwordBytes } from "@/lib/password-rule";
-import { STROKE, btn, card, input } from "../ui";
+import { STROKE, btnPrimary, card, input } from "../ui";
 import { changeAdminPassword } from "./actions";
 
 /*
@@ -133,7 +133,7 @@ export function PasswordForm() {
         <Turnstile ref={turnstile} siteKey={TURNSTILE_SITE_KEY} action="admin-password" onToken={setCaptchaToken} />
       ) : null}
 
-      <button type="submit" disabled={busy || waitingForCaptcha || code.length !== 6} className={`${btn} h-12 w-full`}>
+      <button type="submit" disabled={busy || waitingForCaptcha || code.length !== 6} className={`${btnPrimary} h-12 w-full`}>
         {busy ? "Keičiama…" : "Pakeisti slaptažodį"}
       </button>
 

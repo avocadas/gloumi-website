@@ -4,7 +4,7 @@ import { Suspense, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { IconAlert, IconArrowRight, IconLock, IconProfile } from "@/components/icons";
-import { AuthShell, Brand, STROKE, btn, btnQuiet, input } from "../ui";
+import { AuthShell, Brand, STROKE, btnPrimary, btnQuiet, input } from "../ui";
 import { finishAdminLogin, startAdminLogin } from "./actions";
 import { TURNSTILE_SITE_KEY, Turnstile, type TurnstileHandle } from "@/components/Turnstile";
 
@@ -169,7 +169,7 @@ function LoginForm() {
           className={`${input} mt-2 h-14 text-center font-semibold text-xl tabular-nums tracking-[0.4em]`}
         />
       </label>
-      <button type="submit" disabled={busy || waitingForCaptcha || code.length !== 6} className={`${btn} h-12 w-full`}>
+      <button type="submit" disabled={busy || waitingForCaptcha || code.length !== 6} className={`${btnPrimary} h-12 w-full`}>
         Patvirtinti
         <IconArrowRight size={16} strokeWidth={STROKE} aria-hidden />
       </button>
@@ -273,7 +273,7 @@ function LoginForm() {
               />
             </span>
           </label>
-          <button type="submit" disabled={busy || waitingForCaptcha} className={`${btn} h-12 w-full`}>
+          <button type="submit" disabled={busy || waitingForCaptcha} className={`${btnPrimary} h-12 w-full`}>
             Toliau
             <IconArrowRight size={16} strokeWidth={STROKE} aria-hidden />
           </button>

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { IconAlert } from "@/components/icons";
 import { RuleSelect } from "./ModerationRules";
-import { btn, btnDanger, btnQuiet, input, STROKE } from "./ui";
+import { btnDangerFill, btnPrimary, btnQuiet, input, STROKE } from "./ui";
 
 export type ConfirmOptions = {
   title: string;
@@ -132,7 +132,7 @@ function ConfirmDialog({
         // Paspaudimas už kortelės ribų — ant fono — reiškia „ne".
         if (e.target === e.currentTarget) onSettle(null);
       }}
-      className="mt-auto mb-0 w-full max-w-full rounded-t-[24px] bg-white p-0 text-app-ink shadow-app-bar backdrop:bg-app-ink/40 sm:m-auto sm:w-[28rem] sm:rounded-[22px]"
+      className="mt-auto mb-0 w-full max-w-full rounded-t-[24px] bg-white p-0 text-app-ink shadow-app-bar backdrop:bg-app-ink/40 sm:m-auto sm:w-[28rem] sm:rounded-[20px]"
     >
       <form onSubmit={confirm} className="p-6 font-app-sans">
         <span aria-hidden className="mx-auto -mt-2 mb-4 block h-1 w-10 rounded-full bg-app-border sm:hidden" />
@@ -144,7 +144,7 @@ function ConfirmDialog({
           >
             <IconAlert size={20} strokeWidth={STROKE} aria-hidden />
           </span>
-          <h2 id="confirm-title" className="pt-1.5 font-app-serif text-xl leading-snug">
+          <h2 id="confirm-title" className="pt-1.5 text-lg leading-snug font-bold">
             {title}
           </h2>
         </div>
@@ -241,7 +241,7 @@ function ConfirmDialog({
           <button type="button" onClick={() => onSettle(null)} className={btnQuiet} autoFocus={!showReason && !options.rule && !typeToConfirm}>
             Atšaukti
           </button>
-          <button type="submit" disabled={!ready} className={danger ? btnDanger : btn}>
+          <button type="submit" disabled={!ready} className={danger ? btnDangerFill : btnPrimary}>
             {confirmLabel}
           </button>
         </div>

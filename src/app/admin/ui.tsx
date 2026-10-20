@@ -1,6 +1,7 @@
+import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { Wordmark } from "@/components/brand/Wordmark";
-import { ICON_STROKE } from "@/components/icons";
+import { ICON_STROKE, IconAlert, IconChevronRight } from "@/components/icons";
 
 /*
  * Portalo statybiniai blokai programėlės kalba (`gloumi-app/src/theme/theme.js`,
@@ -8,10 +9,15 @@ import { ICON_STROKE } from "@/components/icons";
  * patį — antgalvį, korteles, mygtukus, žymas — vienodai: būtent skirtingai
  * nupieštas tas pats daiktas ir daro skydelį netvarkingą.
  *
- * Trys programėlės taisyklės, kurias čia lengva sulaužyti:
- *  - mygtukai BALTI su juodu apvadu, juodo užpildo nėra niekur (#130);
- *  - pastelė dažo tik plotą (antgalvį, aktyvų skirtuką), tekstui — rašalas;
- *  - skaičiai rašomi sansu su `tabular-nums`, ne serifu (`theme.js` `FIGURES`).
+ * Paletė B ir design `admin-portalas.md` 4 sk. (developeris 2026-10-20
+ * „design tinka, darom dabar“). Taisyklės, kurias čia lengva sulaužyti:
+ *  - vienoje kortelėje – ne daugiau kaip vienas pagrindinis (BORDO) mygtukas;
+ *  - pavojingas veiksmas kortelėje – tylus raudonu tekstu, užpildytas – tik
+ *    patvirtinimo dialoge;
+ *  - žymos – pagal prasmę (galioja, laukia, sustabdyta, informacija,
+ *    baigėsi), ne pagal skyrių; sakinio raidėmis;
+ *  - pastelė – tik burbulams (Apžvalga, prisijungimas);
+ *  - skaičiai rašomi sansu su `tabular-nums`, ne serifu.
  */
 
 /** `Icons.js` `ICON_STROKE` – ikonų (`@/components/icons`) linijos storis. */
@@ -83,29 +89,44 @@ export function Bubbles({ tone }: { tone: Tone }) {
   );
 }
 
-export const card = "rounded-[22px] bg-white shadow-app-card ring-1 ring-app-hairline";
+/** Kortelė – balta, kampas 20, šešėlis be rėmelio (4.3). */
+export const card = "rounded-[20px] bg-white shadow-app-card";
 
+/*
+ * Mygtukų bazė – `min-h-11` ir `h-auto`, ne fiksuotas aukštis: ilgas užrašas
+ * lūžta į dvi eilutes, o ne išlenda (6 sk.). Fokusas – BORDO žiedas (10 sk.).
+ */
 const btnBase =
-  "inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-xl px-4 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40";
+  "inline-flex min-h-11 items-center justify-center gap-2 rounded-[14px] px-4 py-2 text-center text-sm font-semibold leading-tight transition-colors outline-none focus-visible:ring-2 focus-visible:ring-app-accent/40 disabled:cursor-not-allowed disabled:opacity-40";
 
-/** `OUTLINED` — vienintelis mygtuko pavidalas programėlėje. */
-export const btn = `${btnBase} border-[1.5px] border-app-accent bg-white text-app-accent hover:bg-app-sheet`;
+/** Pagrindinis – vienas svarbiausias veiksmas kortelėje ar dialoge („Suteikti“, „Išsaugoti“). */
+export const btnPrimary = `${btnBase} bg-app-accent text-white shadow-app-primary hover:bg-[#8c0f36]`;
 
-/** Trynimas, blokavimas: tas pats pavidalas, `DANGER` apvadas ir `DANGER_TEXT` raidės. */
-export const btnDanger = `${btnBase} border-[1.5px] border-app-danger bg-white text-app-danger-text hover:bg-app-danger-bg`;
+/** Antrinis – kitas veiksmas šalia („Peržiūrėti“, „Kopijuoti“). */
+export const btn = `${btnBase} border-[1.5px] border-app-border bg-white text-app-ink hover:bg-app-input`;
 
-/** Antraeilis veiksmas be apvado: „Atšaukti", „Taisyti". */
-export const btnQuiet = `${btnBase} text-app-body hover:bg-app-input`;
+/** Tylus – „Atšaukti“ dialoge, „Rodyti daugiau“. */
+export const btnQuiet = `${btnBase} text-app-muted hover:bg-app-input`;
 
+/** Pavojingas kortelėje – tylus raudonu tekstu: veiksmas dar tik klausia (dialogas). */
+export const btnDanger = `${btnBase} text-app-danger-text hover:bg-app-danger-bg`;
+
+/** Pavojingas patvirtinimo dialoge – užpildytas. */
+export const btnDangerFill = `${btnBase} bg-app-danger text-white hover:bg-[#b91c1c]`;
+
+/** Laukas – 44 aukščio, kampas 14, fokusas – 2 px BORDO 30 % žiedas (4.5). */
 export const input =
-  "h-11 w-full min-w-0 rounded-[14px] bg-app-input px-4 text-sm text-app-ink outline-none placeholder:text-app-faint focus:ring-4 focus:ring-app-accent/10";
+  "h-11 w-full min-w-0 rounded-[14px] bg-app-input px-4 text-sm text-app-ink outline-none placeholder:text-app-placeholder focus:ring-2 focus:ring-app-accent/30 disabled:opacity-40";
+
+/** Datos laukas: 200 px kompiuteryje, telefone – visas plotis; vietos naršyklės kalendoriaus ikonai. */
+export const dateInput = `${input} pr-10 sm:w-[200px]`;
 
 export const chip =
   "inline-flex h-9 items-center gap-2 rounded-full border border-app-border bg-white px-3.5 text-sm font-semibold text-app-body transition-colors hover:border-app-faint";
 
-/** Pasirinktas — baltas su juodu apvadu, kaip programėlės pasirinkimai (#130). */
+/** Pasirinktas filtras – švelnus BORDO fonas, kaip aktyvus skyrius. */
 export const chipActive =
-  "inline-flex h-9 items-center gap-2 rounded-full border-[1.5px] border-app-accent bg-white px-3.5 text-sm font-bold text-app-accent";
+  "inline-flex h-9 items-center gap-2 rounded-full border border-transparent bg-app-accent-soft px-3.5 text-sm font-bold text-app-accent";
 
 export const eyebrow = "text-[11px] font-bold uppercase tracking-[0.12em]";
 
@@ -113,35 +134,176 @@ export const eyebrow = "text-[11px] font-bold uppercase tracking-[0.12em]";
 export const onField =
   "inline-flex h-10 items-center gap-2 rounded-full bg-white/70 px-3 text-sm font-semibold text-app-ink transition-colors hover:bg-white";
 
-type TagTone = "neutral" | "warn" | "ok" | "danger" | "lavender" | "rose" | "mint" | "peach" | "dark";
-
 /*
- * Žymos rašalas kai kur vienu laipteliu tamsesnis už programėlės žetoną: 10 px
- * raidėms ant pastelės reikia bent 4,5, o `badgeOkText`, `DANGER_TEXT` ir
- * skirtukų rašalai ant savo fonų davė 4,25–4,41 (išmatuota 2026-10-01).
- * Tamsesnis tos pačios spalvos tonas — 5,4–5,9.
+ * Žymos – penki tonai pagal PRASMĘ (4.4): `ok` galioja, `warn` laukia ar
+ * baigiasi, `danger` sustabdyta ar atmesta, `info` meistras, planas,
+ * `neutral` baigėsi. Senieji vardai (pastelės) palikti, kad puslapiai
+ * nelūžtų, ir nukreipti į prasmės toną; naujos vietos jų nenaudoja.
  */
+type MeaningTone = "neutral" | "warn" | "ok" | "danger" | "info";
+type TagTone = MeaningTone | "lavender" | "rose" | "mint" | "peach" | "dark";
 
-const TAG: Record<TagTone, string> = {
-  neutral: "bg-app-band text-[#52525B]",
+const TAG: Record<MeaningTone, string> = {
+  ok: "bg-app-ok-bg text-app-ok",
   warn: "bg-app-warn-bg text-app-warn",
-  ok: "bg-app-ok-bg text-[#3F6A4D]",
-  danger: "bg-app-danger-bg text-[#B91C1C]",
-  lavender: "bg-[#EFE9F8] text-[#6B4C96]",
-  rose: "bg-[#F8E7ED] text-app-content",
-  mint: "bg-[#E6F1EA] text-[#3F6A4D]",
-  peach: "bg-[#FBEAE1] text-app-peach-ink",
-  dark: "border border-app-accent text-app-accent",
+  danger: "bg-app-danger-bg text-app-danger-text",
+  info: "bg-app-info-bg text-app-info",
+  neutral: "bg-app-band text-app-body",
 };
 
-/** `TYPE.tag` ir `RADII.tag` — „ŠIANDIEN", „PRO". */
+const LEGACY: Record<TagTone, MeaningTone> = {
+  ok: "ok",
+  warn: "warn",
+  danger: "danger",
+  info: "info",
+  neutral: "neutral",
+  lavender: "info",
+  rose: "info",
+  mint: "ok",
+  peach: "warn",
+  dark: "info",
+};
+
+/** Sakinio raidėmis, 12 / 600, aukštis 22, kampas 8. */
 export function Tag({ tone = "neutral", children }: { tone?: TagTone; children: ReactNode }) {
   return (
-    <span
-      className={`inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-extrabold uppercase tracking-[0.08em] ${TAG[tone]}`}
-    >
+    <span className={`inline-flex min-h-[22px] items-center rounded-lg px-2 text-xs font-semibold ${TAG[LEGACY[tone]]}`}>
       {children}
     </span>
+  );
+}
+
+/** Skaičius filtre ir navigacijoje (12 / 700, aukštis 20). `hideZero` – 0 nerodomas. */
+export function CountPill({ n, label, hideZero = false }: { n: number; label?: string; hideZero?: boolean }) {
+  if (hideZero && n === 0) return null;
+  return (
+    <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-app-accent px-1.5 text-xs font-bold tabular-nums text-white">
+      {n}
+      {label ? <span className="sr-only"> {label}</span> : null}
+    </span>
+  );
+}
+
+/** Klaida, perspėjimas ar informacija – kampas 14, ikona kairėje (6 sk.). */
+export function Alert({
+  tone = "danger",
+  children,
+  className = "",
+}: {
+  tone?: "danger" | "warn" | "info" | "ok";
+  children: ReactNode;
+  className?: string;
+}) {
+  const look = {
+    danger: "bg-app-danger-bg text-app-danger-text",
+    warn: "bg-app-warn-bg text-app-warn",
+    info: "bg-app-info-bg text-app-info",
+    ok: "bg-app-ok-bg text-app-ok",
+  }[tone];
+  return (
+    <p
+      role={tone === "danger" ? "alert" : "status"}
+      className={`flex items-start gap-2 rounded-[14px] px-4 py-3 text-sm font-semibold ${look} ${className}`}
+    >
+      <IconAlert size={18} strokeWidth={STROKE} aria-hidden className="mt-px shrink-0" />
+      <span className="min-w-0 break-words">{children}</span>
+    </p>
+  );
+}
+
+/**
+ * Užrašas virš lauko (13 / 600), paaiškinimas po užrašu, klaida po lauku (4.5).
+ * `children` – pats laukas; `htmlFor` sieja užrašą su juo.
+ */
+export function Field({
+  label,
+  htmlFor,
+  hint,
+  error,
+  children,
+  className = "",
+}: {
+  label: string;
+  htmlFor?: string;
+  hint?: ReactNode;
+  error?: string | null;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={className}>
+      <label htmlFor={htmlFor} className="block text-[13px] font-semibold text-app-ink">
+        {label}
+      </label>
+      {hint ? <p className="mt-0.5 text-[13px] text-app-muted">{hint}</p> : null}
+      <div className="mt-1.5">{children}</div>
+      {error ? (
+        <p className="mt-1.5 flex items-start gap-1.5 text-[13px] font-semibold text-app-danger-text">
+          <IconAlert size={14} strokeWidth={STROKE} aria-hidden className="mt-0.5 shrink-0" />
+          {error}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+/**
+ * Pasirinkimas iš 2–4 variantų vietoje radijo mygtukų ar sąrašo (4.5):
+ * „Pro | VIP“, „Iki datos | Neribotai“. Radio grupė prieinamumui.
+ */
+export function Segment<T extends string>({
+  label,
+  value,
+  options,
+  onChange,
+  disabled = false,
+}: {
+  label: string;
+  value: T;
+  options: { value: T; label: string }[];
+  onChange: (value: T) => void;
+  disabled?: boolean;
+}) {
+  return (
+    <div role="radiogroup" aria-label={label} className="flex rounded-[14px] bg-app-input p-1">
+      {options.map((o) => {
+        const active = o.value === value;
+        return (
+          <button
+            key={o.value}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            disabled={disabled}
+            onClick={() => onChange(o.value)}
+            className={`min-h-9 flex-1 rounded-[10px] px-3 text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-app-accent/40 disabled:opacity-40 ${
+              active ? "bg-white font-semibold text-app-ink shadow-app-card" : "font-medium text-app-muted hover:text-app-ink"
+            }`}
+          >
+            {o.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Kortelė-nuoroda: pavadinimas, paaiškinimas, ›. */
+export function LinkCard({ href, title, note, aside }: { href: string; title: string; note?: string; aside?: ReactNode }) {
+  return (
+    <Link
+      href={href}
+      className={`${card} flex items-center justify-between gap-3 px-5 py-4 text-sm transition-colors hover:bg-app-input`}
+    >
+      <span className="min-w-0">
+        <span className="font-semibold text-app-ink">{title}</span>
+        {note ? <span className="mt-0.5 block text-[13px] text-app-muted">{note}</span> : null}
+      </span>
+      <span className="flex shrink-0 items-center gap-2">
+        {aside}
+        <IconChevronRight size={16} strokeWidth={STROKE} aria-hidden className="text-app-faint" />
+      </span>
+    </Link>
   );
 }
 
@@ -156,7 +318,7 @@ export function ActionNote({ note }: { note: { text: string; tone: "info" | "war
     <p
       role="status"
       className={`mt-4 rounded-[14px] px-4 py-3 text-[13px] font-semibold ${
-        note.tone === "warn" ? "bg-app-warn-bg text-app-warn" : "bg-app-band text-app-ink"
+        note.tone === "warn" ? "bg-app-warn-bg text-app-warn" : "bg-app-info-bg text-app-info"
       }`}
     >
       {note.text}
@@ -164,19 +326,19 @@ export function ActionNote({ note }: { note: { text: string; tone: "info" | "war
   );
 }
 
-type Accent = "content" | "account" | "value";
+type Accent = "content" | "account" | "value" | "system";
 
-const DASH: Record<Accent, string> = {
-  content: "bg-app-content",
-  account: "bg-app-account",
-  value: "bg-app-accent",
+/* Taškas grupės spalva (kaip programėlės `DotLabel`): turinys – rožinė, paskyra – violetinė, pinigai – gintarinė, sistema – žalia. */
+const DOT: Record<Accent, string> = {
+  content: "bg-[#D6457A]",
+  account: "bg-[#7A5AC8]",
+  value: "bg-[#D08A1A]",
+  system: "bg-[#1F9D7A]",
 };
 
 /*
- * Sekcijos antraštė su spalvotu brūkšneliu (`SHEET` drobė, `SECTION_ACCENTS`):
- * spalva sako temą — turinys, paskyra, pinigai, — o tekstas lieka paprastu
- * sakiniu, ne didžiosiomis (#110: keturios tokios antraštės ekraną paverčia
- * plakatu).
+ * Sekcijos antraštė su tašku (4.3): spalva sako temą, tekstas – 15 / 700
+ * sakinio raidėmis (#110: kelios antraštės didžiosiomis ekraną paverčia plakatu).
  */
 export function SectionTitle({
   accent,
@@ -192,8 +354,8 @@ export function SectionTitle({
   return (
     <div className="mb-3 flex items-end justify-between gap-3">
       <div className="min-w-0">
-        <h2 className="flex items-center gap-2.5 text-[15px] font-semibold text-app-ink">
-          {accent ? <span aria-hidden className={`h-[3px] w-4 rounded-full ${DASH[accent]}`} /> : null}
+        <h2 className="flex items-center gap-2 text-[15px] font-bold text-app-ink">
+          {accent ? <span aria-hidden className={`h-2 w-2 shrink-0 rounded-full ${DOT[accent]}`} /> : null}
           {title}
         </h2>
         {note ? <p className="mt-1 text-[13px] text-app-muted">{note}</p> : null}
@@ -203,10 +365,9 @@ export function SectionTitle({
   );
 }
 
-/** Tuščia būsena — `RADII.cardLarge`, piktograma pastelės skritulyje. */
+/** Tuščia būsena (4.7): ikona pilkame skritulyje, antraštė 17 / 600, be pastelės. `tone` – nebenaudojamas. */
 export function EmptyState({
   icon,
-  tone = "lavender",
   title,
   children,
 }: {
@@ -217,10 +378,8 @@ export function EmptyState({
 }) {
   return (
     <div className={`${card} flex flex-col items-center px-6 py-12 text-center`}>
-      <span className={`flex h-14 w-14 items-center justify-center rounded-full text-app-ink ${FIELD_BG[tone]}`}>
-        {icon}
-      </span>
-      <p className="mt-4 font-app-serif text-xl text-app-ink">{title}</p>
+      <span className="flex h-14 w-14 items-center justify-center rounded-full bg-app-band text-app-faint">{icon}</span>
+      <p className="mt-4 text-[17px] font-semibold text-app-ink">{title}</p>
       {children ? <div className="mt-1 max-w-sm text-sm text-app-muted">{children}</div> : null}
     </div>
   );
