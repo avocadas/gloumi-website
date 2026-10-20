@@ -6,12 +6,15 @@ export const STATUS_LABEL: Record<string, string> = {
   open: "Atviri",
   reviewed: "Imtasi veiksmų",
   dismissed: "Atmesti",
+  // Visi kartu, naujausi pirmi (design 7.1, „Visi“ filtrai 2026-10-21).
+  all: "Visi",
 };
 
 const EMPTY_TEXT: Record<string, string> = {
   open: "Atvirų skundų nėra",
   reviewed: "Skundų, dėl kurių imtasi veiksmų, nėra",
   dismissed: "Atmestų skundų nėra",
+  all: "Skundų dar nėra",
 };
 
 /*

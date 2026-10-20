@@ -51,14 +51,16 @@ export default async function AdminPage({
    * Be skaičių žmogus turėtų atidaryti kiekvieną būseną, kad sužinotų, ar
    * ten išvis kas nors yra.
    */
-  const countOf = (s: string) =>
-    db.from("content_reports").select("id", { count: "exact", head: true }).eq("status", s);
+  const countOf = (s: string) => {
+    const q = db.from("content_reports").select("id", { count: "exact", head: true });
+    return s === "all" ? q : q.eq("status", s);
+  };
+  const listed = db
+    .from("content_reports")
+    .select("id, reporter_id, target_type, target_id, reason, details, created_at, status");
 
   const [{ data: reports }, ...counted] = await Promise.all([
-    db
-      .from("content_reports")
-      .select("id, reporter_id, target_type, target_id, reason, details, created_at, status")
-      .eq("status", wanted)
+    (wanted === "all" ? listed : listed.eq("status", wanted))
       .order("created_at", { ascending: false })
       .limit(100),
     ...Object.keys(STATUS_LABEL).map(countOf),

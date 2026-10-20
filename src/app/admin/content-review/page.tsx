@@ -31,7 +31,12 @@ const STATUS_LABEL: Record<string, string> = {
   open: "Laukia",
   approved: "Leista",
   rejected: "Atmesta",
+  // Visi kartu, naujausi pirmi (design „Visi“ filtrai 2026-10-21).
+  all: "Visi",
 };
+
+/* Būsenos, kurias grąžina `admin_content_review_list` (ji priima tik vieną). */
+const DB_STATUSES = ["open", "approved", "rejected"] as const;
 
 type Row = {
   id: string;
@@ -62,14 +67,22 @@ export default async function ContentReviewPage({ searchParams }: { searchParams
   const wanted = status in STATUS_LABEL ? status : "open";
 
   const db = createSupabaseAdminClient();
-  const [{ data, error }, ...counted] = await Promise.all([
-    db.rpc("admin_content_review_list", { _admin_id: check.userId, _status: wanted, _limit: 200 }),
-    ...Object.keys(STATUS_LABEL).map((s) =>
-      db.from("content_review_requests").select("id", { count: "exact", head: true }).eq("status", s),
+  const countOf = (s: string) => {
+    const q = db.from("content_review_requests").select("id", { count: "exact", head: true });
+    return s === "all" ? q : q.eq("status", s);
+  };
+  // „Visi“: funkcija priima vieną būseną, todėl trys kvietimai, sujungti ir surikiuoti nuo naujausio.
+  const statuses = wanted === "all" ? [...DB_STATUSES] : [wanted];
+  const [lists, counted] = await Promise.all([
+    Promise.all(
+      statuses.map((s) => db.rpc("admin_content_review_list", { _admin_id: check.userId, _status: s, _limit: 200 })),
     ),
+    Promise.all(Object.keys(STATUS_LABEL).map(countOf)),
   ]);
+  const error = lists.find((l) => l.error)?.error ?? null;
   const counts = Object.fromEntries(Object.keys(STATUS_LABEL).map((s, i) => [s, counted[i].count ?? null]));
-  const rows = (Array.isArray(data) ? data : []) as Row[];
+  const rows = lists.flatMap((l) => (Array.isArray(l.data) ? l.data : [])) as Row[];
+  if (wanted === "all") rows.sort((a, b) => b.created_at.localeCompare(a.created_at));
 
   const authorIds = [...new Set(rows.map((r) => r.author_id))];
   const { data: profiles } = authorIds.length
@@ -133,7 +146,7 @@ export default async function ContentReviewPage({ searchParams }: { searchParams
         </p>
       ) : views.length === 0 ? (
         <EmptyState tone="rose" icon={<IconShieldCheck size={24} strokeWidth={STROKE} aria-hidden />} title="Peržiūrai nieko nelaukia">
-          {wanted === "open" ? "Kai filtras sulaikys tekstą ar nuotrauką ir autorius paprašys peržiūros, prašymas atsiras čia." : "Šioje būsenoje prašymų nėra."}
+          {wanted === "open" ? "Kai filtras sulaikys tekstą ar nuotrauką ir autorius paprašys peržiūros, prašymas atsiras čia." : wanted === "all" ? "Peržiūros prašymų dar nėra." : "Šioje būsenoje prašymų nėra."}
         </EmptyState>
       ) : (
         <ul className="space-y-3">
