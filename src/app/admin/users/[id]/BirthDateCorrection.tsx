@@ -5,7 +5,7 @@ import { useState, useTransition } from "react";
 import { IconPencil } from "@/components/icons";
 import { correctBirthDate } from "../../actions";
 import { useConfirm } from "../../ConfirmDialog";
-import { STROKE, btn, card, input } from "../../ui";
+import { STROKE, btn, card, dateInput } from "../../ui";
 
 /*
  * Gimimo datos taisymas (BDAR 16 str., teisininkas; Gloumi `20261008204515`
@@ -71,7 +71,7 @@ export function BirthDateCorrection({ userId, birthDate }: { userId: string; bir
           type="date"
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          className={`${input} sm:w-56 sm:flex-none`}
+          className={`${dateInput} sm:flex-none`}
         />
         <button type="button" disabled={pending || !value || value === birthDate} onClick={submit} className={btn}>
           <IconPencil size={16} strokeWidth={STROKE} aria-hidden />

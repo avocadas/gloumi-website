@@ -122,7 +122,7 @@ export function ReviewCard({ view }: { view: ReviewView }) {
               title: `Leisti skelbti šį ${what}?`,
               body: [
                 `${video ? "Vaizdo įrašas taps matomas" : "Nuotrauka taps matoma"} visiems ten, kur autorius ${video ? "jį" : "ją"} įkėlė, o autorius gaus pranešimą.`,
-                "Pastaba neprivaloma; ji lieka tik administratoriams.",
+                "Pastaba neprivaloma; ji lieka tik administratoriams. Rašykite dalykiškai: žmogus gali paprašyti visų apie jį saugomų duomenų (BDAR 15 str.), tarp jų ir šią pastabą.",
               ],
               confirmLabel: "Leisti skelbti",
               reason: true,
@@ -145,7 +145,7 @@ export function ReviewCard({ view }: { view: ReviewView }) {
             title: "Leisti skelbti šį tekstą?",
             body: [
               "Autorius gaus pranešimą ir 30 dienų galės paskelbti lygiai šį tekstą – filtras jo nebesulaikys. Kitam tekstui leidimas negalioja.",
-              "Pastaba neprivaloma; ji lieka tik administratoriams.",
+              "Pastaba neprivaloma; ji lieka tik administratoriams. Rašykite dalykiškai: žmogus gali paprašyti visų apie jį saugomų duomenų (BDAR 15 str.), tarp jų ir šią pastabą.",
             ],
             confirmLabel: "Leisti skelbti",
             reason: true,

@@ -89,6 +89,9 @@ export const IconClose = make(
 /** `IconCheck` `Icons.js:441` – storesnė, 2,4, kaip programėlėje. */
 export const IconCheck = make("0 0 24 24", <polyline points="20 6 9 17 4 12" />, { stroke: 2.4 });
 
+/** lucide `plus` – „Suteikti sąlygą“ (design admin-portalas 5.1). */
+export const IconPlus = make("0 0 24 24", <path d="M12 5v14M5 12h14" />);
+
 /** `IconChevronLeft` `Icons.js:1020` */
 export const IconChevronLeft = make(VIEWBOX_LARGE, <polyline points="15 18 9 12 15 6" />);
 

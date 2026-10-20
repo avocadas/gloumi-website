@@ -6,7 +6,7 @@ import { STROKE, SectionTitle, Tag, card } from "../../ui";
 import { AccountActions } from "./AccountActions";
 import { BirthDateCorrection } from "./BirthDateCorrection";
 import type { GrantView } from "../../grants/GrantRows";
-import { MasterGrants } from "./MasterGrants";
+import { ActiveNow, GrantForm, GrantHistory, GrantsHeader } from "./MasterGrants";
 import { CopyButton } from "./CopyButton";
 import { PhoneReveal } from "./PhoneReveal";
 
@@ -94,6 +94,8 @@ export function UserOverview({
   const { name, handle } = identityOf(user);
   const owned = catalog.filter((c) => (counts[c.tbl] ?? 0) > 0);
   const profileFields = PROFILE_FIELDS.filter((f) => f in profile);
+  // Žyma antraštėje: galiojantis administratoriaus suteiktas planas (design 5.1).
+  const activePlan = grants?.find((g) => g.kind === "plan_grant" && g.active && g.plan);
 
   return (
     <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
@@ -123,7 +125,12 @@ export function UserOverview({
                 {banned ? <Tag tone="danger">Sustabdyta iki {formatWhen(user.banned_until)}</Tag> : <Tag tone="ok">Aktyvi</Tag>}
                 {restrictedUntil ? <Tag tone="warn">Rezervavimas apribotas iki {formatWhen(restrictedUntil)}</Tag> : null}
                 {terminationAt ? <Tag tone="danger">Bus panaikinta {formatWhen(terminationAt)}</Tag> : null}
-                {master ? <Tag tone="lavender">Meistras</Tag> : <Tag tone="neutral">Klientas</Tag>}
+                {master ? <Tag tone="info">Meistras</Tag> : <Tag tone="neutral">Klientas</Tag>}
+                {activePlan ? (
+                  <Tag tone="info">
+                    {activePlan.plan === "vip" ? "VIP" : "Pro"} · {activePlan.until ? `iki ${formatWhen(activePlan.until)}` : "neribotai"}
+                  </Tag>
+                ) : null}
                 {profile.deletion_requested_at ? <Tag tone="warn">Paprašė ištrinti</Tag> : null}
               </div>
             </div>
@@ -161,6 +168,21 @@ export function UserOverview({
             <Fact label="Paskutinis prisijungimas" stacked>{formatDate(user.last_sign_in_at)}</Fact>
           </dl>
         </section>
+
+        {user.is_admin ? null : (
+          <ActiveNow
+            grants={master ? grants : []}
+            state={{ bannedUntil: banned ? user.banned_until : null, restrictedUntil, terminationAt }}
+          />
+        )}
+
+        {master && grants !== undefined ? (
+          <section className="space-y-3">
+            <GrantsHeader />
+            <GrantForm masterId={user.id} grants={grants} minDay={grantDays.min} maxDay={grantDays.max} />
+            <GrantHistory grants={grants} />
+          </section>
+        ) : null}
 
         {user.is_admin ? (
           <p className="px-1 text-sm text-app-muted">Administratorių paskyros portale neblokuojamos ir netrinamos.</p>
@@ -237,10 +259,6 @@ export function UserOverview({
               ))}
             </dl>
           </section>
-        ) : null}
-
-        {master && grants !== undefined ? (
-          <MasterGrants masterId={user.id} grants={grants} minDay={grantDays.min} maxDay={grantDays.max} />
         ) : null}
 
         <details className={`${card} group overflow-hidden`}>
