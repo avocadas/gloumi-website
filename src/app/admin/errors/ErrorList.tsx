@@ -39,8 +39,8 @@ const STATUS_TAG: Record<string, { label: string; tone: "ok" | "neutral" }> = {
 
 const FAILURE: Record<SentryFailure, { title: string; text: string }> = {
   not_configured: {
-    title: "Sentry neprijungtas",
-    text: "Vercel'yje dar nėra rakto SENTRY_READ_TOKEN. Kai jis bus įrašytas, čia atsiras programėlės klaidos.",
+    title: "Klaidų dabar gauti nepavyko",
+    text: "Klaidų šaltinis dar neprijungtas – raktą Vercel'yje įrašo developeris (SENTRY_READ_TOKEN).",
   },
   unauthorized: {
     title: "Sentry raktas atmestas",
@@ -219,7 +219,7 @@ export function ErrorDetail({ issue, event }: { issue: ErrorIssue; event: ErrorE
 
           {event.exceptions.map((e, i) => (
             <div key={i} className="mt-4 rounded-[14px] bg-app-sheet p-4">
-              <p className={`${eyebrow} text-app-muted`}>{i === 0 ? e.type : `Priežastis: ${e.type}`}</p>
+              <p className="font-mono text-[13px] text-app-muted">{i === 0 ? e.type : `Priežastis: ${e.type}`}</p>
               <p className="mt-1.5 text-sm whitespace-pre-wrap break-words text-app-ink">{e.value || "—"}</p>
               {e.frames.length > 0 ? (
                 <ol className="mt-3 space-y-1 font-mono text-xs break-words">

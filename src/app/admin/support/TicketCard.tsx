@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { IconCalendar, IconCheck, IconMail, IconProfile, IconUndo } from "@/components/icons";
 import { formatWhen } from "../format";
-import { STROKE, Tag, btn, btnQuiet, card, eyebrow } from "../ui";
+import { STROKE, Tag, btn, btnPrimary, btnQuiet, card } from "../ui";
 import { setSupportTicketStatus } from "./actions";
 
 export type TicketView = {
@@ -113,10 +113,10 @@ export function TicketCard({ ticket }: { ticket: TicketView }) {
       ) : null}
 
       <footer className="mt-5 flex flex-col gap-2 border-t border-app-hairline pt-4 sm:flex-row sm:items-center sm:justify-between">
-        <p className={`${eyebrow} text-app-faint`}>Atsakome iš info@gloumi.lt</p>
+        <p className="text-[13px] text-app-faint">Atsakome iš info@gloumi.lt</p>
         <div className="flex flex-wrap gap-2">
           {reply && status === "open" ? (
-            <a href={reply} className={btnQuiet}>
+            <a href={reply} className={btnPrimary}>
               <IconMail size={16} strokeWidth={STROKE} aria-hidden />
               Atsakyti el. paštu
             </a>
@@ -124,7 +124,7 @@ export function TicketCard({ ticket }: { ticket: TicketView }) {
           {status === "open" ? (
             <button type="button" disabled={pending} onClick={() => change("closed")} className={btn}>
               <IconCheck size={16} strokeWidth={STROKE} aria-hidden />
-              Išspręsta
+              Pažymėti išspręsta
             </button>
           ) : (
             <button type="button" disabled={pending} onClick={() => change("open")} className={btnQuiet}>

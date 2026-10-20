@@ -132,8 +132,8 @@ export default async function ContentReviewPage({ searchParams }: { searchParams
             : `Prašymų gauti nepavyko: ${error.message}`}
         </p>
       ) : views.length === 0 ? (
-        <EmptyState tone="rose" icon={<IconShieldCheck size={24} strokeWidth={STROKE} aria-hidden />} title="Tuščia">
-          {wanted === "open" ? "Peržiūros niekas nelaukia." : "Šioje būsenoje prašymų nėra."}
+        <EmptyState tone="rose" icon={<IconShieldCheck size={24} strokeWidth={STROKE} aria-hidden />} title="Peržiūrai nieko nelaukia">
+          {wanted === "open" ? "Kai filtras sulaikys tekstą ar nuotrauką ir autorius paprašys peržiūros, prašymas atsiras čia." : "Šioje būsenoje prašymų nėra."}
         </EmptyState>
       ) : (
         <ul className="space-y-3">

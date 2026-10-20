@@ -66,7 +66,7 @@ export default async function MfaResetPage() {
     if (!session?.access_token) throw new Error("be sesijos");
     const { status, json } = await callMfaResetAdmin(session.access_token, { action: "list" });
     const list = Array.isArray(json) ? json : Array.isArray(json?.requests) ? json.requests : null;
-    if (status !== 200 || !list) throw new Error(typeof json?.error === "string" ? json.error : `HTTP ${status}`);
+    if (status !== 200 || !list) throw new Error(typeof json?.error === "string" ? json.error : "paslauga neatsakė");
     rows = list.map(toRow).filter((r: MfaResetRow | null): r is MfaResetRow => r !== null);
   } catch (e) {
     loadError = e instanceof Error ? e.message : "nežinoma klaida";

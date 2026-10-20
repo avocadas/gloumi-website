@@ -4,6 +4,7 @@ import { checkAdmin } from "@/lib/admin-guard";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { AdminShell } from "../AdminShell";
 import { MfaNotice } from "../MfaNotice";
+import { Alert } from "../ui";
 import type { DisputeView } from "./DisputeCard";
 import { DISPUTE_FILTERS, DisputeQueue, type HeldMaster } from "./DisputeQueue";
 
@@ -132,22 +133,18 @@ export default async function DisputesPage({ searchParams }: { searchParams: Pro
     <AdminShell
       section="disputes"
       title="Ginčai"
-      subtitle="Klientų pranešimai „Vizitas neįvyko?“ ir kortelių ginčai. Kol ginčas atviras, išmoka meistrui laukia; nenusprendus kliento ar administratoriaus ginčo per 30 d., ji pervedama automatiškai."
+      subtitle="Pranešimai „Vizitas neįvyko?“ ir kortelių ginčai; kol ginčas atviras, išmoka meistrui laukia (iki 30 d.)."
       username={check.username ?? check.userId}
     >
-      {/* Mokėjimo prašymai (K-U24-3) įsijungia su `20261005214547`; iki tol nuorodos nerodome — puslapis būtų tuščias su klaida. */}
-      {debtsRes.error ? null : (
-        <p className="mb-5 text-sm">
-          <Link href="/admin/debts" className="font-semibold text-app-accent hover:underline">
-            Meistrų mokėjimo prašymai →
+      {/* Skolos – šoninėje juostoje su skaičiumi (design 7.4); čia lieka tik perspėjimas, kai laiškas neišėjo. */}
+      {debtAttention > 0 ? (
+        <Alert tone="warn" className="mb-5">
+          {debtAttention} mokėjimo prašymų laiškas neišėjo, todėl mokėjimas vietoje neišjungtas.{" "}
+          <Link href="/admin/debts" className="underline">
+            Atidaryti Skolas
           </Link>
-          {debtAttention > 0 ? (
-            <span className="ml-2 rounded-full bg-app-danger-bg px-2 py-0.5 text-xs font-bold text-app-danger-text">
-              Reikia dėmesio: {debtAttention}
-            </span>
-          ) : null}
-        </p>
-      )}
+        </Alert>
+      ) : null}
       {error ? (
         <p role="alert" className="mb-6 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
           Ginčų gauti nepavyko: {error.message}

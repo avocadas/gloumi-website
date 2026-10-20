@@ -17,7 +17,7 @@ export type QueueCounts = {
   support: number | null;
   disputes: number | null;
   debts: number | null;
-  /** Rezervavimo įspėjimai, kuriuos grąžina `admin_list_booking_warnings` (paskutinės 30 d.). */
+  /** Rezervavimo įspėjimai, kuriuos grąžina `admin_list_booking_warnings` (paskutinės 90 d.). */
   warnings: number | null;
 };
 

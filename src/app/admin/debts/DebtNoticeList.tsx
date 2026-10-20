@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { IconCheck, IconReceipt } from "@/components/icons";
 import { markDebtNoticePaid } from "../actions";
@@ -32,6 +33,7 @@ export type BlockState = "email_pending" | "email_failed" | "blocked" | "email_m
 /** Vienas prašymas – viena eilutė; mygtukas tik neapmokėtiems. */
 export function DebtNoticeList({ notices }: { notices: DebtNoticeView[] }) {
   const [pending, startTransition] = useTransition();
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [dialog, ask] = useConfirm();
 
@@ -49,6 +51,8 @@ export function DebtNoticeList({ notices }: { notices: DebtNoticeView[] }) {
     startTransition(async () => {
       const res = await markDebtNoticePaid(n.id);
       if (!res.ok) setError(res.error);
+      // Eilutė pasikeičia į „Apmokėta …“ iš karto (design 7.5).
+      else router.refresh();
     });
   };
 
@@ -92,6 +96,13 @@ export function DebtNoticeList({ notices }: { notices: DebtNoticeView[] }) {
                   vietoje neišjungtas. Patikrinkite meistro el. pašto adresą ir susisiekite su juo.
                 </p>
               ) : null}
+              {/* Ilgi sakiniai – ne žymos, o eilutė po pavadinimu (design 7.5). */}
+              {!n.paidAt && n.blockState === "blocked" ? (
+                <p className="mt-1 text-[13px] text-app-muted">Mokėjimas vietoje išjungtas.</p>
+              ) : null}
+              {!n.paidAt && n.blockState === "email_pending" ? (
+                <p className="mt-1 text-[13px] text-app-muted">Siunčiamas laiškas apie mokėjimo vietoje išjungimą.</p>
+              ) : null}
               {n.blockState === "email_missing" ? (
                 <p role="alert" className="mt-2 rounded-[12px] bg-app-danger-bg px-3 py-2 text-[13px] font-semibold text-app-danger-text">
                   Pradelsta, bet laiško apie išjungimą eilėje nėra – taip būti neturėtų. Praneškite programuotojui.
@@ -104,8 +115,7 @@ export function DebtNoticeList({ notices }: { notices: DebtNoticeView[] }) {
               ) : (
                 <>
                   {n.overdue ? <Tag tone="danger">Pradelsta</Tag> : <Tag tone="warn">Laukia</Tag>}
-                  {n.blockState === "blocked" ? <Tag tone="danger">Mokėjimas vietoje išjungtas</Tag> : null}
-                  {n.blockState === "email_pending" ? <Tag tone="warn">Siunčiamas laiškas apie išjungimą</Tag> : null}
+
                   <button type="button" disabled={pending} onClick={() => markPaid(n)} className={btn}>
                     <IconCheck size={16} strokeWidth={STROKE} aria-hidden />
                     Pažymėti apmokėtą

@@ -1,12 +1,8 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { IconChevronRight } from "@/components/icons";
-import { mfaResetEnabled } from "@/lib/mfa-reset";
 import { checkAdmin } from "@/lib/admin-guard";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { AdminShell } from "../AdminShell";
 import { MfaNotice } from "../MfaNotice";
-import { STROKE, card } from "../ui";
 import { SUPPORT_FILTERS, SupportQueue } from "./SupportQueue";
 import type { TicketView } from "./TicketCard";
 
@@ -120,19 +116,7 @@ export default async function SupportPage({ searchParams }: { searchParams: Prom
           Užklausų gauti nepavyko: {error.message}
         </p>
       ) : null}
-      {/* 2FA nuėmimas per pagalbą (security 2026-10-18): savas puslapis, kelias – iš čia. */}
-      {mfaResetEnabled() ? (
-        <Link
-          href="/admin/mfa-reset"
-          className={`${card} mb-6 flex items-center justify-between gap-3 px-5 py-4 text-sm font-semibold text-app-ink transition-colors hover:bg-app-surface`}
-        >
-          <span>
-            2FA pagalba{" "}
-            <span className="font-normal text-app-muted">– 2FA nuėmimas ir paskyros atkūrimas be el. pašto</span>
-          </span>
-          <IconChevronRight size={16} strokeWidth={STROKE} aria-hidden className="shrink-0 text-app-faint" />
-        </Link>
-      ) : null}
+      {/* 2FA atstatymas – šoninėje juostoje (design 7.3). */}
       <SupportQueue wanted={wanted} counts={counts} tickets={tickets} />
     </AdminShell>
   );

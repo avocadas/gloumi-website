@@ -45,7 +45,7 @@ export default async function WarningsPage() {
     <AdminShell
       section="warnings"
       title="Rezervavimo įspėjimai"
-      subtitle="Klientai, kurie per 30 d. atšaukė 3 vizitus ar 2 kartus neatvyko. Apriboti gali tik žmogus – paskyros puslapyje."
+      subtitle="Per 90 dienų: klientai, kurie per 30 d. atšaukė 3 vizitus ar 2 kartus neatvyko. Apriboti galima paskyroje."
       username={check.username ?? check.userId}
     >
       {error ? (

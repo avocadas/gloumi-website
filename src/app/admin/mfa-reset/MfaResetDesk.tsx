@@ -15,7 +15,7 @@ const STATUS: Record<string, { label: string; tone: TagTone }> = {
   confirmed: { label: "Laukimas", tone: "warn" },
   // db Edge būsenos pavadinimas; po termino Edge jį jau grąžina kaip `ready`.
   waiting: { label: "Laukimas", tone: "warn" },
-  ready: { label: "Galima nuimti", tone: "danger" },
+  ready: { label: "Galima nuimti", tone: "ok" },
   // Administratorius jau paspaudė, GoTrue veiksmai vyksta; nepavykus grįžta į `ready` (po 15 min. – pats).
   executing: { label: "Vykdoma", tone: "warn" },
   done: { label: "Nuimta", tone: "ok" },
@@ -108,9 +108,9 @@ function OpenForm() {
 
   return (
     <section className={`${card} p-5 sm:p-6`}>
-      <h2 className="text-lg font-bold text-app-ink">Atidaryti prašymą</h2>
+      <h2 className="text-[15px] font-bold text-app-ink">Atidaryti prašymą</h2>
       <p className="mt-1 text-[13px] leading-relaxed text-app-muted">
-        Kodas išsiunčiamas tik paskyros el. pašto adresu ir galioja 24 val. Žmogui atsakykite bendru tekstu (S-37 B) ir
+        Kodas išsiunčiamas tik paskyros el. pašto adresu ir galioja 24 val. Žmogui atsakykite bendru pagalbos šablonu ir
         nepatvirtinkite, ar paskyra yra, net jei čia matote priežastį.
       </p>
       <form onSubmit={submit} className="mt-4 grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">

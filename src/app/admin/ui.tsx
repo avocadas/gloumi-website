@@ -128,7 +128,13 @@ export const chip =
 export const chipActive =
   "inline-flex h-9 items-center gap-2 rounded-full border border-transparent bg-app-accent-soft px-3.5 text-sm font-bold text-app-accent";
 
-export const eyebrow = "text-[11px] font-bold uppercase tracking-[0.12em]";
+/*
+ * Formų ir blokų užrašai – sakinio raidėmis (design 4.3, 4.5): didžiosios
+ * raidės lieka tik ženkle „Administravimas“ (`brandCaps`). Vardas `eyebrow`
+ * paliktas, kad visi puslapiai pasikeistų iš karto.
+ */
+export const eyebrow = "text-[13px] font-semibold";
+const brandCaps = "text-[11px] font-bold uppercase tracking-[0.12em]";
 
 /** Apvalus mygtukas ant pastelinio lauko — `ON_FIELD_FILL`, pusiau permatomas baltas. */
 export const onField =
@@ -390,7 +396,7 @@ export function Brand({ label = "Administravimas" }: { label?: string }) {
   return (
     <span className="flex items-baseline gap-2.5">
       <Wordmark title="Gloumi" className="h-6 w-auto text-app-ink" />
-      <span className={`${eyebrow} text-app-ink/80`}>{label}</span>
+      <span className={`${brandCaps} text-app-ink/80`}>{label}</span>
     </span>
   );
 }

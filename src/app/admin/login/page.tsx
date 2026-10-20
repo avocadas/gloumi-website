@@ -170,7 +170,7 @@ function LoginForm() {
         />
       </label>
       <button type="submit" disabled={busy || waitingForCaptcha || code.length !== 6} className={`${btnPrimary} h-12 w-full`}>
-        Patvirtinti
+        {busy ? "Tikrinama…" : "Patvirtinti"}
         <IconArrowRight size={16} strokeWidth={STROKE} aria-hidden />
       </button>
       <button type="button" onClick={startOver} disabled={busy} className={`${btnQuiet} w-full`}>
@@ -274,7 +274,7 @@ function LoginForm() {
             </span>
           </label>
           <button type="submit" disabled={busy || waitingForCaptcha} className={`${btnPrimary} h-12 w-full`}>
-            Toliau
+            {busy ? "Tikrinama…" : "Toliau"}
             <IconArrowRight size={16} strokeWidth={STROKE} aria-hidden />
           </button>
         </form>

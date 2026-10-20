@@ -15,7 +15,7 @@ const KIND_NOTE: Record<Kind, string> = {
   min: "Senesni build'ai nebeatsidaro – rodomas tik „Atnaujinkite programėlę“.",
   latest: "Senesniems rodomas uždaromas priminimas atnaujinti.",
 };
-const BUILD_LABEL: Record<Platform, string> = { ios: "buildNumber", android: "versionCode" };
+const BUILD_LABEL: Record<Platform, string> = { ios: "Build numeris (iOS, buildNumber)", android: "Versijos kodas (Android, versionCode)" };
 
 const keyOf = (platform: Platform, kind: Kind): keyof AppBuilds =>
   kind === "min" ? platform : (`latest_${platform}` as const);
@@ -102,8 +102,8 @@ export function AppBuildsEditor({ initial }: { initial: AppBuilds }) {
 
       {(["ios", "android"] as Platform[]).map((platform) => (
         <section key={platform} className={`${card} p-5 sm:p-6`}>
-          <h2 className="text-lg font-bold text-app-ink">{PLATFORM_LABEL[platform]}</h2>
-          <p className="mt-0.5 text-xs text-app-muted">Build numeris – {BUILD_LABEL[platform]}, ne versijos eilutė.</p>
+          <h2 className="text-[15px] font-bold text-app-ink">{PLATFORM_LABEL[platform]}</h2>
+          <p className="mt-0.5 text-[13px] text-app-muted">{BUILD_LABEL[platform]} – skaičius, ne versijos eilutė.</p>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             {(["min", "latest"] as Kind[]).map((kind) => {
               const key = keyOf(platform, kind);
@@ -121,9 +121,9 @@ export function AppBuildsEditor({ initial }: { initial: AppBuilds }) {
                       placeholder="Naujas"
                       value={drafts[key] ?? ""}
                       onChange={(e) => setDrafts((d) => ({ ...d, [key]: e.target.value.replace(/\D/g, "") }))}
-                      className={`${input} h-10 min-w-0 flex-1 tabular-nums`}
+                      className={`${input} min-w-0 flex-1 tabular-nums`}
                     />
-                    <button type="button" disabled={pending || !(drafts[key] ?? "")} onClick={() => change(platform, kind)} className={`${btn} h-10`}>
+                    <button type="button" disabled={pending || !(drafts[key] ?? "")} onClick={() => change(platform, kind)} className={btn}>
                       Keisti
                     </button>
                   </div>

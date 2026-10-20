@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { IconChevronLeft, IconLock, IconLogOut } from "@/components/icons";
 import { checkAdmin } from "@/lib/admin-guard";
+import { mfaResetEnabled } from "@/lib/mfa-reset";
 import { NavDrawer } from "./NavDrawer";
 import { ALL_ITEMS, BOTTOM_KEYS, NAV_GROUPS, type NavItem, type Section } from "./nav";
 import { loadQueueCounts, type QueueCounts } from "./queue-counts";
@@ -115,7 +116,11 @@ export async function AdminShell({
 function SideNav({ section, counts }: { section: Section; counts: QueueCounts | null }) {
   return (
     <nav aria-label="Portalo skyriai" className="px-3 pb-4">
-      {NAV_GROUPS.map((group) => (
+      {NAV_GROUPS.map((g) => ({
+        ...g,
+        // 2FA atstatymas – tik kai įjungtas (`MFA_RESET_ENABLED`); kitaip puslapis atsako 404.
+        items: g.items.filter((i) => i.key !== "mfaReset" || mfaResetEnabled()),
+      })).map((group) => (
         <div key={group.title} className="mt-6 first:mt-3">
           <p className="px-3 text-xs font-semibold text-app-muted">{group.title}</p>
           <ul className="mt-1.5 space-y-0.5">

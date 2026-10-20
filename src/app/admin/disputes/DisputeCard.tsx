@@ -7,6 +7,7 @@ import { useConfirm, type ConfirmOptions } from "../ConfirmDialog";
 import { formatMoney, formatWhen } from "../format";
 import type { NoticeNote } from "../moderation-email";
 import { ActionNote, STROKE, Tag, btn, card, eyebrow } from "../ui";
+import { CopyButton } from "../users/[id]/CopyButton";
 
 export type DisputeView = {
   bookingId: string;
@@ -239,9 +240,10 @@ export function DisputeCard({ dispute }: { dispute: DisputeView }) {
         <PersonLink label="Klientas" id={dispute.clientId} name={dispute.clientName} />
         <PersonLink label="Meistras" id={dispute.masterId} name={dispute.masterName} />
         {dispute.stripeDisputeId ? (
-          <span className="inline-flex items-center gap-1">
-            <IconLandmark size={13} strokeWidth={STROKE} aria-hidden />
-            Stripe: <code className="text-app-ink">{dispute.stripeDisputeId}</code>
+          <span className="inline-flex min-w-0 items-center gap-1">
+            <IconLandmark size={13} strokeWidth={STROKE} aria-hidden className="shrink-0" />
+            Stripe: <code className="min-w-0 break-all text-app-ink">{dispute.stripeDisputeId}</code>
+            <CopyButton value={dispute.stripeDisputeId} label="Kopijuoti Stripe ginčo ID" />
           </span>
         ) : null}
         {dispute.resolvedAt ? <span>Išspręsta {formatWhen(dispute.resolvedAt)}</span> : null}

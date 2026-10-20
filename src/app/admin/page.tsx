@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { checkAdmin } from "@/lib/admin-guard";
+import { mfaResetEnabled } from "@/lib/mfa-reset";
 import { AdminShell } from "./AdminShell";
 import { SearchField } from "./data/SearchField";
 import { MfaNotice } from "./MfaNotice";
@@ -25,7 +26,7 @@ const CARDS: Card[] = [
   { key: "contentReview", label: "Turinio peržiūra", count: "contentReview" },
   { key: "support", label: "Pagalba", count: "support" },
   { key: "disputes", label: "Ginčai", count: "disputes" },
-  { key: "warnings", label: "Rezervavimo įspėjimai", count: "warnings", note: "Įspėjimai per 30 dienų" },
+  { key: "warnings", label: "Rezervavimo įspėjimai", count: "warnings", note: "Įspėjimai per 90 dienų" },
   { key: "debts", label: "Skolos", count: "debts", note: "Pradelsti mokėjimo prašymai" },
   // 2FA prašymus skaito Edge su administratoriaus sesija – skaičiaus čia nėra, rodoma „—“.
   { key: "mfaReset", label: "2FA atstatymas", note: "Prašymus matysite atidarę eilę" },
@@ -58,7 +59,7 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
       <section>
         <SectionTitle accent="content" title="Laukia sprendimo" />
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {CARDS.map((c) => {
+          {CARDS.filter((c) => c.key !== "mfaReset" || mfaResetEnabled()).map((c) => {
             const item = ALL_ITEMS.find((i) => i.key === c.key)!;
             const n = c.count ? counts[c.count] : undefined;
             const { Icon } = item;
