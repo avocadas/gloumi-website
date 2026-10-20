@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { IconBadgePercent, IconCrown, IconProfile } from "@/components/icons";
 import { useConfirm } from "../ConfirmDialog";
-import { STROKE, Tag, btnQuiet, card } from "../ui";
+import { STROKE, Tag, btnDanger, card } from "../ui";
 import { clearCommissionWaiver, revokePlanGrant } from "./actions";
 
 export type GrantView = {
@@ -92,15 +92,15 @@ function GrantRow({ grant, showMaster }: { grant: GrantView; showMaster: boolean
   };
 
   return (
-    <article className={`${card} p-4 sm:p-5 ${active ? "" : "opacity-70"}`}>
+    <article className={`${card} p-4 sm:p-5`}>
       {dialog}
       <div className="flex flex-wrap items-center gap-2">
         {isWaiver ? (
-          <Tag tone="lavender">Komisinis neimamas</Tag>
+          <Tag tone="info">Komisinis neimamas</Tag>
         ) : (
-          <Tag tone="mint">Nemokamas {planLabel}</Tag>
+          <Tag tone="info">Nemokamas {planLabel}</Tag>
         )}
-        {active ? <Tag tone="ok">Galioja</Tag> : <Tag>{ended ? "Baigta dabar" : "Negalioja"}</Tag>}
+        {active ? <Tag tone="ok">Galioja</Tag> : <Tag tone="neutral">{ended ? "Baigta dabar" : "Nebegalioja"}</Tag>}
       </div>
 
       <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold tabular-nums text-app-ink">
@@ -132,7 +132,7 @@ function GrantRow({ grant, showMaster }: { grant: GrantView; showMaster: boolean
 
       {active ? (
         <div className="mt-3 flex justify-end border-t border-app-hairline pt-3">
-          <button type="button" disabled={pending} onClick={end} className={btnQuiet}>
+          <button type="button" disabled={pending} onClick={end} className={btnDanger}>
             {isWaiver ? "Baigti dabar" : "Atšaukti planą"}
           </button>
         </div>
