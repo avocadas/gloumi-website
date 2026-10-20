@@ -47,11 +47,16 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
  * Slaptažodžiai, kodas, žetonas ir adresas niekur nerašomi.
  */
 
-export type ChangeResult = { ok: true } | { ok: false; error: string; field?: "current" | "code" | "next" };
+/** `partial` – slaptažodis pakeistas, bet kitų sesijų atjungti nepavyko (security L1). */
+export type ChangeResult =
+  | { ok: true; partial: boolean }
+  | { ok: false; error: string; field?: "current" | "code" | "next" };
 
 // Tie patys žodžiai kaip prisijungime (security 8 p.).
 const WRONG_PASSWORD = "Neteisingas slaptažodis.";
 const WRONG_CODE = "Neteisingas kodas.";
+// Prisijungimo „laikinai nepasiekiamas" čia netinka – keičiamas slaptažodis.
+const CHANGE_UNAVAILABLE = "Slaptažodžio pakeisti dabar nepavyko. Bandykite po minutės.";
 const SIGN_IN_AGAIN = "Sesija pasibaigė. Prisijunkite iš naujo ir bandykite dar kartą.";
 const WEAK = "Naujas slaptažodis per silpnas. Pasirinkite ilgesnį ar sudėtingesnį.";
 const PWNED = "Šis slaptažodis yra nutekėjusių slaptažodžių sąraše. Pasirinkite kitą.";
@@ -68,7 +73,7 @@ function refusal(error: { code?: string; reasons?: unknown }): ChangeResult {
   }
   // Ne nauja sesija ar ne aal2 – klaida mūsų pusėje, ne kodo siuntimas (security 4 p.).
   console.warn("[admin-password] update", error.code ?? "error");
-  return { ok: false, error: UNAVAILABLE };
+  return { ok: false, error: CHANGE_UNAVAILABLE };
 }
 
 export async function changeAdminPassword(
@@ -91,14 +96,18 @@ export async function changeAdminPassword(
   const check = await checkAdmin();
   if (!check.ok) return { ok: false, error: SIGN_IN_AGAIN };
   const name = check.username ?? "";
-  if (!ADMIN_USERNAME.test(name)) return { ok: false, error: UNAVAILABLE };
+  if (!ADMIN_USERNAME.test(name)) return { ok: false, error: CHANGE_UNAVAILABLE };
 
   let changed = false;
+  let partial = false;
   try {
     const db = createSupabaseAdminClient();
     const ip = await clientIp();
     const step = await passwordStep(db, name, current, ip, captchaOrUndefined(captchaToken), WRONG_PASSWORD);
-    if (!step.ok) return step.error === WRONG_PASSWORD ? { ...step, field: "current" } : step;
+    if (!step.ok) {
+      if (step.error === WRONG_PASSWORD) return { ...step, field: "current" };
+      return step.error === UNAVAILABLE ? { ok: false, error: CHANGE_UNAVAILABLE } : step;
+    }
 
     const { auth } = step;
     try {
@@ -109,7 +118,7 @@ export async function changeAdminPassword(
 
       const { data: factors, error: listError } = await auth.auth.mfa.listFactors();
       const factor = factors?.totp[0];
-      if (listError || !factor) return { ok: false, error: UNAVAILABLE };
+      if (listError || !factor) return { ok: false, error: CHANGE_UNAVAILABLE };
 
       const gate = await begin(db, name, ip, "totp");
       if (!gate.allowed) return locked(gate.retryAfter);
@@ -118,7 +127,7 @@ export async function changeAdminPassword(
       if (verifyError) {
         const skip = unchecked(verifyError.status);
         await finish(db, gate.attemptId, skip ? "error" : "fail");
-        return skip ? { ok: false, error: UNAVAILABLE } : { ok: false, error: WRONG_CODE, field: "code" };
+        return skip ? { ok: false, error: CHANGE_UNAVAILABLE } : { ok: false, error: WRONG_CODE, field: "code" };
       }
       await finish(db, gate.attemptId, "ok");
 
@@ -138,17 +147,26 @@ export async function changeAdminPassword(
 
       // Visos paskyros sesijos, įskaitant naršyklės (security 6 p.).
       const { error: globalError } = await auth.auth.signOut({ scope: "global" });
-      if (globalError) console.error("[admin-password] sign out", globalError.code ?? "error");
+      if (globalError) {
+        // Kitos sesijos liko: bent šią atšaukiame ir žmogui pasakome (security L1).
+        console.error("[admin-password] sign out", globalError.code ?? "error");
+        partial = true;
+      }
+    } catch (e) {
+      if (!changed) throw e;
+      // Pakeista, bet kas nors po to nukrito: kitos sesijos gal neatjungtos.
+      console.error("[admin-password] after change", e instanceof Error ? e.message : e);
+      partial = true;
     } finally {
-      if (!changed) await revoke(auth);
+      if (!changed || partial) await revoke(auth);
     }
   } catch (e) {
     console.error("[admin-password]", e instanceof Error ? e.message : e);
-    if (!changed) return { ok: false, error: UNAVAILABLE };
+    return { ok: false, error: CHANGE_UNAVAILABLE };
   }
 
   // Slapukai išvalomi bet kuriuo atveju: sesija jau atšaukta serveryje.
   const browser = await createSupabaseServerClient();
   await browser.auth.signOut({ scope: "local" }).catch(() => undefined);
-  return { ok: true };
+  return { ok: true, partial };
 }

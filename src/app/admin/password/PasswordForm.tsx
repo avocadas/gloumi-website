@@ -59,7 +59,7 @@ export function PasswordForm() {
     setCurrent("");
     setNext("");
     setRepeat("");
-    router.replace("/admin/login?changed=1");
+    router.replace(result.partial ? "/admin/login?changed=partial" : "/admin/login?changed=1");
     router.refresh();
   };
 
