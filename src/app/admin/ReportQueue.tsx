@@ -33,7 +33,7 @@ export function ReportQueue({
         {Object.entries(STATUS_LABEL).map(([key, label]) => (
           <a
             key={key}
-            href={`/admin?status=${key}`}
+            href={`/admin/reports?status=${key}`}
             aria-current={key === wanted ? "page" : undefined}
             className={key === wanted ? chipActive : chip}
           >

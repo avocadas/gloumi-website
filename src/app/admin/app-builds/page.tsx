@@ -35,11 +35,10 @@ export default async function AppBuildsPage() {
 
   return (
     <AdminShell
-      section="data"
+      section="appBuilds"
       title="Programėlės versijos"
       subtitle="Nuo kurio build'o programėlė dar veikia ir kuris naujausias. 0 – riba nenustatyta."
       username={check.username ?? check.userId}
-      back={{ href: "/admin/data", label: "Duomenys" }}
     >
       {error ? (
         <p role="alert" className="rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">

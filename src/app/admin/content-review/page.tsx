@@ -102,11 +102,10 @@ export default async function ContentReviewPage({ searchParams }: { searchParams
 
   return (
     <AdminShell
-      section="reports"
+      section="contentReview"
       title="Turinio peržiūra"
       subtitle="Tekstai, nuotraukos ir vaizdo įrašai, kuriuos sulaikė patikra prieš paskelbimą. Sprendžia žmogus."
       username={check.username ?? check.userId}
-      back={{ href: "/admin", label: "Skundai" }}
     >
       <nav aria-label="Peržiūros būsena" className="mb-6 flex flex-wrap gap-2">
         {Object.entries(STATUS_LABEL).map(([key, label]) => (

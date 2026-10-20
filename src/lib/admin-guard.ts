@@ -1,4 +1,5 @@
 import 'server-only';
+import { cache } from 'react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
@@ -60,7 +61,12 @@ function lastTotpAt(methods: unknown): number {
  * (20260912133829). Prisijungusio žmogaus klientas jos nemato iš principo —
  * ir taip ir turi būti, nes matomas administratorių sąrašas yra nutekėjimas.
  */
-export async function checkAdmin(): Promise<AdminCheck> {
+/*
+ * `cache` – per vieną užklausą tikrinama vieną kartą: puslapis ir portalo
+ * karkasas (`AdminShell`, eilių skaičiai) klausia abu. Kiekviena nauja
+ * užklausa – vėl nauja patikra.
+ */
+export const checkAdmin = cache(async function checkAdmin(): Promise<AdminCheck> {
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -90,4 +96,4 @@ export async function checkAdmin(): Promise<AdminCheck> {
   // Vardas, ne el. paštas: nuo 20260930210151 adresas atsitiktinis ir yra
   // viena iš apsaugos dalių. Parodytas skydelyje jis atsidurtų ekrane ir HTML.
   return { ok: true, userId: user.id, username: row.username ?? null };
-}
+});

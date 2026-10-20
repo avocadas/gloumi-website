@@ -26,7 +26,7 @@ export default async function ErrorPage({ params }: { params: Promise<{ id: stri
 
   return (
     <AdminShell
-      section="data"
+      section="errors"
       title={result.ok ? `Klaida ${result.data.issue.shortId}` : "Klaida"}
       back={{ href: "/admin/errors", label: "Klaidos" }}
       username={check.username ?? check.userId}

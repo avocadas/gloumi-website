@@ -27,11 +27,10 @@ export default async function GrantsPage() {
 
   return (
     <AdminShell
-      section="data"
+      section="grants"
       title="Individualios sąlygos"
       subtitle="Kam neimamas komisinis ir kam suteiktas nemokamas Pro ar VIP – ir iki kada. Suteikiama meistro paskyroje."
       username={check.username ?? check.userId}
-      back={{ href: "/admin/data", label: "Duomenys" }}
     >
       {!result.ok ? (
         <p role="alert" className="rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">

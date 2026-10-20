@@ -1,12 +1,9 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { IconChevronRight } from "@/components/icons";
 import { checkAdmin } from "@/lib/admin-guard";
 import { loadCatalog, mediaIdsOf, PAGE_SIZE, searchTable, signMedia } from "@/lib/admin-data";
 import { AdminShell } from "../AdminShell";
 import { MfaNotice } from "../MfaNotice";
 import { UUID_PATTERN } from "../format";
-import { STROKE, card } from "../ui";
 import { CatalogIndex } from "./CatalogIndex";
 import { MAX_PAGE, TableResults } from "./TableResults";
 
@@ -52,40 +49,10 @@ export default async function DataPage({ searchParams }: { searchParams: Promise
         subtitle="Raskite žmogų arba atsidarykite lentelę. Kiekvienas pakeitimas įrašomas į žurnalą."
         username={username}
       >
-        {/* #179: individualios sąlygos suteikiamos meistro paskyroje, o čia — kelias į visų sąrašą. */}
-        <Link
-          href="/admin/grants"
-          className={`${card} mb-6 flex items-center justify-between gap-3 px-5 py-4 text-sm font-semibold text-app-ink transition-colors hover:bg-app-surface`}
-        >
-          <span>
-            Individualios sąlygos{" "}
-            <span className="font-normal text-app-muted">– kam neimamas komisinis ir kam suteiktas nemokamas planas</span>
-          </span>
-          <IconChevronRight size={16} strokeWidth={STROKE} aria-hidden className="shrink-0 text-app-faint" />
-        </Link>
-        {/* Priverstinis ir švelnus atnaujinimas (2026-10-16): build'ų ribos. */}
-        <Link
-          href="/admin/app-builds"
-          className={`${card} mb-6 flex items-center justify-between gap-3 px-5 py-4 text-sm font-semibold text-app-ink transition-colors hover:bg-app-surface`}
-        >
-          <span>
-            Programėlės versijos{" "}
-            <span className="font-normal text-app-muted">{"– privalomas ir naujausias build'as"}</span>
-          </span>
-          <IconChevronRight size={16} strokeWidth={STROKE} aria-hidden className="shrink-0 text-app-faint" />
-        </Link>
-        {/* #29: programėlės klaidos iš Sentry – čia, ne atskiru skirtuku, kad juosta telpa telefone. */}
-        <Link
-          href="/admin/errors"
-          className={`${card} mb-6 flex items-center justify-between gap-3 px-5 py-4 text-sm font-semibold text-app-ink transition-colors hover:bg-app-surface`}
-        >
-          <span>
-            Programėlės klaidos{" "}
-            <span className="font-normal text-app-muted">– iš Sentry, tik skaitymas</span>
-          </span>
-          <IconChevronRight size={16} strokeWidth={STROKE} aria-hidden className="shrink-0 text-app-faint" />
-        </Link>
-        <CatalogIndex catalog={catalog} />
+        {/* Individualios sąlygos, versijos, klaidos – dabar šoninėje juostoje (design 1.1). */}
+        <div id="lenteles" className="scroll-mt-20">
+          <CatalogIndex catalog={catalog} />
+        </div>
       </AdminShell>
     );
   }

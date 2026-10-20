@@ -146,7 +146,7 @@ export async function moderate(
     if (error) return { ok: false, error: dbError(error.message) };
 
     const note = removes ? await authorEmailNote(db, auditLogId) : undefined;
-    revalidatePath("/admin");
+    revalidatePath("/admin", "layout");
     return { ok: true, note };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
@@ -870,7 +870,7 @@ export async function decideContentReview(
 
     const emailNote = approve ? undefined : await authorEmailNote(db, result?.auditLogId);
     revalidatePath("/admin/content-review");
-    revalidatePath("/admin");
+    revalidatePath("/admin", "layout");
     return { ok: true, note: emailNote };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };

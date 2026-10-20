@@ -74,11 +74,10 @@ export default async function MfaResetPage() {
 
   return (
     <AdminShell
-      section="support"
+      section="mfaReset"
       title="2FA pagalba"
       subtitle="2FA nuėmimas ir paskyros atkūrimas be el. pašto. Tapatybę tikrina serveris, ne mes; el. pašto ranka niekas nekeičia."
       username={check.username ?? check.userId}
-      back={{ href: "/admin/support", label: "Pagalba" }}
     >
       {loadError ? (
         <p role="alert" className="mb-6 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">

@@ -71,7 +71,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
 
   if (!overview) {
     return (
-      <AdminShell section="data" tone="mint" title="Paskyra" username={username} back={back}>
+      <AdminShell section="users" tone="mint" title="Paskyra" username={username} back={back}>
         <EmptyState tone="mint" icon={<IconUserX size={24} strokeWidth={STROKE} aria-hidden />} title="Tokios paskyros nėra">
           Gal ji jau ištrinta.
         </EmptyState>
@@ -96,7 +96,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
 
   return (
     <AdminShell
-      section="data"
+      section="users"
       tone="mint"
       title={name}
       subtitle={handle ? `@${handle}` : "Be naudotojo vardo"}

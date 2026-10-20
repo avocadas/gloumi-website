@@ -32,11 +32,10 @@ export default async function ErrorsPage({
 
   return (
     <AdminShell
-      section="data"
+      section="errors"
       title="Klaidos"
       subtitle="Programėlės klaidos iš Sentry – tik skaitymas, be naudotojų duomenų."
       username={check.username ?? check.userId}
-      back={{ href: "/admin/data", label: "Duomenys" }}
     >
       <ErrorList period={wantedPeriod} state={wantedState} result={result} />
     </AdminShell>

@@ -102,11 +102,10 @@ export default async function DebtsPage({ searchParams }: { searchParams: Promis
 
   return (
     <AdminShell
-      section="disputes"
+      section="debts"
       title="Mokėjimo prašymai"
       subtitle="Meistrams išsiųsti prašymai sumokėti klientams grąžintas sumas. Pažymėkite apmokėtą, kai pinigai gauti."
       username={check.username ?? check.userId}
-      back={{ href: "/admin/disputes", label: "Ginčai" }}
     >
       {error ? (
         <p role="alert" className="rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">

@@ -43,11 +43,10 @@ export default async function WarningsPage() {
 
   return (
     <AdminShell
-      section="reports"
+      section="warnings"
       title="Rezervavimo įspėjimai"
       subtitle="Klientai, kurie per 30 d. atšaukė 3 vizitus ar 2 kartus neatvyko. Apriboti gali tik žmogus – paskyros puslapyje."
       username={check.username ?? check.userId}
-      back={{ href: "/admin", label: "Skundai" }}
     >
       {error ? (
         <p role="alert" className="rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
