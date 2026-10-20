@@ -8,6 +8,7 @@ import {
   UNAVAILABLE,
   begin,
   captchaOrUndefined,
+  forGoTrue,
   clientIp,
   finish,
   locked,
@@ -15,7 +16,7 @@ import {
   revoke,
   unchecked,
 } from "@/lib/admin-auth";
-import { ADMIN_MIN_PASSWORD_BYTES, passwordBytes, MAX_PASSWORD_BYTES } from "@/lib/password-rule";
+import { ADMIN_MAX_PASSWORD_CHARS, ADMIN_MIN_PASSWORD_CHARS, passwordChars } from "@/lib/password-rule";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -37,7 +38,8 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
  *    („password") kaip prisijungimas, nauja tik šiame serveryje gyva sesija.
  *    Jos `user.id` turi sutapti su naršyklės sesijos – kitaip nutraukiama.
  * 3. Kodas – „totp" skaitiklis, `challengeAndVerify`: nauja sesija tampa `aal2`.
- * 4. `updateUser({ password, current_password })` – TIK naujoje sesijoje:
+ * 4. `updateUser({ password, current_password })` – TIK naujoje sesijoje
+ *    (ilgesni nei 72 baitų – išvestiniai, `forGoTrue`):
  *    `secure_password_change` senesnei naršyklės sesijai atsakytų
  *    `reauthentication_needed`, o kodo laiško adminas gauti negali.
  * 5. Pavykus – žurnalas `admin_password_changed`, nauja sesija atjungia visas
@@ -62,7 +64,7 @@ const WEAK = "Naujas slaptažodis per silpnas. Pasirinkite ilgesnį ar sudėting
 const PWNED = "Šis slaptažodis yra nutekėjusių slaptažodžių sąraše. Pasirinkite kitą.";
 const SAME = "Naujas slaptažodis sutampa su dabartiniu.";
 const MISMATCH = "Nauji slaptažodžiai nesutampa.";
-const LENGTH = `Naujas slaptažodis turi būti nuo ${ADMIN_MIN_PASSWORD_BYTES} iki ${MAX_PASSWORD_BYTES} baitų (lietuviška raidė – 2).`;
+const LENGTH = `Naujas slaptažodis turi būti nuo ${ADMIN_MIN_PASSWORD_CHARS} iki ${ADMIN_MAX_PASSWORD_CHARS} simbolių.`;
 
 /** GoTrue's refusal of the new password, by code (as /auth/reset), without details. */
 function refusal(error: { code?: string; reasons?: unknown }): ChangeResult {
@@ -89,8 +91,8 @@ export async function changeAdminPassword(
   if (typeof code !== "string" || !TOTP_CODE.test(code.trim())) return { ok: false, error: WRONG_CODE, field: "code" };
   if (typeof next !== "string" || typeof repeat !== "string") return { ok: false, error: LENGTH, field: "next" };
   if (next !== repeat) return { ok: false, error: MISMATCH, field: "next" };
-  const bytes = passwordBytes(next);
-  if (bytes < ADMIN_MIN_PASSWORD_BYTES || bytes > MAX_PASSWORD_BYTES) return { ok: false, error: LENGTH, field: "next" };
+  const chars = passwordChars(next);
+  if (chars < ADMIN_MIN_PASSWORD_CHARS || chars > ADMIN_MAX_PASSWORD_CHARS) return { ok: false, error: LENGTH, field: "next" };
   if (next === current) return { ok: false, error: SAME, field: "next" };
 
   const check = await checkAdmin();
@@ -132,7 +134,8 @@ export async function changeAdminPassword(
       await finish(db, gate.attemptId, "ok");
 
       // „Require current password" (Supabase skydelis) – dabartinis perduodamas kartu.
-      const { error: updateError } = await auth.auth.updateUser({ password: next, current_password: current });
+      // Ilgesni nei 72 baitų – kaip išvestiniai (`forGoTrue`), abu, kaip ir prisijungiant.
+      const { error: updateError } = await auth.auth.updateUser({ password: forGoTrue(next), current_password: forGoTrue(current) });
       if (updateError) return refusal(updateError as { code?: string; reasons?: unknown });
       changed = true;
 

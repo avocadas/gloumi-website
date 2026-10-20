@@ -9,8 +9,18 @@ export const MIN_PASSWORD = 8;
 /** bcrypt's limit is 72 BYTES, not characters: Lithuanian letters take two each in UTF-8 (security). */
 export const MAX_PASSWORD_BYTES = 72;
 
-/** An admin's new password: at least 16 bytes (security 2026-10-20); the rest is GoTrue's. */
-export const ADMIN_MIN_PASSWORD_BYTES = 16;
+/*
+ * An admin's new password: 16-200 characters (security 2026-10-20; the
+ * developer wants passwords "iki 200"). Over 72 bytes it reaches GoTrue only
+ * as a derived value (`lib/admin-auth.ts` `forGoTrue`); the rest is GoTrue's.
+ */
+export const ADMIN_MIN_PASSWORD_CHARS = 16;
+export const ADMIN_MAX_PASSWORD_CHARS = 200;
+
+/** Characters as a person counts them (code points, not UTF-16 units). */
+export function passwordChars(password: string): number {
+  return [...password].length;
+}
 
 export function isStrongPassword(password: string): boolean {
   return (

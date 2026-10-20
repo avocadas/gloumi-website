@@ -1,4 +1,5 @@
 import "server-only";
+import { createHash } from "node:crypto";
 import { isIP } from "node:net";
 import { headers } from "next/headers";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
@@ -38,6 +39,22 @@ export type Db = ReturnType<typeof createSupabaseAdminClient>;
  */
 export const captchaOrUndefined = (token: unknown) =>
   typeof token === "string" && token.length > 0 && token.length <= 2048 ? token : undefined;
+
+/*
+ * Ilgesnis nei 72 baitų slaptažodis GoTrue (bcrypt) pasiektų tik apkarpytas:
+ * likusi dalis nieko nereikštų. Todėl toks paverčiamas fiksuoto ilgio
+ * išvestiniu – `Gl1.` + base64url(SHA-256) (47 ženklai) – ir būtent jis
+ * siunčiamas GoTrue: prisijungiant (abu žingsniai) ir keičiant (dabartinis ir
+ * naujas). Iki 72 baitų – kaip iki šiol, tad esami slaptažodžiai veikia.
+ * Priešdėlis turi didžiąją ir mažąją raidę, skaičių ir ženklą – projekto
+ * slaptažodžio taisyklę (`password-rule.ts`) išvestinis tenkina visada.
+ */
+const BCRYPT_BYTES = 72;
+
+export function forGoTrue(password: string): string {
+  if (Buffer.byteLength(password, "utf8") <= BCRYPT_BYTES) return password;
+  return `Gl1.${createHash("sha256").update(password, "utf8").digest("base64url")}`;
+}
 
 export function locked(seconds: number): Failure {
   const minutes = Math.max(1, Math.ceil(seconds / 60));
@@ -122,7 +139,7 @@ export async function passwordStep(
   const auth = freshAuthClient();
   const { error } = await auth.auth.signInWithPassword({
     email: gate.email,
-    password,
+    password: forGoTrue(password),
     options: captchaToken ? { captchaToken } : undefined,
   });
   if (error) {
