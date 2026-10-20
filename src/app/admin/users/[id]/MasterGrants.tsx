@@ -35,7 +35,8 @@ function day(value: string | null): string {
 
 function grantMeta(g: GrantView) {
   const term = g.until ? `iki ${day(g.until)}` : "neribotai";
-  return [term, g.reason || null, g.grantedAt ? `suteikta ${day(g.grantedAt)}` : null].filter(Boolean).join(" · ");
+  const given = g.grantedAt ? `${g.grantedByName ? `suteikė ${g.grantedByName}` : "suteikta"} ${day(g.grantedAt)}` : null;
+  return [term, g.reason || null, given].filter(Boolean).join(" · ");
 }
 
 export function ActiveGrantRow({ grant }: { grant: GrantView }) {

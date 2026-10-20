@@ -17,6 +17,8 @@ export type GrantView = {
   grantedAt: string | null;
   subscriptionId: string | null;
   active: boolean;
+  /** Kas suteikė – administratoriaus vardas; `null`, jei nežinoma. */
+  grantedByName: string | null;
 };
 
 /** Tik data: terminai renkami dienomis (`dates.ts`). */
@@ -113,6 +115,7 @@ function GrantRow({ grant, showMaster }: { grant: GrantView; showMaster: boolean
         {ended ? "iki dabar" : grant.until ? `iki ${formatDay(grant.until)}` : "– neribotai"}
       </p>
       {grant.reason ? <p className="mt-1 text-sm break-words text-app-body">{grant.reason}</p> : null}
+      {grant.grantedByName ? <p className="mt-1 text-[13px] text-app-muted">Suteikė {grant.grantedByName}</p> : null}
 
       {showMaster ? (
         <a

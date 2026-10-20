@@ -19,6 +19,8 @@ type Row = {
   subscription_id: string | null;
   active: boolean | null;
   valid_from: string | null;
+  /** Gloumi `20261020223540`: kas suteikė (admin_ids.username); iki migracijos stulpelio nėra. */
+  granted_by_name?: string | null;
 };
 
 export async function loadGrants(adminId: string): Promise<{ ok: true; grants: GrantView[] } | { ok: false; error: string }> {
@@ -38,6 +40,7 @@ export async function loadGrants(adminId: string): Promise<{ ok: true; grants: G
       grantedAt: r.granted_at,
       subscriptionId: r.subscription_id,
       active: r.active === true,
+      grantedByName: typeof r.granted_by_name === "string" && r.granted_by_name ? r.granted_by_name : null,
     }));
   return { ok: true, grants };
 }
