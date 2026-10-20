@@ -287,12 +287,16 @@ export const IconImage = make(
   </>,
 );
 
-/** `IconUndo` `Icons.js:910` */
+/**
+ * lucide `rotate-ccw` – „Atidaryti vėl“. Ankstesnis kontūras (`Icons.js:910`)
+ * lanką pradėdavo žemiau centro, o rodyklę – apačioje kairėje, todėl šalia
+ * kitų mygtukų piktogramų atrodė pakrypęs ir kitokio dydžio (developeris 2026-10-20).
+ */
 export const IconUndo = make(
   "0 0 24 24",
   <>
-    <polyline points="3 7 3 13 9 13" />
-    <path d="M3 13a9 9 0 1 0 3-7.7L3 7" />
+    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+    <path d="M3 3v5h5" />
   </>,
 );
 

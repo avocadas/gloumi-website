@@ -3,7 +3,8 @@
 import { useState, useTransition } from "react";
 import { IconCalendar, IconCheck, IconMail, IconProfile, IconUndo } from "@/components/icons";
 import { formatWhen } from "../format";
-import { STROKE, Tag, btn, btnPrimary, btnQuiet, card } from "../ui";
+import { site } from "@/content/site";
+import { STROKE, Tag, btn, btnPrimary, card } from "../ui";
 import { setSupportTicketStatus } from "./actions";
 
 export type TicketView = {
@@ -36,8 +37,9 @@ const PLATFORM_LABEL = { ios: "iOS", android: "Android", web: "Naršyklė" } as 
  * vizito → veiksmai. „Išspręsta“ — be patvirtinimo lango: tai grąžinama tuo
  * pačiu mygtuku („Atidaryti vėl“), o patvirtinimas čia tik lėtintų eilę.
  *
- * Atsakymas — iš administratoriaus pašto programos (`mailto:`), nes atsakome
- * iš info@gloumi.lt, kaip žada Taisyklės, o ne iš portalo.
+ * Atsakymas — iš administratoriaus pašto programos (`mailto:`), ne iš portalo.
+ * Pagalbos dėžutė – support@gloumi.lt (`site.supportEmail`, ją duoda
+ * programėlės „Pagalba“ ir DUK; developeris 2026-10-20), ne bendras info@.
  */
 export function TicketCard({ ticket }: { ticket: TicketView }) {
   const [pending, startTransition] = useTransition();
@@ -113,7 +115,7 @@ export function TicketCard({ ticket }: { ticket: TicketView }) {
       ) : null}
 
       <footer className="mt-5 flex flex-col gap-2 border-t border-app-hairline pt-4 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-[13px] text-app-faint">Atsakome iš info@gloumi.lt</p>
+        <p className="text-[13px] text-app-faint">Atsakome iš {site.supportEmail}</p>
         <div className="flex flex-wrap gap-2">
           {reply && status === "open" ? (
             <a href={reply} className={btnPrimary}>
@@ -127,7 +129,7 @@ export function TicketCard({ ticket }: { ticket: TicketView }) {
               Pažymėti išspręsta
             </button>
           ) : (
-            <button type="button" disabled={pending} onClick={() => change("open")} className={btnQuiet}>
+            <button type="button" disabled={pending} onClick={() => change("open")} className={btn}>
               <IconUndo size={16} strokeWidth={STROKE} aria-hidden />
               Atidaryti vėl
             </button>
