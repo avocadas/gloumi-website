@@ -28,7 +28,10 @@ export const BCRYPT_BYTES = 72;
 const TAG = "gloumi-admin-password-v1\u0000";
 
 export function forGoTrue(password: string): string {
-  if (Buffer.byteLength(password, "utf8") <= BCRYPT_BYTES) return password;
-  const digest = createHash("sha256").update(TAG + password.normalize("NFC"), "utf8").digest("base64url");
+  // Kelias renkamas pagal NFC ilgį (security L3): NFD forma ilgesnė, ir be to
+  // tas pats slaptažodis iš skirtingų įrenginių eitų skirtingais keliais.
+  const nfc = password.normalize("NFC");
+  if (Buffer.byteLength(nfc, "utf8") <= BCRYPT_BYTES) return password;
+  const digest = createHash("sha256").update(TAG + nfc, "utf8").digest("base64url");
   return `Gl1.${digest}`;
 }

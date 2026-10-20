@@ -39,6 +39,23 @@ test("skirtingi slaptažodžiai – skirtingi išvestiniai", () => {
   assert.notEqual(forGoTrue(strong(100)), forGoTrue(strong(101)));
 });
 
+test("NFD lietuviškos raidės be simbolio – atmesta (jungiamasis ženklas nėra simbolis)", () => {
+  const p = "Ąčęėįšųūž1234Abc".normalize("NFD");
+  assert.equal(isStrongAdminPassword(p), false);
+  assert.equal(isStrongAdminPassword(p + "!"), true);
+});
+
+test("ta pati frazė NFC ir NFD ties 72 B riba – tuo pačiu keliu", () => {
+  const nfc = (strong(55) + "ąčęėįšųū").normalize("NFC"); // 55 + 16 = 71 B NFC
+  const nfd = nfc.normalize("NFD");
+  assert.ok(Buffer.byteLength(nfc) <= 72 && Buffer.byteLength(nfd) > 72);
+  assert.equal(forGoTrue(nfc), nfc);
+  // NFD eina tuo pačiu, trumpuoju keliu – nekeičiamas, kaip ir iki šiol.
+  assert.equal(forGoTrue(nfd), nfd);
+  const longNfc = (strong(60) + "ąčęėįšųū").normalize("NFC"); // 76 B NFC
+  assert.equal(forGoTrue(longNfc), forGoTrue(longNfc.normalize("NFD")));
+});
+
 test("80 „a“ ir 80 „1“ – atmesta; stiprus ilgas – priimtas", () => {
   assert.equal(isStrongAdminPassword("a".repeat(80)), false);
   assert.equal(isStrongAdminPassword("1".repeat(80)), false);
