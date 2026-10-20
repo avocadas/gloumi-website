@@ -1,10 +1,11 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { IconChevronLeft, IconDatabase, IconFlag, IconLogOut, IconMail, IconScale, type IconComponent } from "@/components/icons";
+import { IconChevronLeft, IconDatabase, IconFlag, IconLock, IconLogOut, IconMail, IconScale, type IconComponent } from "@/components/icons";
 import { signOutAdmin } from "./sign-out";
 import { Bubbles, Brand, FIELD_BG, STROKE, onField, type Tone } from "./ui";
 
-type Section = "reports" | "support" | "disputes" | "data";
+/** `account` – savo paskyros puslapiai (slaptažodis): be skirtuko juostoje. */
+type Section = "reports" | "support" | "disputes" | "data" | "account";
 
 /*
  * Skirtukai kaip programėlės juostoje (`navigation/tabs.js`): kiekvienas turi
@@ -13,7 +14,7 @@ type Section = "reports" | "support" | "disputes" | "data";
  * pagalba — mėtinė (žmonių klausimai, #209), ginčai — persikinė („Vizitai",
  * pinigai ir vizitai), duomenys — levandinė.
  */
-const SECTIONS: { key: Section; href: string; label: string; Icon: IconComponent; tone: Tone }[] = [
+const SECTIONS: { key: Exclude<Section, "account">; href: string; label: string; Icon: IconComponent; tone: Tone }[] = [
   { key: "reports", href: "/admin", label: "Skundai", Icon: IconFlag, tone: "rose" },
   { key: "support", href: "/admin/support", label: "Pagalba", Icon: IconMail, tone: "mint" },
   { key: "disputes", href: "/admin/disputes", label: "Ginčai", Icon: IconScale, tone: "peach" },
@@ -53,7 +54,7 @@ export function AdminShell({
   back?: { href: string; label: string };
   children: ReactNode;
 }) {
-  const field = tone ?? SECTIONS.find((s) => s.key === section)!.tone;
+  const field = tone ?? SECTIONS.find((s) => s.key === section)?.tone ?? "mint";
   const initial = username.replace(/^admin\./, "").charAt(0).toUpperCase() || "A";
 
   return (
@@ -99,6 +100,15 @@ export function AdminShell({
                   {username}
                 </span>
               </span>
+              <Link
+                href="/admin/password"
+                aria-current={section === "account" ? "page" : undefined}
+                className={onField}
+                title="Keisti slaptažodį"
+              >
+                <IconLock size={18} strokeWidth={STROKE} aria-hidden />
+                <span className="sr-only">Keisti slaptažodį</span>
+              </Link>
               <form action={signOutAdmin}>
                 <button type="submit" className={onField} title="Atsijungti">
                   <IconLogOut size={18} strokeWidth={STROKE} aria-hidden />

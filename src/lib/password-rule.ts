@@ -6,6 +6,12 @@
  */
 export const MIN_PASSWORD = 8;
 
+/** bcrypt's limit is 72 BYTES, not characters: Lithuanian letters take two each in UTF-8 (security). */
+export const MAX_PASSWORD_BYTES = 72;
+
+/** An admin's new password: at least 16 bytes (security 2026-10-20); the rest is GoTrue's. */
+export const ADMIN_MIN_PASSWORD_BYTES = 16;
+
 export function isStrongPassword(password: string): boolean {
   return (
     password.length >= MIN_PASSWORD &&
@@ -14,4 +20,9 @@ export function isStrongPassword(password: string): boolean {
     /[0-9]/.test(password) &&
     /[^A-Za-z0-9]/.test(password)
   );
+}
+
+/** UTF-8 length without Buffer, so the same check runs in the browser. */
+export function passwordBytes(password: string): number {
+  return new TextEncoder().encode(password).length;
 }

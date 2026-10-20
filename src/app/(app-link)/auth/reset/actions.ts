@@ -2,7 +2,7 @@
 
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { seal, unseal } from "@/lib/sealed-step";
-import { isStrongPassword } from "./password";
+import { isStrongPassword } from "@/lib/password-rule";
 
 /**
  * - `done` – changed, every session of the account signed out;

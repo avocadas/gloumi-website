@@ -65,6 +65,8 @@ function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const next = safeNext(params.get("next"));
+  // Po slaptažodžio keitimo (`admin/password`) visos sesijos atjungtos – tik pranešimas, nieko daugiau.
+  const changed = params.get("changed") === "1";
 
   const [step, setStep] = useState<Step>("password");
   const [username, setUsername] = useState("");
@@ -206,6 +208,12 @@ function LoginForm() {
           </li>
         ))}
       </ol>
+
+      {changed && step === "password" && !error ? (
+        <p role="status" className="mt-5 rounded-[14px] bg-app-ok-bg px-4 py-3 text-sm font-semibold text-app-ok">
+          Slaptažodis pakeistas – prisijunkite iš naujo.
+        </p>
+      ) : null}
 
       {error ? (
         <p

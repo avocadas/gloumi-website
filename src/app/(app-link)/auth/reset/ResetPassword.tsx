@@ -5,7 +5,7 @@ import { Button, ButtonLink } from "@/components/ui/Button";
 import type { Copy } from "@/content/copy";
 import { APP_SCHEME } from "../../codes";
 import { finishReset, resetPassword, type ResetAnswer } from "./actions";
-import { isStrongPassword } from "./password";
+import { isStrongPassword } from "@/lib/password-rule";
 
 type Props = { copy: Copy["passwordReset"] };
 
