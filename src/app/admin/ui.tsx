@@ -413,7 +413,8 @@ export function AuthShell({ children, footnote }: { children: ReactNode; footnot
         <Bubbles tone="lavender" />
       </div>
       <main className="relative mx-auto -mt-44 w-full max-w-md flex-1 px-4 pb-16">
-        <div className={`${card} p-6 sm:p-8`}>{children}</div>
+        {/* Telefone vidus 20 (design): 375 px pločiu Turnstile „flexible“ (≥ 300 px) tada telpa. */}
+        <div className={`${card} p-5 sm:p-8`}>{children}</div>
         {footnote ? <p className="mt-6 text-center text-xs text-app-faint">{footnote}</p> : null}
       </main>
     </div>

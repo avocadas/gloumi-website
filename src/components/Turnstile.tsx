@@ -93,7 +93,8 @@ export function Turnstile({
           sitekey: siteKey,
           action,
           theme: "light",
-          size: "flexible",
+          // „flexible“ reikia bent 300 px; siauresnėje vietoje (320 px telefonas) – „compact“ (150 × 140), kad neišsikištų.
+          size: box.current.clientWidth >= 300 ? "flexible" : "compact",
           callback: (token: string) => tokenCallback.current(token),
           "expired-callback": () => tokenCallback.current(null),
           "error-callback": () => tokenCallback.current(null),
