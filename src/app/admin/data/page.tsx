@@ -81,6 +81,8 @@ export default async function DataPage({ searchParams }: { searchParams: Promise
       username={username}
       back={{ href: "/admin/data", label: "Visos lentelės" }}
     >
+      {/* Techninis lentelės vardas – 12 faint po aprašu (design 7.7): kad žinotų, ką rasti Supabase ar žurnale. */}
+      <p className="-mt-2 mb-4 font-mono text-xs text-app-faint">{entry.tbl}</p>
       <TableResults
         entry={entry}
         q={q}

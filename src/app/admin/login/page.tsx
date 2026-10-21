@@ -185,7 +185,7 @@ function LoginForm() {
   return (
     <AuthShell footnote="Tik Gloumi komandai. Po kelių nesėkmingų bandymų paskyra laikinai užrakinama.">
       <Brand />
-      <h1 className="mt-6 font-app-serif text-[26px] leading-tight text-app-ink">
+      <h1 className="mt-6 font-app-sans font-extrabold tracking-[-0.01em] text-[26px] leading-tight text-app-ink">
         {step === "password" ? "Prisijungimas" : step === "enroll" ? "Antras veiksnys" : "Kodas"}
       </h1>
 

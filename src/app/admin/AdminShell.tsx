@@ -94,7 +94,8 @@ export async function AdminShell({
                 {back.label}
               </Link>
             ) : null}
-            <h1 className="font-app-serif text-[26px] leading-tight text-app-ink sm:text-[28px]">{title}</h1>
+            {/* Figtree 28 / ExtraBold (design 2026-10-21, programėlės taisyklė A: serifas – tik žmonių ir salonų vardams). */}
+            <h1 className="font-app-sans font-extrabold tracking-[-0.01em] text-[26px] leading-tight text-app-ink sm:text-[28px]">{title}</h1>
             {subtitle ? <p className="mt-1.5 text-sm text-app-muted">{subtitle}</p> : null}
           </div>
         </header>

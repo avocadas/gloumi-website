@@ -116,18 +116,23 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
       {/* Paskutiniai veiksmai (design 2 sk.) – 5 eilutės iš žurnalo: kas, ką, kada. Nepavykus – skilties nėra. */}
       {recent && recent.length > 0 ? (
         <section className={`${card} mt-8 p-5 sm:p-6`}>
-          <SectionTitle title="Paskutiniai veiksmai" note="Iš administratorių žurnalo." />
+          <SectionTitle accent="system" title="Paskutiniai veiksmai" note="Iš administratorių žurnalo." />
           <ul className="divide-y divide-app-hairline">
             {recent.map((a) => (
               <li key={a.id} className="flex flex-col gap-0.5 py-2.5 text-sm sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
                 <span className="min-w-0 break-words text-app-ink">
-                  <span className="font-semibold">{a.who ?? "Administratorius"}</span> {actionLabel(a.action)}
-                  {a.targetType === "profile" && a.targetId ? (
+                  <span className="font-semibold">{a.who ?? "Administratorius"}</span> {actionLabel(a.action, a.plan)}
+                  {/* Kam: paskyra vardu su nuoroda; ištrintos paskyros vardo nerodome. */}
+                  {a.target ? (
                     <>
-                      {" · "}
-                      <Link prefetch={false} href={`/admin/users/${a.targetId}`} className="font-medium text-app-accent hover:underline">
-                        paskyra
-                      </Link>
+                      {" "}
+                      {a.target.href ? (
+                        <Link prefetch={false} href={a.target.href} className="font-medium text-app-accent hover:underline">
+                          {a.target.label}
+                        </Link>
+                      ) : (
+                        <span className="text-app-muted">{a.target.label}</span>
+                      )}
                     </>
                   ) : null}
                 </span>

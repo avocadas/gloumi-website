@@ -33,7 +33,7 @@ export function MfaNotice({ reason }: { reason: "mfa-required" | "expired" }) {
   return (
     <AuthShell>
       <Brand />
-      <h1 className="mt-6 font-app-serif text-[26px] leading-tight text-app-ink">
+      <h1 className="mt-6 font-app-sans font-extrabold tracking-[-0.01em] text-[26px] leading-tight text-app-ink">
         {expired ? "Sesija baigėsi" : "Reikalingas antras veiksnys"}
       </h1>
       <p className="mt-3 text-sm leading-relaxed text-app-body">

@@ -17,7 +17,7 @@ export default function AdminError({ error, reset }: { error: Error & { digest?:
   return (
     <AuthShell footnote={error.digest ? <span className="font-mono">#{error.digest}</span> : undefined}>
       <Brand />
-      <h1 className="mt-6 font-app-serif text-[26px] leading-tight text-app-ink">Kažkas nepavyko</h1>
+      <h1 className="mt-6 font-app-sans font-extrabold tracking-[-0.01em] text-[26px] leading-tight text-app-ink">Kažkas nepavyko</h1>
       <p className="mt-3 text-sm leading-relaxed text-app-body">
         Puslapio nepavyko parodyti. Bandykite dar kartą – jei kartojasi, klaida matoma serverio žurnale pagal žemiau esantį
         numerį.

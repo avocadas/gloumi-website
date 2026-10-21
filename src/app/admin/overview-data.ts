@@ -65,28 +65,57 @@ export type RecentAction = {
   id: number;
   who: string | null;
   action: string;
-  targetType: string | null;
-  targetId: string | null;
+  /** `grant_plan` / `revoke_plan_grant`: kuris planas (`pro`, `vip`). */
+  plan: string | null;
+  /** Kam: paskyra vardu su nuoroda; ištrinta – be vardo ir be nuorodos. */
+  target: { label: string; href: string | null } | null;
   at: string;
 };
+
+/* Žurnalo `target_type`, kurių `target_id` – paskyros (profilio) id. */
+const ACCOUNT_TARGETS = new Set(["profile", "master"]);
 
 /** 5 naujausi `admin_audit_logs` įrašai: kas, ką, kada. */
 export async function loadRecentActions(): Promise<RecentAction[] | null> {
   const db = createSupabaseAdminClient();
   const { data, error } = await db
     .from("admin_audit_logs")
-    .select("id, admin_label, action, target_type, target_id, created_at")
+    .select("id, admin_label, action, target_type, target_id, details, created_at")
     .order("created_at", { ascending: false })
     .limit(5);
   if (error || !Array.isArray(data)) return null;
-  return data.map((r) => ({
-    id: r.id as number,
-    who: (r.admin_label as string | null) ?? null,
-    action: String(r.action),
-    targetType: (r.target_type as string | null) ?? null,
-    targetId: r.target_id === null || r.target_id === undefined ? null : String(r.target_id),
-    at: String(r.created_at),
-  }));
+
+  const ids = [
+    ...new Set(
+      data
+        .filter((r) => ACCOUNT_TARGETS.has(String(r.target_type)) && r.target_id)
+        .map((r) => String(r.target_id)),
+    ),
+  ];
+  const { data: people } = ids.length
+    ? await db.from("profiles").select("id, username, display_name").in("id", ids)
+    : { data: [] as { id: string; username: string | null; display_name: string | null }[] };
+  const byId = new Map((people ?? []).map((p) => [p.id, p]));
+
+  return data.map((r) => {
+    const details = r.details && typeof r.details === "object" ? (r.details as Record<string, unknown>) : {};
+    const id = r.target_id === null || r.target_id === undefined ? null : String(r.target_id);
+    let target: RecentAction["target"] = null;
+    if (id && ACCOUNT_TARGETS.has(String(r.target_type))) {
+      const p = byId.get(id);
+      target = p
+        ? { label: p.username ? `@${p.username}` : (p.display_name ?? "paskyra"), href: `/admin/users/${id}` }
+        : { label: "ištrinta paskyra", href: null };
+    }
+    return {
+      id: r.id as number,
+      who: (r.admin_label as string | null) ?? null,
+      action: String(r.action),
+      plan: typeof details.plan === "string" ? details.plan : null,
+      target,
+      at: String(r.created_at),
+    };
+  });
 }
 
 /* Žurnalo veiksmų pavadinimai žmonėms; nežinomi rodomi kodu be pabraukimų. */
@@ -127,4 +156,12 @@ const ACTION_LABEL: Record<string, string> = {
   gift_credit_refund_bank_paid: "pažymėjo grąžinimą pervestu",
 };
 
-export const actionLabel = (action: string) => ACTION_LABEL[action] ?? action.replace(/_/g, " ");
+const PLAN_LABEL: Record<string, string> = { pro: "Pro", vip: "VIP" };
+
+/** „suteikė VIP“ – su planu, kai jis žinomas; kitaip – pagal žurnalo veiksmą. */
+export function actionLabel(action: string, plan: string | null = null): string {
+  const p = plan ? (PLAN_LABEL[plan] ?? plan) : null;
+  if (p && action === "grant_plan") return `suteikė ${p}`;
+  if (p && action === "revoke_plan_grant") return `atšaukė suteiktą ${p}`;
+  return ACTION_LABEL[action] ?? action.replace(/_/g, " ");
+}
