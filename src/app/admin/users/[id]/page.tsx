@@ -25,6 +25,24 @@ export const dynamic = "force-dynamic";
 // Atskirai nuo komponento: laikrodžio skaitymas piešiant yra šalutinis poveikis.
 const isBanned = (until: string | null) => !!until && new Date(until).getTime() > Date.now();
 
+const SOURCE_LABEL: Record<string, string> = { report: "gavus pranešimą", own: "mūsų iniciatyva" };
+const DOC_LABEL: Record<string, string> = { terms: "Taisyklės", partner: "Meistrų sąlygos" };
+
+/** „Priežastis · Taisyklės „…“ · gavus pranešimą · admin.vardas“ – iš žurnalo įrašo; `null`, jei nieko nėra. */
+function decisionWhy(log: { admin_label: string | null; details: unknown } | undefined): string | null {
+  if (!log || !log.details || typeof log.details !== "object") return null;
+  const d = log.details as Record<string, unknown>;
+  const rule = d.rule && typeof d.rule === "object" ? (d.rule as Record<string, unknown>) : null;
+  const section = rule?.section && typeof rule.section === "object" ? (rule.section as Record<string, unknown>).lt : null;
+  const parts = [
+    typeof d.reason === "string" && d.reason.trim() ? d.reason.trim() : null,
+    rule && typeof rule.doc === "string" && typeof section === "string" ? `${DOC_LABEL[rule.doc] ?? rule.doc} „${section}“` : null,
+    typeof d.source === "string" ? (SOURCE_LABEL[d.source] ?? null) : null,
+    log.admin_label,
+  ].filter(Boolean);
+  return parts.length ? parts.join(" · ") : null;
+}
+
 export default async function UserPage({ params }: { params: Promise<{ id: string }> }) {
   const check = await checkAdmin();
   if (!check.ok) {
@@ -38,7 +56,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
   if (!UUID_PATTERN.test(id)) notFound();
 
   const db = createSupabaseAdminClient();
-  const [{ data, error }, catalog, restriction, termination, birth] = await Promise.all([
+  const [{ data, error }, catalog, restriction, termination, birth, suspension] = await Promise.all([
     db.rpc("admin_user_overview", { _admin_id: check.userId, _user_id: id }),
     loadCatalog(),
     /*
@@ -46,7 +64,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
      * servisinis raktas ją skaito; nepavykus – rodoma kaip neapribota, o
      * mygtukas tada gaus bazės atsakymą (`already_restricted`).
      */
-    db.from("booking_restrictions").select("until").eq("user_id", id).maybeSingle(),
+    db.from("booking_restrictions").select("until, log_id").eq("user_id", id).maybeSingle(),
     /*
      * Suplanuotas meistro paskyros nutraukimas (#169, Gloumi `20261008180946`;
      * lentelė uždara klientams). Nepavykus – rodoma kaip nesuplanuota, o
@@ -61,7 +79,21 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
       .maybeSingle(),
     // Gimimo data – tik taisymo eilutei (BDAR 16 str.); `admin_user_overview` jos negrąžina.
     db.from("profiles").select("birth_date").eq("id", id).maybeSingle(),
+    // Paskutinio sustabdymo žurnalo įrašas – kad „Dabar galioja“ parodytų priežastį (design D12).
+    db.from("account_suspensions").select("log_id").eq("user_id", id).maybeSingle(),
   ]);
+  /*
+   * Priežastis, punktas, šaltinis ir kas sprendė – iš administratorių žurnalo
+   * (`admin_suspend_user` / `admin_restrict_bookings` įrašo `details`). Nepavykus –
+   * eilutė lieka be priežasties, kaip iki šiol.
+   */
+  const logIds = [restriction.data?.log_id, suspension.data?.log_id].filter(
+    (v): v is number => typeof v === "number",
+  );
+  const { data: logs } = logIds.length
+    ? await db.from("admin_audit_logs").select("id, admin_label, details").in("id", logIds)
+    : { data: [] as { id: number; admin_label: string | null; details: unknown }[] };
+  const whyOf = (logId: unknown) => decisionWhy((logs ?? []).find((l) => l.id === logId));
   const birthDate = typeof birth.data?.birth_date === "string" ? birth.data.birth_date : null;
   const terminationAt = typeof termination.data?.scheduled_for === "string" ? termination.data.scheduled_for : null;
   const restrictedUntil = typeof restriction.data?.until === "string" ? restriction.data.until : null;
@@ -109,6 +141,8 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
         avatar={avatarId ? media[avatarId] : undefined}
         banned={isBanned(user.banned_until)}
         restrictedUntil={isBanned(restrictedUntil) ? restrictedUntil : null}
+        suspendWhy={whyOf(suspension.data?.log_id)}
+        restrictWhy={whyOf(restriction.data?.log_id)}
         terminationAt={terminationAt}
         birthDate={birthDate}
         grants={grants}

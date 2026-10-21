@@ -45,6 +45,8 @@ export function AccountActions({
   banned,
   bannedUntil,
   restrictedUntil,
+  suspendWhy = null,
+  restrictWhy = null,
   terminationAt,
   confirmName,
   isMaster,
@@ -58,6 +60,9 @@ export function AccountActions({
   bannedUntil: string | null;
   /** `booking_restrictions.until`, jei rezervavimas dabar apribotas; kitaip `null`. */
   restrictedUntil: string | null;
+  /** Kodėl sustabdyta ir kodėl apribota (žurnalas): priežastis, punktas, šaltinis, kas sprendė. */
+  suspendWhy?: string | null;
+  restrictWhy?: string | null;
   /** Kada bus panaikinta meistro paskyra, jei nutraukimas suplanuotas; kitaip `null`. */
   terminationAt: string | null;
   confirmName: string;
@@ -309,6 +314,7 @@ export function AccountActions({
                 Icon={IconBan}
                 title="Paskyra sustabdyta"
                 meta={`iki ${formatWhen(bannedUntil)} · pasibaigus terminui prieiga grįš automatiškai`}
+                why={suspendWhy}
               >
                 <button type="button" disabled={pending} onClick={suspend} className={btnQuiet}>
                   Pratęsti
@@ -323,6 +329,7 @@ export function AccountActions({
                 Icon={IconCalendar}
                 title="Rezervavimas apribotas"
                 meta={`iki ${formatWhen(restrictedUntil)} · pasibaigus terminui nusiims automatiškai`}
+                why={restrictWhy}
               >
                 <button type="button" disabled={pending} onClick={restrict} className={btnQuiet}>
                   Pratęsti
@@ -402,11 +409,14 @@ function StateRow({
   Icon,
   title,
   meta,
+  why = null,
   children,
 }: {
   Icon: typeof IconBan;
   title: string;
   meta: string;
+  /** Kodėl – priežastis, punktas, šaltinis, kas sprendė (design D12). */
+  why?: string | null;
   children: React.ReactNode;
 }) {
   return (
@@ -416,6 +426,7 @@ function StateRow({
         <div className="min-w-0">
           <p className="text-[15px] font-semibold text-app-ink">{title}</p>
           <p className="mt-0.5 text-[13px] break-words text-app-muted">{meta}</p>
+          {why ? <p className="mt-0.5 text-[13px] break-words text-app-body">{why}</p> : null}
         </div>
       </div>
       <div className="flex flex-wrap gap-1 pl-7 sm:pl-0">{children}</div>

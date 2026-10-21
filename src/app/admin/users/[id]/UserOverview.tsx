@@ -66,6 +66,8 @@ export function UserOverview({
   avatar,
   banned,
   restrictedUntil,
+  suspendWhy = null,
+  restrictWhy = null,
   terminationAt,
   birthDate,
   grants,
@@ -78,6 +80,9 @@ export function UserOverview({
   banned: boolean;
   /** Iki kada apribotas rezervavimas, jei apribotas dabar (#207); kitaip `null`. */
   restrictedUntil: string | null;
+  /** Sustabdymo ir apribojimo priežastis iš žurnalo (design D12); `null` – nežinoma. */
+  suspendWhy?: string | null;
+  restrictWhy?: string | null;
   /** Kada bus panaikinta meistro paskyra, jei nutraukimas suplanuotas (#169); kitaip `null`. */
   terminationAt: string | null;
   /** `profiles.birth_date` (YYYY-MM-DD) – taisymo eilutei; `null` – nenurodyta. */
@@ -106,6 +111,8 @@ export function UserOverview({
           banned={banned}
           bannedUntil={banned ? user.banned_until : null}
           restrictedUntil={restrictedUntil}
+          suspendWhy={suspendWhy}
+          restrictWhy={restrictWhy}
           terminationAt={terminationAt}
           confirmName={handle ?? "IŠTRINTI"}
           isMaster={Boolean(master)}
