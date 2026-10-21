@@ -42,7 +42,7 @@ export default async function AppBuildsPage() {
       username={check.username ?? check.userId}
     >
       {error ? (
-        <Alert>
+        <Alert retry>
           {error.code === "PGRST202"
             ? "Versijų ribos bazėje dar neįjungtos (migracija nepritaikyta)."
             : `Reikšmių gauti nepavyko: ${error.message}`}

@@ -49,7 +49,7 @@ export default async function WarningsPage() {
       username={check.username ?? check.userId}
     >
       {error ? (
-        <Alert>
+        <Alert retry>
           Įspėjimų gauti nepavyko: {error.message}
         </Alert>
       ) : warnings.length === 0 ? (

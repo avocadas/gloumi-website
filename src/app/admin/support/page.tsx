@@ -113,7 +113,7 @@ export default async function SupportPage({ searchParams }: { searchParams: Prom
       username={check.username ?? check.userId}
     >
       {error ? (
-        <Alert className="mb-6">
+        <Alert retry className="mb-6">
           Užklausų gauti nepavyko: {error.message}
         </Alert>
       ) : null}

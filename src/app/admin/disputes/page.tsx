@@ -146,7 +146,7 @@ export default async function DisputesPage({ searchParams }: { searchParams: Pro
         </Alert>
       ) : null}
       {error ? (
-        <Alert className="mb-6">
+        <Alert retry className="mb-6">
           Ginčų gauti nepavyko: {error.message}
         </Alert>
       ) : null}

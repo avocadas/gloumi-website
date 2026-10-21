@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { Wordmark } from "@/components/brand/Wordmark";
+import { RetryButton } from "./RetryButton";
 import { ICON_STROKE, IconAlert, IconChevronRight } from "@/components/icons";
 
 /*
@@ -190,13 +191,18 @@ export function CountPill({ n, label, hideZero = false }: { n: number; label?: s
   );
 }
 
-/** Klaida, perspėjimas ar informacija – kampas 14, ikona kairėje (6 sk.). */
+/**
+ * Klaida, perspėjimas ar informacija – kampas 14, ikona kairėje (6 sk.).
+ * `retry` – „Bandyti dar kartą“ dešinėje (4.7): puslapio duomenų įkėlimo klaidoms.
+ */
 export function Alert({
   tone = "danger",
+  retry = false,
   children,
   className = "",
 }: {
   tone?: "danger" | "warn" | "info" | "ok";
+  retry?: boolean;
   children: ReactNode;
   className?: string;
 }) {
@@ -212,7 +218,8 @@ export function Alert({
       className={`flex items-start gap-2 rounded-[14px] px-4 py-3 text-sm font-semibold ${look} ${className}`}
     >
       <IconAlert size={18} strokeWidth={STROKE} aria-hidden className="mt-px shrink-0" />
-      <span className="min-w-0 break-words">{children}</span>
+      <span className="min-w-0 flex-1 break-words">{children}</span>
+      {retry ? <RetryButton /> : null}
     </p>
   );
 }

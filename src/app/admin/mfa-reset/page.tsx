@@ -81,7 +81,7 @@ export default async function MfaResetPage() {
       username={check.username ?? check.userId}
     >
       {loadError ? (
-        <Alert className="mb-6">
+        <Alert retry className="mb-6">
           Prašymų gauti nepavyko: {loadError}
         </Alert>
       ) : null}

@@ -54,7 +54,7 @@ export default async function GrantsPage({ searchParams }: { searchParams: Promi
       username={check.username ?? check.userId}
     >
       {!result.ok ? (
-        <Alert>Sąrašo gauti nepavyko: {result.error}</Alert>
+        <Alert retry>Sąrašo gauti nepavyko: {result.error}</Alert>
       ) : all.length === 0 ? (
         <EmptyState icon={<IconBadgePercent size={24} strokeWidth={STROKE} aria-hidden />} title="Individualių sąlygų dar niekam nėra">
           Komisinio atsisakymą ar nemokamą planą galima suteikti meistro paskyros puslapyje.

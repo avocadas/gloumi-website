@@ -133,7 +133,7 @@ export function TableResults({
 
       <div className="mt-6">
         {!res.ok ? (
-          <Alert>
+          <Alert retry>
             {res.error}
           </Alert>
         ) : rows.length === 0 ? (

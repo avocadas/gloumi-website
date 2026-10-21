@@ -139,7 +139,7 @@ export default async function ContentReviewPage({ searchParams }: { searchParams
       </nav>
 
       {error ? (
-        <Alert>
+        <Alert retry>
           {error.code === "PGRST202"
             ? "Turinio peržiūra bazėje dar neįjungta (migracija nepritaikyta)."
             : `Prašymų gauti nepavyko: ${error.message}`}

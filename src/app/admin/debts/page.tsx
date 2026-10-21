@@ -108,7 +108,7 @@ export default async function DebtsPage({ searchParams }: { searchParams: Promis
       username={check.username ?? check.userId}
     >
       {error ? (
-        <Alert>
+        <Alert retry>
           Prašymų gauti nepavyko: {error.message}
         </Alert>
       ) : (
