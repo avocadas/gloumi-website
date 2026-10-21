@@ -73,7 +73,8 @@ export default async function DataPage({ searchParams }: { searchParams: Promise
 
   return (
     <AdminShell
-      section="data"
+      // Paskyrų paieška – „Naudotojai“ navigacijoje (`/admin/users` nukreipia čia), kitos lentelės – „Duomenų lentelės“.
+      section={entry.tbl === "profiles" ? "users" : "data"}
       title={entry.label}
       // Ką su šia lentele galima daryti, ne techninis pavadinimas (design 7.7); jis – tik užuominoje kataloge.
       subtitle={KIND_SECTION[entry.kind]?.note}

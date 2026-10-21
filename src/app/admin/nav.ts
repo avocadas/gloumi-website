@@ -60,7 +60,7 @@ export const NAV_GROUPS: { title: string; items: NavItem[] }[] = [
   {
     title: "Žmonės ir pinigai",
     items: [
-      { key: "users", href: "/admin/data", label: "Naudotojai", Icon: IconUsers },
+      { key: "users", href: "/admin/users", label: "Naudotojai", Icon: IconUsers },
       { key: "grants", href: "/admin/grants", label: "Individualios sąlygos", Icon: IconBadgePercent },
       { key: "debts", href: "/admin/debts", label: "Skolos", Icon: IconReceipt, count: "debts" },
       { key: "mfaReset", href: "/admin/mfa-reset", label: "2FA atstatymas", Icon: IconShieldCheck },

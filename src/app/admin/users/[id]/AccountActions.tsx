@@ -253,7 +253,7 @@ export function AccountActions({
       }
       if (res.note) setNote(res.note);
       setDeleted(true);
-      router.replace("/admin/data?table=profiles");
+      router.replace("/admin/users");
     });
   };
 

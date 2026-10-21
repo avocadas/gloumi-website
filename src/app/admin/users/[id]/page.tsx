@@ -99,7 +99,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
   const restrictedUntil = typeof restriction.data?.until === "string" ? restriction.data.until : null;
   const overview = error ? null : (data as Overview);
   const username = check.username ?? check.userId;
-  const back = { href: "/admin/data?table=profiles", label: "Paskyros" };
+  const back = { href: "/admin/users", label: "Naudotojai" };
 
   if (!overview) {
     return (
