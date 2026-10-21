@@ -5,6 +5,7 @@ import Link from "next/link";
 import { IconBan, IconCheck, IconEye } from "@/components/icons";
 import type { SignedMedia } from "@/lib/admin-data";
 import { decideContentReview } from "../actions";
+import { useToast } from "../Toaster";
 import { useConfirm } from "../ConfirmDialog";
 import { MediaPreview } from "../data/RowCard";
 import { formatWhen } from "../format";
@@ -105,6 +106,7 @@ export function ReviewCard({ view }: { view: ReviewView }) {
   const [status, setStatus] = useState(view.status);
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<NoticeNote | null>(null);
+  const toast = useToast();
   const [dialog, ask] = useConfirm();
   const tag = STATUS[status] ?? { label: status, tone: "neutral" as const };
   const who = view.authorName || (view.authorHandle ? `@${view.authorHandle}` : "Be vardo");
@@ -171,6 +173,7 @@ export function ReviewCard({ view }: { view: ReviewView }) {
       if (res.ok) {
         setStatus(approve ? "approved" : "rejected");
         setNote(res.note ?? null);
+        if (approve) toast("Leista skelbti – autoriui pranešta");
       } else setError(res.error);
     });
   };

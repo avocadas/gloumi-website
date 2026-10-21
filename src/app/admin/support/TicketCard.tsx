@@ -5,6 +5,7 @@ import { IconCalendar, IconCheck, IconMail, IconProfile, IconUndo } from "@/comp
 import { formatWhen } from "../format";
 import { site } from "@/content/site";
 import { Alert, btn, btnPrimary, card, STROKE, Tag } from "../ui";
+import { useToast } from "../Toaster";
 import { setSupportTicketStatus } from "./actions";
 
 export type TicketView = {
@@ -46,6 +47,7 @@ export function TicketCard({ ticket }: { ticket: TicketView }) {
   const [status, setStatus] = useState(ticket.status);
   const [closedAt, setClosedAt] = useState(ticket.closedAt);
   const [error, setError] = useState<string | null>(null);
+  const toast = useToast();
 
   const change = (next: "open" | "closed") => {
     setError(null);
@@ -54,6 +56,7 @@ export function TicketCard({ ticket }: { ticket: TicketView }) {
       if (res.ok) {
         setStatus(next);
         setClosedAt(next === "closed" ? new Date().toISOString() : null);
+        toast(next === "closed" ? "Pažymėta išspręsta" : "Užklausa vėl atidaryta");
       }
       else setError(res.error);
     });

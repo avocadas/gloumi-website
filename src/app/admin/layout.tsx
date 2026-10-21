@@ -6,6 +6,7 @@ import { adminFontVariables } from "./fonts";
 import { moderationRules } from "./moderation-rules";
 import { ModerationRulesProvider } from "./ModerationRules";
 import { masterTerminationNotice } from "./termination-notice";
+import { ToastProvider } from "./Toaster";
 
 /**
  * Root layout for the admin portal.
@@ -47,7 +48,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
     <html lang="lt" className={`${adminFontVariables} h-full antialiased`}>
       <body className="flex min-h-full flex-col bg-app-sheet font-app-sans text-app-ink [&_:focus-visible]:outline-app-accent">
         <ModerationRulesProvider groups={moderationRules()} terminationNotice={masterTerminationNotice()}>
-          {children}
+          <ToastProvider>{children}</ToastProvider>
         </ModerationRulesProvider>
       </body>
     </html>
