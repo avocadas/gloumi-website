@@ -11,7 +11,7 @@ import { MODERATED_TABLES } from "../moderated-tables";
 import type { NoticeNote } from "../moderation-email";
 import { RuleSelect } from "../ModerationRules";
 import { UUID_PATTERN, columnLabel, formatValue, formatWhen, ownerLabel } from "../format";
-import { ActionNote, Alert, btn, btnDanger, btnQuiet, card, eyebrow, Field, input, STROKE, Tag } from "../ui";
+import { ActionNote, Alert, btn, btnDanger, btnPrimary, btnQuiet, card, eyebrow, Field, input, STROKE, Tag } from "../ui";
 
 type Props = {
   table: string;
@@ -173,7 +173,7 @@ export function RowCard({
                         type="button"
                         disabled={pending}
                         onClick={() => startEdit(c)}
-                        className={btnQuiet}
+                        className={btn}
                       >
                         <IconPencil size={16} strokeWidth={STROKE} aria-hidden />
                         Taisyti
@@ -221,7 +221,7 @@ export function RowCard({
                         <button type="button" disabled={pending} onClick={() => setEditing(null)} className={btnQuiet}>
                           Atšaukti
                         </button>
-                        <button type="button" disabled={pending || !canSave} onClick={save} className={btn}>
+                        <button type="button" disabled={pending || !canSave} onClick={save} className={btnPrimary}>
                           Išsaugoti
                         </button>
                       </div>
