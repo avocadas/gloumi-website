@@ -2,10 +2,9 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconAlert } from "@/components/icons";
 import { TURNSTILE_SITE_KEY, Turnstile, type TurnstileHandle } from "@/components/Turnstile";
 import { ADMIN_MAX_PASSWORD_CHARS, ADMIN_MIN_PASSWORD_CHARS, isStrongAdminPassword, passwordChars } from "@/lib/password-rule";
-import { STROKE, btnPrimary, card, input } from "../ui";
+import { Alert, btnPrimary, card, input } from "../ui";
 import { changeAdminPassword } from "./actions";
 
 /*
@@ -70,15 +69,7 @@ export function PasswordForm() {
 
   return (
     <form onSubmit={submit} className={`${card} max-w-md space-y-4 px-5 py-5`}>
-      {error ? (
-        <p
-          role="alert"
-          className="flex items-start gap-2 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text"
-        >
-          <IconAlert size={18} strokeWidth={STROKE} aria-hidden className="mt-px shrink-0" />
-          {error}
-        </p>
-      ) : null}
+      {error ? <Alert>{error}</Alert> : null}
 
       <label className="block">
         <span className={label}>Dabartinis slaptažodis</span>

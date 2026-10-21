@@ -3,8 +3,8 @@
 import { Suspense, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { IconAlert, IconArrowRight, IconLock, IconProfile } from "@/components/icons";
-import { AuthShell, Brand, STROKE, btnPrimary, btnQuiet, input } from "../ui";
+import { IconArrowRight, IconLock, IconProfile } from "@/components/icons";
+import { Alert, AuthShell, Brand, STROKE, btnPrimary, btnQuiet, input } from "../ui";
 import { finishAdminLogin, startAdminLogin } from "./actions";
 import { TURNSTILE_SITE_KEY, Turnstile, type TurnstileHandle } from "@/components/Turnstile";
 
@@ -220,15 +220,7 @@ function LoginForm() {
         </p>
       ) : null}
 
-      {error ? (
-        <p
-          role="alert"
-          className="mt-5 flex items-start gap-2 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text"
-        >
-          <IconAlert size={18} strokeWidth={STROKE} aria-hidden className="mt-px shrink-0" />
-          {error}
-        </p>
-      ) : null}
+      {error ? <Alert className="mt-5">{error}</Alert> : null}
 
       {step === "password" ? (
         <form onSubmit={submitPassword} className="mt-5 space-y-4">
