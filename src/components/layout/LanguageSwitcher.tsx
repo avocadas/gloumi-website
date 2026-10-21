@@ -46,8 +46,13 @@ export function LanguageSwitcher({ lang, alternates, label, className }: Props) 
 
   return (
     <details ref={ref} className={cn("group relative", className)}>
+      {/*
+        The name starts with what the button shows ("LT"), so a voice-control
+        user who says what they see reaches it (WCAG 2.5.3, web audit 2026-10-22);
+        the rest says what it is and which language is on.
+      */}
       <summary
-        aria-label={`${label}: ${LANG_LABELS[lang].label}`}
+        aria-label={`${LANG_LABELS[lang].short}, ${label}: ${LANG_LABELS[lang].label}`}
         className="flex cursor-pointer list-none items-center gap-1 rounded-full bg-espresso-900/5 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.06em] text-espresso-900 transition-colors hover:bg-espresso-900/10 [&::-webkit-details-marker]:hidden"
       >
         {LANG_LABELS[lang].short}
