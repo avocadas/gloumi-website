@@ -6,6 +6,7 @@ import { MfaNotice } from "../MfaNotice";
 import { UUID_PATTERN } from "../format";
 import { CatalogIndex } from "./CatalogIndex";
 import { MAX_PAGE, TableResults } from "./TableResults";
+import { KIND_SECTION } from "./CatalogIndex";
 
 /*
  * Duomenų naršyklė (#129). Bet kurią katalogo lentelę galima peržiūrėti ir
@@ -74,7 +75,8 @@ export default async function DataPage({ searchParams }: { searchParams: Promise
     <AdminShell
       section="data"
       title={entry.label}
-      subtitle={`Lentelė ${entry.tbl}`}
+      // Ką su šia lentele galima daryti, ne techninis pavadinimas (design 7.7); jis – tik užuominoje kataloge.
+      subtitle={KIND_SECTION[entry.kind]?.note}
       username={username}
       back={{ href: "/admin/data", label: "Visos lentelės" }}
     >

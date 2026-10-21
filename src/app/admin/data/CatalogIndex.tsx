@@ -3,7 +3,7 @@ import type { CatalogEntry, CatalogKind } from "@/lib/admin-data";
 import { STROKE, SectionTitle, btn, card } from "../ui";
 import { SearchField } from "./SearchField";
 
-const KIND_SECTION: Record<CatalogKind, { title: string; note: string; accent: "content" | "account" | "value" }> = {
+export const KIND_SECTION: Record<CatalogKind, { title: string; note: string; accent: "content" | "account" | "value" }> = {
   content: { title: "Turinys", note: "Galima rasti, ištrinti ir pataisyti tekstus.", accent: "content" },
   account: {
     title: "Paskyros",

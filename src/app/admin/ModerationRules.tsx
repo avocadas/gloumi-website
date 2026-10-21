@@ -40,6 +40,7 @@ export function useTerminationNotice(): TerminationNotice | null {
  * pasirinkti; kai ne — ją galima palikti („Nenurodyti").
  */
 export function RuleSelect({
+  id,
   value,
   onChange,
   required,
@@ -47,6 +48,8 @@ export function RuleSelect({
   className,
   hideRequest,
 }: {
+  /** Kad `<label htmlFor>` (`Field`) būtų susietas su sąrašu. */
+  id?: string;
   value: string;
   onChange: (value: string) => void;
   required: boolean;
@@ -61,6 +64,7 @@ export function RuleSelect({
     : all;
   return (
     <select
+      id={id}
       value={value}
       onChange={(e) => onChange(e.target.value)}
       required={required}

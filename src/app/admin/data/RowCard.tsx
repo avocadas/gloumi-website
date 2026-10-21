@@ -11,7 +11,7 @@ import { MODERATED_TABLES } from "../moderated-tables";
 import type { NoticeNote } from "../moderation-email";
 import { RuleSelect } from "../ModerationRules";
 import { UUID_PATTERN, columnLabel, formatValue, formatWhen, ownerLabel } from "../format";
-import { ActionNote, STROKE, Tag, btn, btnDanger, btnQuiet, card, eyebrow, input } from "../ui";
+import { ActionNote, Field, STROKE, Tag, btn, btnDanger, btnQuiet, card, eyebrow, input } from "../ui";
 
 type Props = {
   table: string;
@@ -172,9 +172,9 @@ export function RowCard({
                         type="button"
                         disabled={pending}
                         onClick={() => startEdit(c)}
-                        className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold text-app-body transition-colors hover:bg-app-input disabled:opacity-40"
+                        className={btnQuiet}
                       >
-                        <IconPencil size={13} strokeWidth={STROKE} aria-hidden />
+                        <IconPencil size={16} strokeWidth={STROKE} aria-hidden />
                         Taisyti
                       </button>
                     ) : saved === c ? (
@@ -182,38 +182,40 @@ export function RowCard({
                     ) : null}
                   </dt>
                   {editing === c ? (
-                    <dd className="mt-2 space-y-2">
-                      <textarea
-                        value={draft}
-                        onChange={(e) => setDraft(e.target.value)}
-                        maxLength={5000}
-                        rows={4}
-                        autoFocus
-                        aria-label={`Naujas tekstas: ${columnLabel(c)}`}
-                        className={`${input} h-auto resize-y py-3 leading-relaxed`}
-                      />
-                      <label className="block pt-1">
-                        <span className="text-[13px] font-semibold text-app-ink">
-                          Pagrindas{" "}
-                          <span className="font-normal text-app-muted">
-                            {moderated ? "— pažeistas taisyklių punktas" : "— nebūtina"}
-                          </span>
-                        </span>
-                        <RuleSelect value={rule} onChange={setRule} required={moderated} className={`${input} mt-2`} />
-                      </label>
-                      <input
-                        value={reason}
-                        onChange={(e) => setReason(e.target.value)}
-                        maxLength={500}
-                        required
-                        placeholder={
-                          moderated
-                            ? "Priežastis — privaloma; ją matys ir autorius"
-                            : "Priežastis — privaloma, matys tik administratoriai"
-                        }
-                        aria-label="Taisymo priežastis"
-                        className={input}
-                      />
+                    <dd className="mt-2 space-y-3">
+                      {/* Matomi užrašai virš kiekvieno lauko (design 7.7), ne tik `aria-label` ar placeholder. */}
+                      <Field label="Naujas tekstas" htmlFor={`edit-${c}`}>
+                        <textarea
+                          id={`edit-${c}`}
+                          value={draft}
+                          onChange={(e) => setDraft(e.target.value)}
+                          maxLength={5000}
+                          rows={4}
+                          autoFocus
+                          className={`${input} h-auto resize-y py-3 leading-relaxed`}
+                        />
+                      </Field>
+                      <Field
+                        label="Pagrindas"
+                        htmlFor={`rule-${c}`}
+                        hint={moderated ? "Pažeistas taisyklių punktas – privaloma." : "Nebūtina."}
+                      >
+                        <RuleSelect id={`rule-${c}`} value={rule} onChange={setRule} required={moderated} className={input} />
+                      </Field>
+                      <Field
+                        label="Priežastis"
+                        htmlFor={`reason-${c}`}
+                        hint={moderated ? "Privaloma; ją matys ir autorius." : "Privaloma; matys tik administratoriai."}
+                      >
+                        <input
+                          id={`reason-${c}`}
+                          value={reason}
+                          onChange={(e) => setReason(e.target.value)}
+                          maxLength={500}
+                          required
+                          className={input}
+                        />
+                      </Field>
                       <div className="flex justify-end gap-2">
                         <button type="button" disabled={pending} onClick={() => setEditing(null)} className={btnQuiet}>
                           Atšaukti
