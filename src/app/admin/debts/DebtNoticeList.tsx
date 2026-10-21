@@ -91,10 +91,10 @@ export function DebtNoticeList({ notices }: { notices: DebtNoticeView[] }) {
                 {n.remindedAt ? ` · priminta ${formatWhen(n.remindedAt)}` : ""}
               </p>
               {n.blockState === "email_failed" ? (
-                <p role="alert" className="mt-2 rounded-[12px] bg-app-danger-bg px-3 py-2 text-[13px] font-semibold text-app-danger-text">
+                <Alert className="mt-2">
                   Laiškas apie mokėjimo vietoje išjungimą neišėjo (nepavyko arba paskyra be el. pašto), todėl mokėjimas
                   vietoje neišjungtas. Patikrinkite meistro el. pašto adresą ir susisiekite su juo.
-                </p>
+                </Alert>
               ) : null}
               {/* Ilgi sakiniai – ne žymos, o eilutė po pavadinimu (design 7.5). */}
               {!n.paidAt && n.blockState === "blocked" ? (
@@ -104,9 +104,9 @@ export function DebtNoticeList({ notices }: { notices: DebtNoticeView[] }) {
                 <p className="mt-1 text-[13px] text-app-muted">Siunčiamas laiškas apie mokėjimo vietoje išjungimą.</p>
               ) : null}
               {n.blockState === "email_missing" ? (
-                <p role="alert" className="mt-2 rounded-[12px] bg-app-danger-bg px-3 py-2 text-[13px] font-semibold text-app-danger-text">
+                <Alert className="mt-2">
                   Pradelsta, bet laiško apie išjungimą eilėje nėra – taip būti neturėtų. Praneškite programuotojui.
-                </p>
+                </Alert>
               ) : null}
             </div>
             <div className="flex shrink-0 flex-wrap items-center gap-2">

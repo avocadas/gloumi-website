@@ -34,7 +34,7 @@ type Decision = "refund" | "release" | "gloumi_bears" | "master_bears";
 
 export const STATUS_TAG: Record<string, { label: string; tone: "warn" | "ok" | "neutral" | "danger" | "peach" }> = {
   open: { label: "Atviras", tone: "warn" },
-  refund: { label: "Grąžinama klientui", tone: "peach" },
+  refund: { label: "Grąžinama klientui", tone: "warn" },
   release: { label: "Išmokama meistrui", tone: "ok" },
   lost: { label: "Bankas: klientui", tone: "danger" },
   closed: { label: "Uždarytas", tone: "neutral" },

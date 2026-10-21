@@ -5,7 +5,7 @@ import { DisputeCard, type DisputeView } from "./DisputeCard";
 /** Būsenų mygtukai; `all` — visi, kitos — `booking_disputes.status`. */
 export const DISPUTE_FILTERS: { key: string; label: string }[] = [
   { key: "open", label: "Atviri" },
-  { key: "refund", label: "Grąžinama" },
+  { key: "refund", label: "Grąžinama klientui" },
   { key: "release", label: "Išmokama" },
   { key: "lost", label: "Bankas: klientui" },
   { key: "closed", label: "Uždaryti" },

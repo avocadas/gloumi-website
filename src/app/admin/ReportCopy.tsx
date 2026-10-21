@@ -5,7 +5,7 @@ import { IconEye, IconLock } from "@/components/icons";
 import { loadReportCopy, type ReportCopyView } from "./actions";
 import { MediaPreview } from "./data/RowCard";
 import { formatWhen } from "./format";
-import { STROKE, btnQuiet, eyebrow } from "./ui";
+import { Alert, STROKE, btnQuiet, eyebrow } from "./ui";
 
 /** Kopijos laukų pavadinimai (Gloumi `20261014210343` `content` raktai); nežinomas – rodomas raktas. */
 const FIELD_LABEL: Record<string, string> = {
@@ -65,9 +65,7 @@ export function ReportCopy({ reportId }: { reportId: string }) {
         </button>
         <p className="mt-0.5 px-4 text-xs text-app-faint">Pranešimo metu išsaugota kopija; atidarymas įrašomas žurnale.</p>
         {error ? (
-          <p role="alert" className="mt-2 text-xs font-semibold text-app-danger-text">
-            {error}
-          </p>
+          <Alert className="mt-2">{error}</Alert>
         ) : null}
       </div>
     );
