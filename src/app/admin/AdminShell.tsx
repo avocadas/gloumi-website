@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { IconChevronLeft, IconLock, IconLogOut } from "@/components/icons";
 import { checkAdmin } from "@/lib/admin-guard";
 import { mfaResetEnabled } from "@/lib/mfa-reset";
+import { AccountMenu } from "./AccountMenu";
 import { NavDrawer } from "./NavDrawer";
 import { ALL_ITEMS, BOTTOM_KEYS, NAV_GROUPS, type NavItem, type Section } from "./nav";
 import { loadQueueCounts, type QueueCounts } from "./queue-counts";
@@ -77,13 +78,8 @@ export async function AdminShell({
           <Link prefetch={false} href="/admin" aria-label="Gloumi administravimas — Apžvalga" className="min-w-0">
             <Brand />
           </Link>
-          <Link prefetch={false}
-            href="/admin/password"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-app-accent-soft text-sm font-bold text-app-accent"
-            aria-label={`${username} – paskyra ir slaptažodis`}
-          >
-            {initial}
-          </Link>
+          {/* Inicialas – meniu su vardu, „Slaptažodis“ ir „Atsijungti“ (design 1.3, D13). */}
+          <AccountMenu username={username} initial={initial} />
         </div>
 
         <header className={`relative ${hero ? "overflow-hidden bg-app-lavender" : ""}`}>
