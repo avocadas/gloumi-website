@@ -1,20 +1,25 @@
 /**
- * Administravimo portalo turinio saugumo politika (CSP, Gloumi
- * SECURITY_AUDIT L-10).
+ * Turinio saugumo politikos (CSP, Gloumi SECURITY_AUDIT L-10, #121) tiems
+ * puslapiams, kuriuos `proxy.ts` atvaizduoja kiekvienai užklausai: `/admin`,
+ * `/auth/*`, `/patvirtinta`, `/2fa-pagalba`, `/profile/<id>`, `/ref`.
  *
- * KODĖL TIK `/admin`
- * ------------------
+ * KODĖL TIK ŠIEMS
+ * ---------------
  * Portalas rodo tai, ką parašė naudotojai (skundai, atsiliepimai, vardai), ir
- * jame gyvena `aal2` administratoriaus sesija. React naudotojų tekstą įterpia
- * kaip tekstą, ne kaip HTML, ir `dangerouslySetInnerHTML` portale nėra, tad tai
- * antra gynybos linija, ne rastos XSS taisymas. Viešiems puslapiams nonce'o politika reikštų dinaminį
- * atvaizdavimą kiekvienam lankytojui (`next.config.ts`).
+ * jame gyvena `aal2` administratoriaus sesija; kiti – pašto nuorodų ir
+ * dalinimosi puslapiai, du iš jų rodo naudotojų turinį. React naudotojų tekstą
+ * įterpia kaip tekstą, ne kaip HTML, ir `dangerouslySetInnerHTML` šiuose
+ * puslapiuose nėra, tad tai antra gynybos linija, ne rastos XSS taisymas.
+ * Statiniams puslapiams nonce'o politika reikštų dinaminį atvaizdavimą
+ * kiekvienam lankytojui; jie gauna bazinę, be skriptų taisyklių
+ * (`next.config.ts`), o čia esanti ją pakeičia (ta pati antraštė).
  *
- * KODĖL KOL KAS `Report-Only`
- * ---------------------------
+ * KODĖL PORTALE PIRMA BUVO `Report-Only`
+ * --------------------------------------
  * Politika, kuri užblokuotų Next ar Vercel skriptą, išjungtų portalą visai, o
- * tai pamatytume tik prisijungę. Pirma renkamos ataskaitos (`/api/csp-report`)
- * iš tikro naudojimo, tada ta pati eilutė perkeliama į `Content-Security-Policy`.
+ * tai pamatytume tik prisijungę. Nuo 2026-10-11 ataskaitos (`/api/csp-report`)
+ * rinktos iš tikro naudojimo; nuo web audito 2026-10-22 ta pati eilutė yra
+ * `Content-Security-Policy` (`proxy.ts`), o `report-uri` lieka.
  *
  * KODĖL `style-src` SU `'unsafe-inline'`
  * --------------------------------------
@@ -74,6 +79,29 @@ export function authCsp(nonce: string, dev: boolean): string {
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${dev ? " 'unsafe-eval'" : ''}`,
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data:",
+    "font-src 'self'",
+    "connect-src 'self'",
+    "object-src 'none'",
+    "base-uri 'none'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+  ].join('; ');
+}
+
+/**
+ * Dalinimosi nuorodų puslapiai (`/profile/<id>`, `/ref`; web auditas
+ * 2026-10-22): rodo naudotojų turinį (meistro vardą, paslaugas, atsiliepimus),
+ * todėl – ta pati griežta ir privaloma politika kaip `authCsp`. Vienintelis
+ * skirtumas – nuotraukos: meistro avataras ir darbai ateina pasirašytais R2
+ * adresais (`public-media-urls`; `public-master.ts` priima tik
+ * `*.r2.cloudflarestorage.com`).
+ */
+export function appLinkCsp(nonce: string, dev: boolean): string {
+  return [
+    "default-src 'self'",
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${dev ? " 'unsafe-eval'" : ''}`,
+    "style-src 'self' 'unsafe-inline'",
+    `img-src 'self' data: ${R2}`,
     "font-src 'self'",
     "connect-src 'self'",
     "object-src 'none'",
