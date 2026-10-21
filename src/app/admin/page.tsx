@@ -6,6 +6,8 @@ import { AdminShell } from "./AdminShell";
 import { SearchField } from "./data/SearchField";
 import { MfaNotice } from "./MfaNotice";
 import { ALL_ITEMS, type NavItem } from "./nav";
+import { formatWhen } from "./format";
+import { actionLabel, loadQueueOldest, loadRecentActions, oldestNote } from "./overview-data";
 import { loadQueueCounts, type QueueCounts } from "./queue-counts";
 import { STROKE, SectionTitle, btn, card } from "./ui";
 
@@ -52,7 +54,11 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
   const { status } = await searchParams;
   if (typeof status === "string" && status) redirect(`/admin/reports?status=${encodeURIComponent(status)}`);
 
-  const counts = await loadQueueCounts(check.userId);
+  const [counts, oldest, recent] = await Promise.all([
+    loadQueueCounts(check.userId),
+    loadQueueOldest(check.userId),
+    loadRecentActions(),
+  ]);
 
   return (
     <AdminShell section="overview" title="Apžvalga" subtitle={weekday(new Date())} username={check.username ?? check.userId}>
@@ -85,7 +91,8 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
                       : n === undefined
                         ? c.note
                         : n > 0
-                          ? (c.note ?? "Laukia sprendimo")
+                          ? // „seniausias – prieš N d.“ (design 2 sk.); nežinant – ankstesnis sakinys.
+                            ((c.count ? oldestNote(oldest[c.count]) : null) ?? c.note ?? "Laukia sprendimo")
                           : "Viskas sutvarkyta"}
                   </span>
                 </Link>
@@ -105,6 +112,31 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
           </button>
         </form>
       </section>
+
+      {/* Paskutiniai veiksmai (design 2 sk.) – 5 eilutės iš žurnalo: kas, ką, kada. Nepavykus – skilties nėra. */}
+      {recent && recent.length > 0 ? (
+        <section className={`${card} mt-8 p-5 sm:p-6`}>
+          <SectionTitle title="Paskutiniai veiksmai" note="Iš administratorių žurnalo." />
+          <ul className="divide-y divide-app-hairline">
+            {recent.map((a) => (
+              <li key={a.id} className="flex flex-col gap-0.5 py-2.5 text-sm sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+                <span className="min-w-0 break-words text-app-ink">
+                  <span className="font-semibold">{a.who ?? "Administratorius"}</span> {actionLabel(a.action)}
+                  {a.targetType === "profile" && a.targetId ? (
+                    <>
+                      {" · "}
+                      <Link prefetch={false} href={`/admin/users/${a.targetId}`} className="font-medium text-app-accent hover:underline">
+                        paskyra
+                      </Link>
+                    </>
+                  ) : null}
+                </span>
+                <span className="shrink-0 text-[13px] text-app-muted tabular-nums">{formatWhen(a.at)}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
     </AdminShell>
   );
 }
