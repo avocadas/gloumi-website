@@ -2,10 +2,9 @@
 
 import { useState, useTransition, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { IconAlert } from "@/components/icons";
 import type { MfaResetRow } from "@/lib/mfa-reset";
 import { formatWhen } from "../format";
-import { STROKE, Tag, btn, btnDanger, btnQuiet, card, eyebrow, input } from "../ui";
+import { Alert, btn, btnDanger, btnQuiet, card, eyebrow, input, Tag } from "../ui";
 import { executeMfaReset, openMfaReset } from "./actions";
 
 type TagTone = Parameters<typeof Tag>[0]["tone"];
@@ -73,10 +72,9 @@ function actionFor(row: MfaResetRow): { label: string; pending: string; text: st
 
 function Problem({ text }: { text: string }) {
   return (
-    <p role="alert" className="flex items-start gap-2 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
-      <IconAlert size={16} strokeWidth={STROKE} aria-hidden className="mt-0.5 shrink-0" />
+    <Alert>
       {text}
-    </p>
+    </Alert>
   );
 }
 

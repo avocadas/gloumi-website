@@ -5,7 +5,7 @@ import { useState, useTransition } from "react";
 import { IconChevronRight, IconWallet } from "@/components/icons";
 import { useConfirm } from "../ConfirmDialog";
 import type { NoticeNote } from "../moderation-email";
-import { ActionNote, STROKE, btn, btnDanger } from "../ui";
+import { ActionNote, Alert, btn, btnDanger, STROKE } from "../ui";
 import { openDispute } from "./actions";
 
 /** Vizitai, kurių pinigai dar Gloumi rankose (Gloumi `admin_open_dispute` sąlyga). */
@@ -92,9 +92,9 @@ export function HoldBooking({ bookingId }: { bookingId: string }) {
         </div>
       )}
       {error ? (
-        <p role="alert" className="mt-3 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
+        <Alert className="mt-3">
           {error}
-        </p>
+        </Alert>
       ) : null}
       <ActionNote note={note} />
     </div>

@@ -146,9 +146,9 @@ export default async function DisputesPage({ searchParams }: { searchParams: Pro
         </Alert>
       ) : null}
       {error ? (
-        <p role="alert" className="mb-6 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
+        <Alert className="mb-6">
           Ginčų gauti nepavyko: {error.message}
-        </p>
+        </Alert>
       ) : null}
       <DisputeQueue wanted={wanted} counts={counts} disputes={disputes} held={held} />
     </AdminShell>

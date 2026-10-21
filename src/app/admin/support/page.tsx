@@ -5,6 +5,7 @@ import { AdminShell } from "../AdminShell";
 import { MfaNotice } from "../MfaNotice";
 import { SUPPORT_FILTERS, SupportQueue } from "./SupportQueue";
 import type { TicketView } from "./TicketCard";
+import { Alert } from "../ui";
 
 /*
  * Pagalbos eilė (Gloumi #209). Žmogus programėlėje rašo „Pagalba → Neradote
@@ -112,9 +113,9 @@ export default async function SupportPage({ searchParams }: { searchParams: Prom
       username={check.username ?? check.userId}
     >
       {error ? (
-        <p role="alert" className="mb-6 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
+        <Alert className="mb-6">
           Užklausų gauti nepavyko: {error.message}
-        </p>
+        </Alert>
       ) : null}
       {/* 2FA atstatymas – šoninėje juostoje (design 7.3). */}
       <SupportQueue wanted={wanted} counts={counts} tickets={tickets} />

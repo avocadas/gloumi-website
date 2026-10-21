@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { IconBadgePercent, IconCrown, IconProfile } from "@/components/icons";
 import { useConfirm } from "../ConfirmDialog";
-import { STROKE, Tag, btnDanger, card } from "../ui";
+import { Alert, btnDanger, card, STROKE, Tag } from "../ui";
 import { clearCommissionWaiver, revokePlanGrant } from "./actions";
 
 export type GrantView = {
@@ -128,9 +128,9 @@ function GrantRow({ grant, showMaster }: { grant: GrantView; showMaster: boolean
       ) : null}
 
       {error ? (
-        <p role="alert" className="mt-3 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
+        <Alert className="mt-3">
           {error}
-        </p>
+        </Alert>
       ) : null}
 
       {active ? (

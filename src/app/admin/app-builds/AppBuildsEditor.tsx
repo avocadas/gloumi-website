@@ -3,8 +3,7 @@
 import { useState, useTransition } from "react";
 import { setAppBuild, type AppBuilds } from "../actions";
 import { useConfirm } from "../ConfirmDialog";
-import { STROKE, btn, card, eyebrow, input } from "../ui";
-import { IconAlert } from "@/components/icons";
+import { Alert, btn, card, eyebrow, input } from "../ui";
 
 type Platform = "ios" | "android";
 type Kind = "min" | "latest";
@@ -93,10 +92,9 @@ export function AppBuildsEditor({ initial }: { initial: AppBuilds }) {
     <div className="space-y-4">
       {dialog}
       {error ? (
-        <p role="alert" className="flex items-start gap-2 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
-          <IconAlert size={16} strokeWidth={STROKE} aria-hidden className="mt-0.5 shrink-0" />
+        <Alert>
           {error}
-        </p>
+        </Alert>
       ) : null}
       {saved ? <p className="rounded-[14px] bg-app-band px-4 py-3 text-sm text-app-ink">Išsaugota: {saved}</p> : null}
 

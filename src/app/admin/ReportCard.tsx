@@ -129,7 +129,7 @@ export function ReportCard({ report }: { report: ReportView }) {
   const status = STATUS_TAG[report.status];
 
   return (
-    <article className={`${card} p-5 transition-opacity sm:p-6 ${done ? "opacity-60" : ""}`}>
+    <article className={`${card} p-5 sm:p-6`}>
       {dialog}
       <header className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-2">
@@ -137,7 +137,8 @@ export function ReportCard({ report }: { report: ReportView }) {
             {TARGET_LABEL[report.targetType] ?? report.targetType}
           </Tag>
           {status ? <Tag tone={status.tone}>{status.label}</Tag> : null}
-          {done ? <Tag tone="info">{done}</Tag> : null}
+          {/* Galutinė būsena – neutrali žyma, ne išblukusi kortelė (design §6). */}
+          {done ? <Tag tone="neutral">{done}</Tag> : null}
         </div>
         <time dateTime={report.createdAt} className="text-xs tabular-nums text-app-muted">
           {formatWhen(report.createdAt)}

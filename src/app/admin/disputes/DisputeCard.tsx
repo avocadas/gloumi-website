@@ -6,7 +6,7 @@ import { resolveDispute } from "../actions";
 import { useConfirm, type ConfirmOptions } from "../ConfirmDialog";
 import { formatMoney, formatWhen } from "../format";
 import type { NoticeNote } from "../moderation-email";
-import { ActionNote, STROKE, Tag, btn, card, eyebrow } from "../ui";
+import { ActionNote, Alert, btn, card, eyebrow, STROKE, Tag } from "../ui";
 import { CopyButton } from "../users/[id]/CopyButton";
 
 export type DisputeView = {
@@ -250,9 +250,9 @@ export function DisputeCard({ dispute }: { dispute: DisputeView }) {
       </div>
 
       {error ? (
-        <p role="alert" className="mt-4 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
+        <Alert className="mt-4">
           {error}
-        </p>
+        </Alert>
       ) : null}
       <ActionNote note={note} />
 

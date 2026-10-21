@@ -5,6 +5,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { AdminShell } from "../AdminShell";
 import { MfaNotice } from "../MfaNotice";
 import { MfaResetDesk } from "./MfaResetDesk";
+import { Alert } from "../ui";
 
 /*
  * 2FA pagalba (security procedūra 2026-10-18, 5.3): žmogus be telefono ir be
@@ -80,9 +81,9 @@ export default async function MfaResetPage() {
       username={check.username ?? check.userId}
     >
       {loadError ? (
-        <p role="alert" className="mb-6 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
+        <Alert className="mb-6">
           Prašymų gauti nepavyko: {loadError}
-        </p>
+        </Alert>
       ) : null}
       <MfaResetDesk rows={rows} />
     </AdminShell>

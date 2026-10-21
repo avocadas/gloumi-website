@@ -5,7 +5,7 @@ import { useState, useTransition } from "react";
 import { IconPencil } from "@/components/icons";
 import { correctBirthDate } from "../../actions";
 import { useConfirm } from "../../ConfirmDialog";
-import { STROKE, btn, card, dateInput } from "../../ui";
+import { Alert, btn, card, dateInput, STROKE } from "../../ui";
 
 /*
  * Gimimo datos taisymas (BDAR 16 str., teisininkas; Gloumi `20261008204515`
@@ -80,9 +80,9 @@ export function BirthDateCorrection({ userId, birthDate }: { userId: string; bir
       </div>
       {done ? <p className="mt-3 text-sm font-semibold text-app-body">Pataisyta; įrašyta žurnale.</p> : null}
       {error ? (
-        <p role="alert" className="mt-3 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
+        <Alert className="mt-3">
           {error}
-        </p>
+        </Alert>
       ) : null}
     </div>
   );

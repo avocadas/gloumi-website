@@ -4,7 +4,7 @@ import { checkAdmin } from "@/lib/admin-guard";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { AdminShell } from "../AdminShell";
 import { MfaNotice } from "../MfaNotice";
-import { chip, chipActive } from "../ui";
+import { Alert, chip, chipActive } from "../ui";
 import { DebtNoticeList, type BlockState, type DebtNoticeView } from "./DebtNoticeList";
 
 /*
@@ -108,20 +108,20 @@ export default async function DebtsPage({ searchParams }: { searchParams: Promis
       username={check.username ?? check.userId}
     >
       {error ? (
-        <p role="alert" className="rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
+        <Alert>
           Prašymų gauti nepavyko: {error.message}
-        </p>
+        </Alert>
       ) : (
         <>
           {attention > 0 ? (
-            <p role="alert" className="mb-5 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
+            <Alert className="mb-5">
               Reikia dėmesio: {attention}. Pradelstų prašymų laiškai meistrams neišėjo, todėl mokėjimas vietoje jiems
               neišjungtas. Jie pažymėti sąraše{" "}
               <Link prefetch={false} href="/admin/debts?status=overdue" className="underline">
                 „Pradelsti“
               </Link>
               .
-            </p>
+            </Alert>
           ) : null}
           <nav aria-label="Prašymų būsena" className="mb-6 flex flex-wrap gap-2">
             {FILTERS.map(({ key, label }) => (

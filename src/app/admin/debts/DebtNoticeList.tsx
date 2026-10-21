@@ -7,7 +7,7 @@ import { IconCheck, IconReceipt } from "@/components/icons";
 import { markDebtNoticePaid } from "../actions";
 import { useConfirm } from "../ConfirmDialog";
 import { formatMoney, formatWhen } from "../format";
-import { EmptyState, STROKE, Tag, btn, card } from "../ui";
+import { Alert, btn, card, EmptyState, STROKE, Tag } from "../ui";
 
 export type DebtNoticeView = {
   id: string;
@@ -68,9 +68,9 @@ export function DebtNoticeList({ notices }: { notices: DebtNoticeView[] }) {
     <div>
       {dialog}
       {error ? (
-        <p role="alert" className="mb-4 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
+        <Alert className="mb-4">
           {error}
-        </p>
+        </Alert>
       ) : null}
       <ul className={`${card} divide-y divide-app-hairline`}>
         {notices.map((n) => (

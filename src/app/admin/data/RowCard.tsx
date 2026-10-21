@@ -11,7 +11,7 @@ import { MODERATED_TABLES } from "../moderated-tables";
 import type { NoticeNote } from "../moderation-email";
 import { RuleSelect } from "../ModerationRules";
 import { UUID_PATTERN, columnLabel, formatValue, formatWhen, ownerLabel } from "../format";
-import { ActionNote, Field, STROKE, Tag, btn, btnDanger, btnQuiet, card, eyebrow, input } from "../ui";
+import { ActionNote, Alert, btn, btnDanger, btnQuiet, card, eyebrow, Field, input, STROKE, Tag } from "../ui";
 
 type Props = {
   table: string;
@@ -124,7 +124,7 @@ export function RowCard({
   };
 
   return (
-    <article className={`${card} p-5 transition-opacity sm:p-6 ${removed ? "opacity-60" : ""}`}>
+    <article className={`${card} p-5 sm:p-6`}>
       {dialog}
       <header className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-2">
@@ -139,7 +139,8 @@ export function RowCard({
               {ownerLabel(c)}
             </a>
           ))}
-          {removed ? <Tag tone="danger">Ištrinta</Tag> : null}
+          {/* Galutinė būsena – neutrali žyma, ne išblukusi kortelė (design §6). */}
+          {removed ? <Tag tone="neutral">Ištrinta</Tag> : null}
         </div>
         {stamp ? (
           <span className="inline-flex items-center gap-1 text-xs tabular-nums text-app-muted">
@@ -263,9 +264,9 @@ export function RowCard({
       </details>
 
       {error ? (
-        <p role="alert" className="mt-4 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
+        <Alert className="mt-4">
           {error}
-        </p>
+        </Alert>
       ) : null}
       <ActionNote note={note} />
 

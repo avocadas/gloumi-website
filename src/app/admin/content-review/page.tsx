@@ -6,7 +6,7 @@ import { signMedia } from "@/lib/admin-data";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { AdminShell } from "../AdminShell";
 import { MfaNotice } from "../MfaNotice";
-import { EmptyState, STROKE, chip, chipActive } from "../ui";
+import { Alert, chip, chipActive, EmptyState, STROKE } from "../ui";
 import { ReviewCard, type ReviewView } from "./ReviewCard";
 
 /*
@@ -139,11 +139,11 @@ export default async function ContentReviewPage({ searchParams }: { searchParams
       </nav>
 
       {error ? (
-        <p role="alert" className="rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
+        <Alert>
           {error.code === "PGRST202"
             ? "Turinio peržiūra bazėje dar neįjungta (migracija nepritaikyta)."
             : `Prašymų gauti nepavyko: ${error.message}`}
-        </p>
+        </Alert>
       ) : views.length === 0 ? (
         <EmptyState tone="rose" icon={<IconShieldCheck size={24} strokeWidth={STROKE} aria-hidden />} title="Peržiūrai nieko nelaukia">
           {wanted === "open" ? "Kai filtras sulaikys tekstą ar nuotrauką ir autorius paprašys peržiūros, prašymas atsiras čia." : wanted === "all" ? "Peržiūros prašymų dar nėra." : "Šioje būsenoje prašymų nėra."}

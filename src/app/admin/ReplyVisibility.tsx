@@ -5,7 +5,7 @@ import { IconEye, IconEyeOff } from "@/components/icons";
 import { setReviewReplyHidden } from "./actions";
 import { useConfirm } from "./ConfirmDialog";
 import type { NoticeNote } from "./moderation-email";
-import { ActionNote, STROKE, btn, btnDanger } from "./ui";
+import { ActionNote, Alert, btn, btnDanger, STROKE } from "./ui";
 
 /*
  * Meistro atsakymo į atsiliepimą „Paslėpti“ / „Rodyti“ (U-19, #207). Tas pats
@@ -65,9 +65,9 @@ export function ReplyVisibility({ replyId, hiddenAt }: { replyId: string; hidden
         {hidden ? "Rodyti atsakymą" : "Paslėpti atsakymą"}
       </button>
       {error ? (
-        <p role="alert" className="mt-3 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
+        <Alert className="mt-3">
           {error}
-        </p>
+        </Alert>
       ) : null}
       <ActionNote note={note} />
     </div>

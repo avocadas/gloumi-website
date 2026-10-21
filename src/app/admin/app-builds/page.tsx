@@ -5,6 +5,7 @@ import type { AppBuilds } from "../actions";
 import { AdminShell } from "../AdminShell";
 import { MfaNotice } from "../MfaNotice";
 import { AppBuildsEditor } from "./AppBuildsEditor";
+import { Alert } from "../ui";
 
 /*
  * Programėlės versijų ribos: privalomas ir naujausias build'as abiem
@@ -41,11 +42,11 @@ export default async function AppBuildsPage() {
       username={check.username ?? check.userId}
     >
       {error ? (
-        <p role="alert" className="rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
+        <Alert>
           {error.code === "PGRST202"
             ? "Versijų ribos bazėje dar neįjungtos (migracija nepritaikyta)."
             : `Reikšmių gauti nepavyko: ${error.message}`}
-        </p>
+        </Alert>
       ) : (
         <AppBuildsEditor initial={builds} />
       )}

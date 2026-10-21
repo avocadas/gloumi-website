@@ -1,7 +1,7 @@
 import { IconChevronLeft, IconChevronRight, IconClose, IconProfile, IconSearch } from "@/components/icons";
 import { PAGE_SIZE, type CatalogEntry, type CatalogKind, type SearchResult, type SignedMedia } from "@/lib/admin-data";
 import { ownerLabel } from "../format";
-import { EmptyState, STROKE, Tag, btn, card } from "../ui";
+import { Alert, btn, card, EmptyState, STROKE, Tag } from "../ui";
 import { RowCard } from "./RowCard";
 import { SearchField } from "./SearchField";
 
@@ -133,9 +133,9 @@ export function TableResults({
 
       <div className="mt-6">
         {!res.ok ? (
-          <p role="alert" className="rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
+          <Alert>
             {res.error}
-          </p>
+          </Alert>
         ) : rows.length === 0 ? (
           <EmptyState tone="lavender" icon={<IconSearch size={24} strokeWidth={STROKE} aria-hidden />} title="Nieko nerasta">
             {total === 0

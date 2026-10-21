@@ -9,7 +9,7 @@ import { useConfirm } from "../ConfirmDialog";
 import { MediaPreview } from "../data/RowCard";
 import { formatWhen } from "../format";
 import type { NoticeNote } from "../moderation-email";
-import { ActionNote, STROKE, Tag, btn, btnDanger, card } from "../ui";
+import { ActionNote, Alert, btn, btnDanger, card, STROKE, Tag } from "../ui";
 
 export type ReviewView = {
   id: string;
@@ -237,9 +237,9 @@ export function ReviewCard({ view }: { view: ReviewView }) {
         </div>
       ) : null}
       {error ? (
-        <p role="alert" className="mt-3 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
+        <Alert className="mt-3">
           {error}
-        </p>
+        </Alert>
       ) : null}
       <ActionNote note={note} />
     </li>

@@ -6,7 +6,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { AdminShell } from "../AdminShell";
 import { formatWhen } from "../format";
 import { MfaNotice } from "../MfaNotice";
-import { EmptyState, STROKE, Tag, card } from "../ui";
+import { Alert, card, EmptyState, STROKE, Tag } from "../ui";
 
 /*
  * Rezervavimo įspėjimai (#207; Gloumi `20261005185534`): bazė juos įrašo
@@ -49,9 +49,9 @@ export default async function WarningsPage() {
       username={check.username ?? check.userId}
     >
       {error ? (
-        <p role="alert" className="rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
+        <Alert>
           Įspėjimų gauti nepavyko: {error.message}
-        </p>
+        </Alert>
       ) : warnings.length === 0 ? (
         <EmptyState tone="rose" icon={<IconCalendarCheck size={24} strokeWidth={STROKE} aria-hidden />} title="Įspėjimų nėra">
           Per 90 dienų nė vienas klientas neviršijo atšaukimų ar neatvykimų ribos.

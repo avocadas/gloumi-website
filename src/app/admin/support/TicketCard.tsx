@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { IconCalendar, IconCheck, IconMail, IconProfile, IconUndo } from "@/components/icons";
 import { formatWhen } from "../format";
 import { site } from "@/content/site";
-import { STROKE, Tag, btn, btnPrimary, card } from "../ui";
+import { Alert, btn, btnPrimary, card, STROKE, Tag } from "../ui";
 import { setSupportTicketStatus } from "./actions";
 
 export type TicketView = {
@@ -65,13 +65,13 @@ export function TicketCard({ ticket }: { ticket: TicketView }) {
     : null;
 
   return (
-    <article className={`${card} p-5 transition-opacity sm:p-6 ${status === "closed" ? "opacity-70" : ""}`}>
+    <article className={`${card} p-5 sm:p-6`}>
       <header className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-2">
           <Tag tone={ticket.authorRole === "master" ? "lavender" : "neutral"}>
             {ticket.authorRole === "master" ? "Meistras" : "Klientas"}
           </Tag>
-          {status === "open" ? <Tag tone="warn">Atvira</Tag> : <Tag tone="ok">{closedAt ? `Išspręsta ${formatWhen(closedAt)}` : "Išspręsta"}</Tag>}
+          {status === "open" ? <Tag tone="warn">Atvira</Tag> : <Tag tone="neutral">{closedAt ? `Išspręsta ${formatWhen(closedAt)}` : "Išspręsta"}</Tag>}
         </div>
         <time dateTime={ticket.createdAt} className="text-xs tabular-nums text-app-muted">
           {formatWhen(ticket.createdAt)}
@@ -109,9 +109,9 @@ export function TicketCard({ ticket }: { ticket: TicketView }) {
       </div>
 
       {error ? (
-        <p role="alert" className="mt-4 rounded-[14px] bg-app-danger-bg px-4 py-3 text-sm font-semibold text-app-danger-text">
+        <Alert className="mt-4">
           {error}
-        </p>
+        </Alert>
       ) : null}
 
       <footer className="mt-5 flex flex-col gap-2 border-t border-app-hairline pt-4 sm:flex-row sm:items-center sm:justify-between">
