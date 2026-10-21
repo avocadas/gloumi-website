@@ -138,7 +138,7 @@ function NavLink({ item, active, n }: { item: NavItem; active: boolean; n: numbe
     <Link prefetch={false}
       href={item.href}
       aria-current={active ? "page" : undefined}
-      className={`flex h-10 items-center gap-3 rounded-xl px-3 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-app-accent/40 focus-visible:outline-none ${
+      className={`flex h-10 items-center gap-3 rounded-xl px-3 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-app-accent focus-visible:outline-none ${
         active ? "bg-app-accent-soft font-semibold text-app-accent" : "font-medium text-app-ink hover:bg-app-input"
       }`}
     >

@@ -183,6 +183,7 @@ export function DisputeCard({ dispute }: { dispute: DisputeView }) {
     const answer = await ask(dialogs[decision]);
     if (!answer) return;
     setError(null);
+    setNote(null);
     startTransition(async () => {
       const res = await resolveDispute(dispute.bookingId, decision, answer.reason);
       if (res.ok) {

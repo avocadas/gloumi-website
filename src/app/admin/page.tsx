@@ -73,7 +73,7 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
               <li key={c.key}>
                 <Link prefetch={false}
                   href={item.href}
-                  className={`${card} flex h-full flex-col gap-2 p-5 transition-colors hover:bg-app-input focus-visible:ring-2 focus-visible:ring-app-accent/40 focus-visible:outline-none`}
+                  className={`${card} flex h-full flex-col gap-2 p-5 transition-colors hover:bg-app-input focus-visible:ring-2 focus-visible:ring-app-accent focus-visible:outline-none`}
                 >
                   <span className="flex items-center gap-2 text-[15px] font-semibold text-app-ink">
                     <Icon size={18} strokeWidth={STROKE} aria-hidden className="text-app-faint" />

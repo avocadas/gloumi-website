@@ -98,7 +98,7 @@ export const card = "rounded-[20px] bg-white shadow-app-card";
  * lūžta į dvi eilutes, o ne išlenda (6 sk.). Fokusas – BORDO žiedas (10 sk.).
  */
 const btnBase =
-  "inline-flex min-h-11 items-center justify-center gap-2 rounded-[14px] px-4 py-2 text-center text-sm font-semibold leading-tight transition-colors outline-none focus-visible:ring-2 focus-visible:ring-app-accent/40 disabled:cursor-not-allowed disabled:opacity-40";
+  "inline-flex min-h-11 items-center justify-center gap-2 rounded-[14px] px-4 py-2 text-center text-sm font-semibold leading-tight transition-colors outline-none focus-visible:ring-2 focus-visible:ring-app-accent disabled:cursor-not-allowed disabled:opacity-40";
 
 /** Pagrindinis – vienas svarbiausias veiksmas kortelėje ar dialoge („Suteikti“, „Išsaugoti“). */
 export const btnPrimary = `${btnBase} bg-app-accent text-white shadow-app-primary hover:bg-[#8c0f36]`;
@@ -289,7 +289,7 @@ export function Segment<T extends string>({
             aria-checked={active}
             disabled={disabled}
             onClick={() => onChange(o.value)}
-            className={`min-h-9 flex-1 rounded-[10px] px-3 text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-app-accent/40 disabled:opacity-40 ${
+            className={`min-h-9 flex-1 rounded-[10px] px-3 text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-app-accent disabled:opacity-40 ${
               active ? "bg-white font-semibold text-app-ink shadow-app-card" : "font-medium text-app-muted hover:text-app-ink"
             }`}
           >

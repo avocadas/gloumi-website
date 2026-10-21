@@ -115,6 +115,7 @@ export function ReportCard({ report }: { report: ReportView }) {
       answer = given;
     }
     setError(null);
+    setNote(null);
     startTransition(async () => {
       const res = await fn(answer);
       if (res.ok) {

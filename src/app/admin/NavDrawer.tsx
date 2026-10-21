@@ -26,7 +26,7 @@ export function NavDrawer({ children }: { children: ReactNode }) {
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Atidaryti meniu"
-        className="flex h-11 w-11 items-center justify-center rounded-[14px] text-app-ink hover:bg-app-input focus-visible:ring-2 focus-visible:ring-app-accent/40 focus-visible:outline-none"
+        className="flex h-11 w-11 items-center justify-center rounded-[14px] text-app-ink hover:bg-app-input focus-visible:ring-2 focus-visible:ring-app-accent focus-visible:outline-none"
       >
         <IconMenu size={22} strokeWidth={STROKE} aria-hidden />
       </button>

@@ -58,7 +58,9 @@ export function ActionNote({ note }: { note: { text: string; tone: "info" | "war
   const info = note && note.tone === "info" ? note.text : null;
   useEffect(() => {
     if (info) show(info);
-  }, [info, note, show]);
+    // Pagal tekstą, ne pagal objektą: tėvui persipiešus su tuo pačiu tekstu toast neiššoka antrą kartą (design).
+    // Prieš kiekvieną veiksmą kortelės pastabą išvalo (`setNote(null)`), todėl tas pats tekstas po naujo veiksmo vėl parodomas.
+  }, [info, show]);
   if (!note || note.tone !== "warn") return null;
   return (
     <p role="status" className="mt-4 rounded-[14px] bg-app-warn-bg px-4 py-3 text-[13px] font-semibold text-app-warn">

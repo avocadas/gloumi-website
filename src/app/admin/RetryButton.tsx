@@ -16,7 +16,7 @@ export function RetryButton() {
       type="button"
       disabled={pending}
       onClick={() => startTransition(() => router.refresh())}
-      className="shrink-0 rounded-[10px] px-2.5 py-1 text-[13px] font-semibold underline-offset-2 hover:underline disabled:opacity-60"
+      className="-my-2.5 min-h-11 shrink-0 rounded-[10px] px-2.5 text-[13px] font-semibold underline-offset-2 hover:underline disabled:opacity-60"
     >
       {pending ? "Kraunama…" : "Bandyti dar kartą"}
     </button>
