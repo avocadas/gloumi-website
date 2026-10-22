@@ -94,7 +94,7 @@ export function MasterPage({
   const copy = all.masterPage;
   const place = [master.city, master.district].filter(Boolean).join(", ");
   const avatar = master.avatarMediaId ? media[master.avatarMediaId] : undefined;
-  const works = master.portfolio.filter((w) => isShowableWork(w) && w.mediaId && media[w.mediaId]);
+  const works = master.portfolio.filter((w) => isShowableWork(w, master.worksFrom) && w.mediaId && media[w.mediaId]);
   const cancellationKey = cancellationTextKey(master.cancellationPolicy, appPaymentsAllowed);
   const cancellationText = cancellationKey ? copy.cancellationPolicies[cancellationKey] : undefined;
 

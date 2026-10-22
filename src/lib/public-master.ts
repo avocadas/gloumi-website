@@ -25,7 +25,17 @@ export type PublicService = {
 
 export type PublicHours = { weekday: number; start: string | null; end: string | null; off: boolean };
 
-export type PublicWork = { id: string; mediaId: string | null; title: string | null; price: number | null; category: string | null };
+export type PublicWork = {
+  id: string;
+  mediaId: string | null;
+  title: string | null;
+  price: number | null;
+  category: string | null;
+  /** Kada įrašas sukurtas (`posts.created_at`). */
+  createdAt: string | null;
+  /** Ar įrašas jautrus (`posts.sensitive_consent_at` užpildytas); `null` – bazė nepasakė. */
+  sensitive: boolean | null;
+};
 
 /*
  * Kurių darbų nuotraukas galima rodyti viešai (developeris 2026-10-11: „Taip,
@@ -37,8 +47,19 @@ export type PublicWork = { id: string; mediaId: string | null; title: string | n
 const SHOWABLE_WORK = new Set(["hair", "nails", "brows_lashes", "makeup"]);
 const FOOT_WORK = /pedik|pedic|pėd|foot|feet/i;
 
-export function isShowableWork(w: PublicWork): boolean {
-  return !!w.category && SHOWABLE_WORK.has(w.category) && !FOOT_WORK.test(w.title ?? "");
+/*
+ * B-13 (teisininkas 2026-10-22, sprendimas a; T-52): viešai – tik darbai,
+ * įkelti po to, kai meistras patvirtino 1.21 ar naujesnį mediaConsentOnce
+ * tekstą (tik jis mini viešą puslapį gloumi.lt), ir niekada jautrūs įrašai.
+ * Ribą (`works_from`), įrašo laiką ir žymę `sensitive` duoda bazė; kurio nors
+ * trūksta – darbo nerodome: senesnis sutikimas viešo puslapio nedengia.
+ */
+export function isShowableWork(w: PublicWork, worksFrom: string | null): boolean {
+  if (!w.category || !SHOWABLE_WORK.has(w.category) || FOOT_WORK.test(w.title ?? "")) return false;
+  if (w.sensitive !== false) return false;
+  const from = worksFrom ? Date.parse(worksFrom) : NaN;
+  const at = w.createdAt ? Date.parse(w.createdAt) : NaN;
+  return Number.isFinite(from) && Number.isFinite(at) && at >= from;
 }
 
 export type PublicMaster = {
@@ -59,6 +80,8 @@ export type PublicMaster = {
   rules: string | null;
   bookingLeadHours: number | null;
   hours: PublicHours[];
+  /** Nuo kada meistro darbus galima rodyti viešai (B-13): 1.21 mediaConsentOnce patvirtinimo laikas; `null` – darbų nerodome. */
+  worksFrom: string | null;
   portfolio: PublicWork[];
 };
 
@@ -105,8 +128,17 @@ export function toPublicMaster(raw: Raw): PublicMaster | null {
     hours: rows(raw.hours)
       .map((h) => ({ weekday: num(h.weekday) ?? -1, start: str(h.start_time), end: str(h.end_time), off: h.is_off === true }))
       .filter((h) => h.weekday >= 0 && h.weekday <= 6),
+    worksFrom: str(raw.works_from),
     portfolio: rows(raw.portfolio)
-      .map((p) => ({ id: String(p.id ?? ""), mediaId: str(p.media_id), title: str(p.service_title), price: num(p.price), category: str(p.category) }))
+      .map((p) => ({
+        id: String(p.id ?? ""),
+        mediaId: str(p.media_id),
+        title: str(p.service_title),
+        price: num(p.price),
+        category: str(p.category),
+        createdAt: str(p.created_at),
+        sensitive: typeof p.sensitive === "boolean" ? p.sensitive : null,
+      }))
       .filter((p) => p.id),
   };
 }
