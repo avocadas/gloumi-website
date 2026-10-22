@@ -42,7 +42,7 @@ export function WhyGloumi({ lang }: { lang: Lang }) {
               <li key={step.title}>
                 <Reveal delay={index * 0.1}>
                   <div className="flex gap-5 sm:flex-col sm:gap-4">
-                    <span className="font-serif text-5xl font-medium leading-none text-terracotta-300" aria-hidden="true">
+                    <span className="font-serif text-5xl font-medium leading-none text-terracotta-400" aria-hidden="true">
                       {String(index + 1).padStart(2, "0")}
                     </span>
                     <div>

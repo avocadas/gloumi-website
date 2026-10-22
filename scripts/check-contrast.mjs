@@ -24,6 +24,7 @@ const palette = {
   "espresso-500": "#6B5D57",
   "espresso-400": "#776A63",
   "terracotta-300": "#D9A48C",
+  "terracotta-400": "#C27C5D",
   "terracotta-600": "#8F3D26",
   "terracotta-700": "#73301E",
   "plum-700": "#55223A",
@@ -72,6 +73,13 @@ const PAIRS = [
   ["white", "espresso-950", 4.5, "store badge label"],
   ["espresso-900", "sand-200", 4.5, "chips"],
   ["sage-500", "white", 4.5, "trust ticks and success icons"],
+  /*
+   * Large decorative numerals, aria-hidden (the heading or the list carries the
+   * meaning), so 3:1 as large text: web audit 2026-10-22 found them at 2.0–2.2:1
+   * in terracotta-300 once the scroll-reveal blocks were made visible to axe.
+   */
+  ["terracotta-400", "white", 3, "step numbers 01–03 in Why Gloumi (decorative, 48 px)"],
+  ["terracotta-400", "cream-100", 3, "the 404 and error page code (decorative, 60 px)"],
   ["espresso-900", "cream-200", 3, "selected category border (graphic)"],
   ...categories.flatMap(({ id }) => [
     [`ink-${id}`, "white", 4.5, `category eyebrow – ${id}`],
