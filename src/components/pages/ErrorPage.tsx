@@ -35,8 +35,9 @@ export function ErrorPage({ lang, error, reset }: { lang: Lang; error: Error & {
             {copy.home}
           </ButtonLink>
           <p className="w-full text-sm text-espresso-500">
-            <a href={`mailto:${site.email}`} className="font-medium text-terracotta-600 hover:underline">
-              {site.email}
+            {/* Someone stuck on a broken page is a client: support@ (developer T-69, 2026-10-22). */}
+            <a href={`mailto:${site.supportEmail}`} className="font-medium text-terracotta-600 hover:underline">
+              {site.supportEmail}
             </a>
             {error.digest ? <span className="ml-2 font-mono text-xs text-espresso-400">#{error.digest}</span> : null}
           </p>
