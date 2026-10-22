@@ -356,7 +356,7 @@ export function deletionSections(lang: LegalLang): LegalSection[] {
       {
         title: "If you no longer have the app",
         paragraphs: [
-          `Write to ${site.email} from the email address linked to your Gloumi account, with “Account deletion” in the subject. If you sign in with Apple or Google, give that account's email address in your message.`,
+          `Write to ${site.privacyEmail} from the email address linked to your Gloumi account, with “Account deletion” in the subject. If you sign in with Apple or Google, give that account's email address in your message.`,
           "So that we do not delete someone else's account, we may ask you to confirm that the account is yours. We delete it without undue delay, within one month of your request at the latest, and write to you when it is done.",
         ],
       },
@@ -388,7 +388,7 @@ export function deletionSections(lang: LegalLang): LegalSection[] {
     {
       title: "Jei programėlės nebeturite",
       paragraphs: [
-        `Parašykite ${site.email} iš el. pašto adreso, susieto su Gloumi paskyra, ir laiško temoje nurodykite „Paskyros trynimas“. Jei prisijungiate per Apple ar Google, laiške nurodykite tos paskyros el. pašto adresą.`,
+        `Parašykite ${site.privacyEmail} iš el. pašto adreso, susieto su Gloumi paskyra, ir laiško temoje nurodykite „Paskyros trynimas“. Jei prisijungiate per Apple ar Google, laiške nurodykite tos paskyros el. pašto adresą.`,
         "Kad neištrintume svetimos paskyros, galime paprašyti patvirtinti, kad ji Jūsų. Paskyrą ištriname nedelsdami, ne vėliau kaip per mėnesį nuo prašymo, ir parašome, kai tai padaryta.",
       ],
     },
