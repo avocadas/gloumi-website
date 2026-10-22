@@ -422,9 +422,9 @@ export const lv: typeof lt = {
     reportSubject: "Ziņojums par saturu",
     // teisininkas – neverčiama
     reportBody: {
-      where: "Where",
+      where: "Where (link or exact location in the app)",
       why: "Why you believe it is illegal",
-      confirm: "I confirm that the information is accurate and complete.",
+      confirm: "I confirm that, to the best of my belief, the information in this report is accurate and complete.",
     },
   },
   notFound: {
