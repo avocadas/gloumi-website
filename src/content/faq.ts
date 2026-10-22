@@ -11,7 +11,7 @@ import type { Lang } from "./lang";
 export type FaqItem = { id: string; q: string; a: string; lang?: "en" };
 export type FaqSection = { key: string; title: string; items: FaqItem[] };
 
-export const FAQ_UPDATED = "2026-10-19";
+export const FAQ_UPDATED = "2026-10-22";
 
 export const FAQ: Record<Lang, FaqSection[]> = {
   "lt": [
@@ -32,7 +32,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-3",
           "q": "Kaip susisiekti su pagalba?",
-          "a": "Šoninis meniu → Pagalba → Neradote atsakymo? arba support@gloumi.lt. Dėl konkretaus vizito – jame „Pranešti apie problemą“. Gavimą patvirtiname per 2 darbo dienas, iš esmės atsakome per 14 kalendorinių d., dažniausiai greičiau."
+          "a": "Šoninis meniu → Pagalba → Neradote atsakymo? arba info@gloumi.lt. Dėl konkretaus vizito – jame „Pranešti apie problemą“. Gavimą patvirtiname per 2 darbo dienas, iš esmės atsakome per 14 kalendorinių d., dažniausiai greičiau."
         }
       ]
     },
@@ -109,12 +109,12 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-17",
           "q": "Kaip atšaukti ar perkelti vizitą?",
-          "a": "„Vizitai“ → atidarykite vizitą → „Atšaukti vizitą“ arba „Perkelti“. Atšaukiama iš karto, neklausiant. Likus mažiau nei 24 val. iki patvirtinto vizito perkelti jį galima tik priėmus meistro pasiūlytą naują laiką – parašykite meistrui."
+          "a": "„Vizitai“ → atidarykite vizitą → „Atšaukti vizitą“ arba „Perkelti“. Atšaukiama iš karto, neklausiant. Jei meistro atšaukimo sąlygose nustatyta 24 val. riba (taip pat kai mokate vietoje), likus mažiau nei 24 val. iki patvirtinto vizito perkelti jį galima tik priėmus meistro pasiūlytą naują laiką – parašykite meistrui."
         },
         {
           "id": "K-18",
           "q": "Ar atgausiu pinigus, jei atšauksiu?",
-          "a": "Atšaukus likus daugiau nei 24 val., rezervacija kortelėje atlaisvinama ir nieko nenurašoma. Atšaukus patvirtintą vizitą vėliau ar neatvykus, nurašoma meistro atšaukimo sąlygose nurodyta dalis (avansas), o likusi rezervuota suma atlaisvinama. Jei vizitą atšaukia meistras ar Gloumi, rezervacija atlaisvinama, o jau nurašyta suma grąžinama visa."
+          "a": "Atšaukus likus 24 val. ar daugiau, rezervacija kortelėje atlaisvinama ir nieko nenurašoma. Atšaukus patvirtintą vizitą likus mažiau nei 24 val. ar neatvykus, nurašoma meistro atšaukimo sąlygose nurodyta dalis (avansas), o likusi rezervuota suma atlaisvinama. Jei vizitą atšaukia meistras ar Gloumi, rezervacija atlaisvinama, o jau nurašyta suma grąžinama visa."
         },
         {
           "id": "K-19",
@@ -165,7 +165,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-27",
           "q": "Kaip veikia dovanų kortelės?",
-          "a": "Šoninis meniu → Dovanų kortelė: pirkite (40–1000 €) arba „Turiu kodą“ – panaudokite. Suma virsta kreditu, kuriuo galite sumokėti už vizitą, visą apmokamą programėlėje (ne už avansą ir ne vietoje). Kol kortelė nepaversta kreditu, ją atšaukti galima per 14 d. nuo pirkimo – parašykite mums."
+          "a": "Šoninis meniu → Dovanų kortelė: pirkite (40–1000 €) arba „Turiu kodą“ – panaudokite. Aktyvuotos kortelės vertė pridedama prie dovanų kortelių likučio, kuriuo galite sumokėti už vizitą, visą apmokamą programėlėje (ne už avansą ir ne vietoje). Neaktyvuotos kortelės pirkimo galite atsisakyti per 21 d. nuo pirkimo: dovanų kortelių ekrane paspauskite „Atsisakyti sutarties čia“ arba parašykite mums per „Pagalba“ ar info@gloumi.lt."
         },
         {
           "id": "K-29",
@@ -335,7 +335,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-3",
           "q": "How do I contact support?",
-          "a": "Side menu → Support → No answer here?, or support@gloumi.lt. About a specific visit – Report an issue in that visit. We confirm receipt within 2 working days and reply in substance within 14 calendar days, usually sooner."
+          "a": "Side menu → Support → No answer here?, or info@gloumi.lt. About a specific visit – Report an issue in that visit. We confirm receipt within 2 working days and reply in substance within 14 calendar days, usually sooner."
         }
       ]
     },
@@ -412,12 +412,12 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-17",
           "q": "How do I cancel or move a visit?",
-          "a": "Bookings → open the visit → Cancel booking or Reschedule. Cancelling happens at once, with no second question. With less than 24 h to go before a confirmed visit, it can only be moved to a new time the master proposes – message them."
+          "a": "Bookings → open the visit → Cancel booking or Reschedule. Cancelling happens at once, with no second question. If the master's cancellation terms set a 24-hour limit (also when you pay on site), with less than 24 h to go before a confirmed visit it can only be moved to a new time the master proposes – message them."
         },
         {
           "id": "K-18",
           "q": "Will I get my money back if I cancel?",
-          "a": "If you cancel more than 24 hours ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit later or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full."
+          "a": "If you cancel 24 hours or more ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit with less than 24 hours to go or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full."
         },
         {
           "id": "K-19",
@@ -468,7 +468,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-27",
           "q": "How do gift cards work?",
-          "a": "Side menu → Gift card: buy one (€40–1,000) or tap I have a code to redeem. The amount becomes credit you can use for a visit paid in full in the app (not for a deposit and not on site). As long as the card has not been turned into credit, you can cancel it within 14 days of purchase – write to us."
+          "a": "Side menu → Gift card: buy one (€40–1,000) or tap I have a code to redeem. An activated card's value is added to your gift card balance, which you can use for a visit paid in full in the app (not for a deposit and not on site). You can withdraw from buying a card that has not been activated within 21 days of purchase: tap Withdraw from contract here on the gift cards screen, or write to us via Support or at info@gloumi.lt."
         },
         {
           "id": "K-29",
@@ -638,7 +638,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-3",
           "q": "Jak skontaktować się z pomocą?",
-          "a": "Menu boczne → Pomoc → Nie ma odpowiedzi? albo support@gloumi.lt. W sprawie konkretnej wizyty – Zgłoś problem w tej wizycie. Otrzymanie wiadomości potwierdzamy w ciągu 2 dni roboczych, a merytorycznie odpowiadamy w ciągu 14 dni kalendarzowych, zwykle szybciej."
+          "a": "Menu boczne → Pomoc → Nie ma odpowiedzi? albo info@gloumi.lt. W sprawie konkretnej wizyty – Zgłoś problem w tej wizycie. Otrzymanie wiadomości potwierdzamy w ciągu 2 dni roboczych, a merytorycznie odpowiadamy w ciągu 14 dni kalendarzowych, zwykle szybciej."
         }
       ]
     },
@@ -715,12 +715,12 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-17",
           "q": "Jak odwołać lub przełożyć wizytę?",
-          "a": "Wizyty → otwórz wizytę → Odwołaj wizytę lub Przełóż. Odwołanie działa od razu, bez dodatkowego pytania. Gdy do potwierdzonej wizyty zostało mniej niż 24 godz., można ją przełożyć tylko na nowy termin zaproponowany przez specjalistę – napisz do specjalisty wiadomość."
+          "a": "Wizyty → otwórz wizytę → Odwołaj wizytę lub Przełóż. Odwołanie działa od razu, bez dodatkowego pytania. Jeśli warunki odwołania specjalisty przewidują limit 24 godz. (także gdy płacisz na miejscu), a do potwierdzonej wizyty zostało mniej niż 24 godz., można ją przełożyć tylko na nowy termin zaproponowany przez specjalistę – napisz do specjalisty wiadomość."
         },
         {
           "id": "K-18",
           "q": "Will I get my money back if I cancel?",
-          "a": "If you cancel more than 24 hours ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit later or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
+          "a": "If you cancel 24 hours or more ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit with less than 24 hours to go or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
           "lang": "en"
         },
         {
@@ -774,7 +774,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-27",
           "q": "Jak działają karty podarunkowe?",
-          "a": "Menu boczne → Karta podarunkowa: kup kartę (40–1000 €) albo naciśnij Mam kod, aby ją zrealizować. Kwota zamienia się w środki, które możesz wykorzystać na wizytę opłaconą w całości w aplikacji (nie na zaliczkę i nie na miejscu). Dopóki karta nie została zamieniona na środki, możesz ją anulować w ciągu 14 dni od zakupu – napisz do nas."
+          "a": "Menu boczne → Karta podarunkowa: kup kartę (40–1000 €) albo naciśnij Mam kod, aby ją zrealizować. Wartość aktywowanej karty jest dodawana do salda kart podarunkowych, którym możesz zapłacić za wizytę opłaconą w całości w aplikacji (nie za zaliczkę i nie na miejscu). Od zakupu karty, która nie została aktywowana, możesz odstąpić w ciągu 21 dni: na ekranie kart podarunkowych naciśnij Odstąp od umowy tutaj albo napisz do nas przez Pomoc lub na info@gloumi.lt."
         },
         {
           "id": "K-29",
@@ -952,7 +952,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-3",
           "q": "Kā sazināties ar palīdzības dienestu?",
-          "a": "Sānu izvēlne → Palīdzība → Neatradāt atbildi? vai support@gloumi.lt. Par konkrētu vizīti – tajā „Ziņot par problēmu”. Saņemšanu apstiprinām 2 darba dienu laikā, pēc būtības atbildam 14 kalendāro dienu laikā, parasti ātrāk."
+          "a": "Sānu izvēlne → Palīdzība → Neatradāt atbildi? vai info@gloumi.lt. Par konkrētu vizīti – tajā „Ziņot par problēmu”. Saņemšanu apstiprinām 2 darba dienu laikā, pēc būtības atbildam 14 kalendāro dienu laikā, parasti ātrāk."
         }
       ]
     },
@@ -1029,12 +1029,12 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-17",
           "q": "Kā atcelt vai pārcelt vizīti?",
-          "a": "Vizītes → atveriet vizīti → Atcelt vizīti vai Pārcelt. Atcelšana notiek uzreiz, bez papildu jautājuma. Ja līdz apstiprinātai vizītei atlicis mazāk nekā 24 stundas, to var pārcelt tikai uz meistara piedāvātu jaunu laiku – uzrakstiet meistaram."
+          "a": "Vizītes → atveriet vizīti → Atcelt vizīti vai Pārcelt. Atcelšana notiek uzreiz, bez papildu jautājuma. Ja meistara atcelšanas noteikumos ir noteikts 24 stundu ierobežojums (arī tad, ja maksājat uz vietas) un līdz apstiprinātai vizītei atlicis mazāk nekā 24 stundas, to var pārcelt tikai uz meistara piedāvātu jaunu laiku – uzrakstiet meistaram."
         },
         {
           "id": "K-18",
           "q": "Will I get my money back if I cancel?",
-          "a": "If you cancel more than 24 hours ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit later or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
+          "a": "If you cancel 24 hours or more ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit with less than 24 hours to go or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
           "lang": "en"
         },
         {
@@ -1088,7 +1088,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-27",
           "q": "Kā darbojas dāvanu kartes?",
-          "a": "Sānu izvēlne → Dāvanu karte: iegādājieties karti (40–1000 €) vai izmantojiet to, pieskaroties „Man ir kods”. Summa kļūst par bonusu, ar kuru varat samaksāt par vizīti, kas pilnībā apmaksāta lietotnē (ne par avansu un ne uz vietas). Kamēr karte nav pārvērsta bonusā, to var atcelt 14 dienu laikā no iegādes – rakstiet mums."
+          "a": "Sānu izvēlne → Dāvanu karte: iegādājieties karti (40–1000 €) vai izmantojiet to, pieskaroties „Man ir kods”. Aktivizētas kartes vērtība tiek pievienota dāvanu karšu atlikumam, ar kuru varat samaksāt par vizīti, kas pilnībā apmaksāta lietotnē (ne par avansu un ne uz vietas). No neaktivizētas kartes pirkuma varat atteikties 21 dienas laikā no iegādes: dāvanu karšu ekrānā pieskarieties „Atteikties no līguma šeit” vai rakstiet mums sadaļā „Palīdzība” vai uz info@gloumi.lt."
         },
         {
           "id": "K-29",
@@ -1266,7 +1266,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-3",
           "q": "Wie erreiche ich den Support?",
-          "a": "Seitenmenü → Hilfe → Keine Antwort gefunden? oder support@gloumi.lt. Zu einem bestimmten Termin – Problem melden in diesem Termin. Wir bestätigen den Eingang innerhalb von 2 Werktagen und antworten in der Sache innerhalb von 14 Kalendertagen, meist schneller."
+          "a": "Seitenmenü → Hilfe → Keine Antwort gefunden? oder info@gloumi.lt. Zu einem bestimmten Termin – Problem melden in diesem Termin. Wir bestätigen den Eingang innerhalb von 2 Werktagen und antworten in der Sache innerhalb von 14 Kalendertagen, meist schneller."
         }
       ]
     },
@@ -1343,12 +1343,12 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-17",
           "q": "Wie storniere oder verschiebe ich einen Termin?",
-          "a": "Termine → Termin öffnen → Termin stornieren oder Verschieben. Die Stornierung erfolgt sofort, ohne weitere Rückfrage. Weniger als 24 Std. vor einem bestätigten Termin kann er nur auf eine neue Zeit verschoben werden, die der Profi vorschlägt – schreiben Sie ihm eine Nachricht."
+          "a": "Termine → Termin öffnen → Termin stornieren oder Verschieben. Die Stornierung erfolgt sofort, ohne weitere Rückfrage. Sehen die Stornierungsbedingungen des Profis eine 24-Stunden-Grenze vor (auch wenn Sie vor Ort bezahlen), kann ein bestätigter Termin weniger als 24 Std. vorher nur auf eine neue Zeit verschoben werden, die der Profi vorschlägt – schreiben Sie ihm eine Nachricht."
         },
         {
           "id": "K-18",
           "q": "Will I get my money back if I cancel?",
-          "a": "If you cancel more than 24 hours ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit later or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
+          "a": "If you cancel 24 hours or more ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit with less than 24 hours to go or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
           "lang": "en"
         },
         {
@@ -1402,7 +1402,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-27",
           "q": "Wie funktionieren Geschenkkarten?",
-          "a": "Seitenmenü → Geschenkkarte: Kaufen Sie eine (40–1.000 €) oder tippen Sie zum Einlösen auf Ich habe einen Code. Der Betrag wird zu Guthaben, das Sie für einen vollständig in der App bezahlten Termin verwenden können (nicht für eine Anzahlung und nicht vor Ort). Solange die Karte nicht in Guthaben umgewandelt wurde, können Sie sie innerhalb von 14 Tagen nach dem Kauf zurückgeben – schreiben Sie uns."
+          "a": "Seitenmenü → Geschenkkarte: Kaufen Sie eine (40–1.000 €) oder tippen Sie zum Einlösen auf Ich habe einen Code. Der Wert einer aktivierten Karte wird Ihrem Geschenkkartenguthaben gutgeschrieben, mit dem Sie einen vollständig in der App bezahlten Termin bezahlen können (nicht eine Anzahlung und nicht vor Ort). Den Kauf einer noch nicht aktivierten Karte können Sie innerhalb von 21 Tagen nach dem Kauf widerrufen: Tippen Sie im Geschenkkarten-Bildschirm auf Vertrag widerrufen oder schreiben Sie uns über Hilfe oder an info@gloumi.lt."
         },
         {
           "id": "K-29",
@@ -1580,7 +1580,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-3",
           "q": "Comment contacter l'assistance ?",
-          "a": "Menu latéral → Aide → Pas de réponse ici ?, ou support@gloumi.lt. Pour un rendez-vous précis – « Signaler un problème » dans ce rendez-vous. Nous accusons réception sous 2 jours ouvrés et répondons sur le fond sous 14 jours calendaires, généralement plus tôt."
+          "a": "Menu latéral → Aide → Pas de réponse ici ?, ou info@gloumi.lt. Pour un rendez-vous précis – « Signaler un problème » dans ce rendez-vous. Nous accusons réception sous 2 jours ouvrés et répondons sur le fond sous 14 jours calendaires, généralement plus tôt."
         }
       ]
     },
@@ -1657,12 +1657,12 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-17",
           "q": "Comment annuler ou déplacer un rendez-vous ?",
-          "a": "Rendez-vous → ouvrez le rendez-vous → Annuler le rendez-vous ou Déplacer. L'annulation est immédiate, sans seconde confirmation. À moins de 24 h d'un rendez-vous confirmé, il ne peut être déplacé qu'à un nouvel horaire proposé par le professionnel – envoyez-lui un message."
+          "a": "Rendez-vous → ouvrez le rendez-vous → Annuler le rendez-vous ou Déplacer. L'annulation est immédiate, sans seconde confirmation. Si les conditions d'annulation du professionnel prévoient un délai de 24 h (y compris quand vous payez sur place), à moins de 24 h d'un rendez-vous confirmé, il ne peut être déplacé qu'à un nouvel horaire proposé par le professionnel – envoyez-lui un message."
         },
         {
           "id": "K-18",
           "q": "Will I get my money back if I cancel?",
-          "a": "If you cancel more than 24 hours ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit later or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
+          "a": "If you cancel 24 hours or more ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit with less than 24 hours to go or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
           "lang": "en"
         },
         {
@@ -1716,7 +1716,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-27",
           "q": "Comment fonctionnent les cartes cadeaux ?",
-          "a": "Menu latéral → Carte cadeau : achetez-en une (de 40 à 1 000 €) ou appuyez sur « J'ai un code » pour l'utiliser. Le montant devient un crédit utilisable pour un rendez-vous payé intégralement dans l'application (ni pour un acompte, ni sur place). Tant que la carte n'a pas été convertie en crédit, vous pouvez l'annuler dans les 14 jours suivant l'achat – écrivez-nous."
+          "a": "Menu latéral → Carte cadeau : achetez-en une (de 40 à 1 000 €) ou appuyez sur « J'ai un code » pour l'utiliser. La valeur d'une carte activée est ajoutée à votre solde de cartes cadeaux, utilisable pour un rendez-vous payé intégralement dans l'application (ni pour un acompte, ni sur place). Vous pouvez vous rétracter de l'achat d'une carte non activée dans les 21 jours suivant l'achat : appuyez sur « Se rétracter du contrat ici » dans l'écran des cartes cadeaux, ou écrivez-nous via « Aide » ou à info@gloumi.lt."
         },
         {
           "id": "K-29",
@@ -1894,7 +1894,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-3",
           "q": "¿Cómo contacto con el servicio de ayuda?",
-          "a": "Menú lateral → Ayuda → ¿No encuentras la respuesta?, o support@gloumi.lt. Sobre una cita concreta – Informar de un problema en esa cita. Confirmamos la recepción en 2 días laborables y respondemos sobre el fondo en 14 días naturales, normalmente antes."
+          "a": "Menú lateral → Ayuda → ¿No encuentras la respuesta?, o info@gloumi.lt. Sobre una cita concreta – Informar de un problema en esa cita. Confirmamos la recepción en 2 días laborables y respondemos sobre el fondo en 14 días naturales, normalmente antes."
         }
       ]
     },
@@ -1971,12 +1971,12 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-17",
           "q": "¿Cómo cancelo o cambio una cita?",
-          "a": "Citas → abre la cita → Cancelar cita o Cambiar fecha. La cancelación es inmediata, sin una segunda pregunta. Si faltan menos de 24 h para una cita confirmada, solo se puede cambiar a una nueva hora que proponga el profesional – escríbele."
+          "a": "Citas → abre la cita → Cancelar cita o Cambiar fecha. La cancelación es inmediata, sin una segunda pregunta. Si las condiciones de cancelación del profesional fijan un límite de 24 h (también cuando pagas en persona) y faltan menos de 24 h para una cita confirmada, solo se puede cambiar a una nueva hora que proponga el profesional – escríbele."
         },
         {
           "id": "K-18",
           "q": "Will I get my money back if I cancel?",
-          "a": "If you cancel more than 24 hours ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit later or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
+          "a": "If you cancel 24 hours or more ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit with less than 24 hours to go or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
           "lang": "en"
         },
         {
@@ -2030,7 +2030,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-27",
           "q": "¿Cómo funcionan las tarjetas regalo?",
-          "a": "Menú lateral → Tarjeta regalo: compra una (de 40 a 1000 €) o pulsa Tengo un código para canjearla. El importe se convierte en saldo que puedes usar en una cita pagada por completo en la app (no para un anticipo ni para pagar en persona). Mientras la tarjeta no se haya convertido en saldo, puedes cancelarla en los 14 días siguientes a la compra – escríbenos."
+          "a": "Menú lateral → Tarjeta regalo: compra una (de 40 a 1000 €) o pulsa Tengo un código para canjearla. El valor de una tarjeta activada se añade a tu saldo de tarjetas regalo, que puedes usar en una cita pagada por completo en la app (no para un anticipo ni para pagar en persona). Puedes desistir de la compra de una tarjeta no activada en los 21 días siguientes a la compra: en la pantalla de tarjetas regalo pulsa Desistir del contrato aquí o escríbenos desde Ayuda o a info@gloumi.lt."
         },
         {
           "id": "K-29",
@@ -2208,7 +2208,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-3",
           "q": "Come contatto l'assistenza?",
-          "a": "Menu laterale → Assistenza → Non hai trovato la risposta? oppure support@gloumi.lt. Per un appuntamento specifico – Segnala un problema dentro l'appuntamento. Confermiamo la ricezione entro 2 giorni lavorativi e rispondiamo nel merito entro 14 giorni di calendario, di solito prima."
+          "a": "Menu laterale → Assistenza → Non hai trovato la risposta? oppure info@gloumi.lt. Per un appuntamento specifico – Segnala un problema dentro l'appuntamento. Confermiamo la ricezione entro 2 giorni lavorativi e rispondiamo nel merito entro 14 giorni di calendario, di solito prima."
         }
       ]
     },
@@ -2285,12 +2285,12 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-17",
           "q": "Come annullo o sposto un appuntamento?",
-          "a": "Appuntamenti → apri l'appuntamento → Annulla appuntamento oppure Sposta. L'annullamento è immediato, senza altre domande. A meno di 24 ore da un appuntamento confermato, si può spostare solo a un nuovo orario proposto dal professionista: scrivigli."
+          "a": "Appuntamenti → apri l'appuntamento → Annulla appuntamento oppure Sposta. L'annullamento è immediato, senza altre domande. Se le condizioni di annullamento del professionista prevedono un limite di 24 ore (anche quando paghi sul posto), a meno di 24 ore da un appuntamento confermato si può spostare solo a un nuovo orario proposto dal professionista: scrivigli."
         },
         {
           "id": "K-18",
           "q": "Will I get my money back if I cancel?",
-          "a": "If you cancel more than 24 hours ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit later or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
+          "a": "If you cancel 24 hours or more ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit with less than 24 hours to go or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
           "lang": "en"
         },
         {
@@ -2344,7 +2344,7 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         {
           "id": "K-27",
           "q": "Come funzionano le carte regalo?",
-          "a": "Menu laterale → Carta regalo: acquistane una (40–1000 €) oppure tocca Ho un codice per usarla. L'importo diventa credito che puoi usare per un appuntamento pagato per intero nell'app (non per un acconto e non sul posto). Finché la carta non è stata trasformata in credito, puoi annullarla entro 14 giorni dall'acquisto – scrivici."
+          "a": "Menu laterale → Carta regalo: acquistane una (40–1000 €) oppure tocca Ho un codice per usarla. Il valore di una carta attivata si aggiunge al saldo delle carte regalo, che puoi usare per un appuntamento pagato per intero nell'app (non per un acconto e non sul posto). Puoi recedere dall'acquisto di una carta non ancora attivata entro 21 giorni dall'acquisto: nella schermata delle carte regalo tocca Recedi dal contratto qui oppure scrivici da Assistenza o a info@gloumi.lt."
         },
         {
           "id": "K-29",
