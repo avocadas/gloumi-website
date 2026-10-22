@@ -55,7 +55,15 @@ export function ChatReader({
           <p className={`${eyebrow} text-app-muted`}>
             Pokalbis · {result.messages.length} {result.messages.length === 1 ? "žinutė" : "žinutės"}
           </p>
-          <button type="button" onClick={() => setResult(null)} className={btnQuiet}>
+          {/* Back to the button, not to the filled form: another read is logged, so it takes a deliberate second step (design 2026-10-22). */}
+          <button
+            type="button"
+            onClick={() => {
+              setResult(null);
+              setOpen(false);
+            }}
+            className={btnQuiet}
+          >
             Slėpti
           </button>
         </div>
@@ -73,7 +81,8 @@ export function ChatReader({
                     {(m.senderRole && ROLE_LABEL[m.senderRole]) ?? m.senderRole ?? "Siuntėjas"}
                   </span>
                   {m.senderId ? (
-                    <a href={`/admin/users/${m.senderId}`} className="hover:underline">
+                    // Underlined without a pointer too: in the grey meta line colour alone would not mark it (WCAG 1.4.1, design 2026-10-22).
+                    <a href={`/admin/users/${m.senderId}`} className="text-app-ink underline underline-offset-2 hover:no-underline">
                       paskyra
                     </a>
                   ) : null}
