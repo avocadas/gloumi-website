@@ -13,6 +13,12 @@ export const site = {
   url: (process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") || "https://gloumi.lt") as string,
   email: "info@gloumi.lt",
   /**
+   * Data protection requests, erasure among them: the address the Privacy
+   * Policy gives for every data question. The account deletion page names it
+   * (legal role 2026-10-22).
+   */
+  privacyEmail: "privatumas@gloumi.lt",
+  /**
    * Help with the app (#137): the mailbox the app's „Pagalba“ screen gives.
    * `email` stays the general and legal contact (the legal texts name it).
    */
