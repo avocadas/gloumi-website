@@ -47,6 +47,21 @@ import { adminCsp, appLinkCsp, authCsp, mfaHelpCsp, newNonce, originOf } from '@
  * užklausos antraštė nieko neblokuoja. Ji perrašoma visada, kad kliento
  * atsiųsta reikšmė nepadiktuotų nonce'o.
  */
+
+/**
+ * Puslapiams be sesijos: politika į užklausą (iš jos Next ima nonce'ą) ir į
+ * atsakymą. Kliento atsiųsta `…-report-only` antraštė išmetama, kaip ir admin
+ * šakoje, kad Next niekada neimtų nonce'o iš jos (security 2026-10-22, R-4).
+ */
+function withPolicy(request: NextRequest, policy: string) {
+  const headers = new Headers(request.headers);
+  headers.set('content-security-policy', policy);
+  headers.delete('content-security-policy-report-only');
+  const res = NextResponse.next({ request: { headers } });
+  res.headers.set('Content-Security-Policy', policy);
+  return res;
+}
+
 export async function proxy(request: NextRequest) {
   const nonce = newNonce();
   const dev = process.env.NODE_ENV === 'development';
@@ -61,11 +76,7 @@ export async function proxy(request: NextRequest) {
 
   // 2FA nuėmimas per pagalbą: be sesijos, griežta CSP su Turnstile ir Edge adresu, jokio Referer.
   if (p === '/2fa-pagalba' || p.startsWith('/2fa-pagalba/')) {
-    const policy = mfaHelpCsp(nonce, dev, originOf(process.env.NEXT_PUBLIC_SUPABASE_URL));
-    const headers = new Headers(request.headers);
-    headers.set('content-security-policy', policy);
-    const res = NextResponse.next({ request: { headers } });
-    res.headers.set('Content-Security-Policy', policy);
+    const res = withPolicy(request, mfaHelpCsp(nonce, dev, originOf(process.env.NEXT_PUBLIC_SUPABASE_URL)));
     res.headers.set('Referrer-Policy', 'no-referrer');
     res.headers.set('X-Robots-Tag', 'noindex, nofollow');
     res.headers.set('Cache-Control', 'no-store');
@@ -73,21 +84,11 @@ export async function proxy(request: NextRequest) {
   }
   // Dalinimosi nuorodos (`/profile/<id>`, `/ref`): naudotojų turinys – tokia pat griežta CSP, plius R2 nuotraukos.
   if (p === '/profile' || p.startsWith('/profile/') || p === '/ref') {
-    const policy = appLinkCsp(nonce, dev);
-    const headers = new Headers(request.headers);
-    headers.set('content-security-policy', policy);
-    const res = NextResponse.next({ request: { headers } });
-    res.headers.set('Content-Security-Policy', policy);
-    return res;
+    return withPolicy(request, appLinkCsp(nonce, dev));
   }
   // Pašto patvirtinimas ir slaptažodžio atkūrimas: be sesijos, tik griežta CSP (privaloma).
   if (p === '/auth' || p.startsWith('/auth/') || p === '/patvirtinta') {
-    const policy = authCsp(nonce, dev);
-    const headers = new Headers(request.headers);
-    headers.set('content-security-policy', policy);
-    const res = NextResponse.next({ request: { headers } });
-    res.headers.set('Content-Security-Policy', policy);
-    return res;
+    return withPolicy(request, authCsp(nonce, dev));
   }
 
   const csp = adminCsp(nonce, dev);
