@@ -460,5 +460,11 @@ export const lt = {
     reply: "Meistro atsakymas",
     report: "Pranešti apie turinį",
     reportSubject: "Pranešimas apie turinį",
+    // DSA 16 str. 2 d.: ką turi turėti pranešimas (teisininkas 2026-10-22).
+    reportBody: {
+      where: "Kur",
+      why: "Kodėl, Jūsų manymu, neteisėta",
+      confirm: "Patvirtinu, kad informacija tiksli ir išsami.",
+    },
   },
 };

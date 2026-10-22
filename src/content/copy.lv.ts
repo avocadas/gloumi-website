@@ -420,6 +420,12 @@ export const lv: typeof lt = {
     reply: "Meistara atbilde",
     report: "Ziņot par saturu",
     reportSubject: "Ziņojums par saturu",
+    // teisininkas – neverčiama
+    reportBody: {
+      where: "Where",
+      why: "Why you believe it is illegal",
+      confirm: "I confirm that the information is accurate and complete.",
+    },
   },
   notFound: {
     eyebrow: "404",

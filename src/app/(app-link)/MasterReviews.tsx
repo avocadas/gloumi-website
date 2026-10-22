@@ -54,7 +54,15 @@ export function MasterReviews({ lang, data, pageUrl }: { lang: LegalLang; data: 
   const copy = getCopy(lang).masterReviews;
   const showRating = data.ratingAvg !== null && data.ratingCount >= MIN_REVIEWS_FOR_RATING;
   const avg = data.ratingAvg?.toLocaleString(LOCALE[lang], { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-  const report = `mailto:${site.email}?subject=${encodeURIComponent(`${copy.reportSubject}: ${pageUrl}`)}`;
+  // The DSA Art. 16 notice items as blanks to fill in; the page address is the location.
+  const reportBody = [
+    `${copy.reportBody.where}: ${pageUrl} – `,
+    "",
+    `${copy.reportBody.why}: `,
+    "",
+    copy.reportBody.confirm,
+  ].join("\r\n");
+  const report = `mailto:${site.email}?subject=${encodeURIComponent(`${copy.reportSubject}: ${pageUrl}`)}&body=${encodeURIComponent(reportBody)}`;
 
   return (
     <section aria-labelledby="reviews-title" className="mx-auto mt-16 max-w-2xl text-left">

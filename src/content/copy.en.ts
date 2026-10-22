@@ -414,6 +414,12 @@ export const en: typeof lt = {
     reply: "Master's reply",
     report: "Report content",
     reportSubject: "Content report",
+    // DSA Art. 16(2): what a notice must contain (legal role 2026-10-22).
+    reportBody: {
+      where: "Where",
+      why: "Why you believe it is illegal",
+      confirm: "I confirm that the information is accurate and complete.",
+    },
   },
   notFound: {
     eyebrow: "404",
