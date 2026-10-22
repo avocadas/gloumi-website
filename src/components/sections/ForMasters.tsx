@@ -23,7 +23,7 @@ function PlanTag({ plan, className = "" }: { plan: string; className?: string })
 export function ForMasters({ lang }: { lang: Lang }) {
   const copy = getCopy(lang);
   return (
-    <section id={sectionId(lang, "masters")} aria-labelledby="meistrams-title" className="scroll-mt-20 py-6 sm:py-10">
+    <section id={sectionId(lang, "masters")} aria-labelledby="meistrams-title" className="py-6 sm:py-10">
       <Container>
         <div className="relative isolate overflow-hidden rounded-[2.5rem] bg-espresso-900 px-6 py-14 text-cream-100 sm:px-12 sm:py-20 lg:px-16">
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
@@ -79,7 +79,7 @@ export function ForMasters({ lang }: { lang: Lang }) {
               </ul>
             </div>
 
-            <div id={sectionId(lang, "join")} className="scroll-mt-28 lg:pt-2">
+            <div id={sectionId(lang, "join")} className="scroll-mt-8 lg:pt-2">
               <WaitlistForm
                 lang={lang}
                 form={copy.form}

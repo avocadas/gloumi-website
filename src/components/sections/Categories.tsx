@@ -20,7 +20,7 @@ import { CategoryPicker } from "./CategoryPicker";
 export function CategoriesSection({ lang }: { lang: Lang }) {
   const copy = getCopy(lang).categories;
   return (
-    <section id={sectionId(lang, "categories")} aria-labelledby="kategorijos-title" className="scroll-mt-24 bg-cream-200 py-20 sm:py-28">
+    <section id={sectionId(lang, "categories")} aria-labelledby="kategorijos-title" className="scroll-mt-4 bg-cream-200 py-20 sm:py-28">
       <Container>
         <SectionHeading id="kategorijos-title" align="center" eyebrow={copy.eyebrow} title={copy.title} lead={copy.lead} />
         <CategoryPicker

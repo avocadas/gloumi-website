@@ -116,7 +116,7 @@ export function LegalPage({ lang, docKey, updated, version, intro, note, section
         <div className="mt-12" lang={textLang}>
           {note ? <p className="text-sm text-espresso-500">{note}</p> : null}
           {sections.map((section, index) => (
-            <section key={section.title} id={`${textLang}-${slugify(section.title)}`} className="mt-10 scroll-mt-28">
+            <section key={section.title} id={`${textLang}-${slugify(section.title)}`} className="mt-10 scroll-mt-8">
               <h2 className="font-serif text-2xl font-medium text-espresso-900">
                 <span className="mr-2 text-espresso-400">{index + 1}.</span>
                 {section.title}

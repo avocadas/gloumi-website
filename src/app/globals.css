@@ -192,8 +192,16 @@
     color-scheme: light;
   }
 
+  /*
+   * WCAG 2.2 2.4.11 (web audit 2026-10-22): the sticky header is 4-5rem tall,
+   * and a browser that scrolls a focused element only as far as it must
+   * would leave it under the header. The padding keeps it below; every
+   * scroll-mt-* on the site is 5rem less than before, so in-page links land
+   * where they did.
+   */
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
     -webkit-text-size-adjust: 100%;
   }
 

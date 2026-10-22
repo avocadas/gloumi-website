@@ -31,7 +31,7 @@ export function Hero({ lang }: { lang: Lang }) {
           </h1>
           <p className="mt-6 max-w-lg text-lg leading-relaxed text-espresso-500 text-pretty">{h.lead}</p>
 
-          <div id={sectionId(lang, "download")} className="mt-9 scroll-mt-28">
+          <div id={sectionId(lang, "download")} className="mt-9 scroll-mt-8">
             <StoreBadges lang={lang} />
             <div className="mt-4">
               <ButtonLink href={sectionHref(lang, "masters")} variant="outline">

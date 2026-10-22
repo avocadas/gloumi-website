@@ -87,14 +87,14 @@ export function FaqPage({ lang }: { lang: Lang }) {
 
         <div className="mt-6">
           {sections.map((section) => (
-            <section key={section.key} id={section.key} className="mt-12 scroll-mt-28">
+            <section key={section.key} id={section.key} className="mt-12 scroll-mt-8">
               <h2 className="font-serif text-2xl font-medium text-espresso-900 sm:text-3xl">{section.title}</h2>
               {section.items.map((item) => (
                 <div
                   key={item.id}
                   id={anchor(item.id)}
                   lang={item.lang ? LANG_LABELS[item.lang].htmlLang : undefined}
-                  className="mt-6 scroll-mt-28"
+                  className="mt-6 scroll-mt-8"
                 >
                   <h3 className="font-semibold text-espresso-900">
                     {item.q}

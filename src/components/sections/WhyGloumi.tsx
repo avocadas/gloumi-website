@@ -10,7 +10,7 @@ const ICONS = [IconCalendarCheck, IconSparkles, IconReceipt, IconVerified];
 export function WhyGloumi({ lang }: { lang: Lang }) {
   const copy = getCopy(lang);
   return (
-    <section id={sectionId(lang, "why")} aria-labelledby="kodel-title" className="scroll-mt-24 bg-white py-20 sm:py-28">
+    <section id={sectionId(lang, "why")} aria-labelledby="kodel-title" className="scroll-mt-4 bg-white py-20 sm:py-28">
       <Container>
         <SectionHeading id="kodel-title" eyebrow={copy.why.eyebrow} title={copy.why.title} lead={copy.why.lead} />
 

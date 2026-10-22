@@ -51,7 +51,7 @@ export default async function DataPage({ searchParams }: { searchParams: Promise
         username={username}
       >
         {/* Individualios sąlygos, versijos, klaidos – dabar šoninėje juostoje (design 1.1). */}
-        <div id="lenteles" className="scroll-mt-20">
+        <div id="lenteles">
           <CatalogIndex catalog={catalog} />
         </div>
       </AdminShell>

@@ -58,7 +58,7 @@ export function Footer({ lang }: { lang: Lang }) {
   const socials = (Object.keys(site.social) as SocialKey[]).filter((key) => site.social[key]);
 
   return (
-    <footer id={sectionId(lang, "contact")} className="scroll-mt-24 border-t border-espresso-900/8 bg-cream-200">
+    <footer id={sectionId(lang, "contact")} className="scroll-mt-4 border-t border-espresso-900/8 bg-cream-200">
       <Container className="py-14 sm:py-16">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.3fr] lg:gap-8">
           <div>
