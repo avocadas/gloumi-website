@@ -416,6 +416,12 @@ export const it: typeof lt = {
     reply: "Risposta del professionista",
     report: "Segnala contenuto",
     reportSubject: "Segnalazione di contenuto",
+    // teisininkas – neverčiama
+    reportBody: {
+      where: "Where",
+      why: "Why you believe it is illegal",
+      confirm: "I confirm that the information is accurate and complete.",
+    },
   },
   notFound: {
     eyebrow: "404",
