@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { checkAdmin } from "@/lib/admin-guard";
 import { chatReadAvailable } from "@/lib/admin-chat-read";
-import { loadCatalog, mediaIdsOf, PAGE_SIZE, searchTable, signMedia } from "@/lib/admin-data";
+import { loadCatalog, mediaIdsOf, PAGE_SIZE, searchTable, signMediaChecked } from "@/lib/admin-data";
 import { AdminShell } from "../AdminShell";
 import { MfaNotice } from "../MfaNotice";
 import { UUID_PATTERN } from "../format";
@@ -70,10 +70,12 @@ export default async function DataPage({ searchParams }: { searchParams: Promise
     : ({ ok: false, error: "Naudotojo ID turi būti UUID formos." } as const);
 
   const mediaByRow = res.ok ? res.result.rows.map((r) => mediaIdsOf(entry.tbl, r.row)) : [];
-  const [signed, chatRead] = await Promise.all([
-    signMedia(check.userId, mediaByRow.flat()),
+  const [{ signed, locked }, chatTables] = await Promise.all([
+    signMediaChecked(check.userId, mediaByRow.flat()),
     entry.tbl === "chats" || entry.tbl === "messages" ? chatReadAvailable(check.userId) : Promise.resolve(false),
   ]);
+  // A-16: užrakintas pokalbio priedas (pvz. `media` lentelėje) – skaityti jo pokalbį su pagrindu.
+  const chatRead = chatTables || (Object.keys(locked).length > 0 && (await chatReadAvailable(check.userId)));
 
   return (
     <AdminShell
@@ -96,6 +98,7 @@ export default async function DataPage({ searchParams }: { searchParams: Promise
         res={res}
         mediaByRow={mediaByRow}
         signed={signed}
+        locked={locked}
         chatRead={chatRead}
       />
     </AdminShell>

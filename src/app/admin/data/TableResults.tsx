@@ -1,5 +1,5 @@
 import { IconChevronLeft, IconChevronRight, IconClose, IconProfile, IconSearch } from "@/components/icons";
-import { PAGE_SIZE, type CatalogEntry, type CatalogKind, type SearchResult, type SignedMedia } from "@/lib/admin-data";
+import { PAGE_SIZE, type CatalogEntry, type CatalogKind, type LockedMedia, type SearchResult, type SignedMedia } from "@/lib/admin-data";
 import { ownerLabel } from "../format";
 import { Alert, btn, card, EmptyState, STROKE, Tag } from "../ui";
 import { RowCard } from "./RowCard";
@@ -44,6 +44,7 @@ export function TableResults({
   res,
   mediaByRow,
   signed,
+  locked = {},
   chatRead = false,
 }: {
   entry: CatalogEntry;
@@ -54,6 +55,8 @@ export function TableResults({
   res: { ok: true; result: SearchResult } | { ok: false; error: string };
   mediaByRow: string[][];
   signed: Record<string, SignedMedia>;
+  /** Pokalbio priedai, kurių šis administratorius dar neskaitė su pagrindu (A-16). */
+  locked?: Record<string, LockedMedia>;
   /** Ar bazėje jau yra `admin_read_chat` (A-16) – tada pokalbių eilutėse mygtukas „Skaityti“. */
   chatRead?: boolean;
 }) {
@@ -173,6 +176,7 @@ export function TableResults({
                     entry={r}
                     mediaIds={mediaByRow[i]}
                     media={pick(signed, mediaByRow[i])}
+                    lockedMedia={pick(locked, mediaByRow[i])}
                     cascadeNote={CASCADE_NOTE[entry.tbl] ?? null}
                     chatRead={chatRead}
                   />
@@ -209,8 +213,8 @@ export function TableResults({
   );
 }
 
-function pick(all: Record<string, SignedMedia>, ids: string[]): Record<string, SignedMedia> {
-  const out: Record<string, SignedMedia> = {};
+function pick<T>(all: Record<string, T>, ids: string[]): Record<string, T> {
+  const out: Record<string, T> = {};
   for (const id of ids) if (all[id]) out[id] = all[id];
   return out;
 }

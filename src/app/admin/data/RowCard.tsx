@@ -2,7 +2,7 @@
 
 import { Fragment, useState, useTransition } from "react";
 import { IconChevronDown, IconChevronRight, IconClock, IconPencil, IconProfile, IconTrash } from "@/components/icons";
-import type { CatalogKind, DataRow, SignedMedia } from "@/lib/admin-data";
+import type { CatalogKind, DataRow, LockedMedia, SignedMedia } from "@/lib/admin-data";
 import { editText, removeRow } from "../actions";
 import { ChatReader } from "../ChatReader";
 import type { ChatTarget } from "../chat-read";
@@ -25,6 +25,8 @@ type Props = {
   entry: DataRow;
   mediaIds: string[];
   media: Record<string, SignedMedia>;
+  /** Pokalbio priedai, kurių šis administratorius dar neskaitė su pagrindu (A-16). */
+  lockedMedia?: Record<string, LockedMedia>;
   cascadeNote: string | null;
   /** Ar bazėje jau yra `admin_read_chat` (A-16): tik tada pokalbių eilutėse – „Skaityti (reikia pagrindo)“. */
   chatRead?: boolean;
@@ -63,6 +65,7 @@ export function RowCard({
   entry,
   mediaIds,
   media,
+  lockedMedia = {},
   cascadeNote,
   chatRead = false,
 }: Props) {
@@ -86,7 +89,9 @@ export function RowCard({
   const texts = highlightCols.filter((c) => c in row);
   const ownerLinks = owners.filter((c) => typeof row[c] === "string" && UUID_PATTERN.test(row[c] as string));
   const fields = Object.entries(row);
-  const chatTarget = chatRead ? chatTargetOf(table, row) : null;
+  // Užrakintas priedas (A-16) – jo pokalbį galima perskaityti su pagrindu, kaip ir pokalbio eilutę.
+  const lockedChat = Object.values(lockedMedia)[0]?.chatId;
+  const chatTarget = chatRead ? (chatTargetOf(table, row) ?? (lockedChat ? { chatId: lockedChat } : null)) : null;
 
   const remove = async () => {
     const answer = await ask({
@@ -172,7 +177,7 @@ export function RowCard({
           {mediaIds.length > 0 ? (
             <div className="flex shrink-0 flex-wrap gap-2 sm:w-[136px]">
               {mediaIds.map((id) => (
-                <MediaPreview key={id} signed={media[id]} />
+                <MediaPreview key={id} signed={media[id]} locked={id in lockedMedia} />
               ))}
             </div>
           ) : null}

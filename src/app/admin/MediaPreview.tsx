@@ -1,12 +1,21 @@
 "use client";
 
-import { IconImage } from "@/components/icons";
+import { IconImage, IconLock } from "@/components/icons";
 import type { SignedMedia } from "@/lib/admin-data";
 import { STROKE } from "./ui";
 
 /** Įrašo kadras 4:5 (`theme.js` `POST_ASPECT`) — tas pats, kurį mato programėlė. */
-export function MediaPreview({ signed }: { signed: SignedMedia | undefined }) {
+export function MediaPreview({ signed, locked = false }: { signed: SignedMedia | undefined; locked?: boolean }) {
   const box = "aspect-[4/5] w-[136px] rounded-[14px] bg-app-input";
+  // A-16: pokalbio priedas – kaip ir pokalbio tekstas, tik perskaičius pokalbį su pagrindu.
+  if (locked) {
+    return (
+      <span className={`${box} flex flex-col items-center justify-center gap-1.5 p-3 text-center text-[11px] text-app-muted`}>
+        <IconLock size={20} strokeWidth={STROKE} aria-hidden className="text-app-faint" />
+        Pokalbio priedas – skaityti su pagrindu
+      </span>
+    );
+  }
   if (!signed) {
     return (
       <span className={`${box} flex flex-col items-center justify-center gap-1.5 p-3 text-center text-[11px] text-app-muted`}>

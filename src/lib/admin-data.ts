@@ -98,17 +98,29 @@ export function mediaIdsOf(table: string, row: Record<string, unknown>): string[
 /** Kiek id priima vienas `admin-media-urls` kvietimas (funkcijos `MAX_BATCH`). */
 const SIGN_BATCH = 100;
 
+/** Pokalbio priedas, kurio šis administratorius dar neskaitė su pagrindu (A-16): kuriam pokalbiui jis priklauso. */
+export type LockedMedia = { chatId: string };
+
 /*
  * Pasirašyti skaitymo adresai (`admin-media-urls`). Viešas `r2.dev` adresas
  * nuo 2026-09-01 visam kam atsako 401, tad be parašo nuotraukos nematyti.
  *
  * Nepavykus grąžinamas tuščias atsakymas, o ne klaida: puslapis be nuotraukų
  * vis tiek leidžia rasti ir ištrinti, o priežastis lieka serverio žurnale.
+ *
+ * A-16 (db `20261022164619`): pokalbio priedą funkcija pasirašo tik tada, kai
+ * tas administratorius per paskutines 30 min. tą pokalbį skaitė su pagrindu;
+ * kitaip grąžina jį `locked` sąraše su pokalbio id, o portalas rodo
+ * „pokalbio priedas – skaityti su pagrindu“. Senesnė funkcija `locked` neturi.
  */
-export async function signMedia(adminId: string, ids: string[]): Promise<Record<string, SignedMedia>> {
+export async function signMediaChecked(
+  adminId: string,
+  ids: string[],
+): Promise<{ signed: Record<string, SignedMedia>; locked: Record<string, LockedMedia> }> {
   const unique = [...new Set(ids)].filter((id) => UUID_RE.test(id));
-  const out: Record<string, SignedMedia> = {};
-  if (unique.length === 0) return out;
+  const signed: Record<string, SignedMedia> = {};
+  const locked: Record<string, LockedMedia> = {};
+  if (unique.length === 0) return { signed, locked };
 
   const db = createSupabaseAdminClient();
   for (let i = 0; i < unique.length; i += SIGN_BATCH) {
@@ -120,7 +132,17 @@ export async function signMedia(adminId: string, ids: string[]): Promise<Record<
       continue;
     }
     const items = (data?.items ?? []) as Array<{ mediaId: string; url: string; contentType: string }>;
-    for (const item of items) out[item.mediaId] = { url: item.url, contentType: item.contentType };
+    for (const item of items) signed[item.mediaId] = { url: item.url, contentType: item.contentType };
+    const held = (Array.isArray(data?.locked) ? data.locked : []) as Array<{ mediaId?: unknown; chatId?: unknown }>;
+    for (const item of held) {
+      if (typeof item.mediaId === 'string' && typeof item.chatId === 'string' && UUID_RE.test(item.chatId)) {
+        locked[item.mediaId] = { chatId: item.chatId };
+      }
+    }
   }
-  return out;
+  return { signed, locked };
+}
+
+export async function signMedia(adminId: string, ids: string[]): Promise<Record<string, SignedMedia>> {
+  return (await signMediaChecked(adminId, ids)).signed;
 }

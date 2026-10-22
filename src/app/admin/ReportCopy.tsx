@@ -111,9 +111,14 @@ export function ReportCopy({ reportId }: { reportId: string }) {
               {copy.media.map((m) => (
                 <MediaPreview key={m.url} signed={m} />
               ))}
-              {copy.media.length < copy.mediaCount ? (
+              {copy.lockedCount > 0 ? (
                 <p className="w-full text-xs text-app-muted">
-                  Nepasirašyta: {copy.mediaCount - copy.media.length} iš {copy.mediaCount}.
+                  Pokalbio priedai ({copy.lockedCount}) rodomi tik perskaičius pokalbį su pagrindu – mygtukas „Skaityti (reikia pagrindo)“ žemiau.
+                </p>
+              ) : null}
+              {copy.media.length + copy.lockedCount < copy.mediaCount ? (
+                <p className="w-full text-xs text-app-muted">
+                  Nepasirašyta: {copy.mediaCount - copy.media.length - copy.lockedCount} iš {copy.mediaCount}.
                 </p>
               ) : null}
             </div>

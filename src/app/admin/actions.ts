@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { checkAdmin } from "@/lib/admin-guard";
-import { signMedia, type SignedMedia } from "@/lib/admin-data";
+import { signMedia, signMediaChecked, type SignedMedia } from "@/lib/admin-data";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { MODERATED_TABLES } from "./moderated-tables";
 import {
@@ -761,6 +761,8 @@ export type ReportCopyView = {
   withheld: boolean;
   /** Kiek medijos failų kopijoje (ir sulaikytoje – tik skaičius). */
   mediaCount: number;
+  /** Kiek iš jų – pokalbio priedai, rodomi tik perskaičius pokalbį su pagrindu (A-16). */
+  lockedCount: number;
   fields: { key: string; value: string }[];
   media: SignedMedia[];
 };
@@ -807,7 +809,7 @@ export async function loadReportCopy(
     const fields = Object.entries(content)
       .map(([key, value]) => ({ key, value: copyFieldText(value) }))
       .filter((f): f is { key: string; value: string } => f.value !== null);
-    const signed = withheld ? {} : await signMedia(admin.userId, mediaIds);
+    const { signed, locked } = withheld ? { signed: {}, locked: {} } : await signMediaChecked(admin.userId, mediaIds);
 
     return {
       ok: true,
@@ -819,6 +821,7 @@ export async function loadReportCopy(
         copyError: typeof raw.copy_error === "string" ? raw.copy_error : null,
         withheld,
         mediaCount: mediaIds.length,
+        lockedCount: withheld ? 0 : mediaIds.filter((id) => id in locked).length,
         fields,
         media: withheld ? [] : mediaIds.map((id) => signed[id]).filter((m): m is SignedMedia => Boolean(m)),
       },
