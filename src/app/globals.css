@@ -243,7 +243,8 @@
   opacity: 1;
   transform: none;
 }
-@media (prefers-reduced-motion: reduce) {
+/* Printed, a block never scrolled to would stay blank: paper gets every block. */
+@media (prefers-reduced-motion: reduce), print {
   [data-reveal] {
     opacity: 1;
     transform: none;

@@ -30,7 +30,7 @@ export function SystemPage({
   return (
     <SiteShell lang={lang} alternates={alternates({ kind: "home" })}>
       <Container className="py-28 text-center sm:py-40">
-        <p className="font-serif text-6xl text-terracotta-300" aria-hidden="true">
+        <p className="font-serif text-6xl text-terracotta-400" aria-hidden="true">
           {eyebrow}
         </p>
         <h1 className="mt-4 font-serif text-4xl font-medium text-espresso-900 text-balance sm:text-5xl">{title}</h1>

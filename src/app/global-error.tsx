@@ -17,7 +17,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
   return (
     <html lang="lt" className={`${fontVariables} h-full antialiased`}>
       <body className="flex min-h-full flex-col items-center justify-center bg-cream-100 px-4 py-20 text-center text-espresso-900">
-        <p className="font-serif text-6xl text-terracotta-300" aria-hidden="true">
+        <p className="font-serif text-6xl text-terracotta-400" aria-hidden="true">
           Gloumi
         </p>
         <h1 className="mt-4 font-serif text-4xl font-medium sm:text-5xl">Kažkas nepavyko</h1>
