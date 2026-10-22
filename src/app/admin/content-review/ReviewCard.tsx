@@ -7,7 +7,7 @@ import type { SignedMedia } from "@/lib/admin-data";
 import { decideContentReview } from "../actions";
 import { useToast } from "../Toaster";
 import { useConfirm } from "../ConfirmDialog";
-import { MediaPreview } from "../data/RowCard";
+import { MediaPreview } from "../MediaPreview";
 import { formatWhen } from "../format";
 import type { NoticeNote } from "../moderation-email";
 import { ActionNote, Alert, btn, btnDanger, card, STROKE, Tag } from "../ui";

@@ -25,10 +25,13 @@ export function ReportQueue({
   wanted,
   counts,
   views,
+  chatRead = false,
 }: {
   wanted: string;
   counts: Record<string, number | null>;
   views: ReportView[];
+  /** Ar bazėje jau yra `admin_read_chat` (A-16). */
+  chatRead?: boolean;
 }) {
   return (
     <>
@@ -58,7 +61,7 @@ export function ReportQueue({
         <ul className="space-y-4">
           {views.map((v) => (
             <li key={v.id}>
-              <ReportCard report={v} />
+              <ReportCard report={v} chatRead={chatRead} />
             </li>
           ))}
         </ul>

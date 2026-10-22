@@ -30,11 +30,14 @@ export function DisputeQueue({
   counts,
   disputes,
   held,
+  chatRead = false,
 }: {
   wanted: string;
   counts: Record<string, number>;
   disputes: DisputeView[];
   held: HeldMaster[] | null;
+  /** Ar bazėje jau yra `admin_read_chat` (A-16). */
+  chatRead?: boolean;
 }) {
   return (
     <div className="space-y-10">
@@ -68,7 +71,7 @@ export function DisputeQueue({
           <ul className="space-y-4">
             {disputes.map((d) => (
               <li key={d.bookingId}>
-                <DisputeCard dispute={d} />
+                <DisputeCard dispute={d} chatRead={chatRead} />
               </li>
             ))}
           </ul>

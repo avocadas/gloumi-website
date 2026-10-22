@@ -14,6 +14,8 @@ import {
   type NoticeNote,
 } from "./moderation-email";
 import { isUrgentGround, urgentGroundForDb } from "./termination";
+import { isChatReadBasis, type ChatMessage, type ChatTarget } from "./chat-read";
+import { CHAT_READ_ERRORS, chatOf, chatReadErrorText } from "@/lib/admin-chat-read";
 import { isSuspendDays, isSuspendSource } from "./suspension";
 import { ruleFor, type ModerationRule } from "./moderation-rules";
 import { UUID_PATTERN } from "./format";
@@ -693,6 +695,56 @@ export async function revealPhone(
       };
     }
     return { ok: true, phone: typeof data === "string" && data.trim() ? data.trim() : null };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
+  }
+}
+
+/*
+ * Pokalbio žinutės su pagrindu (teisininko A-16; db `admin_read_chat`).
+ * Funkcija pati tikrina, ar pagrindas liečia būtent šį pokalbį, ir toje pačioje
+ * transakcijoje įrašo skaitymą į administratorių žurnalą. Nuotraukos
+ * pasirašomos tik po to – naršyklėje pokalbių nuotraukų nebėra (A-16).
+ */
+export async function readChat(
+  target: ChatTarget,
+  basis: string,
+  basisRef: string,
+): Promise<
+  | { ok: true; chatId: string; messages: ChatMessage[]; media: Record<string, SignedMedia> }
+  | { ok: false; error: string }
+> {
+  try {
+    const admin = await requireAdmin();
+    if (!isChatReadBasis(basis)) return { ok: false, error: CHAT_READ_ERRORS.chat_read_basis_invalid };
+    const ref = typeof basisRef === "string" ? basisRef.trim() : "";
+    if (ref === "" || ref.length > 200) return { ok: false, error: CHAT_READ_ERRORS.chat_read_basis_ref_required };
+    const db = createSupabaseAdminClient();
+    const chat = await chatOf(db, target);
+    if ("error" in chat) return { ok: false, error: chat.error };
+
+    const { data, error } = await db.rpc("admin_read_chat", {
+      _admin_id: admin.userId,
+      _chat: chat.id,
+      _basis: basis,
+      _basis_ref: ref,
+    });
+    if (error) return { ok: false, error: chatReadErrorText(error) };
+    const messages: ChatMessage[] = ((Array.isArray(data) ? data : []) as Array<Record<string, unknown>>).map((m) => ({
+      id: String(m.id ?? ""),
+      senderId: typeof m.sender_id === "string" ? m.sender_id : null,
+      senderRole: typeof m.sender_role === "string" ? m.sender_role : null,
+      body: typeof m.body === "string" ? m.body : null,
+      mediaId: typeof m.media_id === "string" ? m.media_id : null,
+      replyToId: typeof m.reply_to_id === "string" ? m.reply_to_id : null,
+      createdAt: String(m.created_at ?? ""),
+      editedAt: typeof m.edited_at === "string" ? m.edited_at : null,
+    }));
+    const media = await signMedia(
+      admin.userId,
+      messages.flatMap((m) => (m.mediaId ? [m.mediaId] : [])),
+    );
+    return { ok: true, chatId: chat.id, messages, media };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Nepavyko." };
   }
