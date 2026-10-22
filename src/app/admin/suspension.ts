@@ -12,7 +12,7 @@ export const SUSPEND_DAYS = [1, 7, 14, 30] as const;
  * teksto į sprendimą neįrašo – jį perpasakoja administratorius priežastyje.
  */
 export const REPORT_SOURCE_NOTE =
-  "Priežastyje nurodykite ir pranešimo turinį – kas ir kodėl pranešta, be pranešėjo vardo ir kontaktų.";
+  "Priežastyje nurodykite, kad sprendimas priimtas gavus pranešimą, ir jo esmę – kas ir kodėl pranešta. Pranešėjo vardo ar kontaktų nerašykite, nebent tai būtina (DSA 17 str. 3 d. b p.).";
 
 /** Šaltinis nurodomas pranešime: gavus pranešimą (DSA 16 str.) ar mūsų iniciatyva. */
 export const SUSPEND_SOURCES = [
