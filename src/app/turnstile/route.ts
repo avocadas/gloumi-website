@@ -19,6 +19,13 @@ import { createHash } from "node:crypto";
  *
  * Without NEXT_PUBLIC_TURNSTILE_SITE_KEY the route answers 503, so the app
  * shows an error instead of waiting on an empty page.
+ *
+ * It also answers 503 until TURNSTILE_APP_PAGE=1: the site key goes in early
+ * for the admin sign-in (it must be there before Supabase Auth CAPTCHA is
+ * switched on), while this page is for the app's users, and the Privacy
+ * Policy describes Turnstile for them only from 1.21, which comes with build
+ * 18 – the first build that opens this page (legal role, 2026-10-22). On 503
+ * the app goes on without a token, as it does today.
  */
 export const dynamic = "force-dynamic";
 
@@ -52,7 +59,7 @@ function script(siteKey: string, action: string, lang: string): string {
 
 export async function GET(request: Request) {
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim();
-  if (!siteKey) {
+  if (!siteKey || process.env.TURNSTILE_APP_PAGE !== "1") {
     return new Response("not_configured", { status: 503, headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store" } });
   }
 
