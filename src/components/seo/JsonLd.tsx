@@ -1,5 +1,5 @@
 import { getCopy } from "@/content/copy";
-import type { Lang } from "@/content/lang";
+import { LANGS, LANG_LABELS, type Lang } from "@/content/lang";
 import { site } from "@/content/site";
 
 /**
@@ -32,7 +32,8 @@ export function JsonLd({ lang }: { lang: Lang }) {
       url: site.url,
       name: site.name,
       alternateName: ["Gloumi LT", "gloumi.lt"],
-      inLanguage: site.language,
+      // Every language the site is in, not only Lithuanian: /en said "lt" (web audit 2026-10-22).
+      inLanguage: LANGS.map((code) => LANG_LABELS[code].htmlLang),
       publisher: { "@id": orgId },
     },
     {
