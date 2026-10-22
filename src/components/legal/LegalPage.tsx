@@ -78,8 +78,12 @@ export function LegalPage({ lang, docKey, updated, version, intro, note, section
   // The FAQ shares the routing, but it is not one of the documents.
   const others = LEGAL_ROUTES.filter((route) => route.key !== docKey && route.key !== "faq");
 
+  // `break-words` (inherited by the whole document): with the WCAG 1.4.12 text
+  // spacing a German heading word, „Haftungsbeschränkung“, ran 16 px past a
+  // 320 px screen (web audit 2026-10-22). A word breaks only when it alone is
+  // wider than the line, so ordinary text looks the same.
   return (
-    <article className="py-14 sm:py-20">
+    <article className="break-words py-14 sm:py-20">
       <Container className="max-w-3xl">
         <header>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta-600">{copy.legal.eyebrow}</p>
