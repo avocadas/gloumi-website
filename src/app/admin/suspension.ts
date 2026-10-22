@@ -6,9 +6,17 @@
  */
 export const SUSPEND_DAYS = [1, 7, 14, 30] as const;
 
+/**
+ * Kai sprendimą lėmė pranešimas, žmogui reikia žinoti ir jo turinį (Meistrų
+ * sąlygos, DSA 17 str. 3 d. b p.; teisininko G11, 2026-10-22). Bazė pranešimo
+ * teksto į sprendimą neįrašo – jį perpasakoja administratorius priežastyje.
+ */
+export const REPORT_SOURCE_NOTE =
+  "Priežastyje nurodykite ir pranešimo turinį – kas ir kodėl pranešta, be pranešėjo vardo ir kontaktų.";
+
 /** Šaltinis nurodomas pranešime: gavus pranešimą (DSA 16 str.) ar mūsų iniciatyva. */
 export const SUSPEND_SOURCES = [
-  { value: "report", label: "Gavus pranešimą apie turinį" },
+  { value: "report", label: "Gavus pranešimą apie turinį", note: REPORT_SOURCE_NOTE },
   { value: "own", label: "Mūsų iniciatyva" },
 ] as const;
 

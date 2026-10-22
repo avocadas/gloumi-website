@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { IconBan, IconCheck, IconClose, IconProfile, IconTrash } from "@/components/icons";
 import { moderate, setSuspended } from "./actions";
-import { SUSPEND_DAYS } from "./suspension";
+import { REPORT_SOURCE_NOTE, SUSPEND_DAYS } from "./suspension";
 import { useConfirm, type ConfirmOptions } from "./ConfirmDialog";
 import { formatWhen } from "./format";
 import type { NoticeNote } from "./moderation-email";
@@ -272,6 +272,7 @@ export function ReportCard({ report }: { report: ReportView }) {
                       body: [
                         "Žmogus nebegalės prisijungti iki termino pabaigos; pasibaigus terminui prieiga grąžinama automatiškai.",
                         "Jam iš karto pranešime priežastį, punktą ir terminą – programėlėje ir el. paštu. Jo vizitai iki termino bus atšaukti, kitai šaliai pranešta.",
+                        REPORT_SOURCE_NOTE,
                         "Atkurti anksčiau ar pratęsti galima jo paskyros puslapyje.",
                       ],
                       confirmLabel: "Sustabdyti",
