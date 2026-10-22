@@ -224,7 +224,11 @@ export function AccountActions({
               hint: "skubus pagrindas – P2B 4 str. 4 d.; meistras jį matys pranešime",
               options: [
                 ...(terminationAt ? [] : [{ value: TERMINATE_AFTER_NOTICE, label: "Po 30 dienų (įprastai)" }]),
-                ...URGENT_GROUNDS.map((g) => ({ value: g.value, label: `Iš karto: ${g.label.toLowerCase()}` })),
+                ...URGENT_GROUNDS.map((g) => ({
+                  value: g.value,
+                  label: `Iš karto: ${g.label.toLowerCase()}`,
+                  note: "reasonLead" in g ? `Meistras pranešime gaus priežastį, prasidedančią „${g.reasonLead}.“` : undefined,
+                })),
               ],
             },
           ]

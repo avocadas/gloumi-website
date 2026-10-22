@@ -13,7 +13,7 @@ import {
   terminationRecipient,
   type NoticeNote,
 } from "./moderation-email";
-import { isUrgentGround } from "./termination";
+import { isUrgentGround, urgentGroundForDb } from "./termination";
 import { isSuspendDays, isSuspendSource } from "./suspension";
 import { ruleFor, type ModerationRule } from "./moderation-rules";
 import { UUID_PATTERN } from "./format";
@@ -509,6 +509,12 @@ export async function deleteAccount(
     }
     const why = justify(reason, rule, false);
     if ("error" in why) return { ok: false, error: why.error };
+    // G10 (C): sukčiavimas ir grėsmė saugumui bazei – `imperative_reason`, o pagrindas – priežasties pradžioje.
+    const urgent = urgentGround ? urgentGroundForDb(urgentGround) : null;
+    const fullReason = urgent?.lead ? `${urgent.lead}. ${why.reason}` : why.reason;
+    if (urgent?.lead && fullReason.length > 500) {
+      return { ok: false, error: `Priežastis per ilga – kartu su pagrindu daugiausia 500 ženklų, Jūsų tekstui – ${500 - urgent.lead.length - 2}.` };
+    }
     const db = createSupabaseAdminClient();
 
     const [{ data: master }, recipient] = await Promise.all([
@@ -521,9 +527,9 @@ export async function deleteAccount(
     const { data: auditLogId, error } = await db.rpc("admin_delete_account", {
       _admin_id: admin.userId,
       _user_id: userId,
-      _reason: why.reason,
+      _reason: fullReason,
       _rule: why.rule,
-      _urgent_ground: urgentGround,
+      _urgent_ground: urgent?.ground ?? null,
     });
     if (error) return { ok: false, error: dbError(error.message) };
 
