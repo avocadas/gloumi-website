@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { IconBuilding, IconCalendar, IconLandmark, IconProfile, IconReply, IconWallet } from "@/components/icons";
 import { resolveDispute } from "../actions";
+import { ChatReader } from "../ChatReader";
 import { useConfirm, type ConfirmOptions } from "../ConfirmDialog";
 import { formatMoney, formatWhen } from "../format";
 import type { NoticeNote } from "../moderation-email";
@@ -101,7 +102,7 @@ function bankReason(raw: string | null): string | null {
  * (`stripe-settle`), todėl langas tai sako, o kortelė po sprendimo rodo, kas
  * laukia.
  */
-export function DisputeCard({ dispute }: { dispute: DisputeView }) {
+export function DisputeCard({ dispute, chatRead = false }: { dispute: DisputeView; chatRead?: boolean }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [decided, setDecided] = useState<Decision | null>(null);
@@ -236,6 +237,15 @@ export function DisputeCard({ dispute }: { dispute: DisputeView }) {
           )}
         </p>
       </div>
+      {/* A-16: kliento ir meistro pokalbis – tik su šiuo ginču kaip pagrindu; skaitymas įrašomas į žurnalą. */}
+      {chatRead && dispute.clientId && dispute.masterId ? (
+        <div className="mt-3">
+          <ChatReader
+            target={{ memberIds: [dispute.clientId, dispute.masterId] }}
+            preset={{ basis: "dispute", ref: dispute.bookingId }}
+          />
+        </div>
+      ) : null}
 
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-app-muted">
         <PersonLink label="Klientas" id={dispute.clientId} name={dispute.clientName} />

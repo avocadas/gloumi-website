@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { checkAdmin } from "@/lib/admin-guard";
+import { chatReadAvailable } from "@/lib/admin-chat-read";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { ReportView } from "../ReportCard";
 import { ReportQueue, STATUS_LABEL } from "../ReportQueue";
@@ -159,6 +160,11 @@ export default async function AdminPage({
     };
   });
 
+  // A-16: žinutės ar paskyros skunde – pokalbį galima perskaityti su šiuo skundu kaip pagrindu.
+  const chatRead = views.some((v) => v.targetType === "message" || v.targetType === "profile")
+    ? await chatReadAvailable(check.userId)
+    : false;
+
   return (
     <AdminShell
       section="reports"
@@ -166,7 +172,7 @@ export default async function AdminPage({
       subtitle="Ką naudotojai pranešė apie įrašus, komentarus ir paskyras."
       username={check.username ?? check.userId}
     >
-      <ReportQueue wanted={wanted} counts={counts} views={views} />
+      <ReportQueue wanted={wanted} counts={counts} views={views} chatRead={chatRead} />
     </AdminShell>
   );
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { checkAdmin } from "@/lib/admin-guard";
+import { chatReadAvailable } from "@/lib/admin-chat-read";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { AdminShell } from "../AdminShell";
 import { MfaNotice } from "../MfaNotice";
@@ -129,6 +130,9 @@ export default async function DisputesPage({ searchParams }: { searchParams: Pro
     }
   }
 
+  // A-16: kliento ir meistro pokalbį galima perskaityti su ginču kaip pagrindu.
+  const chatRead = disputes.length > 0 ? await chatReadAvailable(check.userId) : false;
+
   return (
     <AdminShell
       section="disputes"
@@ -150,7 +154,7 @@ export default async function DisputesPage({ searchParams }: { searchParams: Pro
           Ginčų gauti nepavyko: {error.message}
         </Alert>
       ) : null}
-      <DisputeQueue wanted={wanted} counts={counts} disputes={disputes} held={held} />
+      <DisputeQueue wanted={wanted} counts={counts} disputes={disputes} held={held} chatRead={chatRead} />
     </AdminShell>
   );
 }

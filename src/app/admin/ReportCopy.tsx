@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { IconEye, IconLock } from "@/components/icons";
 import { loadReportCopy, type ReportCopyView } from "./actions";
-import { MediaPreview } from "./data/RowCard";
+import { MediaPreview } from "./MediaPreview";
 import { formatWhen } from "./format";
 import { Alert, STROKE, btnQuiet, eyebrow } from "./ui";
 

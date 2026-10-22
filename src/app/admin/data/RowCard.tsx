@@ -1,12 +1,15 @@
 "use client";
 
 import { Fragment, useState, useTransition } from "react";
-import { IconChevronDown, IconChevronRight, IconClock, IconImage, IconPencil, IconProfile, IconTrash } from "@/components/icons";
+import { IconChevronDown, IconChevronRight, IconClock, IconPencil, IconProfile, IconTrash } from "@/components/icons";
 import type { CatalogKind, DataRow, SignedMedia } from "@/lib/admin-data";
 import { editText, removeRow } from "../actions";
+import { ChatReader } from "../ChatReader";
+import type { ChatTarget } from "../chat-read";
 import { useConfirm } from "../ConfirmDialog";
 import { HoldBooking, canHold } from "../disputes/HoldBooking";
 import { ReplyVisibility } from "../ReplyVisibility";
+import { MediaPreview } from "../MediaPreview";
 import { MODERATED_TABLES } from "../moderated-tables";
 import type { NoticeNote } from "../moderation-email";
 import { RuleSelect } from "../ModerationRules";
@@ -23,7 +26,19 @@ type Props = {
   mediaIds: string[];
   media: Record<string, SignedMedia>;
   cascadeNote: string | null;
+  /** Ar bazėje jau yra `admin_read_chat` (A-16): tik tada pokalbių eilutėse – „Skaityti (reikia pagrindo)“. */
+  chatRead?: boolean;
 };
+
+/** Kurį pokalbį skaityti iš šios eilutės: `chats` – ji pati, `messages` – jos pokalbis. */
+function chatTargetOf(table: string, row: Record<string, unknown>): ChatTarget | null {
+  if (table === "chats" && typeof row.id === "string") return { chatId: row.id };
+  if (table === "messages") {
+    if (typeof row.chat_id === "string") return { chatId: row.chat_id };
+    if (typeof row.id === "string") return { messageId: row.id };
+  }
+  return null;
+}
 
 /*
  * Viena naršyklės eilutė (#129). Sandara visada ta pati, kad keliasdešimt
@@ -49,6 +64,7 @@ export function RowCard({
   mediaIds,
   media,
   cascadeNote,
+  chatRead = false,
 }: Props) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -70,6 +86,7 @@ export function RowCard({
   const texts = highlightCols.filter((c) => c in row);
   const ownerLinks = owners.filter((c) => typeof row[c] === "string" && UUID_PATTERN.test(row[c] as string));
   const fields = Object.entries(row);
+  const chatTarget = chatRead ? chatTargetOf(table, row) : null;
 
   const remove = async () => {
     const answer = await ask({
@@ -270,6 +287,13 @@ export function RowCard({
       ) : null}
       <ActionNote note={note} />
 
+      {/* A-16: pokalbio tekstas naršyklėje nerodomas – tik su pagrindu, ir skaitymas įrašomas į žurnalą. */}
+      {chatTarget && !removed ? (
+        <div className="mt-4 border-t border-app-hairline pt-4">
+          <ChatReader target={chatTarget} />
+        </div>
+      ) : null}
+
       {/* K-U24-4: vizitą, kurio pinigai dar Gloumi rankose, galima sulaikyti ginču. */}
       {table === "bookings" && typeof row.id === "string" && canHold(row) ? <HoldBooking bookingId={row.id} /> : null}
 
@@ -304,37 +328,5 @@ export function RowCard({
         </footer>
       ) : null}
     </article>
-  );
-}
-
-/** Įrašo kadras 4:5 (`theme.js` `POST_ASPECT`) — tas pats, kurį mato programėlė. */
-export function MediaPreview({ signed }: { signed: SignedMedia | undefined }) {
-  const box = "aspect-[4/5] w-[136px] rounded-[14px] bg-app-input";
-  if (!signed) {
-    return (
-      <span className={`${box} flex flex-col items-center justify-center gap-1.5 p-3 text-center text-[11px] text-app-muted`}>
-        <IconImage size={20} strokeWidth={STROKE} aria-hidden className="text-app-faint" />
-        Peržiūra nepasiekiama
-      </span>
-    );
-  }
-  if (signed.contentType.startsWith("video/")) {
-    return <video src={signed.url} controls preload="metadata" className={`${box} object-cover`} />;
-  }
-  if (signed.contentType.startsWith("audio/")) {
-    return <audio src={signed.url} controls preload="none" className="w-full" />;
-  }
-  return (
-    <a href={signed.url} target="_blank" rel="noopener noreferrer" title="Atidaryti visą">
-      {/* eslint-disable-next-line @next/next/no-img-element -- naudotojų failai neturi eiti per Vercel optimizatorių, o parašas galioja tik valandą */}
-      <img
-        src={signed.url}
-        alt="Naudotojo įkelta nuotrauka"
-        loading="lazy"
-        decoding="async"
-        referrerPolicy="no-referrer"
-        className={`${box} object-cover transition-opacity hover:opacity-90`}
-      />
-    </a>
   );
 }

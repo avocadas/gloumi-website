@@ -84,6 +84,9 @@ const NEVER_SENT: Record<string, string[]> = { profiles: ['phone_number'] };
  * (`avatar_media_id`, `cover_media_id`, `inspo_media_id`).
  */
 export function mediaIdsOf(table: string, row: Record<string, unknown>): string[] {
+  // A-16: pokalbio nuotraukos – privatus susirašinėjimas, kaip ir tekstas; jos
+  // pasirašomos tik skaitant pokalbį su pagrindu (`readChat`), ne naršyklėje.
+  if (table === 'messages') return [];
   const ids: string[] = [];
   if (table === 'media' && typeof row.id === 'string') ids.push(row.id);
   for (const [col, value] of Object.entries(row)) {

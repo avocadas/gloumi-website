@@ -3,6 +3,8 @@
 import { useState, useTransition } from "react";
 import { IconBan, IconCheck, IconClose, IconProfile, IconTrash } from "@/components/icons";
 import { moderate, setSuspended } from "./actions";
+import { ChatReader } from "./ChatReader";
+import type { ChatTarget } from "./chat-read";
 import { REPORT_SOURCE_NOTE, SUSPEND_DAYS } from "./suspension";
 import { useConfirm, type ConfirmOptions } from "./ConfirmDialog";
 import { formatWhen } from "./format";
@@ -87,7 +89,7 @@ const STATUS_TAG: Record<string, { label: string; tone: "warn" | "ok" | "neutral
  * pranešusiam ir uždaro skundą, o greitai skaitant eilę spustelėti ne tą
  * lengva. Paaiškinimas – eilutė po mygtukais, ne `title` (telefone nematyti).
  */
-export function ReportCard({ report }: { report: ReportView }) {
+export function ReportCard({ report, chatRead = false }: { report: ReportView; chatRead?: boolean }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<string | null>(null);
@@ -126,6 +128,14 @@ export function ReportCard({ report }: { report: ReportView }) {
   };
 
   const canDelete = report.targetType === "post" || report.targetType === "comment";
+  // Žinutės skundas – jos pokalbis; paskyros skundas – pranešusiojo ir jos bendras pokalbis.
+  const chatTarget: ChatTarget | null = !chatRead
+    ? null
+    : report.targetType === "message"
+      ? { messageId: report.targetId }
+      : report.targetType === "profile" && report.reporterId
+        ? { memberIds: [report.reporterId, report.targetId] }
+        : null;
   const deleteAction = report.targetType === "post" ? "delete_post" : "delete_comment";
   const status = STATUS_TAG[report.status];
 
@@ -162,6 +172,12 @@ export function ReportCard({ report }: { report: ReportView }) {
         )}
         <ReportCopy reportId={report.id} />
       </div>
+      {/* A-16: pokalbį – tik su šiuo skundu kaip pagrindu; skaitymas įrašomas į žurnalą. */}
+      {chatTarget ? (
+        <div className="mt-3">
+          <ChatReader target={chatTarget} preset={{ basis: "content_report", ref: report.id }} />
+        </div>
+      ) : null}
 
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-app-muted">
         {report.reporterName || report.reporterId ? (
