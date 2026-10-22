@@ -42,7 +42,8 @@ export type ConfirmChoice = {
   label: string;
   /** Paaiškinimas po pavadinimu, pilkai. */
   hint?: string;
-  options: { value: string; label: string }[];
+  /** `note` – priminimas, rodomas po sąrašu, kai pasirinkta būtent ši reikšmė. */
+  options: { value: string; label: string; note?: string }[];
 };
 
 /**
@@ -192,6 +193,10 @@ function ConfirmDialog({
                 </option>
               ))}
             </select>
+            {(() => {
+              const note = c.options.find((o) => o.value === picked[c.key])?.note;
+              return note ? <span className="mt-2 block text-[13px] leading-relaxed text-app-body">{note}</span> : null;
+            })()}
           </label>
         ))}
 
