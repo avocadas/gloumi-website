@@ -719,9 +719,8 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         },
         {
           "id": "K-18",
-          "q": "Will I get my money back if I cancel?",
-          "a": "If you cancel 24 hours or more ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit with less than 24 hours to go or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
-          "lang": "en"
+          "q": "Czy dostanę zwrot pieniędzy, jeśli odwołam wizytę?",
+          "a": "W razie odwołania wizyty co najmniej 24 godziny przed jej terminem blokada zostaje zwolniona i nic nie jest pobierane. W razie odwołania potwierdzonej wizyty na mniej niż 24 godziny przed jej terminem lub niestawienia się część określona w warunkach odwołania specjalisty (zaliczka) jest pobierana i przypada specjaliście (warunki są wyświetlane przed rezerwacją); pozostała zablokowana kwota zostaje zwolniona. Jeśli wizytę odwoła specjalista lub Gloumi, blokada zostaje zwolniona, a już pobrana kwota jest zwracana w całości."
         },
         {
           "id": "K-19",
@@ -1033,9 +1032,8 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         },
         {
           "id": "K-18",
-          "q": "Will I get my money back if I cancel?",
-          "a": "If you cancel 24 hours or more ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit with less than 24 hours to go or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
-          "lang": "en"
+          "q": "Vai atgūšu naudu, ja atcelšu vizīti?",
+          "a": "Ja vizīte tiek atcelta vismaz 24 stundas iepriekš, rezervācija tiek atbrīvota un nekas netiek noņemts. Ja apstiprināta vizīte tiek atcelta mazāk nekā 24 stundas iepriekš vai klients neierodas, meistara atcelšanas nosacījumos norādītā daļa (avanss) tiek noņemta un pienākas meistaram (nosacījumi tiek parādīti pirms rezervēšanas); pārējā rezervētā summa tiek atbrīvota. Ja vizīti atceļ meistars vai Gloumi, rezervācija tiek atbrīvota, bet jau noņemtā summa tiek atmaksāta pilnā apmērā."
         },
         {
           "id": "K-19",
@@ -1347,9 +1345,8 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         },
         {
           "id": "K-18",
-          "q": "Will I get my money back if I cancel?",
-          "a": "If you cancel 24 hours or more ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit with less than 24 hours to go or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
-          "lang": "en"
+          "q": "Bekomme ich mein Geld zurück, wenn ich storniere?",
+          "a": "Bei einer Stornierung mindestens 24 Stunden vor dem Termin wird die Vormerkung freigegeben und nichts abgebucht. Bei Stornierung eines bestätigten Termins weniger als 24 Stunden vorher oder bei Nichterscheinen wird der in den Stornobedingungen des Profis angegebene Teil (die Anzahlung) abgebucht und steht dem Profi zu (die Bedingungen werden vor der Buchung angezeigt); der übrige vorgemerkte Betrag wird freigegeben. Storniert der Profi oder Gloumi den Termin, wird die Vormerkung freigegeben, und ein bereits abgebuchter Betrag wird vollständig erstattet."
         },
         {
           "id": "K-19",
@@ -1661,9 +1658,8 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         },
         {
           "id": "K-18",
-          "q": "Will I get my money back if I cancel?",
-          "a": "If you cancel 24 hours or more ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit with less than 24 hours to go or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
-          "lang": "en"
+          "q": "Est-ce que je récupère mon argent si j'annule ?",
+          "a": "En cas d’annulation du rendez-vous au moins 24 heures à l’avance, le blocage est levé et rien n’est débité. En cas d’annulation d’un rendez-vous confirmé moins de 24 heures à l’avance ou en cas d’absence, la part indiquée dans les conditions d’annulation du professionnel (l’acompte) est débitée et revient au professionnel (les conditions sont affichées avant la réservation) ; le reste de la somme bloquée est débloqué. Si le rendez-vous est annulé par le professionnel ou par Gloumi, le blocage est levé et toute somme déjà débitée est intégralement remboursée."
         },
         {
           "id": "K-19",
@@ -1975,9 +1971,8 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         },
         {
           "id": "K-18",
-          "q": "Will I get my money back if I cancel?",
-          "a": "If you cancel 24 hours or more ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit with less than 24 hours to go or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
-          "lang": "en"
+          "q": "¿Recuperaré mi dinero si cancelo?",
+          "a": "Si la cita se cancela con al menos 24 horas de antelación, la retención se libera y no se cobra nada. Si una cita confirmada se cancela con menos de 24 horas de antelación o si no te presentas, la parte indicada en las condiciones de cancelación del profesional (el anticipo) se cobra y es para el profesional (las condiciones se muestran antes de reservar); el resto del importe retenido se libera. Si la cita la cancela el profesional o Gloumi, la retención se libera y el importe ya cobrado se devuelve íntegramente."
         },
         {
           "id": "K-19",
@@ -2289,9 +2284,8 @@ export const FAQ: Record<Lang, FaqSection[]> = {
         },
         {
           "id": "K-18",
-          "q": "Will I get my money back if I cancel?",
-          "a": "If you cancel 24 hours or more ahead, the reservation on your card is released and nothing is charged. If you cancel a confirmed visit with less than 24 hours to go or do not turn up, the part set in the master's cancellation terms (the deposit) is charged and the rest of the reserved amount is released. If the master or Gloumi cancels, the reservation is released and any amount already charged is refunded in full.",
-          "lang": "en"
+          "q": "Se annullo, mi restituite i soldi?",
+          "a": "Se l'appuntamento viene annullato almeno 24 ore prima, l'importo viene sbloccato e non viene addebitato nulla. Se un appuntamento confermato viene annullato meno di 24 ore prima o in caso di mancata presentazione, la parte indicata nelle condizioni di annullamento del professionista (l'acconto) viene addebitata e spetta al professionista (le condizioni sono mostrate prima della prenotazione); il resto dell'importo bloccato viene sbloccato. Se l'appuntamento viene annullato dal professionista o da Gloumi, l'importo bloccato viene sbloccato e l'importo già addebitato viene rimborsato per intero."
         },
         {
           "id": "K-19",
