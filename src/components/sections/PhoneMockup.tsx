@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import Image, { type StaticImageData } from "next/image";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { IconPause, IconPlay } from "@/components/icons";
-import { getCopy } from "@/content/copy";
+import type { Copy } from "@/content/copy";
 import { legalLangOf, type Lang, type LegalLang } from "@/content/lang";
 import { cn } from "@/lib/cn";
 import feedEn from "@/assets/app-screens/en/feed.webp";
@@ -38,8 +38,7 @@ const SCREENS: Record<LegalLang, Record<ScreenId, StaticImageData>> = {
  * visitor hovers, focuses or picks a tab, and never cycles for people who
  * asked for reduced motion.
  */
-export function PhoneMockup({ lang }: { lang: Lang }) {
-  const copy = getCopy(lang);
+export function PhoneMockup({ lang, phone }: { lang: Lang; phone: Copy["phone"] }) {
   const [active, setActive] = useState<ScreenId>("feed");
   const [paused, setPaused] = useState(false);
   const [manual, setManual] = useState(false);
@@ -85,7 +84,7 @@ export function PhoneMockup({ lang }: { lang: Lang }) {
 
   const tabId = (id: ScreenId) => `${baseId}-tab-${id}`;
   const panelId = (id: ScreenId) => `${baseId}-panel-${id}`;
-  const activeTab = copy.phone.tabs.find((tab) => tab.id === active);
+  const activeTab = phone.tabs.find((tab) => tab.id === active);
 
   return (
     <div
@@ -97,7 +96,7 @@ export function PhoneMockup({ lang }: { lang: Lang }) {
     >
       <div
         role="group"
-        aria-label={copy.phone.ariaLabel}
+        aria-label={phone.ariaLabel}
         className={cn("relative w-[272px] sm:w-[300px]", !reduce && "animate-float")}
       >
         <div className="relative rounded-[2.9rem] bg-espresso-950 p-[10px] shadow-phone">
@@ -147,12 +146,12 @@ export function PhoneMockup({ lang }: { lang: Lang }) {
       <div className="mt-7 flex max-w-full flex-wrap items-center justify-center gap-2">
       <div
         role="tablist"
-        aria-label={copy.phone.tabsLabel}
+        aria-label={phone.tabsLabel}
         onKeyDown={onTabKey}
         // On the narrowest phones some languages' four tabs are wider than the screen (French: 332 px in 280): they scroll instead of spilling over.
         className="inline-flex max-w-full overflow-x-auto rounded-full bg-white/80 p-1 shadow-card ring-1 ring-espresso-900/5 backdrop-blur [scrollbar-width:none]"
       >
-        {copy.phone.tabs.map((tab, index) => {
+        {phone.tabs.map((tab, index) => {
           const selected = tab.id === active;
           return (
             <button
@@ -182,15 +181,15 @@ export function PhoneMockup({ lang }: { lang: Lang }) {
         <button
           type="button"
           onClick={toggle}
-          aria-label={running ? copy.phone.pause : copy.phone.play}
-          title={running ? copy.phone.pause : copy.phone.play}
+          aria-label={running ? phone.pause : phone.play}
+          title={running ? phone.pause : phone.play}
           className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/80 text-espresso-700 shadow-card ring-1 ring-espresso-900/5 backdrop-blur transition-colors hover:text-espresso-900"
         >
           {running ? <IconPause size={16} /> : <IconPlay size={16} />}
         </button>
       )}
       </div>
-      <p className="mt-3 text-xs text-espresso-500">{copy.phone.note}</p>
+      <p className="mt-3 text-xs text-espresso-500">{phone.note}</p>
     </div>
   );
 }

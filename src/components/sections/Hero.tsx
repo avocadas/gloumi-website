@@ -51,7 +51,7 @@ export function Hero({ lang }: { lang: Lang }) {
         </div>
 
         <div className="relative mx-auto w-full max-w-[440px] animate-fade-up [animation-delay:150ms] lg:max-w-none">
-          <PhoneMockup lang={lang} />
+          <PhoneMockup lang={lang} phone={copy.phone} />
 
           {/*
             Floating proof cards – decorative echoes of what the app shows.

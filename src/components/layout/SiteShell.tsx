@@ -33,7 +33,7 @@ export function SiteShell({ lang, alternates, children }: Props) {
       >
         {copy.a11y.skip}
       </a>
-      <Header lang={lang} alternates={alternates} />
+      <Header lang={lang} nav={copy.nav} alternates={alternates} />
       <main id="turinys" className="flex-1">
         {children}
       </main>

@@ -1,6 +1,17 @@
 import { type IconComponent } from "@/components/icons";
-import { IconCategoryBrows, IconCategoryHair, IconCategoryMakeup, IconCategoryMassage, IconCategoryNails, IconCategorySkincare } from "@/components/icons/categories";
+import { CATEGORY_ICONS } from "./category-icons";
 import type { Lang } from "./lang";
+
+// The icons come from category-icons.ts (one place); the names stay, since
+// scripts/check-contrast.mjs reads the `{ icon: Name, ink, tint }` lines below.
+const {
+  hair: IconCategoryHair,
+  nails: IconCategoryNails,
+  brows_lashes: IconCategoryBrows,
+  massage_body: IconCategoryMassage,
+  makeup: IconCategoryMakeup,
+  skincare: IconCategorySkincare,
+} = CATEGORY_ICONS;
 
 /**
  * The six service categories the landing page shows.
@@ -366,4 +377,16 @@ export const CATEGORY_IDS: readonly CategoryId[] = ORDER;
 
 export function getCategories(lang: Lang): Category[] {
   return ORDER.map((id) => ({ id, ...SHARED[id], ...TEXT[lang][id] }));
+}
+
+/** A category without its icon component: what a server component can pass to a client one as props. */
+export type CategoryView = Omit<Category, "icon">;
+
+/**
+ * One language's categories, serialisable (web audit 2026-10-22): client
+ * components get these as props and draw the icon from category-icons.ts,
+ * so the other seven languages' texts stay on the server.
+ */
+export function getCategoryViews(lang: Lang): CategoryView[] {
+  return ORDER.map((id) => ({ id, ink: SHARED[id].ink, tint: SHARED[id].tint, ...TEXT[lang][id] }));
 }

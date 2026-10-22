@@ -4,8 +4,7 @@ import Link from "next/link";
 import { useId, useState, type FormEvent, type ReactNode } from "react";
 import { IconMail, IconSpinner, IconVerified } from "@/components/icons";
 import { Button, ButtonLink } from "@/components/ui/Button";
-import { getCategories } from "@/content/categories";
-import { getCopy } from "@/content/copy";
+import type { Copy } from "@/content/copy";
 import { legalPath, sectionHref, type Lang } from "@/content/lang";
 import { site } from "@/content/site";
 import { cn } from "@/lib/cn";
@@ -39,11 +38,19 @@ function Optional({ label }: { label: string }) {
  * 503 and the card turns into a plain mailto – a form that silently drops
  * submissions would be worse than no form.
  */
-export function WaitlistForm({ lang }: { lang: Lang }) {
-  const copy = getCopy(lang);
-  const categories = getCategories(lang);
+export function WaitlistForm({
+  lang,
+  form: f,
+  cta,
+  categories,
+}: {
+  lang: Lang;
+  /** This language's texts only, from the server (web audit 2026-10-22: no dictionary import in a client component). */
+  form: Copy["form"];
+  cta: string;
+  categories: { id: string; label: string }[];
+}) {
   const id = useId();
-  const f = copy.form;
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState<string | null>(null);
   // Fields the server refused (`fields` in a validation answer), tied to the message for screen readers (accessibility statement).
@@ -119,7 +126,7 @@ export function WaitlistForm({ lang }: { lang: Lang }) {
           <p className="leading-relaxed text-espresso-500">{inStores ? f.successText : f.successTextSoon}</p>
           <div className="mt-2 flex flex-wrap gap-3">
             <ButtonLink href={sectionHref(lang, "download")} size="sm">
-              {copy.nav.cta}
+              {cta}
             </ButtonLink>
             <Button size="sm" variant="ghost" onClick={() => setStatus("idle")}>
               {f.another}

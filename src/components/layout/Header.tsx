@@ -7,18 +7,19 @@ import { Wordmark } from "@/components/brand/Wordmark";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import { getCopy } from "@/content/copy";
+import type { Copy } from "@/content/copy";
 import { homePath, sectionHref, type Lang } from "@/content/lang";
 import { cn } from "@/lib/cn";
 
 type HeaderProps = {
   lang: Lang;
+  /** This language's navigation texts only (web audit 2026-10-22: a client component must not import every dictionary). */
+  nav: Copy["nav"];
   /** Where this same page lives in each language, for the switcher. */
   alternates: Partial<Record<Lang, string>>;
 };
 
-export function Header({ lang, alternates }: HeaderProps) {
-  const copy = getCopy(lang);
+export function Header({ lang, nav, alternates }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -52,15 +53,15 @@ export function Header({ lang, alternates }: HeaderProps) {
         <Link
           href={homePath(lang)}
           className="flex shrink-0 items-center rounded-md text-plum-700"
-          aria-label={copy.nav.home}
+          aria-label={nav.home}
           onClick={close}
         >
           <Wordmark title="" className="h-7 w-auto sm:h-8" />
         </Link>
 
-        <nav aria-label={copy.nav.ariaLabel} className="hidden md:block">
+        <nav aria-label={nav.ariaLabel} className="hidden md:block">
           <ul className="flex items-center gap-8">
-            {copy.nav.links.map((link) => (
+            {nav.links.map((link) => (
               <li key={link.key}>
                 <Link
                   href={sectionHref(lang, link.key)}
@@ -74,21 +75,21 @@ export function Header({ lang, alternates }: HeaderProps) {
         </nav>
 
         <div className="flex items-center gap-2">
-          <LanguageSwitcher lang={lang} alternates={alternates} label={copy.nav.language} />
+          <LanguageSwitcher lang={lang} alternates={alternates} label={nav.language} />
           {/*
             `max-sm:hidden`, not `hidden sm:inline-flex`: `cn` does not merge classes, and the button's own
             `inline-flex` came later in the CSS than `hidden`, so the button showed on phones too and pushed the
             header past 320 px. On phones the same link is in the menu.
           */}
           <ButtonLink href={sectionHref(lang, "download")} size="sm" className="max-sm:hidden">
-            {copy.nav.cta}
+            {nav.cta}
           </ButtonLink>
           <button
             type="button"
             className="inline-flex h-10 w-10 items-center justify-center rounded-full text-espresso-900 transition-colors hover:bg-espresso-900/5 md:hidden"
             aria-expanded={open}
             aria-controls="mobile-menu"
-            aria-label={open ? copy.nav.close : copy.nav.open}
+            aria-label={open ? nav.close : nav.open}
             onClick={() => setOpen((v) => !v)}
           >
             {open ? <IconClose className="h-5 w-5" aria-hidden="true" /> : <IconMenu className="h-5 w-5" aria-hidden="true" />}
@@ -100,7 +101,7 @@ export function Header({ lang, alternates }: HeaderProps) {
         <div id="mobile-menu" className="animate-menu-in border-t border-espresso-900/8 md:hidden">
           <Container>
             <ul className="flex flex-col py-3">
-              {copy.nav.links.map((link) => (
+              {nav.links.map((link) => (
                 <li key={link.key}>
                   <Link
                     href={sectionHref(lang, link.key)}
@@ -113,7 +114,7 @@ export function Header({ lang, alternates }: HeaderProps) {
               ))}
               <li className="px-3 pb-3 pt-2">
                 <ButtonLink href={sectionHref(lang, "download")} onClick={close} className="w-full">
-                  {copy.nav.cta}
+                  {nav.cta}
                 </ButtonLink>
               </li>
             </ul>

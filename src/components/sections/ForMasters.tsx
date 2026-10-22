@@ -3,6 +3,7 @@ import { WaitlistForm } from "@/components/sections/WaitlistForm";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { getCategoryViews } from "@/content/categories";
 import { getCopy } from "@/content/copy";
 import { sectionId, type Lang } from "@/content/lang";
 
@@ -79,7 +80,12 @@ export function ForMasters({ lang }: { lang: Lang }) {
             </div>
 
             <div id={sectionId(lang, "join")} className="scroll-mt-28 lg:pt-2">
-              <WaitlistForm lang={lang} />
+              <WaitlistForm
+                lang={lang}
+                form={copy.form}
+                cta={copy.nav.cta}
+                categories={getCategoryViews(lang).map(({ id, label }) => ({ id, label }))}
+              />
             </div>
           </div>
         </div>
