@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
-import { MotionProvider } from "@/components/ui/MotionProvider";
 import { getCopy } from "@/content/copy";
 import type { Lang } from "@/content/lang";
 
@@ -34,13 +33,11 @@ export function SiteShell({ lang, alternates, children }: Props) {
       >
         {copy.a11y.skip}
       </a>
-      <MotionProvider>
-        <Header lang={lang} alternates={alternates} />
-        <main id="turinys" className="flex-1">
-          {children}
-        </main>
-        <Footer lang={lang} />
-      </MotionProvider>
+      <Header lang={lang} alternates={alternates} />
+      <main id="turinys" className="flex-1">
+        {children}
+      </main>
+      <Footer lang={lang} />
     </>
   );
 }

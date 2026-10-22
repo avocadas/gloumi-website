@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { AnimatePresence, m } from "framer-motion";
 import { IconClose, IconMenu } from "@/components/icons";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
@@ -97,39 +96,30 @@ export function Header({ lang, alternates }: HeaderProps) {
         </div>
       </Container>
 
-      <AnimatePresence>
-        {open ? (
-          <m.div
-            id="mobile-menu"
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-            className="border-t border-espresso-900/8 md:hidden"
-          >
-            <Container>
-              <ul className="flex flex-col py-3">
-                {copy.nav.links.map((link) => (
-                  <li key={link.key}>
-                    <Link
-                      href={sectionHref(lang, link.key)}
-                      onClick={close}
-                      className="block rounded-xl px-3 py-3 text-base font-medium text-espresso-900 hover:bg-white/70"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-                <li className="px-3 pb-3 pt-2">
-                  <ButtonLink href={sectionHref(lang, "download")} onClick={close} className="w-full">
-                    {copy.nav.cta}
-                  </ButtonLink>
+      {open ? (
+        <div id="mobile-menu" className="animate-menu-in border-t border-espresso-900/8 md:hidden">
+          <Container>
+            <ul className="flex flex-col py-3">
+              {copy.nav.links.map((link) => (
+                <li key={link.key}>
+                  <Link
+                    href={sectionHref(lang, link.key)}
+                    onClick={close}
+                    className="block rounded-xl px-3 py-3 text-base font-medium text-espresso-900 hover:bg-white/70"
+                  >
+                    {link.label}
+                  </Link>
                 </li>
-              </ul>
-            </Container>
-          </m.div>
-        ) : null}
-      </AnimatePresence>
+              ))}
+              <li className="px-3 pb-3 pt-2">
+                <ButtonLink href={sectionHref(lang, "download")} onClick={close} className="w-full">
+                  {copy.nav.cta}
+                </ButtonLink>
+              </li>
+            </ul>
+          </Container>
+        </div>
+      ) : null}
     </header>
   );
 }

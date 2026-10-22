@@ -1,7 +1,6 @@
 "use client";
 
-import { m, useReducedMotion } from "framer-motion";
-import type { ReactNode } from "react";
+import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 
 type Props = {
   children: ReactNode;
@@ -15,22 +14,40 @@ type Props = {
 /**
  * Fade-and-rise on first scroll into view.
  *
- * Below-the-fold only: the server HTML carries the initial opacity, so the
- * hero uses a CSS keyframe instead and layout.tsx ships a <noscript> rule
- * that reveals every [data-reveal] block for visitors without JavaScript.
+ * Below-the-fold only: the server HTML carries the hidden start (globals.css
+ * `[data-reveal]`), so the hero uses a CSS keyframe instead and SiteShell
+ * ships a <noscript> rule that reveals every block for visitors without
+ * JavaScript. One IntersectionObserver per block, dropped after it shows;
+ * the transition itself is CSS (web audit 2026-10-22: framer-motion was the
+ * home page's heaviest script).
  */
 export function Reveal({ children, className, delay = 0, y = 24 }: Props) {
-  const reduce = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === "undefined") {
+      el.dataset.shown = "";
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          el.dataset.shown = "";
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "0px 0px -10% 0px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const style = { "--reveal-delay": `${delay}s`, "--reveal-y": `${y}px` } as CSSProperties;
   return (
-    <m.div
-      data-reveal=""
-      className={className}
-      initial={reduce ? false : { opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "0px 0px -10% 0px" }}
-      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay }}
-    >
+    <div ref={ref} data-reveal="" className={className} style={style}>
       {children}
-    </m.div>
+    </div>
   );
 }

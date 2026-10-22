@@ -122,6 +122,16 @@
 
   --animate-float: float 8s ease-in-out infinite;
   --animate-fade-up: fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  /*
+   * The hero text rises without fading (web audit 2026-10-22): an element
+   * that starts at opacity 0 is not an LCP candidate, so the H1 was skipped
+   * and LCP fell on a later, smaller element.
+   */
+  --animate-rise: rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  /* framer-motion's replacements (web audit 2026-10-22): menu, category panel, ring. */
+  --animate-menu-in: menu-in 0.2s ease-out both;
+  --animate-panel-in: panel-in 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-ring-spin: ring-spin 9s linear infinite;
 
   @keyframes float {
     0%,
@@ -140,6 +150,39 @@
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+  @keyframes rise {
+    from {
+      transform: translateY(18px);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes ring-spin {
+    to {
+      transform: rotate(360deg);
     }
   }
 }
@@ -179,6 +222,32 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
+  }
+}
+
+/*
+ * Scroll reveal (components/ui/Reveal.tsx): hidden until the block scrolls
+ * into view, then a 0.7 s fade and rise. Without JavaScript SiteShell's
+ * <noscript> rule shows every block; with reduced motion they are simply
+ * there. Replaces framer-motion's whileInView (web audit 2026-10-22).
+ */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(var(--reveal-y, 24px));
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0s);
+}
+[data-reveal][data-shown] {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
 

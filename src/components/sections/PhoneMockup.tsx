@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import Image, { type StaticImageData } from "next/image";
-import { useReducedMotion } from "framer-motion";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { IconPause, IconPlay } from "@/components/icons";
 import { getCopy } from "@/content/copy";
 import { legalLangOf, type Lang, type LegalLang } from "@/content/lang";

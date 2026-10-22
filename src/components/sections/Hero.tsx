@@ -19,7 +19,7 @@ export function Hero({ lang }: { lang: Lang }) {
       </div>
 
       <Container className="grid grid-cols-[minmax(0,1fr)] items-center gap-14 pb-16 pt-8 sm:pt-14 lg:grid-cols-[0.95fr_1.05fr] lg:gap-6 lg:pb-24 lg:pt-16">
-        <div className="max-w-xl animate-fade-up">
+        <div className="max-w-xl animate-rise">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta-600">{h.eyebrow}</p>
           <h1
             id="hero-title"

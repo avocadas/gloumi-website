@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -26,7 +25,6 @@ export function CategoriesSection({ lang }: { lang: Lang }) {
   const categories = getCategories(lang);
   // The first in the row, as the row is the app's order (nails first).
   const [selectedId, setSelectedId] = useState<Category["id"]>(categories[0].id);
-  const reduce = useReducedMotion();
   const current = categories.find((c) => c.id === selectedId) ?? categories[0];
 
   return (
@@ -61,17 +59,13 @@ export function CategoriesSection({ lang }: { lang: Lang }) {
                       selected && "-translate-y-1"
                     )}
                   >
-                    <m.span
+                    <span
                       aria-hidden="true"
                       className={cn(
                         "absolute inset-0 rounded-full transition-opacity duration-300",
-                        selected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                        selected ? "animate-ring-spin opacity-100 motion-reduce:animate-none" : "opacity-0 group-hover:opacity-100"
                       )}
                       style={{ background: RING_GRADIENT }}
-                      animate={selected && !reduce ? { rotate: [0, 360] } : { rotate: 0 }}
-                      transition={
-                        selected && !reduce ? { repeat: Infinity, duration: 9, ease: "linear" } : { duration: 0.4 }
-                      }
                     />
                     <span
                       aria-hidden="true"
@@ -104,37 +98,32 @@ export function CategoriesSection({ lang }: { lang: Lang }) {
         </ul>
 
         <div className="mx-auto mt-12 max-w-2xl" aria-live="polite">
-          <AnimatePresence mode="wait" initial={false}>
-            <m.div
-              key={current.id}
-              initial={reduce ? false : { opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={reduce ? { opacity: 0 } : { opacity: 0, y: -10 }}
-              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-              className="rounded-3xl bg-white p-6 shadow-card ring-1 ring-espresso-900/5 sm:p-8"
-            >
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em]" style={{ color: current.ink }}>
-                    {current.label}
-                  </p>
-                  <h3 className="mt-2 font-serif text-2xl font-medium text-espresso-900 sm:text-[1.75rem]">
-                    {current.tagline}
-                  </h3>
-                </div>
-                <ButtonLink href={sectionHref(lang, "download")} size="sm" variant="dark">
-                  {copy.categories.cta}
-                </ButtonLink>
+          {/* `key` remounts the panel, so each category enters with the CSS keyframe. */}
+          <div
+            key={current.id}
+            className="animate-panel-in rounded-3xl bg-white p-6 shadow-card ring-1 ring-espresso-900/5 sm:p-8"
+          >
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em]" style={{ color: current.ink }}>
+                  {current.label}
+                </p>
+                <h3 className="mt-2 font-serif text-2xl font-medium text-espresso-900 sm:text-[1.75rem]">
+                  {current.tagline}
+                </h3>
               </div>
-              <ul className="mt-5 flex flex-wrap gap-2">
-                {current.examples.map((example) => (
-                  <li key={example} className="rounded-full bg-sand-100 px-3.5 py-1.5 text-sm text-espresso-700">
-                    {example}
-                  </li>
-                ))}
-              </ul>
-            </m.div>
-          </AnimatePresence>
+              <ButtonLink href={sectionHref(lang, "download")} size="sm" variant="dark">
+                {copy.categories.cta}
+              </ButtonLink>
+            </div>
+            <ul className="mt-5 flex flex-wrap gap-2">
+              {current.examples.map((example) => (
+                <li key={example} className="rounded-full bg-sand-100 px-3.5 py-1.5 text-sm text-espresso-700">
+                  {example}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </Container>
     </section>
