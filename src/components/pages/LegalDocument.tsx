@@ -1,5 +1,5 @@
 import { Blocks, LegalPage } from "@/components/legal/LegalPage";
-import { STATEMENT_DATE, STATEMENTS } from "@/content/statements";
+import { STATEMENT_DATES, STATEMENTS } from "@/content/statements";
 import { getCopy } from "@/content/copy";
 import type { LegalKey, LegalLang } from "@/content/lang";
 import { dac7Sections, deletionSections, LEGAL_DOCS, LEGAL_META, PARTNER_META, refundSections } from "@/content/legal";
@@ -39,7 +39,7 @@ export function LegalDocument({ lang, docKey }: { lang: LegalLang; docKey: Legal
       <LegalPage
         lang={lang}
         docKey={docKey}
-        updated={STATEMENT_DATE}
+        updated={STATEMENT_DATES[docKey]}
         intro={<Blocks blocks={statement.intro} />}
         sections={statement.sections}
       />
