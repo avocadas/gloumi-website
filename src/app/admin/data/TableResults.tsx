@@ -44,6 +44,7 @@ export function TableResults({
   res,
   mediaByRow,
   signed,
+  chatRead = false,
 }: {
   entry: CatalogEntry;
   q: string;
@@ -53,6 +54,8 @@ export function TableResults({
   res: { ok: true; result: SearchResult } | { ok: false; error: string };
   mediaByRow: string[][];
   signed: Record<string, SignedMedia>;
+  /** Ar bazėje jau yra `admin_read_chat` (A-16) – tada pokalbių eilutėse mygtukas „Skaityti“. */
+  chatRead?: boolean;
 }) {
   const rows = res.ok ? res.result.rows : [];
   const total = res.ok ? res.result.total : 0;
@@ -171,6 +174,7 @@ export function TableResults({
                     mediaIds={mediaByRow[i]}
                     media={pick(signed, mediaByRow[i])}
                     cascadeNote={CASCADE_NOTE[entry.tbl] ?? null}
+                    chatRead={chatRead}
                   />
                 </li>
               ))}
