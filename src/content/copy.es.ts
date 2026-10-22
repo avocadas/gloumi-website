@@ -420,6 +420,7 @@ export const es: typeof lt = {
     reportBody: {
       where: "Where (link or exact location in the app)",
       why: "Why you believe it is illegal",
+      name: "Name (optional)",
       confirm: "I confirm that, to the best of my belief, the information in this report is accurate and complete.",
     },
   },

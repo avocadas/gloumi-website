@@ -464,6 +464,8 @@ export const lt = {
     reportBody: {
       where: "Kur",
       why: "Kodėl, Jūsų manymu, neteisėta",
+      // DSA 16 str. 2 d. c p.; Taisyklės: vardą nurodyti galima, bet neprivaloma (teisininkas 2026-10-22).
+      name: "Vardas ir pavardė (neprivaloma)",
       confirm: "Patvirtinu, kad informacija tiksli ir išsami.",
     },
   },

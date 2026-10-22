@@ -60,6 +60,8 @@ export function MasterReviews({ lang, data, pageUrl }: { lang: LegalLang; data: 
     "",
     `${copy.reportBody.why}: `,
     "",
+    `${copy.reportBody.name}: `,
+    "",
     copy.reportBody.confirm,
   ].join("\r\n");
   const report = `mailto:${site.email}?subject=${encodeURIComponent(`${copy.reportSubject}: ${pageUrl}`)}&body=${encodeURIComponent(reportBody)}`;
