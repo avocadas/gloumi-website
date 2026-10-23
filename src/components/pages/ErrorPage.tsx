@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { getCopy } from "@/content/copy";
 import { homePath, type Lang } from "@/content/lang";
@@ -19,6 +19,16 @@ export function ErrorPage({ lang, error, reset }: { lang: Lang; error: Error & {
   useEffect(() => {
     console.error("[error-boundary]", error.digest ?? error.message);
   }, [error]);
+
+  // A page that threw in its metadata leaves the tab without a title (web audit I-4); one that did not keeps its own.
+  // The title set here follows a language change (share links render once in Lithuanian, then in the browser's language).
+  const ownTitle = useRef<string | null>(null);
+  useEffect(() => {
+    if (!document.title || document.title === ownTitle.current) {
+      document.title = `${copy.title} · Gloumi`;
+      ownTitle.current = document.title;
+    }
+  }, [copy.title]);
 
   return (
     <SystemPage
