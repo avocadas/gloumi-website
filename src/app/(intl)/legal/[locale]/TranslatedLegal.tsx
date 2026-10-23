@@ -5,6 +5,7 @@ import { SiteShell } from "@/components/layout/SiteShell";
 import { LANGS } from "@/content/lang";
 import { LEGAL_META, LEGAL_TITLES } from "@/content/legal";
 import { legalDocAlternates } from "@/content/legal-alternates";
+import { LEGAL_TRANSLATION_META } from "@/content/legal-translation-meta";
 import { LEGAL_TRANSLATIONS, type TranslatedLegal } from "@/content/legal-translations";
 import { site } from "@/content/site";
 
@@ -16,21 +17,28 @@ function find(locale: string): TranslatedLegal {
   return t;
 }
 
-/** The translation's own title when it states one; otherwise the English title with the language's name. */
+/**
+ * The translation's own title when it states one, then the content role's
+ * (legal-translation-meta.ts), and only then the English title with the
+ * language's name.
+ */
 function titleOf(t: TranslatedLegal, doc: Doc): string {
-  return t.titles[doc] ?? `${LEGAL_TITLES.en[doc]} (${t.name})`;
+  return t.titles[doc] ?? LEGAL_TRANSLATION_META[t.lang]?.[doc].title ?? `${LEGAL_TITLES.en[doc]} (${t.name})`;
 }
 
 export async function translatedMetadata(params: Promise<{ locale: string }>, doc: Doc): Promise<Metadata> {
   const t = find((await params).locale);
   const title = titleOf(t, doc);
+  // In the page's language; without one, the layout's English description stands (SEO-3).
+  const description = LEGAL_TRANSLATION_META[t.lang]?.[doc].description;
   // The same language set as the Lithuanian and English pages list, so the hreflang group is reciprocal (SEO-3).
   const paths = legalDocAlternates(doc);
   const languages = Object.fromEntries(LANGS.filter((code) => paths[code]).map((code) => [code, paths[code]]));
   return {
     title,
+    ...(description ? { description } : {}),
     alternates: { canonical: `${site.url}/legal/${t.lang}/${doc}`, languages: { ...languages, "x-default": paths.lt } },
-    openGraph: { title, locale: t.lang },
+    openGraph: { title, locale: t.lang, ...(description ? { description } : {}) },
   };
 }
 
