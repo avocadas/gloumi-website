@@ -10,10 +10,13 @@ import { site } from "./site";
  * tells a search engine that the language versions are the same document, so
  * they compete with each other in no index. `x-default` points at the
  * Lithuanian one, which is the home market.
+ *
+ * `paths` – where the page exists by language, when that is more than
+ * `alternates(page)` knows: the Terms and the Privacy Policy also exist as
+ * translations (legal-alternates.ts).
  */
-export function buildMetadata(lang: Lang, page: Page, extra?: Metadata): Metadata {
-  const paths = alternates(page);
-  // Only the languages the page is written in: a legal document lists LT and EN, the home page and the FAQ all eight.
+export function buildMetadata(lang: Lang, page: Page, extra?: Metadata, paths: Partial<Record<Lang, string>> = alternates(page)): Metadata {
+  // Only the languages the page is written in: a legal document lists LT and EN (the Terms and Privacy also their translations), the home page and the FAQ all eight.
   const languages = Object.fromEntries(LANGS.filter((code) => paths[code]).map((code) => [code, paths[code]]));
   const canonical = paths[lang];
   if (!canonical) throw new Error(`No ${lang} version of this page`);
